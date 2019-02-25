@@ -301,12 +301,15 @@ public class Spider implements Runnable, Task {
 
     @Override
     public void run() {
+
         checkRunningStat();
         initComponent();
+
         logger.info("Spider {} started!",getUUID());
         while (!Thread.currentThread().isInterrupted() && stat.get() == STAT_RUNNING) {
+            // 从队列里面取一个 Request
             final Request request = scheduler.poll(this);
-            if (request == null) {
+            if (request == null) { // 暂时没有新的任务
                 if (threadPool.getThreadAlive() == 0 && exitWhenComplete) {
                     break;
                 }
@@ -317,7 +320,7 @@ public class Spider implements Runnable, Task {
                     @Override
                     public void run() {
                         try {
-                            processRequest(request);
+                            processRequest(request); // 执行
                             onSuccess(request);
                         } catch (Exception e) {
                             onError(request);

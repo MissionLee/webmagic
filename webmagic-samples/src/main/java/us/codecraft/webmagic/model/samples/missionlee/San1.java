@@ -21,7 +21,9 @@ public class San1 implements PageProcessor {
     public static void download(String urlStr,String filename,String savePath) throws IOException {
 
         URL url = new URL(urlStr);
-        //打开url连接
+        //打开url连接  可以用普通的URLConnection,但是根据后台的不同，有些后台回对普通的URLConnection返回500错误
+        //            更保险的形式，我们把Connection换成HttpURLConnection，因为浏览器使用这种方式来创建链接
+        //            “GET/POST” 的设置是否恰当会从 405错误看出来
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         //请求超时时间
         connection.setConnectTimeout(50000);
@@ -101,7 +103,7 @@ public class San1 implements PageProcessor {
     }
 
     public static void main(String[] args) {
-        //Spider.create(new San1()).addUrl("https://chan.sankakucomplex.com/post/show/7034962").thread(1).run();
+        Spider.create(new San1()).addUrl("https://chan.sankakucomplex.com/post/show/7034962").thread(1).run();
 
         try {
             System.out.println("START DOWNLOAD");
