@@ -1,27 +1,24 @@
-package us.codecraft.webmagic.samples;
+package us.codecraft.webmagic.samples.missionlee;
 
+import com.alibaba.fastjson.JSON;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
-import us.codecraft.webmagic.downloader.selenium.SeleniumDownloader;
-import us.codecraft.webmagic.pipeline.FilePipeline;
 import us.codecraft.webmagic.processor.PageProcessor;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 
 /**
- * 花瓣网抽取器。<br>
- * 使用Selenium做页面动态渲染。<br>
- * @author code4crafter@gmail.com <br>
- * Date: 13-7-26 <br>
- * Time: 下午4:08 <br>
+ * @description:
+ * @author: Mission Lee
+ * @create: 2019-02-24 21:55
  */
-public class HuabanProcessor implements PageProcessor {
-
-    private Site site;
+public class HuaBanMeiNv implements PageProcessor {
+    Site site = Site.me();
     public static void download(String urlStr,String filename,String savePath) throws IOException {
 
         URL url = new URL(urlStr);
@@ -64,44 +61,43 @@ public class HuabanProcessor implements PageProcessor {
         in.close();
 
     }
+
     @Override
     public void process(Page page) {
-        List<String> list =page.getHtml()
-                .$(".wfc")
-                .$(".layer-view")
-                .$("img","src").all();
-        for (String st: list
+        List<String> scriptLists= page.getHtml().$("script").all();
+        String target = scriptLists.get(21)
+                .replace("&lt;","")
+                .replace("&gt;","")
+                .replace("&amp;","")
+                .split(";")[6]
+                .substring("app.page[\"pins\"] = ".length()+1);
+        List<Object> lists = (List)JSON.parse(target);
+        int i =0;
+        for (Object th:lists
              ) {
+            System.out.println("download"+ i++);
+            Map map = (Map)JSON.parse(th.toString());
+            Map fileMap = (Map)JSON.parse(map.get("file").toString());
+
             try {
-//                System.out.println(st.substring(19,st.length()-6));
-                System.out.println("download");
-                download("http:"+st.substring(0,st.length()-6),st.substring(19,st.length()-6)+".jpg","C:\\Users\\MissionLee\\Desktop\\表格");
-                Thread.sleep(5000L);
-            } catch (Exception e) {
+                download("http://img.hb.aicdn.com/"+fileMap.get("key"),fileMap.get("key")+".jpg","C:\\Users\\MissionLee\\Desktop\\表格");
+            } catch (IOException e) {
                 e.printStackTrace();
             }
-
+            try {
+                Thread.sleep(10000L);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
-//        page.addTargetRequests(page.getHtml().links().regex("http://huaban\\.com/.*").all());
-//        if (page.getUrl().toString().contains("pins")) {
-//            page.putField("img", page.getHtml().xpath("//div[@class='image-holder']/a/img/@src").toString());
-//        } else {
-//            page.getResultItems().setSkip(true);
-//        }
     }
 
     @Override
     public Site getSite() {
-        if (null == site) {
-            site = Site.me().setDomain("huaban.com").setSleepTime(0);
-        }
         return site;
     }
 
     public static void main(String[] args) {
-        Spider.create(new HuabanProcessor()).thread(5)
-                .setDownloader(new SeleniumDownloader("C:\\\\Windows\\\\System32\\\\chromedriver.exe"))
-                .addUrl("http://huaban.com/favorite/anime/")
-                .runAsync();
+        Spider.create(new HuaBanMeiNv()).addUrl("http://huaban.com/favorite/beauty/").thread(1).run();
     }
 }

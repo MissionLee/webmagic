@@ -32,6 +32,12 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>us.codecraft</groupId>-->
+			<!--<artifactId>webmagic-samples</artifactId>-->
+			<!--<version>0.7.3</version>-->
+			<!--<scope>test</scope>-->
+		<!--</dependency>-->
 	</dependencies>
 
 	<build>

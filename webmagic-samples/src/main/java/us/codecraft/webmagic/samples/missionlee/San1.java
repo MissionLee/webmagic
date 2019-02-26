@@ -1,15 +1,12 @@
-package us.codecraft.webmagic.model.samples.missionlee;
+package us.codecraft.webmagic.samples.missionlee;
 
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
-import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
 
-import javax.xml.bind.SchemaOutputResolver;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.List;
 
 /**
@@ -103,11 +100,11 @@ public class San1 implements PageProcessor {
     }
 
     public static void main(String[] args) {
-        Spider.create(new San1()).addUrl("https://chan.sankakucomplex.com/post/show/7034962").thread(1).run();
+//        Spider.create(new San1()).addUrl("https://chan.sankakucomplex.com/post/show/7034962").thread(1).run();
 
         try {
             System.out.println("START DOWNLOAD");
-            download("https://cs.sankakucomplex.com/data/85/c2/85c21f6e108c68903660b3a6e552b4e5.mp4?e=1551099883&m=YXy5serKwXrX8t5_syYhEQ","85c21f6e108c68903660b3a6e552b4e5.mp4","C:\\Users\\Administrator\\Desktop\\123");
+            download("https://cs.sankakucomplex.com/data/85/c2/85c21f6e108c68903660b3a6e552b4e5.mp4?e=1551099883&m=YXy5serKwXrX8t5_syYhEQ","85c21f6e108c68903660b3a6e552b4e5.mp4","C:\\Users\\MissionLee\\Desktop\\表格");
             System.out.println("END DOWNLOAD");
         } catch (IOException e) {
             e.printStackTrace();

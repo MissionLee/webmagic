@@ -1,4 +1,4 @@
-package us.codecraft.webmagic.model.samples.missionlee;
+package us.codecraft.webmagic.samples.missionlee;
 
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;

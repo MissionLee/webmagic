@@ -1,10 +1,7 @@
 package us.codecraft.webmagic.downloader.selenium;
 
 import org.apache.log4j.Logger;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Cookie;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
@@ -80,6 +77,20 @@ public class SeleniumDownloader implements Downloader, Closeable {
 		}
 		logger.info("downloading page " + request.getUrl());
 		webDriver.get(request.getUrl());
+		((JavascriptExecutor) webDriver).executeScript("window.scrollTo(0, document.body.scrollHeight)");
+		try {
+			Thread.sleep(10000L);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		((JavascriptExecutor) webDriver).executeScript("window.scrollTo(0, document.body.scrollHeight)");
+		try {
+			Thread.sleep(10000L);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		((JavascriptExecutor) webDriver).executeScript("window.scrollTo(0, document.body.scrollHeight)");
+
 		try {
 			Thread.sleep(sleepTime);
 		} catch (InterruptedException e) {
