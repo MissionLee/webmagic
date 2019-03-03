@@ -302,18 +302,21 @@ public class Spider implements Runnable, Task {
     @Override
     public void run() {
 
-        checkRunningStat();
-        initComponent();
+        checkRunningStat(); // 检查爬虫的运行状态，已经运行这里会报错
+        initComponent();// 检查downloader之类的组件，没有的话就设置默认的，外面传递的线程数就是 downloader的线程数
 
         logger.info("Spider {} started!",getUUID());
         while (!Thread.currentThread().isInterrupted() && stat.get() == STAT_RUNNING) {
-            // 从队列里面取一个 Request
+            // 从队列里面取一个 Request  我们使用addUrl 方法就是把 url 包装成 request 放入 scheduler中
+            // 另外，把url放入scheduler的同时会记录这个URL属于哪个 spider，取得时候也要对应取
+            // 注意： 默认的scheduler  没有启用这个机制， 实际只有一个 scheduler对应一个spider，这里只是满足接口，传递个pool
             final Request request = scheduler.poll(this);
             if (request == null) { // 暂时没有新的任务
                 if (threadPool.getThreadAlive() == 0 && exitWhenComplete) {
                     break;
                 }
                 // wait until new url added
+                // TODO: 2019/3/1 怀疑下面的方法导致程序卡死 
                 waitNewUrl();
             } else {
                 threadPool.execute(new Runnable() {
@@ -404,7 +407,7 @@ public class Spider implements Runnable, Task {
     }
 
     private void processRequest(Request request) {
-        Page page = downloader.download(request, this);
+        Page page = downloader.download(request, this);// 访问 request url
         if (page.isDownloadSuccess()){
             onDownloadSuccess(request, page);
         } else {
@@ -701,8 +704,8 @@ public class Spider implements Runnable, Task {
     }
 
     /**
-     * Whether add urls extracted to download.<br>
-     * Add urls to download when it is true, and just download seed urls when it is false. <br>
+     * Whether add urls extracted to utils.<br>
+     * Add urls to utils when it is true, and just utils seed urls when it is false. <br>
      * DO NOT set it unless you know what it means!
      *
      * @param spawnUrl spawnUrl

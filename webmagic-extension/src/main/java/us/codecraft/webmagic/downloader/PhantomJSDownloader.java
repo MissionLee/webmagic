@@ -10,7 +10,7 @@ import us.codecraft.webmagic.selector.PlainText;
 import java.io.*;
 
 /**
- * this downloader is used to download pages which need to render the javascript
+ * this downloader is used to utils pages which need to render the javascript
  *
  * @author dolphineor@gmail.com
  * @version 0.5.3

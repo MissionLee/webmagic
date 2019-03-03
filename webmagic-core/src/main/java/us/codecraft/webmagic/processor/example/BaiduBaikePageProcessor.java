@@ -30,7 +30,7 @@ public class BaiduBaikePageProcessor implements PageProcessor {
     }
 
     public static void main(String[] args) {
-        //single download
+        //single utils
         Spider spider = Spider.create(new BaiduBaikePageProcessor()).thread(2);
         String urlTemplate = "http://baike.baidu.com/search/word?word=%s&pic=1&sug=1&enc=utf8";
         ResultItems resultItems = spider.<ResultItems>get(String.format(urlTemplate, "水力发电"));

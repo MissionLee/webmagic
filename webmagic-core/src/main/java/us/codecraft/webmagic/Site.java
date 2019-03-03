@@ -224,9 +224,9 @@ public class Site {
     }
 
     /**
-     * Get retry times immediately when download fail, 0 by default.<br>
+     * Get retry times immediately when utils fail, 0 by default.<br>
      *
-     * @return retry times when download fail
+     * @return retry times when utils fail
      */
     public int getRetryTimes() {
         return retryTimes;
@@ -250,7 +250,7 @@ public class Site {
     }
 
     /**
-     * Set retry times when download fail, 0 by default.<br>
+     * Set retry times when utils fail, 0 by default.<br>
      *
      * @param retryTimes retryTimes
      * @return this
@@ -261,16 +261,16 @@ public class Site {
     }
 
     /**
-     * When cycleRetryTimes is more than 0, it will add back to scheduler and try download again. <br>
+     * When cycleRetryTimes is more than 0, it will add back to scheduler and try utils again. <br>
      *
-     * @return retry times when download fail
+     * @return retry times when utils fail
      */
     public int getCycleRetryTimes() {
         return cycleRetryTimes;
     }
 
     /**
-     * Set cycleRetryTimes times when download fail, 0 by default. <br>
+     * Set cycleRetryTimes times when utils fail, 0 by default. <br>
      *
      * @param cycleRetryTimes cycleRetryTimes
      * @return this
@@ -289,7 +289,7 @@ public class Site {
     }
 
     /**
-     * Set retry sleep times when download fail, 1000 by default. <br>
+     * Set retry sleep times when utils fail, 1000 by default. <br>
      *
      * @param retrySleepTime retrySleepTime
      * @return this

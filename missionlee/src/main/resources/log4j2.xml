@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 这里的status = error 控制的是log4j自身的日志 -->
+<configuration status="error">
+    <appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <!--                      时间：时分秒毫秒   线程    logger名称   信息 换行-->
+            <PatternLayout pattern="%dd{HH:mm:ss} [%t] %-5level  %-24c{1.1.} - %msg%n"/>
+            <!-- http://logging.apache.org/log4j/2.x/manual/layouts.html 上面的-5 -36 表示 左对齐，字符填充到5/36个
+                开启root的debug模式可以很容易的看到 上面这部分内容的效果-->
+        </Console>
+        <!--<RollingFile name="RollingFileError" fileName="${sys:user.home}/logs/error.log"-->
+                     <!--filePattern="${sys:user.home}/logs/error-%d{yyyy-MM-dd}-%i.log">-->
+            <!--<ThresholdFilter level="ERROR"/>-->
+            <!--<PatternLayout pattern="[%d{HH:mm:ss:SSS}] [%p] - %l - %m%n"/>-->
+            <!--<Policies>-->
+                <!--<TimeBasedTriggeringPolicy/>-->
+                <!--<SizeBasedTriggeringPolicy size="100 MB"/>-->
+            <!--</Policies>-->
+        <!--</RollingFile>-->
+    </appenders>
+    <loggers>
+        <!-- 代码中 LoggerFactory.getLogger() 可以传入
+            String : 对应的就是我们下面定义的 logger的name
+            Class  ： 传入class 就会使用 root
+            spring,mybatis之类的这些做通用框架的，使用的是root
+            业务代码里面，我们选择使用 name，这样在调试的时候可以区分开
+         -->
+        <logger name="WEB-GLOBAL-EXCEPTION" level="debug" additivity="false">
+            <appender-ref ref="Console"/>
+        </logger>
+        <logger name ="WEB-RESPONSE-MONITOR" level="debug" additivity="false">
+            <!-- ResponseMonitor -->
+            <appender-ref ref="Console"/>
+        </logger>
+        <logger name ="WEB-PERMISSION" level="info" additivity="false">
+            <!-- PermissionProcessor[CacheUrlPermissionProcessor] -->
+            <appender-ref ref="Console"/>
+        </logger>
+        <logger name="WEB-BASIC" level="info" additivity="false">
+            <appender-ref ref="Console"/>
+        </logger>
+        <logger name="WEB-COMMON" level="debug" additivity="false">
+            <appender-ref ref="Console"/>
+        </logger>
+
+        <root level="info">
+            <appender-ref ref="Console"/>
+            <!--<appender-ref ref="RollingFileError"/>-->
+        </root>
+    </loggers>
+</configuration>

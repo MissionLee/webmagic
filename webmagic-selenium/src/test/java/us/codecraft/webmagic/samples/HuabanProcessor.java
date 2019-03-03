@@ -74,7 +74,7 @@ public class HuabanProcessor implements PageProcessor {
              ) {
             try {
 //                System.out.println(st.substring(19,st.length()-6));
-                System.out.println("download");
+                System.out.println("utils");
                 download("http:"+st.substring(0,st.length()-6),st.substring(19,st.length()-6)+".jpg","C:\\Users\\MissionLee\\Desktop\\表格");
                 Thread.sleep(5000L);
             } catch (Exception e) {

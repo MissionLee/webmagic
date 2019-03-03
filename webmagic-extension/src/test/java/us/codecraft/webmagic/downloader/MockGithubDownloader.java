@@ -319,7 +319,7 @@ public class MockGithubDownloader implements Downloader{
             "                   class=\"minibutton sidebar-button\"\n" +
             "                   title=\"Download this repository as a zip file\"\n" +
             "                   rel=\"nofollow\">\n" +
-            "                  <span class=\"octicon octicon-cloud-download\"></span>\n" +
+            "                  <span class=\"octicon octicon-cloud-utils\"></span>\n" +
             "                  Download ZIP\n" +
             "                </a>\n" +
             "            </div>\n" +

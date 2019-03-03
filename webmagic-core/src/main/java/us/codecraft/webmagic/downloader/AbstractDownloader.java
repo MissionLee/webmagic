@@ -14,7 +14,7 @@ import us.codecraft.webmagic.selector.Html;
 public abstract class AbstractDownloader implements Downloader {
 
     /**
-     * A simple method to download a url.
+     * A simple method to utils a url.
      *
      * @param url url
      * @return html
@@ -24,7 +24,7 @@ public abstract class AbstractDownloader implements Downloader {
     }
 
     /**
-     * A simple method to download a url.
+     * A simple method to utils a url.
      *
      * @param url url
      * @param charset charset
