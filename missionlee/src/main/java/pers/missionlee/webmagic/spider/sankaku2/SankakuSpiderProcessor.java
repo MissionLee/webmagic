@@ -13,6 +13,10 @@ import us.codecraft.webmagic.Spider;
  * @create: 2019-03-02 16:10
  */
 public class SankakuSpiderProcessor {
+
+    public static String UserName = "zuixue3000@163.com";
+    public static String Password = "mingshun1993";
+
     public static Logger logger = LoggerFactory.getLogger(SankakuSpiderProcessor.class);
     private static final String chan_sankakucomplex_com_IP = "208.100.27.32";
     private static final String cs_sankakucomplex_com_IP = "208.100.24.254";
@@ -45,6 +49,9 @@ public class SankakuSpiderProcessor {
     public int THREAD_NUM = 3;
     public String TAG = "other";
 
+    public int d_suc=0;
+    public int d_err=0;
+    public int d_skip = 0;
     private static Site site = Site.me()
             .setRetryTimes(3)
             .setTimeOut(100000)
@@ -145,23 +152,34 @@ public class SankakuSpiderProcessor {
     }
     public static void main(String[] args) {
         String pa = "C:\\Users\\Administrator\\Desktop\\sankaku";
-//        run("D:/sankaku/","mirco cabbia",469,4);
-//        run("D:/sankaku/","noname55",1278,4);
-//         noname55 1278
-        run(pa,"ozma",31,4);
-        // remana 364
-        // meowlian 22
-        // nero (nilu) 61
-        // obaoba (monkeyix)  55
-        // nguyen uy vu 95
+
+
+//        // yang-do 1021
+//        // logan cure 455
+//        // zalsfm 112
+        // sayika 149
+        // songjikyo 291
+        // xiaoshou xiansheng 137
+        // stanley lau  637
+        // yamakawa 267
+//        secaz  426
+        // strapy 388
+        // viola (seed) 308
+        // tokinohimitsu 176
+        // usaginagomu 182
+        // saejin oh 153
+        // v1z3t4 201
+        // zumi (zumidraws) 190
+        // tarakanovich 226
+        // masak (masaki4545) 137
+        // m-rs 410
         // phamoz 138
         // pockyin 288
         // pyz (cath x tech) 207
         // mu-nyako 147
         // nanoless 301
-        // nekomimipunks 45
         // pewposterous 797
-        // ryanreos 52
+        // niodreth  181
         // metagraphy 126
         // guweiz 356
         // leslyzerosix 215
@@ -174,20 +192,39 @@ public class SankakuSpiderProcessor {
         // hoobamon 235
         // liang xing 454
         // love cacao 329
-        // lolliedrop 83
-        // lisa buijteweg 66
         // jonathan hamilton 179
         // likkezg 228
         // lerico213 165
-        // lewdnatic 41
         // raikoart 235
         // marushin (denwa0214)   904
         // rak (kuraga)  609
         // monaim 114
         // pink lady mage 268
-        // raijuu (bakanara) 71
-        // nefrubi 66
         // miura naoko 315
         // ross tran 134
+        // onagi 447
+        // fatcat17 149
+        // sfmsnip 223
+        // orutoro 840
+
+
+
+
+//        run("D:/sankaku/","sasaoka gungu",261,4);
+//        // sasaoka gungu 261
+//        run("D:/sankaku/","yeero",207,4);
+//        // yeero 207
+//        run("D:/sankaku/","vgerotica",263,4);
+//        // vgerotica 263
+//        run("D:/sankaku/","tiazsfm",169,4);
+//        // tiazsfm 169
+//        run("D:/sankaku/","cakeofcakes",186,4);
+        // cakeofcakes 186
+        run("D:/sankaku","",15,4);
+
+        // bennemonte 187
+        // steelxxxhotogi 127
+        // daye bie qia lian 244
+
     }
 }
