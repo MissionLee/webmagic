@@ -144,14 +144,12 @@ public class SankakuSpiderProcessor {
         processor.runWithAllUrlAddedAtStart(rootPath,tag,totalNum,threadNum);
     }
     public static void main(String[] args) {
-        String pa = "C:\\Users\\Administrator\\Desktop\\sankaku";
+        String pa = "C:\\Users\\MissionLee\\Desktop\\sankaku";
 //        run("D:/sankaku/","mirco cabbia",469,4);
 //        run("D:/sankaku/","noname55",1278,4);
 //         noname55 1278
-        run(pa,"ozma",31,4);
-        // remana 364
+        run(pa,"remana",364,3);
         // meowlian 22
-        // nero (nilu) 61
         // obaoba (monkeyix)  55
         // nguyen uy vu 95
         // phamoz 138
