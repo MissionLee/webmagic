@@ -95,6 +95,7 @@ public class DiarySankakuSpider implements PageProcessor {
                         logger.info("spider - process ⭐ add TargetRequest " + "https://chan.sankakucomplex.com" + url);
                         page.addTargetRequest("https://chan.sankakucomplex.com" + url);
                     } else {
+                        processor.d_skip++;
                         logger.info("spider - process ⭐ already Downloaded " + "https://chan.sankakucomplex.com" + url);
                     }
                 }
@@ -221,14 +222,15 @@ public class DiarySankakuSpider implements PageProcessor {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                processor.d_suc++;
             }else{
-
+                processor.d_err++;
             }
 
         } else{
             logger.warn("Went to page: "+page.getUrl());
         }
-
+        logger.info("suc: "+processor.d_suc+" /err: "+processor.d_err+" /skip: "+processor.d_skip);
     }
 
     @Override

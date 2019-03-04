@@ -42,6 +42,7 @@ public class SankakuDownloadUtils {
             downloadErrorCounter.remove(downloadURL);
             pageRedoCounter.remove(pageURL);
             logger.info("downloader -suc " + downloadURL);
+
             return true;
         } catch (IOException e) { // 如果下载失败
             logger.warn("downloader -err" + downloadURL);
