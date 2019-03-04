@@ -151,18 +151,21 @@ public class SankakuSpiderProcessor {
         processor.runWithAllUrlAddedAtStart(rootPath,tag,totalNum,threadNum);
     }
     public static void main(String[] args) {
-        String pa = "C:\\Users\\Administrator\\Desktop\\sankaku";
+        String pa = "H:/sankaku";
 
 
-//        // yang-do 1021
-//        // logan cure 455
-//        // zalsfm 112
-        // sayika 149
+        // zugronc 32
+        // servantesnc 92
+
+        // batyastudio 283
+        // nguyen uy vu 95
+        // yang-do 1021
+        // logan cure 455
         // songjikyo 291
         // xiaoshou xiansheng 137
         // stanley lau  637
         // yamakawa 267
-//        secaz  426
+        // secaz  426
         // strapy 388
         // viola (seed) 308
         // tokinohimitsu 176
@@ -210,17 +213,15 @@ public class SankakuSpiderProcessor {
 
 
 
-//        run("D:/sankaku/","sasaoka gungu",261,4);
-//        // sasaoka gungu 261
-//        run("D:/sankaku/","yeero",207,4);
-//        // yeero 207
+
+        run("H:/sankaku/","yeero",207,4);
+        // yeero 207
 //        run("D:/sankaku/","vgerotica",263,4);
 //        // vgerotica 263
 //        run("D:/sankaku/","tiazsfm",169,4);
 //        // tiazsfm 169
 //        run("D:/sankaku/","cakeofcakes",186,4);
-        // cakeofcakes 186
-        run("D:/sankaku","",15,4);
+////         cakeofcakes 186
 
         // bennemonte 187
         // steelxxxhotogi 127
