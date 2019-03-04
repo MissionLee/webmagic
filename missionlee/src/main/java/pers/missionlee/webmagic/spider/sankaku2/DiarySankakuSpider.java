@@ -43,6 +43,10 @@ public class DiarySankakuSpider implements PageProcessor {
         }
     }
 
+    public List<ArtworkInfo> getArtworkInfos(){
+        return artworkInfos;
+    }
+
     private boolean hasDownloaded(String URL) {
         for (ArtworkInfo info :
                 artworkInfos) {

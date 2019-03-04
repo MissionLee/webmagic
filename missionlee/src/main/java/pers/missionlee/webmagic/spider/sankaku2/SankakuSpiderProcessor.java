@@ -4,8 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pers.missionlee.webmagic.spider.sankaku.ArtworkInfoUtils;
 import pers.missionlee.webmagic.spider.sankaku.SankakuSpider;
+import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
+
+import java.util.List;
 
 /**
  * @description:
@@ -132,9 +135,12 @@ public class SankakuSpiderProcessor {
         for (int i = 0; i < urls.length; i++) {
             System.out.println(urls[i]);
         }
-        DiarySankakuSpider sankakuSpider = new DiarySankakuSpider(site,new SankakuInfoUtils(this),this);
+        SankakuInfoUtils sankakuInfoUtils = new SankakuInfoUtils(this);
+        DiarySankakuSpider sankakuSpider = new DiarySankakuSpider(site,sankakuInfoUtils,this);
         Spider spider = Spider.create(sankakuSpider);
         spider.addUrl(urls).thread(threadNum).run();
+        // TODO: 2019/3/4  以上内容运行结束之后，重构对应作者的artistinfo
+        sankakuInfoUtils.freshArtistInfo(sankakuSpider.getArtworkInfos());
     }
 
     private void init(String parentPath, String tag, int threadNum) {
@@ -149,6 +155,7 @@ public class SankakuSpiderProcessor {
             rootPath = parentPath+"/";
         SankakuSpiderProcessor processor = new SankakuSpiderProcessor();
         processor.runWithAllUrlAddedAtStart(rootPath,tag,totalNum,threadNum);
+        
     }
     public static void main(String[] args) {
         String pa = "C:\\Users\\Administrator\\Desktop\\sankaku";

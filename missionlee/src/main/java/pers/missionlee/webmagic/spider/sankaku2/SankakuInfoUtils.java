@@ -4,13 +4,12 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import pers.missionlee.webmagic.spider.sankaku.info.ArtistInfo;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * @description:
@@ -22,6 +21,13 @@ public class SankakuInfoUtils {
     private static String ARTWORK_INFO_FILE_NAME = "artworkInfo.jsonline";
     private String fullParentPath;
     private File artworkInfoFile;
+    private final List<String> picFormats = new ArrayList<String>(){{
+        add("jpg");
+        add("png");
+        add("jpeg");
+        add("webp");
+        add("gif");
+    }};
 
     public SankakuInfoUtils(SankakuSpiderProcessor processor) {
         this.processor = processor;
@@ -144,11 +150,16 @@ public class SankakuInfoUtils {
         File root = new File(rootPath);
         if(root.exists()&&root.isDirectory()){ // 简单验证根目录
             String[] files = root.list();
+
             for (int i = 0; i < files.length; i++) {
                 File json = new File(rootPath+files[i]+"/artwork.json");
                 File jsonline = new File(rootPath+files[i]+"/artwork.jsonline");
                 if((!jsonline.exists()) && (json.exists()) && (json.isFile())){ // jsonline 不存在，json存在的情况下进行操作
-                    jsonline.mkdir();
+                    try {
+                        jsonline.createNewFile();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     List<ArtworkInfo> artworkInfos = readOldArtworkInfo(json);
                     if(artworkInfos.size()>0){
                         for (ArtworkInfo info :
@@ -184,5 +195,52 @@ public class SankakuInfoUtils {
     }
     public synchronized void appendInfo(ArtworkInfo info) throws IOException {
         FileUtils.writeStringToFile(artworkInfoFile, JSON.toJSONString(info) + "\n", "UTF8", true);
+    }
+    public void freshArtistInfo(List<ArtworkInfo> artworkInfos){
+        ArtistInfo artistInfo = new ArtistInfo();
+        artistInfo.setArtworkNum(artworkInfos.size());
+        artistInfo.setName(processor.TAG);
+        artistInfo.setUpdateTime(System.currentTimeMillis());
+        Map<String,Integer> tagCounts = new HashMap<String, Integer>();
+        for (ArtworkInfo info:artworkInfos
+             ) {
+            List<String> generalTags = info.getTagGeneral();
+            for (String tag :
+                    generalTags) {
+                if(tagCounts.containsKey(tag)){
+                    tagCounts.put(tag,tagCounts.get(tag)+1);
+                }else{
+                    tagCounts.put(tag,1);
+                }
+            }
+            if(picFormats.contains(info.getFormat())){
+                if(info.getRating().equals("Questionable")){
+                    artistInfo.getQuestionablePics().add(info.getName());
+                }else if(info.getRating().equals("Explicit")){
+                    artistInfo.getExplicitPics().add(info.getName());
+                }else{
+                    artistInfo.getSafePics().add(info.getName());
+                }
+            }else{
+                if(info.getRating().equals("Questionable")){
+                    artistInfo.getQuestionableVids().add(info.getName());
+                }else if(info.getRating().equals("Explicit")){
+                    artistInfo.getExplicitVids().add(info.getName());
+                }else{
+                    artistInfo.getSafeVids().add(info.getName());
+                }
+            }
+        }
+        try {
+            FileUtils.writeStringToFile(new File(fullParentPath+"artistinfo.json"),JSON.toJSONString(artistInfo),"UTF8",false);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+//        SankakuSpiderProcessor processor = new SankakuSpiderProcessor();
+////        SankakuInfoUtils utils = new SankakuInfoUtils(processor);
+////        DiarySankakuSpider sankakuSpider = new DiarySankakuSpider(null,utils,processor);
     }
 }

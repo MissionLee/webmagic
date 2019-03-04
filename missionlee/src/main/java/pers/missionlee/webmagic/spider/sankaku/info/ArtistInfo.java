@@ -2,6 +2,7 @@ package pers.missionlee.webmagic.spider.sankaku.info;
 
 import com.alibaba.fastjson.JSON;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -11,9 +12,72 @@ import java.util.Map;
  */
 public class ArtistInfo {
     private String name;
-    private Map<String,Long> fileList;
     private long updateTime;
     private int artworkNum;
+    private Map<String,Integer> hotTags;
+    private List<String> safePics;
+    private List<String> questionablePics;
+    private List<String> explicitPics;
+
+    private List<String> safeVids;
+    private List<String> questionableVids;
+    private List<String> explicitVids;
+
+    public Map<String, Integer> getHotTags() {
+        return hotTags;
+    }
+
+    public void setHotTags(Map<String, Integer> hotTags) {
+        this.hotTags = hotTags;
+    }
+
+    public List<String> getSafePics() {
+        return safePics;
+    }
+
+    public void setSafePics(List<String> safePics) {
+        this.safePics = safePics;
+    }
+
+    public List<String> getQuestionablePics() {
+        return questionablePics;
+    }
+
+    public void setQuestionablePics(List<String> questionablePics) {
+        this.questionablePics = questionablePics;
+    }
+
+    public List<String> getExplicitPics() {
+        return explicitPics;
+    }
+
+    public void setExplicitPics(List<String> explicitPics) {
+        this.explicitPics = explicitPics;
+    }
+
+    public List<String> getSafeVids() {
+        return safeVids;
+    }
+
+    public void setSafeVids(List<String> safeVids) {
+        this.safeVids = safeVids;
+    }
+
+    public List<String> getQuestionableVids() {
+        return questionableVids;
+    }
+
+    public void setQuestionableVids(List<String> questionableVids) {
+        this.questionableVids = questionableVids;
+    }
+
+    public List<String> getExplicitVids() {
+        return explicitVids;
+    }
+
+    public void setExplicitVids(List<String> explicitVids) {
+        this.explicitVids = explicitVids;
+    }
 
     public String getName() {
         return name;
@@ -21,14 +85,6 @@ public class ArtistInfo {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Map<String, Long> getFileList() {
-        return fileList;
-    }
-
-    public void setFileList(Map<String, Long> fileList) {
-        this.fileList = fileList;
     }
 
     public long getUpdateTime() {
