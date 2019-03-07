@@ -15,6 +15,9 @@ public class SankakuSpiderProcessor {
     public static String UserName = "zuixue3000@163.com";
     public static String Password = "mingshun1993";
 
+    public static String UserName2="hisanily";
+
+
     public static Logger logger = LoggerFactory.getLogger(SankakuSpiderProcessor.class);
     private static final String chan_sankakucomplex_com_IP = "208.100.27.32";
     private static final String cs_sankakucomplex_com_IP = "208.100.24.254";
@@ -55,23 +58,24 @@ public class SankakuSpiderProcessor {
     private static Site site = Site.me()
             .setRetryTimes(3)
             .setTimeOut(100000)
-            .addCookie("__atuvc", "1%7C9")
-            .addCookie("__atuvs", "5c791f63ddd2a1f5000")
-            .addCookie("_pk_id.2.42fa", "adde0e4a1e63d583.1551189849.23.1551441764.1551440466..1551189849.16.1551362603.1551361875.")
+            .addCookie("__atuvc", "1%7C10")
+            .addCookie("__atuvs", "5c80d1727aaf5c33000")
+            .addCookie("_pk_id.2.42fa", "d754ed93156981ec.1551945996.1.1551946098.1551945996.")
             .addCookie("_pk_ses.2.42fa", "1")
-            .addCookie("_sankakucomplex_session", "BAh7BzoMdXNlcl9pZGkD5lgGOg9zZXNzaW9uX2lkIiU5NWZhNGMyZjk2Y2M5MGJkZTNmOTZiMGM5ZmNmYzY3OQ%3D%3D--9d80a0ba02f9c4e31c13c7db0a08eb2cd035b80f%3D%3D--2d44e3f79213fc98bd4cb3b167394ecf18ded724")
+            .addCookie("_pk_ref.2.42fa","%5B%22%22%2C%22%22%2C1551945996%2C%22https%3A%2F%2Fwww.baidu.com%2Flink%3Furl%3DZhjEZf0mLasb4GiK7kscbdNx_aiKSC3a0iFaG_7QIn_pgAp4QI2OziNGQl740-um0tY7wvh-YRCyCRlqA8GaEq%26wd%3D%26eqid%3Daa4368bd000364f4000000055c80d0da%22%5D")
+            .addCookie("_sankakucomplex_session", "BAh7CDoMdXNlcl9pZGkDKuwNIgpmbGFzaElDOidBY3Rpb25Db250cm9sbGVyOjpGbGFzaDo6Rmxhc2hIYXNoewAGOgpAdXNlZHsAOg9zZXNzaW9uX2lkIiUzNzlkNWZhMjJiMDQwYTA0NzM1OTIyNmQ2MDRiNDlkZA%3D%3D--81d6a8237a12528477f3ac2196be5bf6ad960bd1")
             .addCookie("auto_page", "0")
             .addCookie("blacklisted_tags","")
-            .addCookie("loc","MDAwMDBBU0NOSlMyMTQ0Mjk4NDA3NjAwMDBDSA==")
+            //.addCookie("loc","MDAwMDBBU0NOSlMyMTQ0Mjk4NDA3NjAwMDBDSA==")
             .addCookie("locale", "en")
-            .addCookie("login", "zuixue3000")
+            .addCookie("login", "hisanily")
             .addCookie("mode", "view")
-            .addCookie("na_id","2018122723475293368621024808")
-            .addCookie("na_tc","Y")
-            .addCookie("ouid","5c2564a80001da35a1ed736217e8a4379998383b2fa5f1877d3a")
+            //.addCookie("na_id","2018122723475293368621024808")
+            //.addCookie("na_tc","Y")
+            //.addCookie("ouid","5c2564a80001da35a1ed736217e8a4379998383b2fa5f1877d3a")
             .addCookie("pass_hash", "b1f471dcd8cc8df0ed2b84f033ba2baae5de013b")
-            .addCookie("uid", "5c2564a827f935b5")
-            .addCookie("uvc","9%7C5%2C0%7C6%2C3%7C7%2C13%7C8%2C46%7C9")
+            //.addCookie("uid", "5c2564a827f935b5")
+            //.addCookie("uvc","9%7C5%2C0%7C6%2C3%7C7%2C13%7C8%2C46%7C9")
             .addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
             .addHeader("Accept-Encoding", "gzip, deflate, br")
             .addHeader("Accept-Language", "zh-CN,zh;q=0.9")
@@ -161,7 +165,7 @@ public class SankakuSpiderProcessor {
 
     }
     public static void run(String tag,int num){
-        String pa = "D:/sankaku";
+        String pa = "F:/sankaku";
 
         run(pa,tag,num,4);
     }
@@ -186,8 +190,7 @@ public class SankakuSpiderProcessor {
 //        // masak (masaki4545)  137
 //        run("shirow masamune",1555);
 //        // shirow masamune 1555
-        run("yurisaki",87);
-        // yurisaki  87
+
 //        run("vempire",349);
 //        // vempire 349
 //        run("mappaninatta",204);
@@ -214,34 +217,24 @@ public class SankakuSpiderProcessor {
 //        // joixxx 180
 ////        run("hitomiluv3r",705);
 ////        // pixiv id 18323769 30  重复
-        run("feizaisfm",43);
-        // feizaisfm 43
+
 //        run("evulchibi",245);
 //        // evulchibi 245
 //        run("kruth666",193);
 //        // kruth666 193
-        run("mr h.l.",68);
-        // mr h.l. 68
+
 //        run("iri-neko",320);
 //        // iri-neko 320
 //        run("hk (hk)",198);
 //        // hk (hk) 198
-        run("temutemutemu",41);
-        // temutemutemu 41
-        run("hypnorekt",67);
-        // hypnorekt 67
-        run("karasu kame ex",44);
-        // karasu kame ex 44
-        run("hentaiborg",30);
+
         // hentaiborg 30
 //        run("kakao",271);
 //        // kakao 271
-        run("jellytits7",64);
-        // jellytits7 64
+
 //        run("obaoba (monkeyix)",64);
         // obaoba (monkeyix) 56
-        run("rikume",64);
-        // rikume 64
+
 //        run("zombie-andy",73);
 //        // zombie-andy 73
 ////        run("hitomiluv3r",705);
@@ -481,44 +474,80 @@ public class SankakuSpiderProcessor {
 //        run("hitomiluv3r",705);
 //        // homare (fool's art) 2100
 
-        // materclaws 164
-        // pokedudesfm 26
-        // miaw34 34
+        run("redchicken",132);
         // redchicken 132
+        run("kazedesune",115);
         // kazedesune 115
+        run("atdan",251);
         // atdan 251
+        run("val-val",128);
         // val-val 128
+        run("krabby (artist)",144);
         // krabby (artist) 144
+        run("mattdarey91sfm",62);
         // mattdarey91sfm  62
+        run("fainxel",59);
         // fainxel 59
-        // nyuunzi 588
+        run("enosan",159);
         // enosan 159
+        run("didi esmeralda",217);
         // didi esmeralda 217
+        run("forged3dx",143);
         // forged3dx 143
-        // melon22 493
+
+        run("hanarito",252);
         // hanarito 252
+        run("etsem",41);
         // etsem 41
+        run("mikiron",121);
         // mikiron 121
-        // hayabusa 345
-        // timpossible 381
+        run("surock",46);
         // surock 46
-        // yuuji (and) 1305
+
+        run("rei kun",121);
         // rei kun 121
+        run("bdone",65);
         // bdone 65
+        run("rayzoir",201);
         // rayzoir 201
+        run("powergene",45);
         // powergene 45
+        run("skello",40);
         // skello 40
+        run("doomsatan666",63);
         // doomsatan666 63
+        run("jeff macanoli",60);
         // jeff macanoli 60
+        run("asa (teng zi)",42);
         // asa (teng zi) 42
+        run("hentaix",51);
         // hentaix  51
+        run("junkerz",61);
         // junkerz 61
+        run("zhean li",78);
         // zhean li 78
-        // tim loechner 359
-        // kishiyo 461
+
+        run("mrbonessfm",33);
         // mrbonessfm 33
+        run("oiran ichimi",181);
         // oiran ichimi 181
+        run("shimashima08123",156);
         // shimashima08123 156
+        run("fuetakishi",197);
         // 197 fuetakishi
+        run("hayabusa",345);
+        // hayabusa 345
+        run("kishiyo",461);
+        // kishiyo 461
+        run("timpossible",381);
+        // timpossible 381
+        run("melon22",493);
+        // melon22 493
+        run("nyuunzi",588);
+        // nyuunzi 588
+        run("tim loechner",359);
+        // tim loechner 359
+        run("yuuji (and)",1305);
+        // yuuji (and) 1305
     }
 }
