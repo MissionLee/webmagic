@@ -180,18 +180,12 @@ public class SankakuSpiderProcessor {
         // dragon@harry dragon%40harry 492
 //        run("nishieda",1911);
 //        // nishieda  1911
-        run("niur",37);
-        // niur 37
 //        run("kachima",427);
 //        // kachima  427
 //        run("masak (masaki4545)",137);
 //        // masak (masaki4545)  137
 //        run("shirow masamune",1555);
 //        // shirow masamune 1555
-        run("l axe",67);
-        // l axe 67
-        run("varrissfm",34);
-        // varrissfm 34
         run("yurisaki",87);
         // yurisaki  87
 //        run("vempire",349);
@@ -520,5 +514,11 @@ public class SankakuSpiderProcessor {
         // hentaix  51
         // junkerz 61
         // zhean li 78
+        // tim loechner 359
+        // kishiyo 461
+        // mrbonessfm 33
+        // oiran ichimi 181
+        // shimashima08123 156
+        // 197 fuetakishi
     }
 }
