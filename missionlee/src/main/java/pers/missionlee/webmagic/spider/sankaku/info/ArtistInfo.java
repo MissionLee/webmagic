@@ -2,6 +2,8 @@ package pers.missionlee.webmagic.spider.sankaku.info;
 
 import com.alibaba.fastjson.JSON;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +24,16 @@ public class ArtistInfo {
     private List<String> safeVids;
     private List<String> questionableVids;
     private List<String> explicitVids;
+
+    public ArtistInfo() {
+        this.hotTags = new HashMap<String, Integer>();
+        this.safePics = new ArrayList<String>();
+        this.questionablePics = new ArrayList<String>();
+        this.explicitPics = new ArrayList<String>();
+        this.safeVids = new ArrayList<String>();
+        this.questionableVids = new ArrayList<String>();
+        this.explicitVids = new ArrayList<String>();
+    }
 
     public Map<String, Integer> getHotTags() {
         return hotTags;
