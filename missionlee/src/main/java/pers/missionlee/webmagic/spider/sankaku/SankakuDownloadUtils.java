@@ -2,7 +2,7 @@ package pers.missionlee.webmagic.spider.sankaku;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pers.missionlee.webmagic.utils.WebFileDownloader;
+import pers.missionlee.webmagic.utils.TimeLimitedHttpDownloader;
 import us.codecraft.webmagic.Page;
 
 import java.io.File;
@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @description:
@@ -24,6 +25,7 @@ public class SankakuDownloadUtils {
     private static Map<String, Integer> downloadErrorCounter = new HashMap<String, Integer>();
 
     public static boolean download(String downloadURL, String filename, String savePath, Page page, String pageURL) {
+        int downloadStatus = 3;
         try {
             logger.info("DO-ing - "
                     + "[PAGE-RETRY:" + (pageRedoCounter.containsKey(pageURL) ? pageRedoCounter.get(pageURL) + 1 : 1)
@@ -34,48 +36,61 @@ public class SankakuDownloadUtils {
             logger.info("downloader - exist: " + aimFile.exists());
             if (!new File(savePath + "/" + filename).exists()) {
                 logger.info("downloader - start download");
-                WebFileDownloader.download(downloadURL, filename, savePath, pageURL);
+
+                downloadStatus = TimeLimitedHttpDownloader.download(downloadURL, filename, savePath, pageURL);
+                System.out.println("downloadStatus:"+downloadStatus);
+                if(downloadStatus ==1){
+                    doRetry(downloadURL,filename,savePath,page,pageURL,new Exception("time out"));
+                }else if(downloadStatus == 0){
+                    // 下载成功 remove 机制
+                    logger.info("downloader -suc " + downloadURL);
+                    downloadErrorCounter.remove(downloadURL);
+                    pageRedoCounter.remove(pageURL);
+                    return true;
+                }
             } else {
                 logger.info("downloader - skip download");
             }
 
-            downloadErrorCounter.remove(downloadURL);
-            pageRedoCounter.remove(pageURL);
-            logger.info("downloader -suc " + downloadURL);
 
-            return true;
-        } catch (IOException e) { // 如果下载失败
+
+            return false;
+        } catch (Exception e) { // 如果下载失败
             logger.warn("downloader -err" + downloadURL);
-            if (!downloadErrorCounter.containsKey(downloadURL)) {
-                downloadErrorCounter.put(downloadURL, 1);
-                logger.warn("downloader -retry" + downloadURL);
+            doRetry(downloadURL, filename, savePath, page, pageURL, e);
+            return false;
+        }
+    }
+
+    private static void doRetry(String downloadURL, String filename, String savePath, Page page, String pageURL, Exception e) {
+        if (!downloadErrorCounter.containsKey(downloadURL)) {
+            downloadErrorCounter.put(downloadURL, 1);
+            logger.warn("downloader -retry: 1" + downloadURL);
+            download(downloadURL, filename, savePath, page, pageURL);
+        } else {
+            downloadErrorCounter.put(downloadURL, downloadErrorCounter.get(downloadURL) + 1);
+            if (downloadErrorCounter.get(downloadURL) < 4) {
+                // 首先出发重新下载支持3次
+                logger.warn("downloader -retry："+ downloadErrorCounter.get(downloadURL)+"  " + downloadURL);
                 download(downloadURL, filename, savePath, page, pageURL);
-            } else {
-                downloadErrorCounter.put(downloadURL, downloadErrorCounter.get(downloadURL) + 1);
-                if (downloadErrorCounter.get(downloadURL) < 4) {
-                    // 首先出发重新下载支持3次
-                    logger.warn("downloader -retry" + downloadURL);
-                    download(downloadURL, filename, savePath, page, pageURL);
-                } else { // 重新下载已经超过3次仍然报错
-                    downloadErrorCounter.remove(downloadURL);
-                    if (!pageRedoCounter.containsKey(pageURL)) {
-                        pageRedoCounter.put(pageURL, 0);
-                        logger.warn("downloader -put back to Request list" + pageURL);
+            } else { // 重新下载已经超过3次仍然报错
+                downloadErrorCounter.remove(downloadURL);
+                if (!pageRedoCounter.containsKey(pageURL)) {
+                    pageRedoCounter.put(pageURL, 1);
+                    logger.warn("downloader -put back to Request list" + pageURL);
+                    page.addTargetRequest(pageURL);
+                } else {
+                    pageRedoCounter.put(pageURL, pageRedoCounter.get(pageURL) + 1);
+                    if (pageRedoCounter.get(pageURL) < 4) {
                         page.addTargetRequest(pageURL);
                     } else {
-                        pageRedoCounter.put(pageURL, pageRedoCounter.get(pageURL) + 1);
-                        if (pageRedoCounter.get(pageURL) < 4) {
-                            page.addTargetRequest(pageURL);
-                        } else {
-                            logger.error("downloader -drop -" + pageURL + " - " + downloadURL + "\n" + e);
-                            fatalErrorPageURL.add(pageURL);
-                            pageRedoCounter.remove(pageURL);
-                            e.printStackTrace();
-                        }
+                        logger.error("downloader -drop -" + pageURL + " - " + downloadURL + "\n" + e);
+                        fatalErrorPageURL.add(pageURL);
+                        pageRedoCounter.remove(pageURL);
+                        e.printStackTrace();
                     }
                 }
             }
-            return false;
         }
     }
 }

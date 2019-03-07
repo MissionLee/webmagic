@@ -55,7 +55,7 @@ public class SankakuSpiderProcessor {
     private static Site site = Site.me()
             .setRetryTimes(3)
             .setTimeOut(100000)
-            .addCookie("__atuvc", "1%7C9")
+            .addCookie("__atuvc", "1%7C10")
             .addCookie("__atuvs", "5c791f63ddd2a1f5000")
             .addCookie("_pk_id.2.42fa", "adde0e4a1e63d583.1551189849.23.1551441764.1551440466..1551189849.16.1551362603.1551361875.")
             .addCookie("_pk_ses.2.42fa", "1")
@@ -166,84 +166,131 @@ public class SankakuSpiderProcessor {
         run(pa,tag,num,4);
     }
     public static void main(String[] args) {
+        // takeda aranobu 361
+        // dobunezumi 210
+        // yappen 568
+        // yanje 45
+        // ce- -3  35
+        // vitorleone13 44
+        // wanksy 47
+        // warpsfm 82
+        // dev 264
+        // raunchy ninja 42
+        // nanao 232
+        // khanshin 209
+        // ohland 163
+        // rgbabes 520
+        // pixiv id 13244881 47
+        //jeixxi 38
+        // bruh-sfm 127
+        // shirabi 790
+        // tin-sfm 59
+        // harihisa 326
+        // tilltwenty 26
+        // doomfest 436
+        // marm 196
+        // umihotaru harumare 167
+        // mavezar 143
+        // mana kakkowarai 218
+        // yukibuster z 116
+        // suwicchi01 189
+        // lack 660
+        // nero (nilu) 61
+        // juicesfm 57
+        // vsmnd 86
+        // gob-bluth 29
+        // sfmpov 90
+        // urakanda 89
+        // czva 61
+        // cation 108
+        // pandea work 263
         // thekite 120
         // santalol  59
         // sfmporn 331
+        // hiki togu 64
         // matilda vin 235
         // the dude 339
+        // daeho cha 141
+        // ilya kuvshinov  1410
+        // mama (mama hiro) 237
+        // infinote 427
+        // kim hyung tae 590
+        // yayoichi (yoruyoru108) 104
+        // genjung  65
+        // eva solo 98
+        // vit-b 30
+        // fishine 240
+        // rib:y(uhki)  rib%3Ay%28uhki%29 222
+        // tusia 492
+        // isawo (lucanus19) 54
+        // umigraphics 142
+        // magicxiang 173
         // ponkosfm 194
         // tortuga 190
         // nns (sobchan) 380
         // kabeu mariko 266
         // da-moment 35
         // orico 124
+        // suerte 64
         // dragon@harry dragon%40harry 492
 //        run("nishieda",1911);
 //        // nishieda  1911
-//        run("kachima",427);
-//        // kachima  427
-//        run("masak (masaki4545)",137);
-//        // masak (masaki4545)  137
+        run("kachima",427);
+        // kachima  427
+        run("masak (masaki4545)",137);
+        // masak (masaki4545)  137
 //        run("shirow masamune",1555);
 //        // shirow masamune 1555
-        run("yurisaki",87);
-        // yurisaki  87
-//        run("vempire",349);
-//        // vempire 349
-//        run("mappaninatta",204);
-//        // mappaninatta 204
-//        run("yewang19",62);
-//        // yewang19 62
-//        run("pharah-best-girl",519);
-//        // pharah-best-girl  519
-//        run("tinnies",279);
-//        // tinnies 279
-//        run("motokonut",156);
-//        // motokonut 156
+        run("vempire",349);
+        // vempire 349
+        run("mappaninatta",204);
+        // mappaninatta 204
+        run("yewang19",62);
+        // yewang19 62
+        run("pharah-best-girl",519);
+        // pharah-best-girl  519
+        run("tinnies",279);
+        // tinnies 279
+        run("motokonut",156);
+        // motokonut 156
 //        run("hitomiluv3r",705);
 //        // kingbang 134
 //        run("ogura anko",375);
 //        // ogura anko 375
-//        run("devilscry",147);
-//        // devilscry  147
+        run("devilscry",147);
+        // devilscry  147
 //        run("orion (orionproject)",809);
 //        // orion (orionproject) 809
-//        run("chong wuxin",172);
-//        // chong wuxin 172
-//        run("joixxx",180);
-//        // joixxx 180
+        run("chong wuxin",172);
+        // chong wuxin 172
+        run("joixxx",180);
+        // joixxx 180
 ////        run("hitomiluv3r",705);
 ////        // pixiv id 18323769 30  重复
-        run("feizaisfm",43);
-        // feizaisfm 43
-//        run("evulchibi",245);
-//        // evulchibi 245
-//        run("kruth666",193);
-//        // kruth666 193
-        run("mr h.l.",68);
-        // mr h.l. 68
-//        run("iri-neko",320);
-//        // iri-neko 320
-//        run("hk (hk)",198);
-//        // hk (hk) 198
-        run("temutemutemu",41);
-        // temutemutemu 41
+        run("evulchibi",245);
+        // evulchibi 245
+        run("kruth666",193);
+        // kruth666 193
+        run("iri-neko",320);
+        // iri-neko 320
+        run("hk (hk)",198);
+        // hk (hk) 198
         run("hypnorekt",67);
         // hypnorekt 67
         run("karasu kame ex",44);
         // karasu kame ex 44
         run("hentaiborg",30);
         // hentaiborg 30
-//        run("kakao",271);
-//        // kakao 271
+        run("kakao",271);
+        // kakao 271
         run("jellytits7",64);
         // jellytits7 64
 //        run("obaoba (monkeyix)",64);
         // obaoba (monkeyix) 56
         run("rikume",64);
         // rikume 64
-//        run("zombie-andy",73);
-//        // zombie-andy 73
+        run("zombie-andy",73);
+        // zombie-andy 73
 ////        run("hitomiluv3r",705);
 ////        // yan'yo (yan'yan'yo) yan%27yo_%28yan%27yan%27yo%29 524
 //        run("sieyarelow",149);
@@ -254,8 +301,8 @@ public class SankakuSpiderProcessor {
 //        // rukitsura  202
 //        run("dark arts kai",132);
 //        // dark arts kai 132
-//        run("dan-98",48);
-//        // dan-98 48
+        run("dan-98",48);
+        // dan-98 48
 //        run("imflain",195);
 //        // imflain  195
 //        run("ctrlz77",177);
@@ -272,8 +319,8 @@ public class SankakuSpiderProcessor {
 //        // momoko (momopoco) 491
 //        run("prywinko",448);
 //        // prywinko 448
-//        run("user apfv5385",30);
-//        // user apfv5385 30
+        run("user apfv5385",30);
+        // user apfv5385 30
 //        run("gemuo",447);
 //        // gemuo 447
 //        run("ulrik",156);
@@ -286,22 +333,22 @@ public class SankakuSpiderProcessor {
 //        // aimee (emi) 91
 //        run("ikomochi",242);
 //        // ikomochi 242
-//        run("andreygovno",68);
-//        // andreygovno 68
+        run("andreygovno",68);
+        // andreygovno 68
 //        run("akita hika",196);
 //        // akita hika 196
 ////        run("hitomiluv3r",705);
 ////        // 1=2  %3D 146
-//        run("pink crown",99);
-//        // pink crown 99
-//        run("ohayou girls",32);
-//        // ohayou girls 32
+        run("pink crown",99);
+        // pink crown 99
+        run("ohayou girls",32);
+        // ohayou girls 32
 //        run("yaziri",144);
 //        // yaziri  144
-//        run("spizzy",93);
-//        // spizzy 93
-//        run("thore (nathalukpol)",28);
-//        // thore (nathalukpol)  28
+        run("spizzy",93);
+        // spizzy 93
+        run("thore (nathalukpol)",28);
+        // thore (nathalukpol)  28
 //        run("unidentifiedsfm",218);
 //        // unidentifiedsfm 218
 //        run("tanishi (tani4)",271);
@@ -310,20 +357,20 @@ public class SankakuSpiderProcessor {
 //        // maruwa tarou 316
 //        run("eddysstash",120);
 //        // eddysstash 120
-//        run("cocq taichou",49);
-//        // cocq taichou 49
+        run("cocq taichou",49);
+        // cocq taichou 49
 //        run("eu03",824);
 //        // eu03 824
 //        run("soranamae",425);
 //        // soranamae 425
-//        run("tsoni",65);
-//        // tsoni 65
-//        run("muraosamu",41);
-//        // muraosamu 41
+        run("tsoni",65);
+        // tsoni 65
+        run("muraosamu",41);
+        // muraosamu 41
 //        run("damao yu",236);
 //        // damao yu 236
-//        run("universn",90);
-//        // universn 90
+        run("universn",90);
+        // universn 90
 //        run("kotani tomoyuki",339);
 //        // kotani tomoyuki 339
 //        run("dominothecat",121);
@@ -332,10 +379,10 @@ public class SankakuSpiderProcessor {
 //        // badcompzero 505
 //        run("hplay",241);
 //        // hplay 241
-//        run("ninjartist",81);
-//        // ninjartist 81
-//        run("hirume",60);
-//        // hirume 60
+        run("ninjartist",81);
+        // ninjartist 81
+        run("hirume",60);
+        // hirume 60
 //        run("afukuro",198);
 //        // afukuro 198
 //        run("kimdonga",166);
@@ -350,8 +397,8 @@ public class SankakuSpiderProcessor {
 //        // quadrastate  245
 //        run("fuckhead",230);
 //        // fuckhead 230
-//        run("urbanator",73);
-//        // urbanator  73
+        run("urbanator",73);
+        // urbanator  73
 //        run("blueberg",248);
 //        // blueberg 248
 //        run("whitetentaclesfm",27);
@@ -481,6 +528,8 @@ public class SankakuSpiderProcessor {
 //        run("hitomiluv3r",705);
 //        // homare (fool's art) 2100
 
+
+        // 以下内容使用pc完成 ========
         // materclaws 164
         // pokedudesfm 26
         // miaw34 34
@@ -520,5 +569,6 @@ public class SankakuSpiderProcessor {
         // oiran ichimi 181
         // shimashima08123 156
         // 197 fuetakishi
+        // 以上内容 使用pc完成 ===================
     }
 }

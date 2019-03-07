@@ -83,7 +83,7 @@ public class DiarySankakuSpider implements PageProcessor {
         String URL = page.getUrl().toString();
         if (URL.contains("tags")) { // 如果访问的时列表页面
             try {
-                Thread.sleep(10000L + new Random().nextInt(10000));
+                Thread.sleep( 10000+new Random().nextInt(10000));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
