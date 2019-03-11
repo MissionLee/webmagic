@@ -1,9 +1,18 @@
 package pers.missionlee.webmagic.spider.sankaku;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.omg.PortableInterceptor.INACTIVE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pers.missionlee.webmagic.spider.sankaku.info.ArtistInfo;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * @description:
@@ -11,6 +20,8 @@ import us.codecraft.webmagic.Spider;
  * @create: 2019-03-02 16:10
  */
 public class SankakuSpiderProcessor {
+    // TODO: 2019/3/9 整改，Processor存储全局内容
+
 
     public static String UserName = "zuixue3000@163.com";
     public static String Password = "mingshun1993";
@@ -23,6 +34,7 @@ public class SankakuSpiderProcessor {
 
     public DiarySankakuSpider diarySankakuSpider;
     public SankakuInfoUtils sankakuInfoUtils;
+
     public enum ORDER {
         date("%20order%3Adate&page=", "DATE"),
         tag_count_dec("%20order%3Atagcount&page=", "TAG_COUNT_DEC"),
@@ -47,10 +59,11 @@ public class SankakuSpiderProcessor {
     // 构造参数
     public String ROOT_PATH = "D:/sankaku/";
     public int THREAD_NUM = 3;
+
     public String TAG = "other";
 
-    public int d_suc=0;
-    public int d_err=0;
+    public int d_suc = 0;
+    public int d_err = 0;
     public int d_skip = 0;
     private static Site site = Site.me()
             .setRetryTimes(3)
@@ -61,17 +74,17 @@ public class SankakuSpiderProcessor {
             .addCookie("_pk_ses.2.42fa", "1")
             .addCookie("_sankakucomplex_session", "BAh7BzoMdXNlcl9pZGkD5lgGOg9zZXNzaW9uX2lkIiU5NWZhNGMyZjk2Y2M5MGJkZTNmOTZiMGM5ZmNmYzY3OQ%3D%3D--9d80a0ba02f9c4e31c13c7db0a08eb2cd035b80f%3D%3D--2d44e3f79213fc98bd4cb3b167394ecf18ded724")
             .addCookie("auto_page", "0")
-            .addCookie("blacklisted_tags","")
-            .addCookie("loc","MDAwMDBBU0NOSlMyMTQ0Mjk4NDA3NjAwMDBDSA==")
+            .addCookie("blacklisted_tags", "")
+            .addCookie("loc", "MDAwMDBBU0NOSlMyMTQ0Mjk4NDA3NjAwMDBDSA==")
             .addCookie("locale", "en")
             .addCookie("login", "zuixue3000")
             .addCookie("mode", "view")
-            .addCookie("na_id","2018122723475293368621024808")
-            .addCookie("na_tc","Y")
-            .addCookie("ouid","5c2564a80001da35a1ed736217e8a4379998383b2fa5f1877d3a")
+            .addCookie("na_id", "2018122723475293368621024808")
+            .addCookie("na_tc", "Y")
+            .addCookie("ouid", "5c2564a80001da35a1ed736217e8a4379998383b2fa5f1877d3a")
             .addCookie("pass_hash", "b1f471dcd8cc8df0ed2b84f033ba2baae5de013b")
             .addCookie("uid", "5c2564a827f935b5")
-            .addCookie("uvc","9%7C5%2C0%7C6%2C3%7C7%2C13%7C8%2C46%7C9")
+            .addCookie("uvc", "9%7C5%2C0%7C6%2C3%7C7%2C13%7C8%2C46%7C9")
             .addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
             .addHeader("Accept-Encoding", "gzip, deflate, br")
             .addHeader("Accept-Language", "zh-CN,zh;q=0.9")
@@ -85,6 +98,25 @@ public class SankakuSpiderProcessor {
     private SankakuSpiderProcessor() {
     }
 
+    public void runUpdate(String parentPath,  int pageNum, int threadNum) throws IOException {
+        if (!parentPath.endsWith("/"))
+            parentPath = parentPath + "/";
+
+        File root = new File(parentPath);
+        if (root.exists()) {
+            File[] files = root.listFiles();
+            for (int i = 0; i < files.length; i++) {
+                init(parentPath, files[i].getName(), threadNum);
+                String pagePrefix = BASE_SITE + urlFormater(files[i].getName()) + ORDER.date.getKey();
+                String[] urls = new String[pageNum];
+                for (int j = 0; j < pageNum; j++) {
+                    urls[j] = pagePrefix + (j+1);
+                }
+                runSpider(threadNum,urls);
+            }
+        }
+    }
+
     /**
      * @Description: 用于自动配置下载一个作者的所有作品，再登录判定通过的情况下，可下载
      * 2000 上限，登录信息失效可以查找 1000上限
@@ -95,12 +127,13 @@ public class SankakuSpiderProcessor {
      * 程序中断恢复运行的成本较高，必须重新遍历所有页面才能重新
      * 获取信息（不用重新下载文件）
      * @Param: [parentPath, tag, totalNum, threadNum]
-     * @return: void
+     * @return: int 收录的总数
      * @Author: Mission Lee
      * @date: 2019/3/2
      */
-    public  void runWithAllUrlAddedAtStart(String parentPath, String tag, int totalNum, int threadNum) {
-
+    public int runAsNew(String parentPath, String tag, int totalNum, int threadNum) throws IOException {
+        if (!parentPath.endsWith("/"))
+            parentPath = parentPath + "/";
         init(parentPath, tag, threadNum);
 
         int pageNum = (
@@ -110,10 +143,11 @@ public class SankakuSpiderProcessor {
         ).intValue();
         System.out.println("pageNUM:" + pageNum);
         String[] urls = new String[pageNum];
-        String pagedPathPrefixAsc = BASE_SITE + tag.replace(" ", "_").replace("(", "%28").replace(")", "%29") + ORDER.tag_count_asc.getKey();
-        String pagedPathPrefixDec = BASE_SITE + tag.replace(" ", "_").replace("(", "%28").replace(")", "%29") + ORDER.tag_count_dec.getKey();
+        String formativeTag = urlFormater(tag);
+        String pagedPathPrefixAsc = BASE_SITE + formativeTag + ORDER.tag_count_asc.getKey();
+        String pagedPathPrefixDec = BASE_SITE + formativeTag + ORDER.tag_count_dec.getKey();
 
-        if(pageNum>50){
+        if (pageNum > 50) {
             for (int i = 0; i < pageNum; i++) {
                 if ((i + 1) <= 50) {
                     urls[i] = pagedPathPrefixAsc + (i + 1);
@@ -121,12 +155,12 @@ public class SankakuSpiderProcessor {
                     urls[i] = pagedPathPrefixDec + (i - 49);
                 }
             }
-        }else {
+        } else {
             for (int i = 0; i < pageNum; i++) {
-                if((i+1)<=25){
-                    urls[i]=pagedPathPrefixAsc+(i+1);
-                }else{
-                    urls[i]=pagedPathPrefixDec+(i-23);
+                if ((i + 1) <= 25) {
+                    urls[i] = pagedPathPrefixAsc + (i + 1);
+                } else {
+                    urls[i] = pagedPathPrefixDec + (i - 24);
                 }
             }
         }
@@ -134,14 +168,18 @@ public class SankakuSpiderProcessor {
         for (int i = 0; i < urls.length; i++) {
             System.out.println(urls[i]);
         }
-        SankakuInfoUtils sankakuInfoUtils = new SankakuInfoUtils(this);
-        //this.sankakuInfoUtils = sankakuInfoUtils;
-        DiarySankakuSpider sankakuSpider = new DiarySankakuSpider(site,sankakuInfoUtils,this);
+        return runSpider(threadNum, urls);
+
+    }
+
+    private int runSpider(int threadNum, String[] urls) throws IOException {
+        DiarySankakuSpider sankakuSpider = new DiarySankakuSpider(site, this);
         this.diarySankakuSpider = sankakuSpider;
         Spider spider = Spider.create(sankakuSpider);
         spider.addUrl(urls).thread(threadNum).run();
         // TODO: 2019/3/4  以上内容运行结束之后，重构对应作者的artistinfo
-        sankakuInfoUtils.freshArtistInfo();
+        ArtistInfo artistInfo = SankakuInfoUtils.freshArtistInfo(sankakuSpider.artworkInfos, ROOT_PATH + "/" + TAG, TAG);
+        return artistInfo.getArtworkNum();
     }
 
     private void init(String parentPath, String tag, int threadNum) {
@@ -150,425 +188,176 @@ public class SankakuSpiderProcessor {
         THREAD_NUM = threadNum;
         // 本地文件预检测/处理
     }
-    public static void run(String parentPath, String tag, int totalNum, int threadNum){
+
+    @Deprecated
+    public static void run(String parentPath, String tag, int totalNum, int threadNum) throws IOException {
         String rootPath = parentPath;
-        if(!parentPath.endsWith("/"))
-            rootPath = parentPath+"/";
+        if (!parentPath.endsWith("/"))
+            rootPath = parentPath + "/";
         SankakuSpiderProcessor processor = new SankakuSpiderProcessor();
 
-        processor.runWithAllUrlAddedAtStart(rootPath,tag,totalNum,threadNum);
+        processor.runAsNew(rootPath, tag, totalNum, threadNum);
 
 
     }
-    public static void run(String tag,int num){
+
+    @Deprecated
+    public static void run(String... strings) {
+        int length = strings.length;
+
+        if (length > 0) {
+            for (int i = 0; i < length; i++) {
+                String name = strings[i].substring(0, strings[i].lastIndexOf("("));
+                int num = Integer.valueOf(strings[i].substring(strings[i].lastIndexOf("(") + 1, strings[i].length() - 1).replace(",", ""));
+                System.out.println("name:" + name + "/num:" + num);
+            }
+        }
+    }
+
+    private static String urlFormater(String urlFragment) {
+        // 空格 () ’
+        return urlFragment.trim()
+                .replaceAll(" ", "_")// !important 这里吧空格对应成了下划线，是sankaku的特别处理方法
+                .replaceAll(" ", "%20")
+                .replaceAll("!", "%21")
+                .replaceAll("\"", "%22")
+                .replaceAll("#", "%23")
+                .replaceAll("\\$", "%24")
+                //.replaceAll("%","%25")
+                .replaceAll("&", "%26")
+                .replaceAll("'", "%27")
+                .replaceAll("\\(", "%28")
+                .replaceAll("\\)", "%29")
+                .replaceAll("\\*", "%2A")
+                .replaceAll("\\+", "%2B")
+                .replaceAll(",", "%2C")
+                .replaceAll("-", "%2D")
+                .replaceAll("\\.", "%2E")
+                .replaceAll("/", "%2F")
+                .replaceAll(":", "%3A")
+                .replaceAll(";", "%3B")
+                .replaceAll("<", "%3C")
+                .replaceAll("=", "%3D")
+                .replaceAll(">", "%3E")
+                .replaceAll("\\?", "%3F")
+                .replaceAll("@", "%40")
+                .replaceAll("\\\\", "%5C")
+                .replaceAll("\\|", "%7C");
+    }
+
+    @Deprecated
+    public static void run(String tag, int num) throws IOException {
         String pa = "D:/sankaku";
 
-        run(pa,tag,num,4);
+        run(pa, tag, num, 4);
     }
+
+    static Pattern pattern = Pattern.compile("\\d+");
+
+    public static void runWithNameList() {
+        try {
+            File nameListFile = new File("C:\\Users\\Administrator\\Desktop\\list.md");
+            String nameListString = FileUtils.readFileToString(nameListFile, "UTF8");
+            String[] nameListArray = nameListString.split("\n");
+            int length = nameListArray.length;
+            Map<String, Integer> nameListMap = new LinkedHashMap<String, Integer>();
+            int nn = 0;
+            for (int i = 0; i < length; i++) {
+                String str = nameListArray[i].trim();
+                if (!StringUtils.isEmpty(str))
+                    if (!str.contains("run")) {
+                        while (str.startsWith("//"))
+                            str = str.substring(2).trim();
+                        int lastIndex = str.lastIndexOf(" ");
+                        if (lastIndex != -1) {
+                            String name = str.substring(0, str.lastIndexOf(" ")).trim();
+                            String num = str.substring(str.lastIndexOf(" ")).trim().replaceAll("\\(", "").replaceAll("\\)", "").replaceAll(",", "");
+                            if (Pattern.matches("\\d+", num)) {
+                                nameListMap.put(name, Integer.valueOf(num));
+                            }
+
+                        }
+                    }
+            }
+            Map<String,Integer> sortedMap = sortNameList(nameListMap);
+
+            // TODO: 2019/3/9 把整理好的内容 重写到文件里面
+            rewriteTodoList(nameListFile, sortedMap);
+            Map<String, Integer> storageMap = new LinkedHashMap<String, Integer>(sortedMap);
+            Set<String> set = sortedMap.keySet();
+            Iterator iterator = set.iterator();
+
+            while (iterator.hasNext()) {
+                String key = (String) iterator.next();
+                int aimNum = sortedMap.get(key);
+                SankakuSpiderProcessor processor = new SankakuSpiderProcessor();
+                int num = processor.runAsNew("D:/sankaku"
+                        , key, sortedMap.get(key), 4);
+                // TODO: 2019/3/9  检查下载好的数量和总数量，下载好的与总数量 相差在（总量10%） 与 20中较小值，则删除这个key，把剩下内容写入文件，否则把当前
+                int maxDiff = ((Double) Math.min(20, aimNum * 0.1)).intValue();
+                System.out.println(maxDiff);
+                if (aimNum - num <= maxDiff) {
+                    System.out.println("aim:"+aimNum+ "/doNum:"+num);
+                    storageMap.remove(key);
+                } else {
+                    storageMap.remove(key);
+                    storageMap.put(key, aimNum);
+                }
+                rewriteTodoList(nameListFile, storageMap);
+            }
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private static Map<String,Integer> sortNameList(Map<String,Integer> namelist){
+        System.out.println(namelist.size());
+        Set<Map.Entry<String, Integer>> valueSet = namelist.entrySet();
+        Map.Entry<String,Integer>[] entries = new Map.Entry[namelist.size()];
+        Iterator iterator = valueSet.iterator();
+        int i = 0;
+        while (iterator.hasNext()){
+            entries[i++] = (Map.Entry<String, Integer>) iterator.next();
+        }
+        int length =namelist.size();
+        for (int j = 0; j < length; j++) {
+            for (int k = 0; k < length; k++) {
+                if(entries[j].getValue()<entries[k].getValue()){
+                    Map.Entry<String,Integer> tmp = entries[j];
+                    entries[j]=entries[k];
+                    entries[k]=tmp;
+                }
+            }
+        }
+        Map<String,Integer> aimMap = new LinkedHashMap<String, Integer>();
+        for (int j = 0; j < entries.length; j++) {
+            aimMap.put(entries[j].getKey(),entries[j].getValue());
+        }
+        System.out.println(aimMap);
+        System.out.println(aimMap.size());
+        return aimMap;
+    }
+    private static void rewriteTodoList(File file, Map<String, Integer> info) {
+        try {
+            FileUtils.writeStringToFile(file, "", "UTF8", false);
+            Set<String> set = info.keySet();
+            for (String key :
+                    set) {
+                FileUtils.writeStringToFile(file, (key + " " + info.get(key) + "\n"), "UTF8", true);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
-        // takeda aranobu 361
-        // dobunezumi 210
-        // yappen 568
-        // yanje 45
-        // ce- -3  35
-        // vitorleone13 44
-        // wanksy 47
-        // warpsfm 82
-        // dev 264
-        // raunchy ninja 42
-        // nanao 232
-        // khanshin 209
-        // ohland 163
-        // rgbabes 520
-        // pixiv id 13244881 47
-        //jeixxi 38
-        // bruh-sfm 127
-        // shirabi 790
-        // tin-sfm 59
-        // harihisa 326
-        // tilltwenty 26
-        // doomfest 436
-        // marm 196
-        // umihotaru harumare 167
-        // mavezar 143
-        // mana kakkowarai 218
-        // yukibuster z 116
-        // suwicchi01 189
-        // lack 660
-        // nero (nilu) 61
-        // juicesfm 57
-        // vsmnd 86
-        // gob-bluth 29
-        // sfmpov 90
-        // urakanda 89
-        // czva 61
-        // cation 108
-        // pandea work 263
-        // thekite 120
-        // santalol  59
-        // sfmporn 331
-        // hiki togu 64
-        // matilda vin 235
-        // the dude 339
-        // daeho cha 141
-        // ilya kuvshinov  1410
-        // mama (mama hiro) 237
-        // infinote 427
-        // kim hyung tae 590
-        // yayoichi (yoruyoru108) 104
-        // genjung  65
-        // eva solo 98
-        // vit-b 30
-        // fishine 240
-        // rib:y(uhki)  rib%3Ay%28uhki%29 222
-        // tusia 492
-        // isawo (lucanus19) 54
-        // umigraphics 142
-        // magicxiang 173
-        // ponkosfm 194
-        // tortuga 190
-        // nns (sobchan) 380
-        // kabeu mariko 266
-        // da-moment 35
-        // orico 124
-        // suerte 64
-        // dragon@harry dragon%40harry 492
-//        run("nishieda",1911);
-//        // nishieda  1911
-        run("kachima",427);
-        // kachima  427
-        run("masak (masaki4545)",137);
-        // masak (masaki4545)  137
-//        run("shirow masamune",1555);
-//        // shirow masamune 1555
-        run("vempire",349);
-        // vempire 349
-        run("mappaninatta",204);
-        // mappaninatta 204
-        run("yewang19",62);
-        // yewang19 62
-        run("pharah-best-girl",519);
-        // pharah-best-girl  519
-        run("tinnies",279);
-        // tinnies 279
-        run("motokonut",156);
-        // motokonut 156
-//        run("hitomiluv3r",705);
-//        // kingbang 134
-//        run("ogura anko",375);
-//        // ogura anko 375
-        run("devilscry",147);
-        // devilscry  147
-//        run("orion (orionproject)",809);
-//        // orion (orionproject) 809
-        run("chong wuxin",172);
-        // chong wuxin 172
-        run("joixxx",180);
-        // joixxx 180
-////        run("hitomiluv3r",705);
-////        // pixiv id 18323769 30  重复
-        run("evulchibi",245);
-        // evulchibi 245
-        run("kruth666",193);
-        // kruth666 193
-        run("iri-neko",320);
-        // iri-neko 320
-        run("hk (hk)",198);
-        // hk (hk) 198
-        run("hypnorekt",67);
-        // hypnorekt 67
-        run("karasu kame ex",44);
-        // karasu kame ex 44
-        run("hentaiborg",30);
-        // hentaiborg 30
-        run("kakao",271);
-        // kakao 271
-        run("jellytits7",64);
-        // jellytits7 64
-//        run("obaoba (monkeyix)",64);
-        // obaoba (monkeyix) 56
-        run("rikume",64);
-        // rikume 64
-        run("zombie-andy",73);
-        // zombie-andy 73
-////        run("hitomiluv3r",705);
-////        // yan'yo (yan'yan'yo) yan%27yo_%28yan%27yan%27yo%29 524
-//        run("sieyarelow",149);
-//        // sieyarelow 149
-//        run("sane-person",124);
-//        // sane-person 124
-//        run("rukitsura",202);
-//        // rukitsura  202
-//        run("dark arts kai",132);
-//        // dark arts kai 132
-        run("dan-98",48);
-        // dan-98 48
-//        run("imflain",195);
-//        // imflain  195
-//        run("ctrlz77",177);
-//        // ctrlz77 177
-//        run("kazenoko",425);
-//        // kazenoko 425
-//        run("haneto",189);
-//        // haneto 189
-//        run("q azieru",348);
-//        // q azieru 348
-//        run("furisuku",388);
-//        // furisuku 388
-//        run("momoko (momopoco)",491);
-//        // momoko (momopoco) 491
-//        run("prywinko",448);
-//        // prywinko 448
-        run("user apfv5385",30);
-        // user apfv5385 30
-//        run("gemuo",447);
-//        // gemuo 447
-//        run("ulrik",156);
-//        // ulrik 156
-//        run("ixmmxi",104);
-//        // ixmmxi 104
-//        run("untsue",581);
-//        // untsue 581
-//        run("aimee (emi)",91);
-//        // aimee (emi) 91
-//        run("ikomochi",242);
-//        // ikomochi 242
-        run("andreygovno",68);
-        // andreygovno 68
-//        run("akita hika",196);
-//        // akita hika 196
-////        run("hitomiluv3r",705);
-////        // 1=2  %3D 146
-        run("pink crown",99);
-        // pink crown 99
-        run("ohayou girls",32);
-        // ohayou girls 32
-//        run("yaziri",144);
-//        // yaziri  144
-        run("spizzy",93);
-        // spizzy 93
-        run("thore (nathalukpol)",28);
-        // thore (nathalukpol)  28
-//        run("unidentifiedsfm",218);
-//        // unidentifiedsfm 218
-//        run("tanishi (tani4)",271);
-//        // tanishi (tani4) 271
-//        run("maruwa tarou",316);
-//        // maruwa tarou 316
-//        run("eddysstash",120);
-//        // eddysstash 120
-        run("cocq taichou",49);
-        // cocq taichou 49
-//        run("eu03",824);
-//        // eu03 824
-//        run("soranamae",425);
-//        // soranamae 425
-        run("tsoni",65);
-        // tsoni 65
-        run("muraosamu",41);
-        // muraosamu 41
-//        run("damao yu",236);
-//        // damao yu 236
-        run("universn",90);
-        // universn 90
-//        run("kotani tomoyuki",339);
-//        // kotani tomoyuki 339
-//        run("dominothecat",121);
-//        // dominothecat  121
-//        run("badcompzero",505);
-//        // badcompzero 505
-//        run("hplay",241);
-//        // hplay 241
-        run("ninjartist",81);
-        // ninjartist 81
-        run("hirume",60);
-        // hirume 60
-//        run("afukuro",198);
-//        // afukuro 198
-//        run("kimdonga",166);
-//        // kimdonga 166
-//        run("snowball22",228);
-//        // snowball22 228
-//        run("ayya saparniyazova",301);
-//        // ayya saparniyazova 301
-//        run("vintem",166);
-//        // vintem 166
-//        run("hitomiluv3r",705);
-//        // quadrastate  245
-//        run("fuckhead",230);
-//        // fuckhead 230
-        run("urbanator",73);
-        // urbanator  73
-//        run("blueberg",248);
-//        // blueberg 248
-//        run("whitetentaclesfm",27);
-//        // whitetentaclesfm 27
-//        run("ox (baallore)",155);
-//        // ox (baallore) 155
-//        run("sumthindifrnt",61);
-//        // sumthindifrnt 61
-//        run("redapple2",43);
-//        // redapple2 43
-//        run("raxastake",42);
-//        // raxastake 42
-//        run("aurahack",310);
-//        // aurahack 310
-//        run("hitomiluv3r",163);
-//        // pd (pdpdlv1)
-//        run("mstivoy",136);
-//        // mstivoy 136
-//        run("honjou raita",538);
-//        // honjou raita 538
-//        run("ecoas",428);
-//        // ecoas 428
-//        run("shiory",496);
-//        // shiory 496
-//        run("nakano sora",566);
-//        // nakano sora 566
-//        run("kyuritizu",274);
-//        // kyuritizu 274
-//        run("ggli (yuine wantan)",118);
-//        // ggli (yuine wantan) 118
-//        run("fireboxstudio",265);
-//        // fireboxstudio 265
-//        run("rindou aya",628);
-//        // rindou aya 628
-//        run("xvladtepesx",35);
-//        // xvladtepesx 35
-//        run("zumi (zumidraws)",191);
-//        // zumi (zumidraws)  191
-//        run("nanao (mahaya)",474);
-//        // nanao (mahaya) 474
-//        run("firolian",402);
-//        // firolian 402
-//        run("c.cu",212);
-//        // c.cu 212
-//        run("fluffy pokemon",194);
-//        // fluffy pokemon 194
-//        run("gorgeous mushroom",346);
-//        // gorgeous mushroom 346
-//        run("kruel-kaiser",193);
-//        // kruel-kaiser 193
-//        run("lerapi",138);
-//        // lerapi 138
-//        run("instant-ip",284);
-//        // instant-ip 284
-//        run("hoobamon",235);
-//        // hoobamon 235
-//        run("liang xing",454);
-//        // liang xing 454
-//        run("love cacao",329);
-//        // love cacao 329
-//        run("jonathan hamilton",179);
-//        // jonathan hamilton 179
-//        run("likkezg",228);
-//        // likkezg 228
-//        run("lerico213",165);
-//        // lerico213 165
-//        run("caustic crayon",203);
-//        // caustic crayon 203
-//        run("raikoart",235);
-//        // raikoart 235
-//        run("marushin (denwa0214)",904);
-//        // marushin (denwa0214)   904
-//        run("rak (kuraga)",609);
-//        // rak (kuraga)  609
-//        run("monaim",114);
-//        // monaim 114
-//        run("pink lady mage",268);
-//        // pink lady mage 268
-//        run("miura naoko",315);
-//        // miura naoko 315
-//        run("ross tran",134);
-//        // ross tran 134
-//        run("onagi",447);
-//        // onagi 447
-//        run("fatcat17",149);
-//        // fatcat17 149
-//        run("sfmsnip",223);
-//        // sfmsnip 223
-//        run("orutoro",840);
-//        // orutoro 840
-//        run("dantewontdie",525);
-//        // dantewontdie 525
-//        run("bennemonte",187);
-//        // bennemonte 187
-//        run("steelxxxhotogi",127);
-//        // steelxxxhotogi 127
-//        run("daye bie qia lian",244);
-//        // daye bie qia lian 244
-//        run("darkholestuff",106);
-//        // darkholestuff 106
-//        run("forceballfx",124);
-//        // forceballfx 124
-//        run("hitomiluv3r",705);
-//        // aoin 203
-//        run("qosic",138);
-////        // qosic 138
-//        run("ask (askzy)",274);
-////        // ask (askzy) 274
-//        run("illusionk",167);
-//        // illusionk 167
-//        run("kagematsuri",313);
-//        // kagematsuri 313
-//        run("ouma tokiichi",749);
-//        // ouma tokiichi  749
-//        run("callmehaymaker",166);
-//        // callmehaymaker 166
-//        run("nababa (arata yokoyama)",290);
-//        // nababa (arata yokoyama) 290
-//        run("neromasin",186);
-//        // neromasin 186
-//        run("ion (cation)",122);
-//        // ion (cation)  122
-//        run("galian-beast",52);
-//        // galian-beast 52
-//        run("rasmus-the-owl",511);
-//        // rasmus-the-owl 511
-//        run("hitomiluv3r",705);
-//        // homare (fool's art) 2100
-
-
-        // 以下内容使用pc完成 ========
-        // materclaws 164
-        // pokedudesfm 26
-        // miaw34 34
-        // redchicken 132
-        // kazedesune 115
-        // atdan 251
-        // val-val 128
-        // krabby (artist) 144
-        // mattdarey91sfm  62
-        // fainxel 59
-        // nyuunzi 588
-        // enosan 159
-        // didi esmeralda 217
-        // forged3dx 143
-        // melon22 493
-        // hanarito 252
-        // etsem 41
-        // mikiron 121
-        // hayabusa 345
-        // timpossible 381
-        // surock 46
-        // yuuji (and) 1305
-        // rei kun 121
-        // bdone 65
-        // rayzoir 201
-        // powergene 45
-        // skello 40
-        // doomsatan666 63
-        // jeff macanoli 60
-        // asa (teng zi) 42
-        // hentaix  51
-        // junkerz 61
-        // zhean li 78
-        // tim loechner 359
-        // kishiyo 461
-        // mrbonessfm 33
-        // oiran ichimi 181
-        // shimashima08123 156
-        // 197 fuetakishi
-        // 以上内容 使用pc完成 ===================
+        runWithNameList();
+//        SankakuSpiderProcessor processor = new SankakuSpiderProcessor();
+//        try {
+//            processor.runUpdate("D:/sankaku",6,3);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 }

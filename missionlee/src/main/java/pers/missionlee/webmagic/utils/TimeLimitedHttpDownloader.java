@@ -3,7 +3,6 @@ package pers.missionlee.webmagic.utils;
 
 import java.io.*;
 import java.net.*;
-import java.util.UUID;
 import java.util.concurrent.*;
 
 /**
@@ -75,12 +74,13 @@ public class TimeLimitedHttpDownloader {
         //输入流
         long start = System.currentTimeMillis();
         InputStream in = null;
-        try {
+        // TODO: 2019/3/9 原本用try-catch的方式返回1，现在如果报错，外层会进入处理机制
+//        try {
             in = connection.getInputStream();
-        } catch (SocketTimeoutException e) {
-            e.printStackTrace();
-            return 1;
-        }
+//        } catch (SocketTimeoutException e) {
+//            e.printStackTrace();
+//            return 1;
+//        }
         System.out.println("web downloader getInputStream - time" + (System.currentTimeMillis() - start));
         int size = connection.getContentLength();
 

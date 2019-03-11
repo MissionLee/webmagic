@@ -12,6 +12,7 @@ import us.codecraft.webmagic.selector.Selectable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,27 +24,39 @@ import java.util.regex.Pattern;
  */
 public class DiarySankakuSpider implements PageProcessor {
     Logger logger = LoggerFactory.getLogger(DiarySankakuSpider.class);
-    Site site;
-    SankakuInfoUtils infoUtils;
-    List<ArtworkInfo> artworkInfos;
     static Pattern htmlTextPattern = Pattern.compile(">(.+?)<");
     static Pattern htmlTitlePattern = Pattern.compile("title=\"(.+?)\"");
     static Pattern resolutionPattern = Pattern.compile("bytes\">(.+?)<");
-    private SankakuSpiderProcessor processor ;
+
+
+    private Site site;
+    SankakuInfoUtils infoUtils;
+    List<ArtworkInfo> artworkInfos;
+    Map<String, String> artistInfo;
+    private SankakuSpiderProcessor processor;
+    @Deprecated
     public DiarySankakuSpider(Site site, SankakuInfoUtils infoUtils, SankakuSpiderProcessor processor) {
         this.site = site;
         this.infoUtils = infoUtils;
         this.processor = processor;
         try {
-            this.artworkInfos = infoUtils.getArtworkInfoMap();
+            this.artworkInfos = infoUtils.getArtworkInfoMap(processor.ROOT_PATH+"/"+processor.TAG);
         } catch (IOException e) {
             this.artworkInfos = new ArrayList<ArtworkInfo>();
             e.printStackTrace();
         }
     }
-
-    public List<ArtworkInfo> getArtworkInfos(){
+    public DiarySankakuSpider(Site site,SankakuSpiderProcessor processor) throws IOException {
+        this.site =site;
+        this.processor = processor;
+        this.artworkInfos =SankakuInfoUtils.getArtworkInfoMap(processor.ROOT_PATH+"/"+processor.TAG);
+    }
+    public List<ArtworkInfo> getArtworkInfos() {
         return artworkInfos;
+    }
+
+    public Map<String, String> getArtistInfo() {
+        return artistInfo;
     }
 
     private boolean hasDownloaded(String URL) {
@@ -83,7 +96,7 @@ public class DiarySankakuSpider implements PageProcessor {
         String URL = page.getUrl().toString();
         if (URL.contains("tags")) { // 如果访问的时列表页面
             try {
-                Thread.sleep( 10000+new Random().nextInt(10000));
+                Thread.sleep(10000 + new Random().nextInt(10000));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -95,11 +108,11 @@ public class DiarySankakuSpider implements PageProcessor {
                 for (String url : urlList
                 ) {
                     if (!hasDownloaded("https://chan.sankakucomplex.com" + url)) {
-                        logger.info("spider - process ⭐ add TargetRequest " + "https://chan.sankakucomplex.com" + url);
+                        logger.info("⭐ add " + "https://chan.sankakucomplex.com" + url);
                         page.addTargetRequest("https://chan.sankakucomplex.com" + url);
                     } else {
                         processor.d_skip++;
-                        logger.info("spider - process ⭐ already Downloaded " + "https://chan.sankakucomplex.com" + url);
+                        logger.info("⭐ skip " + "https://chan.sankakucomplex.com" + url);
                     }
                 }
 
@@ -179,11 +192,11 @@ public class DiarySankakuSpider implements PageProcessor {
                     target = "https:" + html.$("#post-content").$("img", "src").all().get(0).replace("&amp;", "&");
                 }
 
-            } else if(html.$("#post-content").$("video").all().size()>0){ // 如果页面是个video 则存在直接找video
+            } else if (html.$("#post-content").$("video").all().size() > 0) { // 如果页面是个video 则存在直接找video
                 target = "https:" + html.$("#post-content").$("video", "src").all().get(0).replace("&amp;", "&");
 
-            }else{ // swf 格式
-                target = "https:"+ html.$("#post-content").$("embed","src").all().get(0).replace("&amp;", "&");
+            } else { // swf 格式
+                target = "https:" + html.$("#post-content").$("embed", "src").all().get(0).replace("&amp;", "&");
             }
 
             String[] split = target.split("/");
@@ -219,23 +232,25 @@ public class DiarySankakuSpider implements PageProcessor {
             artworkInfo.setTakeTime(System.currentTimeMillis());
             // TODO: 2019/3/2 1.下载 2.内存记录 3.日志记录
             logger.info("spider - FILE START DOWNLOAD:" + target);
-            if(SankakuDownloadUtils.download(target,name,processor.ROOT_PATH+processor.TAG+subFix,page,page.getUrl().toString())){
+            if (SankakuDownloadUtils.download(target, name, processor.ROOT_PATH + processor.TAG + subFix, page, page.getUrl().toString())) {
                 // 下载成功
+                // TODO: 2019/3/9  【完成】
                 artworkInfos.add(artworkInfo);
                 try {
-                    infoUtils.appendInfo(artworkInfo);
+                    //infoUtils.appendInfo(artworkInfo);
+                    SankakuInfoUtils.appendArtworkInfo(artworkInfo,processor.ROOT_PATH+processor.TAG);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 processor.d_suc++;
-            }else{
+            } else {
                 processor.d_err++;
             }
 
-        } else{
-            logger.warn("Went to page: "+page.getUrl());
+        } else {
+            logger.warn("Went to page: " + page.getUrl());
         }
-        logger.info("suc: "+processor.d_suc+" /err: "+processor.d_err+" /skip: "+processor.d_skip);
+        logger.info("suc: " + processor.d_suc + " /err: " + processor.d_err + " /skip: " + processor.d_skip);
     }
 
     @Override
