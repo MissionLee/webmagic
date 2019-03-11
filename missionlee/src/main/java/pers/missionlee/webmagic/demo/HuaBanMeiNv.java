@@ -6,11 +6,8 @@ import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
 
-import java.io.*;
 import java.util.List;
 import java.util.Map;
-
-import static pers.missionlee.webmagic.utils.WebFileDownloader.download;
 
 /**
  * @description:

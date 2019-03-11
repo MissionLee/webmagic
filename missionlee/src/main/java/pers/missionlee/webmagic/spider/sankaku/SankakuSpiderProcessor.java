@@ -165,7 +165,7 @@ public class SankakuSpiderProcessor {
 
     }
     public static void run(String tag,int num){
-        String pa = "F:/sankaku";
+        String pa = "D:/sankaku";
 
         run(pa,tag,num,4);
     }
@@ -474,6 +474,11 @@ public class SankakuSpiderProcessor {
 //        run("hitomiluv3r",705);
 //        // homare (fool's art) 2100
 
+
+        // 以下内容使用pc完成 ========
+        // materclaws 164
+        // pokedudesfm 26
+        // miaw34 34
         run("redchicken",132);
         // redchicken 132
         run("kazedesune",115);
@@ -549,5 +554,6 @@ public class SankakuSpiderProcessor {
         // tim loechner 359
         run("yuuji (and)",1305);
         // yuuji (and) 1305
+        // 以上内容 使用pc完成 ===================
     }
 }
