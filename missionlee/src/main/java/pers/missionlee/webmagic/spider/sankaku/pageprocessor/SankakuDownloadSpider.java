@@ -1,11 +1,13 @@
-package pers.missionlee.webmagic.spider.sankaku;
+package pers.missionlee.webmagic.spider.sankaku.pageprocessor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pers.missionlee.webmagic.spider.sankaku.SankakuDownloadUtils;
+import pers.missionlee.webmagic.spider.sankaku.SankakuInfoUtils;
+import pers.missionlee.webmagic.spider.sankaku.SankakuSpiderProcessor;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
-import us.codecraft.webmagic.processor.PageProcessor;
 import us.codecraft.webmagic.selector.Html;
 import us.codecraft.webmagic.selector.Selectable;
 
@@ -14,43 +16,36 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @description:
  * @author: Mission Lee
  * @create: 2019-03-02 16:20
  */
-public class DiarySankakuSpider implements PageProcessor {
-    Logger logger = LoggerFactory.getLogger(DiarySankakuSpider.class);
-    static Pattern htmlTextPattern = Pattern.compile(">(.+?)<");
-    static Pattern htmlTitlePattern = Pattern.compile("title=\"(.+?)\"");
-    static Pattern resolutionPattern = Pattern.compile("bytes\">(.+?)<");
+public class SankakuDownloadSpider extends AbstractSankakuSpider {
+    Logger logger = LoggerFactory.getLogger(SankakuDownloadSpider.class);
 
 
-    private Site site;
-    SankakuInfoUtils infoUtils;
-    List<ArtworkInfo> artworkInfos;
-    Map<String, String> artistInfo;
-    private SankakuSpiderProcessor processor;
-    @Deprecated
-    public DiarySankakuSpider(Site site, SankakuInfoUtils infoUtils, SankakuSpiderProcessor processor) {
-        this.site = site;
-        this.infoUtils = infoUtils;
-        this.processor = processor;
-        try {
-            this.artworkInfos = infoUtils.getArtworkInfoMap(processor.ROOT_PATH+"/"+processor.TAG);
-        } catch (IOException e) {
-            this.artworkInfos = new ArrayList<ArtworkInfo>();
-            e.printStackTrace();
-        }
+    public SankakuInfoUtils infoUtils;
+    public List<ArtworkInfo> artworkInfos;
+    public Map<String, String> artistInfo;
+
+    // root 文件夹
+    public String rootPath;
+    // 作者名
+    public String artistName;
+    // 下载清空数量
+    public int d_suc=0;
+    public int d_skip=0;
+    public int d_err=0;
+
+    public SankakuDownloadSpider(Site site,String rootPath,String artistName) throws IOException {
+        super(site);
+        this.rootPath =rootPath;
+        this.artistName = artistName;
+        this.artworkInfos =SankakuInfoUtils.getArtworkInfoMap(rootPath+artistName);
     }
-    public DiarySankakuSpider(Site site,SankakuSpiderProcessor processor) throws IOException {
-        this.site =site;
-        this.processor = processor;
-        this.artworkInfos =SankakuInfoUtils.getArtworkInfoMap(processor.ROOT_PATH+"/"+processor.TAG);
-    }
+
     public List<ArtworkInfo> getArtworkInfos() {
         return artworkInfos;
     }
@@ -59,7 +54,7 @@ public class DiarySankakuSpider implements PageProcessor {
         return artistInfo;
     }
 
-    private boolean hasDownloaded(String URL) {
+    private  boolean hasDownloaded(String URL) {
         for (ArtworkInfo info :
                 artworkInfos) {
             if (info.getAddress().equals(URL))
@@ -67,63 +62,56 @@ public class DiarySankakuSpider implements PageProcessor {
         }
         return false;
     }
-
-    private String extractStats(String sourceStr, Pattern pattern) {
-        String aim = "";
-        Matcher textMatcher = pattern.matcher(sourceStr);
-        if (textMatcher.find())
-            aim = textMatcher.group(1);
-        return aim;
-    }
-
-    private void extractTags(List<String> copyRightHtmlList, List<String> copyRight) {
-        int flag = 0;
-        for (String str : copyRightHtmlList
-        ) {
-            if (flag % 2 == 0) {
-
-                Matcher matcher = htmlTextPattern.matcher(str);
-                if (matcher.find())
-                    copyRight.add(matcher.group(1));
-            }
-            flag++;
-
-        }
-    }
-
     @Override
     public void process(Page page) {
+        try {
+            Thread.sleep(5000 + new Random().nextInt(30000));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         String URL = page.getUrl().toString();
         if (URL.contains("tags")) { // 如果访问的时列表页面
-            try {
-                Thread.sleep(10000 + new Random().nextInt(10000));
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            // TODO: 2019/3/17 用于内置的 update模式
+            int added = 0;
+
             List<String> urlList = page.getHtml().$(".thumb").$("a", "href").all();
             /**
-             *
+             * 通过 存档记录 判断是否需要添加页面中的子页面
              * */
             if (urlList != null && urlList.size() > 0) {
                 for (String url : urlList
                 ) {
-                    if (!hasDownloaded("https://chan.sankakucomplex.com" + url)) {
-                        logger.info("⭐ add " + "https://chan.sankakucomplex.com" + url);
-                        page.addTargetRequest("https://chan.sankakucomplex.com" + url);
+
+                    if (!hasDownloaded(BASE_URL + url)) {
+                        logger.info("⭐ add " + BASE_URL + url);
+                        page.addTargetRequest(BASE_URL + url);
+                        added++;
                     } else {
-                        processor.d_skip++;
-                        logger.info("⭐ skip " + "https://chan.sankakucomplex.com" + url);
+                        d_skip++;
+                        logger.info("⭐ skip " + BASE_URL + url);
                     }
                 }
 
             }
+            /**
+             * 更新模式下，如果一个页面查询到的待更新内容超过1个，就添加下一个页面
+             * 更新模式通过  date 关键字自动检测
+             * */
+            if(added>0 && URL.contains("date")){
+                System.out.println(URL);
+                String thisPage = URL.substring(URL.length()-1);
+                int thisPageNum = Integer.valueOf(thisPage);
+                if(thisPageNum<50){
+                    String urlPrefix = URL.substring(0,URL.length()-1);
+                    page.addTargetRequest(urlPrefix+ (++thisPageNum));
+                    System.out.println("⭐ ### add： "+urlPrefix+thisPageNum);
+                }
+                System.out.println(thisPage);
+//                page.addTargetRequest(BASE_URL+);
+            }
+
         } else if (page.getUrl().toString().contains("https://chan.sankakucomplex.com/post/show/")) {
             // 防止被抓,设置一个比较长的睡觉时间 10~30秒
-            try {
-                Thread.sleep(15000L + new Random().nextInt(10000));
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
             // 详情页面
             Html html = page.getHtml();
 
@@ -232,29 +220,25 @@ public class DiarySankakuSpider implements PageProcessor {
             artworkInfo.setTakeTime(System.currentTimeMillis());
             // TODO: 2019/3/2 1.下载 2.内存记录 3.日志记录
             logger.info("spider - FILE START DOWNLOAD:" + target);
-            if (SankakuDownloadUtils.download(target, name, processor.ROOT_PATH + processor.TAG + subFix, page, page.getUrl().toString())) {
+            if (SankakuDownloadUtils.download(target, name, rootPath+artistName + subFix, page, page.getUrl().toString())) {
                 // 下载成功
                 // TODO: 2019/3/9  【完成】
                 artworkInfos.add(artworkInfo);
                 try {
                     //infoUtils.appendInfo(artworkInfo);
-                    SankakuInfoUtils.appendArtworkInfo(artworkInfo,processor.ROOT_PATH+processor.TAG);
+                    SankakuInfoUtils.appendArtworkInfo(artworkInfo,rootPath+artistName);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                processor.d_suc++;
+                d_suc++;
             } else {
-                processor.d_err++;
+                d_err++;
             }
 
         } else {
             logger.warn("Went to page: " + page.getUrl());
         }
-        logger.info("suc: " + processor.d_suc + " /err: " + processor.d_err + " /skip: " + processor.d_skip);
+        logger.info("suc: " + d_suc + " /err: " + d_err + " /skip: " + d_skip);
     }
 
-    @Override
-    public Site getSite() {
-        return site;
-    }
 }
