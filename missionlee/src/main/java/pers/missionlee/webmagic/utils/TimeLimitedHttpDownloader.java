@@ -3,6 +3,7 @@ package pers.missionlee.webmagic.utils;
 
 import java.io.*;
 import java.net.*;
+import java.text.DecimalFormat;
 import java.util.concurrent.*;
 
 /**
@@ -12,8 +13,8 @@ import java.util.concurrent.*;
  */
 
 public class TimeLimitedHttpDownloader {
-    private static int downloadSpeedLimit = 20; // Unit: k/s
-
+    private static int downloadSpeedLimit = 5; // Unit: k/s
+    private static DecimalFormat df = new DecimalFormat(".00");
     private static class CallableInputStreamDownloader implements Callable {
         InputStream in;
         OutputStream out;
@@ -27,17 +28,20 @@ public class TimeLimitedHttpDownloader {
 
         @Override
         public Object call() throws Exception {
-            byte[] bytes = new byte[1024 * 8];
+            byte[] bytes = new byte[1024 * 16]; // buffer 改为 16k 大小,因为经过测试，每次read操作最大为16k内容
             int len;
             int i = 0;
+            int totallen = 0;
             while ((len = in.read(bytes)) != -1) {
+                totallen+=len;
                 i++;
                 //再从bytes中写入文件
-                if (i % 128 == 0) { // buffer size 64k 每 1MB打印一次正在下载
-                    System.out.println(Thread.currentThread() + "downloading-[" + i * 8 * 1024 + "/" + size + "]");
-                }
+                if(i%8==0)
+                System.out.println(Thread.currentThread() + " -[" + df.format(100*(totallen/1024)/(size / 1024))  + "%]-[" + (size / 1024) + "K]");
                 out.write(bytes, 0, len);
             }
+            System.out.println(Thread.currentThread() + " -[100%]-[" + (size / 1024) + "K]");
+
             return null;
         }
     }
@@ -76,7 +80,7 @@ public class TimeLimitedHttpDownloader {
         InputStream in = null;
         // TODO: 2019/3/9 原本用try-catch的方式返回1，现在如果报错，外层会进入处理机制
 //        try {
-            in = connection.getInputStream();
+        in = connection.getInputStream();
 //        } catch (SocketTimeoutException e) {
 //            e.printStackTrace();
 //            return 1;
@@ -109,10 +113,10 @@ public class TimeLimitedHttpDownloader {
         } catch (TimeoutException e) {
             e.printStackTrace();
             return 1;
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
 
-        }finally {
+        } finally {
             executorService.shutdown();
         }
 
