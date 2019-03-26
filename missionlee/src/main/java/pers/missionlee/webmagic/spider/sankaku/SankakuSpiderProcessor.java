@@ -185,7 +185,7 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils{
      * */
     public static void runWithNameList() {
         try {
-            File nameListFile = new File("C:\\Users\\Administrator\\Desktop\\sankaku\\20190313.md");
+            File nameListFile = new File("C:\\Users\\MissionLee\\Desktop\\totallist.md");
             String nameListString = FileUtils.readFileToString(nameListFile, "UTF8");
             String[] nameListArray = nameListString.split("\n");
             int length = nameListArray.length;
@@ -229,7 +229,7 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils{
                 }
 
                 SankakuSpiderProcessor processor = new SankakuSpiderProcessor();
-                int num = processor.runAsNewWithTagNumOrder("C:\\Users\\Administrator\\Desktop\\sankaku"
+                int num = processor.runAsNewWithTagNumOrder("F:\\sankaku"
                         , key, aimNum, 4);
                 // TODO: 2019/3/9  检查下载好的数量和总数量，下载好的与总数量 相差在（总量10%） 与 20中较小值，则删除这个key，把剩下内容写入文件，否则把当前
                 int maxDiff = ((Double) Math.min(20, aimNum * 0.1)).intValue();
