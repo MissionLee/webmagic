@@ -95,18 +95,18 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
         File root = new File(parentPath);
         File updateInfoFile = new File(parentPath + "update.json");
         UpdateInfo updateInfo = UpdateInfo.getUpdateInfo(updateInfoFile);
-        if(updateInfo==null)
+        if (updateInfo == null)
             updateInfo = new UpdateInfo();
         if (root.exists()) {
             File[] files = root.listFiles();
             for (int i = 0; i < files.length; i++) {
                 if (files[i].isDirectory()) {
                     if (updateInfo.needUpdate(files[i].getName())) {
-                        System.out.println("NEED :  artist: "+files[i].getName() +"UPDATED:"+updateInfo.getUpdateDate(files[i].getName()));
+                        System.out.println("NEED :  artist: " + files[i].getName() + "UPDATED:" + updateInfo.getUpdateDate(files[i].getName()));
                         int numberNow = getRealNumOfArtist(files[i].getName());
                         int numberStored = SankakuInfoUtils.getArtworkNumber(files[i]);
                         System.out.println("numberNow: " + numberNow + " numberStored: " + numberStored);
-                        if (numberNow >numberStored ) { // 如果需要更新的超过3个 开启更新
+                        if (numberNow > numberStored) { // 如果需要更新的超过3个 开启更新
                             /**
                              * Spider 在检测到 查询url里面有date这个关键字的时候，就会自动触发更新检测机制，如果当前页面被更新了，那么下个页面就会被更新
                              * */
@@ -115,7 +115,8 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
                             int num = processor.runDownloadSpider(parentPath, files[i].getName(), threadNum, startPage);
                             // 作品总数在2000以下，并且通过更新新作品没有获取完整作品，那么尝试更新整个内容
                             // 又各种排序方法，综合应用可以获得超过2000的内容，但是没必要
-                            if (numberNow < 2000 && (num < (numberNow - numberStored))) {
+                            System.out.println("update num: " + num);
+                            if (numberNow < 2000 && (num < numberNow)) {
                                 processor.runAsNewWithTagNumOrder(parentPath, files[i].getName(), numberNow, threadNum);
                             }
 
@@ -123,8 +124,8 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
                         }
                         updateInfo.update(files[i].getName());
                         updateInfo.writeUpdateInfo(updateInfoFile);
-                    }else{
-                        System.out.println("already updated artist: "+files[i].getName() +"UPDATED:"+updateInfo.getUpdateDate(files[i].getName()));
+                    } else {
+                        System.out.println("already updated artist: " + files[i].getName() + "UPDATED:" + updateInfo.getUpdateDate(files[i].getName()));
                     }
 
 
@@ -195,6 +196,9 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
 
     }
 
+    /**
+     * @Return int 返回当前作者作品总量
+     */
     private int runDownloadSpider(String parentPath, String artistName, int threadNum, String... urls) throws IOException {
         SankakuDownloadSpider sankakuSpider = new SankakuDownloadSpider(site, parentPath, artistName);
         this.diarySankakuSpider = sankakuSpider;
@@ -208,13 +212,13 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
     /**
      * ⭐⭐ ===========  通过作者列表文档 开启下载 ============ ⭐
      */
-    public static void runWithNameList(String rootPath,String nameListPath,int threadNum) {
-        if(!rootPath.endsWith("/"))
-            rootPath = rootPath+"/";
+    public static void runWithNameList(String rootPath, String nameListPath, int threadNum) {
+        if (!rootPath.endsWith("/"))
+            rootPath = rootPath + "/";
         // rootPath
         try {
             File nameListFile = new File(nameListPath);
-            File updateInfoFile = new File(rootPath+ "update.json");
+            File updateInfoFile = new File(rootPath + "update.json");
             UpdateInfo updateInfo = UpdateInfo.getUpdateInfo(updateInfoFile);
 
             String nameListString = FileUtils.readFileToString(nameListFile, "UTF8");
