@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtistInfo;
+import pers.missionlee.webmagic.spider.sankaku.info.UpdateInfo;
 import pers.missionlee.webmagic.spider.sankaku.pageprocessor.SankakuDownloadSpider;
 import pers.missionlee.webmagic.spider.sankaku.pageprocessor.SankakuNumberSpider;
 import us.codecraft.webmagic.Site;
@@ -20,7 +21,7 @@ import java.util.regex.Pattern;
  * @author: Mission Lee
  * @create: 2019-03-02 16:10
  */
-public class SankakuSpiderProcessor extends SankakuBasicUtils{
+public class SankakuSpiderProcessor extends SankakuBasicUtils {
 
     public static Logger logger = LoggerFactory.getLogger(SankakuSpiderProcessor.class);
 
@@ -86,36 +87,60 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils{
     private SankakuSpiderProcessor() {
     }
 
+
     public static void runUpdate(String parentPath, int threadNum) throws IOException {
         if (!parentPath.endsWith("/"))
             parentPath = parentPath + "/";
 
         File root = new File(parentPath);
+        File updateInfoFile = new File(parentPath + "update.json");
+        UpdateInfo updateInfo = UpdateInfo.getUpdateInfo(updateInfoFile);
+        if(updateInfo==null)
+            updateInfo = new UpdateInfo();
         if (root.exists()) {
             File[] files = root.listFiles();
             for (int i = 0; i < files.length; i++) {
+                if (files[i].isDirectory()) {
+                    if (updateInfo.needUpdate(files[i].getName())) {
+                        System.out.println("NEED :  artist: "+files[i].getName() +"UPDATED:"+updateInfo.getUpdateDate(files[i].getName()));
+                        int numberNow = getRealNumOfArtist(files[i].getName());
+                        int numberStored = SankakuInfoUtils.getArtworkNumber(files[i]);
+                        System.out.println("numberNow: " + numberNow + " numberStored: " + numberStored);
+                        if (numberNow >numberStored ) { // 如果需要更新的超过3个 开启更新
+                            /**
+                             * Spider 在检测到 查询url里面有date这个关键字的时候，就会自动触发更新检测机制，如果当前页面被更新了，那么下个页面就会被更新
+                             * */
+                            String startPage = BASE_SITE + urlFormater(files[i].getName()) + ORDER.date.getKey() + 1;
+                            SankakuSpiderProcessor processor = new SankakuSpiderProcessor();
+                            int num = processor.runDownloadSpider(parentPath, files[i].getName(), threadNum, startPage);
+                            // 作品总数在2000以下，并且通过更新新作品没有获取完整作品，那么尝试更新整个内容
+                            // 又各种排序方法，综合应用可以获得超过2000的内容，但是没必要
+                            if (numberNow < 2000 && (num < (numberNow - numberStored))) {
+                                processor.runAsNewWithTagNumOrder(parentPath, files[i].getName(), numberNow, threadNum);
+                            }
 
-                String pagePrefix = BASE_SITE + urlFormater(files[i].getName()) + ORDER.date.getKey();
-                String[] urls = new String[1];
 
-                urls[0] = pagePrefix + 1;
-                /**
-                 * Spider 在检测到 查询url里面有date这个关键字的时候，就会自动触发更新检测机制，如果当前页面被更新了，那么下个页面就会被更新
-                 * */
+                        }
+                        updateInfo.update(files[i].getName());
+                        updateInfo.writeUpdateInfo(updateInfoFile);
+                    }else{
+                        System.out.println("already updated artist: "+files[i].getName() +"UPDATED:"+updateInfo.getUpdateDate(files[i].getName()));
+                    }
 
-                SankakuSpiderProcessor processor = new SankakuSpiderProcessor();
-                int num = processor.runDownloadSpider(parentPath,files[i].getName(),threadNum,urls);
-                System.out.println("update:"+ files[i].getName());
+
+                }
+
             }
         }
     }
 
-    private static Integer getRealNumOfArtist(String artistName){
-        String url = BASE_SITE+urlFormater(artistName);
+    private static Integer getRealNumOfArtist(String artistName) {
+        String url = BASE_SITE + urlFormater(artistName);
         SankakuNumberSpider spider = new SankakuNumberSpider(site);
         Spider.create(spider).addUrl(url).thread(1).run();
         return spider.getNum();
     }
+
     /**
      * @Description: 用于自动配置下载一个作者的所有作品，再登录判定通过的情况下，可下载
      * 2000 上限，登录信息失效可以查找 1000上限
@@ -166,12 +191,12 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils{
         for (int i = 0; i < urls.length; i++) {
             System.out.println(urls[i]);
         }
-        return runDownloadSpider(parentPath,tag,threadNum, urls);
+        return runDownloadSpider(parentPath, tag, threadNum, urls);
 
     }
 
-    private  int runDownloadSpider(String parentPath,String artistName ,int threadNum, String[] urls) throws IOException {
-        SankakuDownloadSpider sankakuSpider = new SankakuDownloadSpider(site, parentPath,artistName);
+    private int runDownloadSpider(String parentPath, String artistName, int threadNum, String... urls) throws IOException {
+        SankakuDownloadSpider sankakuSpider = new SankakuDownloadSpider(site, parentPath, artistName);
         this.diarySankakuSpider = sankakuSpider;
         Spider spider = Spider.create(sankakuSpider);
         spider.addUrl(urls).thread(threadNum).run();
@@ -181,11 +206,16 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils{
     }
 
     /**
-     *  ⭐⭐ ===========  通过作者列表文档 开启下载 ============ ⭐
-     * */
-    public static void runWithNameList() {
+     * ⭐⭐ ===========  通过作者列表文档 开启下载 ============ ⭐
+     */
+    public static void runWithNameList(String rootPath,String nameListPath,int threadNum) {
+        if(!rootPath.endsWith("/"))
+            rootPath = rootPath+"/";
         try {
-            File nameListFile = new File("C:\\Users\\Administrator\\Desktop\\sankaku\\20190313.md");
+            File nameListFile = new File(nameListPath);
+            File updateInfoFile = new File(rootPath+ "update.json");
+            UpdateInfo updateInfo = UpdateInfo.getUpdateInfo(updateInfoFile);
+
             String nameListString = FileUtils.readFileToString(nameListFile, "UTF8");
             String[] nameListArray = nameListString.split("\n");
             int length = nameListArray.length;
@@ -222,15 +252,15 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils{
                 int numUpdated = getRealNumOfArtist(key);
 
                 int aimNum = sortedMap.get(key);
-                if(numUpdated>0){
-                    System.out.println("LIST NUM: "+sortedMap.get(key)+" REAL NUM: "+numUpdated);
+                if (numUpdated > 0) {
+                    System.out.println("LIST NUM: " + sortedMap.get(key) + " REAL NUM: " + numUpdated);
                     aimNum = numUpdated;
 
                 }
 
                 SankakuSpiderProcessor processor = new SankakuSpiderProcessor();
-                int num = processor.runAsNewWithTagNumOrder("C:\\Users\\Administrator\\Desktop\\sankaku"
-                        , key, aimNum, 4);
+                int num = processor.runAsNewWithTagNumOrder(rootPath
+                        , key, aimNum, threadNum);
                 // TODO: 2019/3/9  检查下载好的数量和总数量，下载好的与总数量 相差在（总量10%） 与 20中较小值，则删除这个key，把剩下内容写入文件，否则把当前
                 int maxDiff = ((Double) Math.min(20, aimNum * 0.1)).intValue();
                 System.out.println(maxDiff);
@@ -242,14 +272,14 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils{
                     storageMap.put(key, aimNum);
                 }
                 rewriteTodoList(nameListFile, storageMap);
+                // 写入更新时间
+                updateInfo.update(key);
+                updateInfo.writeUpdateInfo(updateInfoFile);
             }
-
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
 
 
     private static void rewriteTodoList(File file, Map<String, Integer> info) {
@@ -268,12 +298,11 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils{
     }
 
     public static void main(String[] args) {
-//        runRepeat("C:\\Users\\Administrator\\Desktop\\sankaku",1);
-        runWithNameList();
-//        try {
-//            runUpdate("C:\\Users\\Administrator\\Desktop\\sankaku",4);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+//        runWithNameList("D:\\sankaku","C:\\Users\\Administrator\\Desktop\\sankaku\\20190313.md",4);
+        try {
+            runUpdate("D:\\sankaku", 4);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

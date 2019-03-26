@@ -254,23 +254,41 @@ public class SankakuInfoUtils {
      * @Author: Mission Lee
      * @date: 2019/3/4
      */
-    private static int cleanFiles(File tag) {
+    private static int cleanFiles(File artist) {
 
         int deleted = 0;
-        File[] files = tag.listFiles();
+        File[] files = artist.listFiles();
         for (int j = 0; j < files.length; j++) { // pic 与 vid
             if (files[j].isDirectory()) {
-                // 清空小文件
-                File[] pcvi = files[j].listFiles();
-                for (int k = 0; k < pcvi.length; k++) { // 具体文件
-                    if (pcvi[k].length() < 10 || pcvi[k].getName().contains("-")) {
-                        System.out.println("CLEAN: " + pcvi[k].getName());
-                        pcvi[k].delete();
-                        deleted++;
+                if(files[j].listFiles().length==0){
+                    // 处理空文件夹（早期代码遗留问题）
+                    files[j].delete();
+                }else{
+                    // 清空小文件
+                    File[] pcvi = files[j].listFiles();
+                    for (int k = 0; k < pcvi.length; k++) { // 具体文件
+                        if (pcvi[k].length() < 10 || pcvi[k].getName().contains("-")) {
+                            System.out.println("CLEAN: " + pcvi[k].getName());
+                            pcvi[k].delete();
+                            deleted++;
+                        }
                     }
                 }
+
             }
         }
         return deleted;
+    }
+
+    public static int getArtworkNumber(File artist){
+        int num = 0;
+        cleanFiles(artist);
+        File[] files = artist.listFiles();
+        for (int i = 0; i < files.length; i++) {
+            if(files[i].isDirectory()){
+                num+=files[i].listFiles().length;
+            }
+        }
+        return num;
     }
 }
