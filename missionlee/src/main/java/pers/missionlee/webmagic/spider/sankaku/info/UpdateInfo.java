@@ -16,6 +16,10 @@ import java.util.Map;
  */
 public class UpdateInfo {
     private static final Long expireTime = 7*24*60*60*1000L;
+//    // 作者总数
+//    public int artistNum;
+//    // 更新期内总数
+//    public int updatedNum;
 
     public Map<String,Long> updateTime;
 
@@ -50,5 +54,9 @@ public class UpdateInfo {
     public void writeUpdateInfo(File updatInfoFile) throws IOException {
         String json = JSON.toJSONString(this);
         FileUtils.writeStringToFile(updatInfoFile,json,"UTF8",false);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(new File("D:\\sankaku").listFiles().length);
     }
 }
