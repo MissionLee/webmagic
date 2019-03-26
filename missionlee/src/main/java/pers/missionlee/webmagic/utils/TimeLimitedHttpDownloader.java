@@ -15,6 +15,8 @@ import java.util.concurrent.*;
 public class TimeLimitedHttpDownloader {
     private static int downloadSpeedLimit = 5; // Unit: k/s
     private static DecimalFormat df = new DecimalFormat(".00");
+    private static int mb = 1024 * 1024;
+
     private static class CallableInputStreamDownloader implements Callable {
         InputStream in;
         OutputStream out;
@@ -33,11 +35,17 @@ public class TimeLimitedHttpDownloader {
             int i = 0;
             int totallen = 0;
             while ((len = in.read(bytes)) != -1) {
-                totallen+=len;
+                totallen += len;
                 i++;
                 //再从bytes中写入文件
-                if(i%8==0)
-                System.out.println(Thread.currentThread() + " -[" + df.format(100*(totallen/1024)/(size / 1024))  + "%]-[" + (size / 1024) + "K]");
+                if (i % 8 == 0) {
+                    if (size > mb) {
+                        System.out.println(Thread.currentThread() + " -[" + df.format(100 * totallen / size) + "%]-[" + (size / mb) + "M]");
+
+                    } else {
+                        System.out.println(Thread.currentThread() + " -[" + df.format(100 * totallen / size) + "%]-[" + (size / 1024) + "K]");
+                    }
+                }
                 out.write(bytes, 0, len);
             }
             System.out.println(Thread.currentThread() + " -[100%]-[" + (size / 1024) + "K]");
