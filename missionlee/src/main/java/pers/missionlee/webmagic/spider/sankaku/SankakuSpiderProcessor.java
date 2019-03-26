@@ -211,6 +211,7 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
     public static void runWithNameList(String rootPath,String nameListPath,int threadNum) {
         if(!rootPath.endsWith("/"))
             rootPath = rootPath+"/";
+        // rootPath
         try {
             File nameListFile = new File(nameListPath);
             File updateInfoFile = new File(rootPath+ "update.json");
