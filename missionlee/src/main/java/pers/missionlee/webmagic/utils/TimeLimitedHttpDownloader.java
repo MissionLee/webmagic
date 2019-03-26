@@ -33,7 +33,7 @@ public class TimeLimitedHttpDownloader {
             byte[] bytes = new byte[1024 * 16]; // buffer 改为 16k 大小,因为经过测试，每次read操作最大为16k内容
             int len;
             int i = 0;
-            int totallen = 0;
+            double totallen = 0.0;
             while ((len = in.read(bytes)) != -1) {
                 totallen += len;
                 i++;
