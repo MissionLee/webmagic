@@ -24,7 +24,7 @@ public class SankakuNumberSpider extends AbstractSankakuSpider {
         System.out.println(list);
         Matcher matcher = htmlTextPattern.matcher(list.get(0));
         matcher.find();
-        num = Integer.valueOf(matcher.group(1));
+        num = Integer.valueOf(matcher.group(1).trim().replaceAll(",",""));
     }
 
     public int getNum() {

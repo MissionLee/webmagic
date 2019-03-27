@@ -309,11 +309,30 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
     }
 
     public static void main(String[] args) {
-        runWithNameList("F:\\sankaku","C:\\Users\\MissionLee\\Desktop\\totallist.md",4);
-//        try {
-//            runUpdate("D:\\sankaku", 4);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        String help = "| [TYPE] \n" +
+                "|- run \t[root path] [aim list] [thread num]\n"+
+                "|- autoRun \t [rootPath = D:\\sankaku] [aim list = C:\\Users\\Administrator\\Desktop\\sankaku\\20190313.md] [thread num = 4]\n" +
+                "|- update\t [root path] [thread num]\n" +
+                "|- autoUpdate\t [rootPath = D:\\sankaku] [thread num = 4]";
+        if(args.length ==0 || args[0].equals("help")){
+            System.out.println(help);
+        }else{
+            if(args[0].equals("run") && args.length==4){
+                runWithNameList(args[1],args[2],Integer.valueOf(args[3]));
+            }else if(args[0].equals("update")&&args.length==3){
+
+            }else
+            if(args[0].equals("autoRun")){
+                runWithNameList("D:\\sankaku","C:\\Users\\Administrator\\Desktop\\sankaku\\20190313.md",4);
+            }else if(args[0].equals("autoUpdate")){
+                try {
+                    runUpdate("D:\\sankaku", 4);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }else{
+                System.out.println(help);
+            }
+        }
     }
 }
