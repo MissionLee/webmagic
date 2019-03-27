@@ -254,7 +254,13 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
             while (iterator.hasNext()) {
                 String key = (String) iterator.next();
                 // TODO: 2019/3/24 这里使用爬虫重置目标数量，如果获取到了 大于0的数值，就覆盖当前值
-                int numUpdated = getRealNumOfArtist(key);
+                int numUpdated = 0;
+                try{
+                    numUpdated = getRealNumOfArtist(key);
+                }catch (Exception e){
+
+                }
+
 
                 int aimNum = sortedMap.get(key);
                 if (numUpdated > 0) {
@@ -303,11 +309,11 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
     }
 
     public static void main(String[] args) {
-//        runWithNameList("D:\\sankaku","C:\\Users\\Administrator\\Desktop\\sankaku\\20190313.md",4);
-        try {
-            runUpdate("D:\\sankaku", 4);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        runWithNameList("F:\\sankaku","C:\\Users\\MissionLee\\Desktop\\totallist.md",4);
+//        try {
+//            runUpdate("D:\\sankaku", 4);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 }

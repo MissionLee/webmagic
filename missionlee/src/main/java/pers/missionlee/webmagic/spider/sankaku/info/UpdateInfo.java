@@ -49,7 +49,8 @@ public class UpdateInfo {
     }
     public static UpdateInfo getUpdateInfo(File updatInfoFile) throws IOException {
         String jsonInfo = FileUtils.readFileToString(updatInfoFile,"UTF8");
-        return JSON.parseObject(jsonInfo,UpdateInfo.class);
+        UpdateInfo info =JSON.parseObject(jsonInfo,UpdateInfo.class);
+        return info==null?(new UpdateInfo()):info;
     }
     public void writeUpdateInfo(File updatInfoFile) throws IOException {
         String json = JSON.toJSONString(this);
