@@ -34,11 +34,6 @@ public class SankakuDownloadUtils {
             if (!new File(savePath + "/" + filename).exists()) {
                 logger.info("downloader - start download");
                 downloadStatus = TimeLimitedHttpDownloader.download(downloadURL, filename, savePath, pageURL);
-                System.out.println("downloadStatus:" + downloadStatus);
-//                if(downloadStatus ==1){
-//                    throw new Exception("retry");
-//                    //doRetry(downloadURL,filename,savePath,page,pageURL,new Exception("time out"));
-//                }else
                 if (downloadStatus == 0) {
                     // 下载成功 remove 机制
                     logger.info("downloader -suc " + downloadURL);

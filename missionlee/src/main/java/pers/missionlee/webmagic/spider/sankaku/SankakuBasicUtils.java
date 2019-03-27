@@ -48,9 +48,10 @@ public class SankakuBasicUtils {
                 .replaceAll("\\\\", "%5C")
                 .replaceAll("\\|", "%7C");
     }
-
-    protected static Map<String, Integer> sortNameList(Map<String, Integer> namelist) {
-        System.out.println(namelist.size());
+    protected static Map<String,Integer> sortNameList(Map<String,Integer> nameList){
+        return sortNameList(nameList,false);
+    }
+    protected static Map<String, Integer> sortNameList(Map<String, Integer> namelist,boolean desc) {
         Set<Map.Entry<String, Integer>> valueSet = namelist.entrySet();
         Map.Entry<String, Integer>[] entries = new Map.Entry[namelist.size()];
         Iterator iterator = valueSet.iterator();
@@ -61,19 +62,26 @@ public class SankakuBasicUtils {
         int length = namelist.size();
         for (int j = 0; j < length; j++) {
             for (int k = 0; k < length; k++) {
-                if (entries[j].getValue() < entries[k].getValue()) {
-                    Map.Entry<String, Integer> tmp = entries[j];
-                    entries[j] = entries[k];
-                    entries[k] = tmp;
+                if(desc){
+                    if (entries[j].getValue() > entries[k].getValue()) {
+                        Map.Entry<String, Integer> tmp = entries[j];
+                        entries[j] = entries[k];
+                        entries[k] = tmp;
+                    }
+                }else{
+                    if (entries[j].getValue() < entries[k].getValue()) {
+                        Map.Entry<String, Integer> tmp = entries[j];
+                        entries[j] = entries[k];
+                        entries[k] = tmp;
+                    }
                 }
+
             }
         }
         Map<String, Integer> aimMap = new LinkedHashMap<String, Integer>();
         for (int j = 0; j < entries.length; j++) {
             aimMap.put(entries[j].getKey(), entries[j].getValue());
         }
-        System.out.println(aimMap);
-        System.out.println(aimMap.size());
         return aimMap;
     }
 }

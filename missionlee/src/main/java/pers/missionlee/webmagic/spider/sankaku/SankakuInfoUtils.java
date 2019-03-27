@@ -3,6 +3,8 @@ package pers.missionlee.webmagic.spider.sankaku;
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtistInfo;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 
@@ -16,7 +18,7 @@ import java.util.*;
  * @create: 2019-03-02 16:24
  */
 public class SankakuInfoUtils {
-
+    private static Logger logger = LoggerFactory.getLogger(SankakuInfoUtils.class);
     private static String ARTWORK_INFO_FILE_NAME = "artworkInfo.jsonline";
     private static String ARTIST_INFO_FILE_NAME = "artistInfo.json";
 
@@ -48,7 +50,7 @@ public class SankakuInfoUtils {
             // 1. 清理垃圾文件 （小文件 与 临时文件）
             File artistFile = new File(artistPath);
             int cleaned = cleanFiles(artistFile);
-            System.out.println("CLEAN " + cleaned + " BAD FILES");
+            logger.info("CLEAN " + cleaned + " BAD FILES");
             // 2. 从文档中获取文件列表
             String artworkInfos = FileUtils.readFileToString(artworkInfoFile, "UTF8");
             String[] artworkInfoLines = artworkInfos.split("\n");
@@ -63,7 +65,7 @@ public class SankakuInfoUtils {
             if (tagFileVid.exists())
                 vids = tagFileVid.list();
             List<String> allWeHave = new ArrayList<String>();
-            System.out.println("JSON: " + list.size() + " PIC/VID: " + pics.length + "/" + vids.length);
+            logger.info("JSON: " + list.size() + " PIC/VID: " + pics.length + "/" + vids.length);
             if (list.size() != (pics.length + vids.length)) {
                 int remove = 0;
                 for (int i = 0; i < pics.length; i++) {
@@ -79,7 +81,7 @@ public class SankakuInfoUtils {
                         remove++;
                     }
                 }
-                System.out.println("REMOVE: " + remove);
+                logger.info("REMOVE: " + remove);
                 if (remove > 0) {
                     rebuildArtworkInfoFile(artworkInfoFile, list);
                 }
@@ -268,7 +270,7 @@ public class SankakuInfoUtils {
                     File[] pcvi = files[j].listFiles();
                     for (int k = 0; k < pcvi.length; k++) { // 具体文件
                         if (pcvi[k].length() < 10 || pcvi[k].getName().contains("-")) {
-                            System.out.println("CLEAN: " + pcvi[k].getName());
+                            logger.info("CLEAN: " + pcvi[k].getName());
                             pcvi[k].delete();
                             deleted++;
                         }

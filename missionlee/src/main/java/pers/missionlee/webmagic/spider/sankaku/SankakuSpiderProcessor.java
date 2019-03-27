@@ -102,10 +102,10 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
             for (int i = 0; i < files.length; i++) {
                 if (files[i].isDirectory()) {
                     if (updateInfo.needUpdate(files[i].getName())) {
-                        System.out.println("NEED :  artist: " + files[i].getName() + "UPDATED:" + updateInfo.getUpdateDate(files[i].getName()));
+                        logger.info("NEED :  artist: " + files[i].getName() + "UPDATED:" + updateInfo.getUpdateDate(files[i].getName()));
                         int numberNow = getRealNumOfArtist(files[i].getName());
                         int numberStored = SankakuInfoUtils.getArtworkNumber(files[i]);
-                        System.out.println("numberNow: " + numberNow + " numberStored: " + numberStored);
+                        logger.info("numberNow: " + numberNow + " numberStored: " + numberStored);
                         if (numberNow > numberStored) { // 如果需要更新的超过3个 开启更新
                             /**
                              * Spider 在检测到 查询url里面有date这个关键字的时候，就会自动触发更新检测机制，如果当前页面被更新了，那么下个页面就会被更新
@@ -115,7 +115,7 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
                             int num = processor.runDownloadSpider(parentPath, files[i].getName(), threadNum, startPage);
                             // 作品总数在2000以下，并且通过更新新作品没有获取完整作品，那么尝试更新整个内容
                             // 又各种排序方法，综合应用可以获得超过2000的内容，但是没必要
-                            System.out.println("update num: " + num);
+                            logger.info("update num: " + num);
                             if (numberNow < 2000 && (num < numberNow)) {
                                 processor.runAsNewWithTagNumOrder(parentPath, files[i].getName(), numberNow, threadNum);
                             }
@@ -125,7 +125,7 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
                         updateInfo.update(files[i].getName());
                         updateInfo.writeUpdateInfo(updateInfoFile);
                     } else {
-                        System.out.println("already updated artist: " + files[i].getName() + "UPDATED:" + updateInfo.getUpdateDate(files[i].getName()));
+                        logger.info("already updated artist: " + files[i].getName() + "UPDATED:" + updateInfo.getUpdateDate(files[i].getName()));
                     }
 
 
@@ -165,7 +165,7 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
                         Math.ceil((new Double(totalNum)) / 20)
                 )
         ).intValue();
-        System.out.println("pageNUM:" + pageNum);
+        logger.info("pageNUM:" + pageNum);
         String[] urls = new String[pageNum];
         String formativeTag = urlFormater(tag);
         String pagedPathPrefixAsc = BASE_SITE + formativeTag + ORDER.tag_count_asc.getKey();
@@ -188,10 +188,6 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
                 }
             }
         }
-
-        for (int i = 0; i < urls.length; i++) {
-            System.out.println(urls[i]);
-        }
         return runDownloadSpider(parentPath, tag, threadNum, urls);
 
     }
@@ -212,7 +208,7 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
     /**
      * ⭐⭐ ===========  通过作者列表文档 开启下载 ============ ⭐
      */
-    public static void runWithNameList(String rootPath, String nameListPath, int threadNum) {
+    public static void runWithNameList(String rootPath, String nameListPath, int threadNum ,boolean desc) {
         if (!rootPath.endsWith("/"))
             rootPath = rootPath + "/";
         // rootPath
@@ -243,7 +239,7 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
                         }
                     }
             }
-            Map<String, Integer> sortedMap = sortNameList(nameListMap);
+            Map<String, Integer> sortedMap = sortNameList(nameListMap,desc);
 
             // TODO: 2019/3/9 把整理好的内容 重写到文件里面
             rewriteTodoList(nameListFile, sortedMap);
@@ -264,7 +260,7 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
 
                 int aimNum = sortedMap.get(key);
                 if (numUpdated > 0) {
-                    System.out.println("LIST NUM: " + sortedMap.get(key) + " REAL NUM: " + numUpdated);
+                    logger.info("LIST NUM: " + sortedMap.get(key) + " REAL NUM: " + numUpdated);
                     aimNum = numUpdated;
 
                 }
@@ -274,9 +270,8 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
                         , key, aimNum, threadNum);
                 // TODO: 2019/3/9  检查下载好的数量和总数量，下载好的与总数量 相差在（总量10%） 与 20中较小值，则删除这个key，把剩下内容写入文件，否则把当前
                 int maxDiff = ((Double) Math.min(20, aimNum * 0.1)).intValue();
-                System.out.println(maxDiff);
                 if (aimNum - num <= maxDiff) {
-                    System.out.println("aim:" + aimNum + "/doNum:" + num);
+                    logger.info("aim:" + aimNum + "/doNum:" + num);
                     storageMap.remove(key);
                 } else {
                     storageMap.remove(key);
@@ -310,20 +305,23 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
 
     public static void main(String[] args) {
         String help = "| [TYPE] \n" +
-                "|- run \t[root path] [aim list] [thread num]\n"+
-                "|- autoRun \t [rootPath = D:\\sankaku] [aim list = C:\\Users\\Administrator\\Desktop\\sankaku\\20190313.md] [thread num = 4]\n" +
+                "|- run \t[root path] [aim list] [thread num] [asc/desc]\n"+
+                "|- autoRun \t [rootPath = D:\\sankaku] [aim list = C:\\Users\\Administrator\\Desktop\\sankaku\\20190313.md] [thread num = 4] [asc]\n" +
                 "|- update\t [root path] [thread num]\n" +
                 "|- autoUpdate\t [rootPath = D:\\sankaku] [thread num = 4]";
         if(args.length ==0 || args[0].equals("help")){
             System.out.println(help);
         }else{
-            if(args[0].equals("run") && args.length==4){
-                runWithNameList(args[1],args[2],Integer.valueOf(args[3]));
+            if(args[0].equals("run") && args.length==5){
+                boolean desc = true;
+                if(args[5].equals("asc"))
+                    desc =false;
+                runWithNameList(args[1],args[2],Integer.valueOf(args[3]),desc);
             }else if(args[0].equals("update")&&args.length==3){
 
             }else
             if(args[0].equals("autoRun")){
-                runWithNameList("D:\\sankaku","C:\\Users\\Administrator\\Desktop\\sankaku\\20190313.md",4);
+                runWithNameList("D:\\sankaku","C:\\Users\\Administrator\\Desktop\\sankaku\\20190313.md",4,true);
             }else if(args[0].equals("autoUpdate")){
                 try {
                     runUpdate("D:\\sankaku", 4);

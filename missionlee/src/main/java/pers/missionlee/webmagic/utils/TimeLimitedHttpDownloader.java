@@ -1,6 +1,9 @@
 package pers.missionlee.webmagic.utils;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 import java.net.*;
 import java.text.DecimalFormat;
@@ -13,6 +16,7 @@ import java.util.concurrent.*;
  */
 
 public class TimeLimitedHttpDownloader {
+    private static Logger logger = LoggerFactory.getLogger(TimeLimitedHttpDownloader.class);
     private static int downloadSpeedLimit = 5; // Unit: k/s
     private static DecimalFormat df = new DecimalFormat(".00");
     private static int mb = 1024 * 1024;
@@ -30,6 +34,7 @@ public class TimeLimitedHttpDownloader {
 
         @Override
         public Object call() throws Exception {
+            Long start = System.currentTimeMillis();
             byte[] bytes = new byte[1024 * 16]; // buffer 改为 16k 大小,因为经过测试，每次read操作最大为16k内容
             int len;
             int i = 0;
@@ -38,18 +43,17 @@ public class TimeLimitedHttpDownloader {
                 totallen += len;
                 i++;
                 //再从bytes中写入文件
-                if (i % 8 == 0) {
+                if (i % 16 == 0) {
                     if (size > mb) {
-                        System.out.println(Thread.currentThread() + " -[" + df.format(100 * totallen / size) + "%]-[" + (size / mb) + "M]");
+                        logger.info("[" + df.format(100 * totallen / size) + "%]-[" + (size / mb) + "M] | " + df.format(totallen * 1000/1024 / (System.currentTimeMillis() - start)) + "K/S");
 
                     } else {
-                        System.out.println(Thread.currentThread() + " -[" + df.format(100 * totallen / size) + "%]-[" + (size / 1024) + "K]");
+                        logger.info("[" + df.format(100 * totallen / size) + "%]-[" + (size / 1024) + "K] | " + df.format(totallen * 1000/1024 / (System.currentTimeMillis() - start)) + "K/S");
                     }
                 }
                 out.write(bytes, 0, len);
             }
-            System.out.println(Thread.currentThread() + " -[100%]-[" + (size / 1024) + "K]");
-
+            logger.info(" -[100.0%]-[" + (size / 1024) + "K] | " + (totallen * 1000/1024) / (System.currentTimeMillis() - start) + "K/S");
             return null;
         }
     }
@@ -93,7 +97,7 @@ public class TimeLimitedHttpDownloader {
 //            e.printStackTrace();
 //            return 1;
 //        }
-        System.out.println("web downloader getInputStream - time" + (System.currentTimeMillis() - start));
+        logger.info("web downloader getInputStream - time" + (System.currentTimeMillis() - start));
         int size = connection.getContentLength();
 
         // 父目录不存在的时候，创建这个文件夹
@@ -130,9 +134,9 @@ public class TimeLimitedHttpDownloader {
 
         long endReadBytes = System.currentTimeMillis();
         if ((endReadBytes - startReadBytes) / 1000 > 0)
-            System.out.println("Speed:" + ((size / 1024) / ((endReadBytes - startReadBytes) / 1000)) + "K/s");
+            logger.info("Speed:" + ((size / 1024) / ((endReadBytes - startReadBytes) / 1000)) + "K/s");
         else
-            System.out.println("Speed: download time less than 1 second");
+            logger.info("Speed: download time less than 1 second");
         //关闭IO
         if (out != null)
             out.close();
