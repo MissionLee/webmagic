@@ -314,7 +314,7 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
         }else{
             if(args[0].equals("run") && args.length==5){
                 boolean desc = true;
-                if(args[5].equals("asc"))
+                if(args[4].equals("asc"))
                     desc =false;
                 runWithNameList(args[1],args[2],Integer.valueOf(args[3]),desc);
             }else if(args[0].equals("update")&&args.length==3){
