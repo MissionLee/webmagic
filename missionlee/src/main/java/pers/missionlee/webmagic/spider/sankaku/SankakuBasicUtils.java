@@ -51,7 +51,8 @@ public class SankakuBasicUtils {
             .addHeader("Pragma", "no-cach")
             .addHeader("Upgrade-Insecure-Requests", "1")
             .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.119 Safari/537.36");
-    public enum RunType{
+
+    public enum RunType {
         RUN_WITH_ARTIST_NAMElIST,
         RUN_WITH_COPYRIGHT_NAMELIST,
         RUN_WITH_ARTIST_NAME,
@@ -59,25 +60,26 @@ public class SankakuBasicUtils {
         UPDATE_ARTIST,
         UPDATE_COPYRIGHT
     }
+
     public enum SITE_ORDER_PREFIX {
         DATE("date", "DATE"),
         TAG_COUNT_DEC("tagcount", "TAG_COUNT_DEC"),
         TAG_COUNT_ASC("tagcount_asc", "TAG_COUNT_ASC"),
-        POPULAR("popular","POPULAR"),
-        FAV_COUNT("favcount","FACOURITE_COUNT"),
-        QUALITY("quality",""),
-        FILESIZE_DEC("filesize",""),
-        FILESIZE_ASC("filesize_asc",""),
-        VIEW_COUNT("viewcount",""),
-        MPIXELS_DEC("mpixels_desc",""),
-        MPIXELS_ASC("mpixels_asc",""),
-        PORTRAIT("portrait","高"),
-        LANDSCAPE("landscape","宽");
+        POPULAR("popular", "POPULAR"),
+        FAV_COUNT("favcount", "FACOURITE_COUNT"),
+        QUALITY("quality", ""),
+        FILESIZE_DEC("filesize", ""),
+        FILESIZE_ASC("filesize_asc", ""),
+        VIEW_COUNT("viewcount", ""),
+        MPIXELS_DEC("mpixels_desc", ""),
+        MPIXELS_ASC("mpixels_asc", ""),
+        PORTRAIT("portrait", "高"),
+        LANDSCAPE("landscape", "宽");
         String key;
         String desc;
 
         public String getPrefix(String artistName, boolean offical) {
-            return BASE_SITE+urlFormater(artistName,offical)+"%20order%3A"+key+"&page=";
+            return BASE_SITE + urlFormater(artistName, offical) + "%20order%3A" + key + "&page=";
         }
 
         public String getDesc() {
@@ -89,7 +91,8 @@ public class SankakuBasicUtils {
             this.desc = desc;
         }
     }
-    protected static String urlFormater(String artistName,boolean offical) {
+
+    protected static String urlFormater(String artistName, boolean offical) {
         // 空格 () ’
         String artistFormat = artistName.trim()
                 .replaceAll(" ", "_")// !important 这里吧空格对应成了下划线，是sankaku的特别处理方法
@@ -118,12 +121,14 @@ public class SankakuBasicUtils {
                 .replaceAll("@", "%40")
                 .replaceAll("\\\\", "%5C")
                 .replaceAll("\\|", "%7C");
-        return offical?(artistFormat+"%20official_art"):artistFormat;
+        return offical ? (artistFormat + "%20official_art") : artistFormat;
     }
-    protected static Map<String,Integer> sortNameList(Map<String,Integer> nameList){
-        return sortNameList(nameList,false);
+
+    protected static Map<String, Integer> sortNameList(Map<String, Integer> nameList) {
+        return sortNameList(nameList, false);
     }
-    protected static Map<String, Integer> sortNameList(Map<String, Integer> namelist,boolean desc) {
+
+    protected static Map<String, Integer> sortNameList(Map<String, Integer> namelist, boolean desc) {
         Set<Map.Entry<String, Integer>> valueSet = namelist.entrySet();
         Map.Entry<String, Integer>[] entries = new Map.Entry[namelist.size()];
         Iterator iterator = valueSet.iterator();
@@ -134,13 +139,13 @@ public class SankakuBasicUtils {
         int length = namelist.size();
         for (int j = 0; j < length; j++) {
             for (int k = 0; k < length; k++) {
-                if(desc){
+                if (desc) {
                     if (entries[j].getValue() > entries[k].getValue()) {
                         Map.Entry<String, Integer> tmp = entries[j];
                         entries[j] = entries[k];
                         entries[k] = tmp;
                     }
-                }else{
+                } else {
                     if (entries[j].getValue() < entries[k].getValue()) {
                         Map.Entry<String, Integer> tmp = entries[j];
                         entries[j] = entries[k];
@@ -156,6 +161,7 @@ public class SankakuBasicUtils {
         }
         return aimMap;
     }
+
     protected static void rewriteTodoList(File file, Map<String, Integer> info) {
         try {
             StringBuffer stringBuffer = new StringBuffer();
@@ -169,6 +175,7 @@ public class SankakuBasicUtils {
             e.printStackTrace();
         }
     }
+
     /**
      * 给定 作者名称 与 是否 offical 是否 为更新 来获取 目标url
      * 其中 整体下载的情况下（非update） 可以通过爬虫自动获取 目标数量
@@ -180,15 +187,31 @@ public class SankakuBasicUtils {
         String BaseDate = SITE_ORDER_PREFIX.DATE.getPrefix(artist, offical);
         String BasePopular = SITE_ORDER_PREFIX.POPULAR.getPrefix(artist, offical);
         String BaseQurlity = SITE_ORDER_PREFIX.QUALITY.getPrefix(artist, offical);
+        String BaseFav = SITE_ORDER_PREFIX.FAV_COUNT.getPrefix(artist, offical);
+        String BaseFilesizeAsc = SITE_ORDER_PREFIX.FILESIZE_ASC.getPrefix(artist, offical);
+        String BaseFilesizeDes = SITE_ORDER_PREFIX.FILESIZE_DEC.getPrefix(artist, offical);
+        String BaseLandscape = SITE_ORDER_PREFIX.LANDSCAPE.getPrefix(artist, offical);
+        String BaseMpixelsAsc = SITE_ORDER_PREFIX.MPIXELS_ASC.getPrefix(artist, offical);
+        String BaseMpixelsDec = SITE_ORDER_PREFIX.MPIXELS_DEC.getPrefix(artist, offical);
+        String BaseProtrait = SITE_ORDER_PREFIX.PORTRAIT.getPrefix(artist, offical);
+        String BaseView = SITE_ORDER_PREFIX.VIEW_COUNT.getPrefix(artist, offical);
 
         if (artworkNum > 2000) { // 2000+ 情况遍历 tag升降序 + date最新 + popular最高 + quality 最高
-            urls = new String[250];
+            urls = new String[650];
             for (int i = 0; i < 50; i++) {
                 urls[i] = BaseTagAsc + (i + 1);
                 urls[i + 50] = BaseTagDec + (i + 1);
                 urls[i + 100] = BaseDate + (i + 1);
                 urls[i + 150] = BaseQurlity + (i + 1);
                 urls[i + 200] = BasePopular + (i + 1);
+                urls[i + 250] = BaseFav + (i + 1);
+                urls[i + 300] = BaseFilesizeAsc + (i + 1);
+                urls[i + 350] = BaseFilesizeDes + (i + 1);
+                urls[i + 400] = BaseLandscape + (i + 1);
+                urls[i + 450] = BaseMpixelsAsc + (i + 1);
+                urls[i + 500] = BaseMpixelsDec + (i + 1);
+                urls[i + 550] = BaseProtrait + (i + 1);
+                urls[i + 600] = BaseView + (i + 1);
             }
         } else {
             int pageNum = ((Double) (Math.ceil((new Double(artworkNum)) / 20))).intValue();
