@@ -24,8 +24,6 @@ import java.util.Random;
 public class SankakuDownloadSpider extends AbstractSankakuSpider {
     Logger logger = LoggerFactory.getLogger(SankakuDownloadSpider.class);
 
-
-    public SankakuInfoUtils infoUtils;
     public List<ArtworkInfo> artworkInfos;
     public Map<String, String> artistInfo;
 
