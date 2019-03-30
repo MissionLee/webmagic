@@ -43,43 +43,43 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
     /**
      * 获取 artwork number
      */
-    private Integer getRealNumOfArtist(String artistName, boolean offical) {
-        String url = BASE_SITE + urlFormater(artistName, offical);
-        SankakuNumberSpider spider = new SankakuNumberSpider(site, offical);
+    private Integer getRealNumOfArtist(String artistName, boolean official) {
+        String url = BASE_SITE + urlFormater(artistName, official);
+        SankakuNumberSpider spider = new SankakuNumberSpider(site, official);
         Spider.create(spider).addUrl(url).thread(1).run();
         return spider.getNum();
     }
 
-    private String[] getUrlStringArray(String artist, boolean offical, boolean update) {
+    private String[] getUrlStringArray(String artist, boolean official, boolean update) {
         if (update) {
             String[] urls = new String[1];
-            urls[0] = SITE_ORDER_PREFIX.DATE.getPrefix(artist, offical) + 1;
+            urls[0] = SITE_ORDER_PREFIX.DATE.getPrefix(artist, official) + 1;
             return urls;
         } else {
             int artworkNum = 0;
             int retry = 0;
             while (artworkNum < 1 && retry < 3) {
                 try {
-                    artworkNum = getRealNumOfArtist(artist, offical);
+                    artworkNum = getRealNumOfArtist(artist, official);
                 } catch (Exception e) {
                     e.printStackTrace();
                     retry++;
                 }
             }
-            return urlGenertor(artist, offical, artworkNum);
+            return urlGenertor(artist, official, artworkNum);
         }
     }
 
 
 
-    public int updateOne(String rootPath, String artistName, boolean offical, int threadNum) throws IOException {
+    public int updateOne(String rootPath, String artistName, boolean official, int threadNum) throws IOException {
         int num = 0;
         if (updateInfo == null)
             updateInfo = new UpdateInfo();
         if (updateInfo.needUpdate(artistName)) {
 
             logger.info("NEED :  artist: " + artistName + "UPDATED:" + updateInfo.getUpdateDate(artistName));
-            int numberNow = getRealNumOfArtist(artistName, offical);
+            int numberNow = getRealNumOfArtist(artistName, official);
             int numberStored = SankakuInfoUtils.getArtworkNumber(new File(rootPath + artistName));
             logger.info("numberNow: " + numberNow + " numberStored: " + numberStored);
             if (numberNow > numberStored) { // 如果需要更新的超过1个 开启更新
@@ -87,7 +87,7 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
                 num = startDownloadSpider(rootPath, artistName, threadNum, startPage);
                 logger.info("update num: " + num);
                 if (numberNow < 2000 && (num < numberNow)) {
-                    num = fullDownloadOne(rootPath, artistName, offical, threadNum);
+                    num = fullDownloadOne(rootPath, artistName, official, threadNum);
                 }
 
             }
@@ -99,26 +99,26 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
         return num;
     }
 
-    public void updateAll(String rootPath, boolean offical, int threadNum) throws IOException {
+    public void updateAll(String rootPath, boolean official, int threadNum) throws IOException {
         if (root.exists()) {
             File[] files = root.listFiles();
             for (int i = 0; i < files.length; i++) {
                 if (files[i].isDirectory()) {
-                    updateOne(rootPath, files[i].getName(), offical, threadNum);
+                    updateOne(rootPath, files[i].getName(), official, threadNum);
                 }
             }
         }
     }
 
-    public int fullDownloadOne(String rootPath, String artistName, boolean offical, int threadNum) throws IOException {
-        String[] urls = getUrlStringArray(artistName, offical, false);
+    public int fullDownloadOne(String rootPath, String artistName, boolean official, int threadNum) throws IOException {
+        String[] urls = getUrlStringArray(artistName, official, false);
         return startDownloadSpider(rootPath, artistName, threadNum, urls);
     }
 
-    //    public static void fullDownloadAll(String rootPath, boolean offical, int threadNum, String... artistname) {
+    //    public static void fullDownloadAll(String rootPath, boolean official, int threadNum, String... artistname) {
 //
 //    }
-    public void fullDownloadWithInnerList(String rootPath, boolean offical, int threadNum) throws IOException {
+    public void fullDownloadWithInnerList(String rootPath, boolean official, int threadNum) throws IOException {
         File nameListFile = new File(rootPath + "name.md");
         String nameListString = FileUtils.readFileToString(nameListFile, "UTF8");
         String[] nameListArray = nameListString.split("\n");
@@ -147,7 +147,7 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
         Iterator iterator = set.iterator();
         while (iterator.hasNext()) {
             String key = (String) iterator.next();
-            fullDownloadOne(rootPath, key, offical, threadNum);
+            fullDownloadOne(rootPath, key, official, threadNum);
             // 原本会检测下载数量是否不足，但是update机制完善之后，可以通过update方式来补充下载缺漏
             storageMap.remove(key);
             rewriteTodoList(nameListFile, storageMap);
@@ -189,11 +189,11 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
 
     public static void main(String[] args) {
         try {
-            runProcessor(RunType.RUN_WITH_ARTIST_NAMElIST, "D:\\sankaku", "", 4);
+            runProcessor(RunType.RUN_WITH_ARTIST_NAMElIST, "D:\\sankaku", "", 6);
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        runOffical("D:\\sankakuoffical", "league of legends", 941, 4);
+//        runOffical("D:\\sankakuofficial", "league of legends", 941, 4);
 
 //        String help = "| [TYPE] \n" +
 //                "|- run \t[root path] [aim list] [thread num] [asc/desc]\n"+

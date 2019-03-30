@@ -28,6 +28,15 @@ public class ArtworkInfo {
     private List<String> tagMedium;
     private List<String> tagGeneral;
     private List<String> tagGenre;
+    private List<String> tagMeta;
+
+    public List<String> getTagMeta() {
+        return tagMeta;
+    }
+
+    public void setTagMeta(List<String> tagMeta) {
+        this.tagMeta = tagMeta;
+    }
 
     public List<String> getTagGenre() {
         return tagGenre;

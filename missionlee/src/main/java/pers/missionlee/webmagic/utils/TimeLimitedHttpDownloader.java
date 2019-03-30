@@ -32,28 +32,43 @@ public class TimeLimitedHttpDownloader {
             this.size = size;
         }
 
+        public static int readBufferSize = 1024 * 16;
+        public static int writeBufferSize = 1024 * 1024 * 16;
+        public static int writePoint = 1024 * 1024 * 12;
+
         @Override
         public Object call() throws Exception {
             Long start = System.currentTimeMillis();
-            byte[] bytes = new byte[1024 * 16]; // buffer 改为 16k 大小,因为经过测试，每次read操作最大为16k内容
+            byte[] writeBuffer = new byte[writeBufferSize]; // 创建一个 16MB的 buffer
+            int writeBufferPointer = 0;
+            byte[] readBuffer = new byte[readBufferSize]; // buffer 改为 16k 大小,因为经过测试，每次read操作最大为16k内容
             int len;
             int i = 0;
             double totallen = 0.0;
-            while ((len = in.read(bytes)) != -1) {
+            while ((len = in.read(readBuffer)) != -1) {
                 totallen += len;
                 i++;
                 //再从bytes中写入文件
-                if (i % 16 == 0) {
+                if (i % 32 == 0) {
                     if (size > mb) {
-                        logger.info("[" + df.format(100 * totallen / size) + "%]-[" + (size / mb) + "M] | " + df.format(totallen * 1000/1024 / (System.currentTimeMillis() - start)) + "K/S");
+                        logger.info("[" + df.format(100 * totallen / size) + "%]-[" + (size / mb) + "M] | " + df.format(totallen * 1000 / 1024 / (System.currentTimeMillis() - start)) + "K/S");
 
                     } else {
-                        logger.info("[" + df.format(100 * totallen / size) + "%]-[" + (size / 1024) + "K] | " + df.format(totallen * 1000/1024 / (System.currentTimeMillis() - start)) + "K/S");
+                        logger.info("[" + df.format(100 * totallen / size) + "%]-[" + (size / 1024) + "K] | " + df.format(totallen * 1000 / 1024 / (System.currentTimeMillis() - start)) + "K/S");
                     }
                 }
-                out.write(bytes, 0, len);
+                // 把read buffer 的0 ~ len 位置 写到 write buffer 的 writeBufferPointer 位置
+                System.arraycopy(readBuffer, 0, writeBuffer, writeBufferPointer, len);
+                writeBufferPointer += len;
+                if (writeBufferPointer > writePoint) {
+                    out.write(writeBuffer, 0, writeBufferPointer);
+                    writeBufferPointer = 0;
+                }
+                //
             }
-            logger.info(" -[100.0%]-[" + (size / 1024) + "K] | " + (totallen * 1000/1024) / (System.currentTimeMillis() - start) + "K/S");
+            if (writeBufferPointer > 0)
+                out.write(writeBuffer, 0, writeBufferPointer);
+            logger.info(" -[100.0%]-[" + (size / 1024) + "K] | " + (totallen * 1000 / 1024) / (System.currentTimeMillis() - start) + "K/S");
             return null;
         }
     }
