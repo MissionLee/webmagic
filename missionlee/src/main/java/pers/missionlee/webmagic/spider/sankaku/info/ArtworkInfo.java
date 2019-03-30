@@ -27,6 +27,16 @@ public class ArtworkInfo {
     private List<String> tagArtist;
     private List<String> tagMedium;
     private List<String> tagGeneral;
+    private List<String> tagGenre;
+
+    public List<String> getTagGenre() {
+        return tagGenre;
+    }
+
+    public void setTagGenre(List<String> tagGenre) {
+        this.tagGenre = tagGenre;
+    }
+
     // 以下来自标签栏下方的信息栏
     // 上传到sankaku日志
     private String postDate;

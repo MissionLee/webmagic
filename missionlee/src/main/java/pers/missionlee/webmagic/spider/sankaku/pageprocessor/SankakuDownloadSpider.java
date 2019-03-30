@@ -164,7 +164,10 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
         List<String> generalList = new ArrayList<String>();
         extractTags(generalHtmlList, generalList);
         logger.debug("spider - process generalList:" + generalList);
-
+        //  标签-风俗 体裁 样式
+        List<String> genreHtmlList = tagSideBar.$(".tag-type-genre").$("a").all();
+        List<String> genreList = new ArrayList<String>();
+        extractTags(genreHtmlList,genreList);
         // 提取文件信息
         Selectable stats = html.$("#stats");
         List<String> statsLiList = stats.$("ul li").all();
@@ -203,6 +206,7 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
         artworkInfo.setTagMedium(mediumList);
         artworkInfo.setTagArtist(artistList);
         artworkInfo.setTagStudio(studioList);
+        artworkInfo.setTagGenre(genreList);
         artworkInfo.setTakeTime(System.currentTimeMillis());
         return artworkInfo;
     }
