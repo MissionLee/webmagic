@@ -15,7 +15,7 @@ import java.util.Map;
  * @create: 2019-03-25 21:50
  */
 public class UpdateInfo {
-    private static final Long expireTime = 7*24*60*60*1000L;
+    private static final Long expireTime = 14*24*60*60*1000L;
 //    // 作者总数
 //    public int artistNum;
 //    // 更新期内总数

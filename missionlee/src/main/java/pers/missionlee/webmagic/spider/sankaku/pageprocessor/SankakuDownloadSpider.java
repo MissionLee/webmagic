@@ -33,6 +33,8 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
     public String rootPath;
     // 作者名
     public String artistName;
+
+    public List<String> addedList;
     // 下载清空数量
     public int d_suc=0;
     public int d_skip=0;
@@ -44,6 +46,7 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
         this.rootPath =rootPath;
         this.artistName = artistName;
         this.artworkInfos =SankakuInfoUtils.getArtworkInfoMap(rootPath+artistName);
+        this.addedList = new ArrayList<String>();
     }
 
     public List<ArtworkInfo> getArtworkInfos() {
@@ -77,7 +80,7 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
             // TODO: 2019/3/17 用于内置的 update模式
             /**
              * 更新模式下，如果一个页面查询到的待更新内容超过1个，就添加下一个页面
-             * 更新模式通过  date 关键字自动检测
+             * 更新模式通过  DATE 关键字自动检测
              * @update 20190327 实际使用中发现大量的本页面更新一两个就够了，找下一页纯属浪费，
              *          并且在外层processor里面有udpate数量不过尝试遍历作者的方法 所以added改为 > 15
              * */
@@ -217,9 +220,10 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
             for (String url : urlList
             ) {
 
-                if (!hasDownloaded(BASE_URL + url)) {
+                if (!hasDownloaded(BASE_URL + url) && !addedList.contains(url)) {
                     logger.info("⭐ add " + BASE_URL + url);
                     page.addTargetRequest(BASE_URL + url);
+                    addedList.add(url);
                     thisPageAdded++;
                     d_added++;
                 } else {
