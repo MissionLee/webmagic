@@ -169,4 +169,49 @@ public class SankakuBasicUtils {
             e.printStackTrace();
         }
     }
+    /**
+     * 给定 作者名称 与 是否 offical 是否 为更新 来获取 目标url
+     * 其中 整体下载的情况下（非update） 可以通过爬虫自动获取 目标数量
+     */
+    protected String[] urlGenertor(String artist, boolean offical, int artworkNum) {
+        String[] urls;
+        String BaseTagAsc = SITE_ORDER_PREFIX.TAG_COUNT_ASC.getPrefix(artist, offical);
+        String BaseTagDec = SITE_ORDER_PREFIX.TAG_COUNT_DEC.getPrefix(artist, offical);
+        String BaseDate = SITE_ORDER_PREFIX.DATE.getPrefix(artist, offical);
+        String BasePopular = SITE_ORDER_PREFIX.POPULAR.getPrefix(artist, offical);
+        String BaseQurlity = SITE_ORDER_PREFIX.QUALITY.getPrefix(artist, offical);
+
+        if (artworkNum > 2000) { // 2000+ 情况遍历 tag升降序 + date最新 + popular最高 + quality 最高
+            urls = new String[250];
+            for (int i = 0; i < 50; i++) {
+                urls[i] = BaseTagAsc + (i + 1);
+                urls[i + 50] = BaseTagDec + (i + 1);
+                urls[i + 100] = BaseDate + (i + 1);
+                urls[i + 150] = BaseQurlity + (i + 1);
+                urls[i + 200] = BasePopular + (i + 1);
+            }
+        } else {
+            int pageNum = ((Double) (Math.ceil((new Double(artworkNum)) / 20))).intValue();
+            urls = new String[pageNum];
+            if (pageNum > 50) {// 1001~2000 tag升降序
+
+                for (int i = 0; i < pageNum; i++) {
+                    if ((i + 1) <= 50) {
+                        urls[i] = BaseTagDec + (i + 1);
+                    } else {
+                        urls[i] = BaseTagAsc + (i - 49);
+                    }
+                }
+
+            } else {// 1~999 date遍历
+
+                for (int i = 0; i < pageNum; i++) {
+                    urls[i] = BasePopular + (i + 1);
+                }
+            }
+        }
+
+        return urls;
+    }
+
 }
