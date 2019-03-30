@@ -3,6 +3,7 @@ package pers.missionlee.webmagic.spider.sankaku.pageprocessor;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 
@@ -13,14 +14,22 @@ import java.util.regex.Matcher;
  * @create: 2019-03-22 14:47
  */
 public class SankakuNumberSpider extends AbstractSankakuSpider {
-    public SankakuNumberSpider(Site site) {
+    boolean offical;
+    public SankakuNumberSpider(Site site,boolean offical) {
         super(site);
+        this.offical = offical;
     }
 
     private int num=0;
     @Override
     public void process(Page page) {
-        List<String> list = page.getHtml().$(".tag-count").all();
+        List<String> list = new ArrayList<String>();
+        if(offical){
+            list=page.getHtml().$(".tag-type-none").$("a").all();
+        }else{
+            list = page.getHtml().$(".tag-count").all();
+        }
+
         System.out.println(list);
         Matcher matcher = htmlTextPattern.matcher(list.get(0));
         matcher.find();
