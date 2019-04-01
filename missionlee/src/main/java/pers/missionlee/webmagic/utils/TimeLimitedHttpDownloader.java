@@ -1,6 +1,7 @@
 package pers.missionlee.webmagic.utils;
 
 
+import com.sun.xml.internal.bind.v2.TODO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +46,7 @@ public class TimeLimitedHttpDownloader {
             int len;
             int i = 0;
             double totallen = 0.0;
+            // TODO: 2019/3/31 这里解释一下 buffer配置的原因，经过测试 in.read() 每次读取获得的长度为 16K 所以即使直接使用大的buffer来读取也没有效果，这应该是网络IO的传输单位 
             while ((len = in.read(readBuffer)) != -1) {
                 totallen += len;
                 i++;
