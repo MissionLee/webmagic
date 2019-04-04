@@ -26,7 +26,7 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
 
 
     private SankakuDownloadSpider diarySankakuSpider;
-    public SankakuInfoUtils sankakuInfoUtils;
+    public SankakuFileUtils sankakuInfoUtils;
     public File root;
     public File updateInfoFile;
     public UpdateInfo updateInfo;
@@ -80,7 +80,7 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
 
             logger.info("NEED :  artist: " + artistName + "UPDATED:" + updateInfo.getUpdateDate(artistName));
             int numberNow = getRealNumOfArtist(artistName, official);
-            int numberStored = SankakuInfoUtils.getArtworkNumber(new File(rootPath + artistName));
+            int numberStored = SankakuFileUtils.getArtworkNumber(new File(rootPath + artistName));
             logger.info("numberNow: " + numberNow + " numberStored: " + numberStored);
             if (numberNow > numberStored) { // 如果需要更新的超过1个 开启更新
                 String startPage = getUrlStringArray(artistName, false, true)[0];
@@ -163,9 +163,9 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
         Spider spider = Spider.create(sankakuSpider);
         spider.addUrl(urls).thread(threadNum).run();
         // TODO: 2019/3/4  以上内容运行结束之后，重构对应作者的artistinfo
-        ArtistInfo artistInfo = SankakuInfoUtils.freshArtistInfo(sankakuSpider.artworkInfos, rootPath + artistName, artistName);
+        ArtistInfo artistInfo = SankakuFileUtils.freshArtistInfo(sankakuSpider.artworkInfos, rootPath + artistName, artistName);
         // 运行结束后 清理一下文件夹，删除错误文件
-        SankakuInfoUtils.cleanFiles(new File(rootPath+artistName));
+        SankakuFileUtils.cleanFiles(new File(rootPath+artistName));
         return artistInfo.getArtworkNum();
     }
 
