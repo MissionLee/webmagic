@@ -140,7 +140,7 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
                     }
                 }
         }
-        Map<String, Integer> sortedMap = sortNameList(nameListMap, true);
+        Map<String, Integer> sortedMap = sortNameList(nameListMap, false);
         rewriteTodoList(nameListFile, sortedMap);
         Map<String, Integer> storageMap = new LinkedHashMap<String, Integer>(sortedMap);
         Set<String> set = sortedMap.keySet();
@@ -189,7 +189,7 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
 
     public static void main(String[] args) {
         try {
-            runProcessor(RunType.RUN_WITH_ARTIST_NAMElIST, "D:\\sankaku", "", 6);
+            runProcessor(RunType.RUN_WITH_ARTIST_NAMElIST, "D:\\sankaku", "", 7);
         } catch (IOException e) {
             e.printStackTrace();
         }
