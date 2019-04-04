@@ -6,12 +6,10 @@ import pers.missionlee.webmagic.utils.TimeLimitedHttpDownloader;
 import us.codecraft.webmagic.Page;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 /**
  * @description:
@@ -19,7 +17,7 @@ import java.util.concurrent.ExecutionException;
  * @create: 2019-03-02 16:24
  */
 public class SankakuDownloadUtils {
-    private static Logger logger = LoggerFactory.getLogger(SankakuInfoUtils.class);
+    private static Logger logger = LoggerFactory.getLogger(SankakuFileUtils.class);
     private static List<String> fatalErrorPageURL = new ArrayList<String>();
     private static Map<String, Integer> pageRedoCounter = new HashMap<String, Integer>();
     private static Map<String, Integer> downloadErrorCounter = new HashMap<String, Integer>();

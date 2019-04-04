@@ -17,8 +17,8 @@ import java.util.*;
  * @author: Mission Lee
  * @create: 2019-03-02 16:24
  */
-public class SankakuInfoUtils {
-    private static Logger logger = LoggerFactory.getLogger(SankakuInfoUtils.class);
+public class SankakuFileUtils {
+    private static Logger logger = LoggerFactory.getLogger(SankakuFileUtils.class);
     private static String ARTWORK_INFO_FILE_NAME = "artworkInfo.jsonline";
     private static String ARTIST_INFO_FILE_NAME = "artistInfo.json";
 

@@ -3,7 +3,7 @@ package pers.missionlee.webmagic.spider.sankaku.pageprocessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pers.missionlee.webmagic.spider.sankaku.SankakuDownloadUtils;
-import pers.missionlee.webmagic.spider.sankaku.SankakuInfoUtils;
+import pers.missionlee.webmagic.spider.sankaku.SankakuFileUtils;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
@@ -46,7 +46,7 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
         super(site);
         this.rootPath =rootPath;
         this.artistName = artistName;
-        this.artworkInfos =SankakuInfoUtils.getArtworkInfoMap(rootPath+artistName);
+        this.artworkInfos = SankakuFileUtils.getArtworkInfoMap(rootPath+artistName);
         this.addedList = new ArrayList<String>();
         this.artistFile =new File(rootPath+artistName);
         if(!artistFile.exists()||!artistFile.isDirectory()){
@@ -99,7 +99,7 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
             artworkInfos.add(artworkInfo);
             try {
                 //infoUtils.appendInfo(artworkInfo);
-                SankakuInfoUtils.appendArtworkInfo(artworkInfo,rootPath+artistName);
+                SankakuFileUtils.appendArtworkInfo(artworkInfo,rootPath+artistName);
             } catch (IOException e) {
                 e.printStackTrace();
             }
