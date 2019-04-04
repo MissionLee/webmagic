@@ -17,6 +17,7 @@ import java.util.concurrent.*;
  */
 
 public class TimeLimitedHttpDownloader {
+    private static ExecutorService executorService = Executors.newFixedThreadPool(10);
     private static Logger logger = LoggerFactory.getLogger(TimeLimitedHttpDownloader.class);
     private static int downloadSpeedLimit = 5; // Unit: k/s
     private static DecimalFormat df = new DecimalFormat(".00");
@@ -132,7 +133,7 @@ public class TimeLimitedHttpDownloader {
 
         long startReadBytes = System.currentTimeMillis();
 
-        final ExecutorService executorService = Executors.newFixedThreadPool(1);
+//        final ExecutorService executorService = Executors.newFixedThreadPool(1);
         CallableInputStreamDownloader downloader = new CallableInputStreamDownloader(in, out, size);
         Future<Object> future = executorService.submit(downloader);
         try {
@@ -141,7 +142,7 @@ public class TimeLimitedHttpDownloader {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            executorService.shutdown();
+            //executorService.shutdown();
             if (out != null)
                 out.close();
             if (in != null)
@@ -155,7 +156,12 @@ public class TimeLimitedHttpDownloader {
             logger.info("Speed: download time less than 1 second");
         // MissionLee ： 为什么要用随机命名，然后重命名 ？ 因为如果程序被中断，可能留下错误文件，
         //                而程序的验证机制是验证名称。
-        new File(file.getPath() + "\\" + UUID).renameTo(new File(file.getPath() + "\\" + filename));
+        File tmpFile = new File(file.getPath() + "\\" + UUID);
+        File aimFile = new File(file.getPath() + "\\" + filename);
+        tmpFile.renameTo(aimFile);
+        System.out.println(tmpFile.getName());
+//        new File(file.getPath() + "\\" + UUID).renameTo(new File(file.getPath() + "\\" + filename));
+
         return 0;
     }
 
