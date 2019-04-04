@@ -18,7 +18,7 @@ import java.util.concurrent.*;
 
 public class TimeLimitedHttpDownloader {
     private static Logger logger = LoggerFactory.getLogger(TimeLimitedHttpDownloader.class);
-    private static int downloadSpeedLimit = 2; // Unit: k/s
+    private static int downloadSpeedLimit = 5; // Unit: k/s
     private static DecimalFormat df = new DecimalFormat(".00");
     private static int mb = 1024 * 1024;
 
