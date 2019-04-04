@@ -256,7 +256,7 @@ public class SankakuInfoUtils {
      * @Author: Mission Lee
      * @date: 2019/3/4
      */
-    private static int cleanFiles(File artist) {
+    public static int cleanFiles(File artist) {
 
         int deleted = 0;
         File[] files = artist.listFiles();
