@@ -138,14 +138,14 @@ public class TimeLimitedHttpDownloader {
         try {
             if (in != null && out != null)
                 future.get(size / (downloadSpeedLimit * 1024), TimeUnit.SECONDS);
-        } catch (TimeoutException e) {
-            e.printStackTrace();
-            return 1;
         } catch (Exception e) {
             e.printStackTrace();
-
         } finally {
             executorService.shutdown();
+            if (out != null)
+                out.close();
+            if (in != null)
+                in.close();
         }
 
         long endReadBytes = System.currentTimeMillis();
@@ -153,11 +153,6 @@ public class TimeLimitedHttpDownloader {
             logger.info("Speed:" + ((size / 1024) / ((endReadBytes - startReadBytes) / 1000)) + "K/s");
         else
             logger.info("Speed: download time less than 1 second");
-        //关闭IO
-        if (out != null)
-            out.close();
-        if (in != null)
-            in.close();
         // MissionLee ： 为什么要用随机命名，然后重命名 ？ 因为如果程序被中断，可能留下错误文件，
         //                而程序的验证机制是验证名称。
         new File(file.getPath() + "\\" + UUID).renameTo(new File(file.getPath() + "\\" + filename));

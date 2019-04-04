@@ -293,4 +293,6 @@ public class SankakuInfoUtils {
         }
         return num;
     }
+
+
 }
