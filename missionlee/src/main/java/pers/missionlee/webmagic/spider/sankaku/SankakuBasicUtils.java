@@ -27,9 +27,9 @@ public class SankakuBasicUtils {
             .setTimeOut(100000)
             .addCookie("__atuvc", "1%7C13")
             .addCookie("__atuvs", "5c9f8f6e66a18234000")
-            .addCookie("_pk_id.1.eee1","7330c3726912358c.1551925508.3.1552697306.1552697159.")
+            .addCookie("_pk_id.1.eee1", "7330c3726912358c.1551925508.3.1552697306.1552697159.")
             .addCookie("_pk_id.2.42fa", "adde0e4a1e63d583.1551189849.179.1553961084.1553956438.")
-            .addCookie("_pk_ref.1.eee1","%5B%22%22%2C%22%22%2C1552697159%2C%22https%3A%2F%2Fchan.sankakucomplex.com%2Frankings%2Fshow%3Forder%3Dquality%26page%3D650%22%5D")
+            .addCookie("_pk_ref.1.eee1", "%5B%22%22%2C%22%22%2C1552697159%2C%22https%3A%2F%2Fchan.sankakucomplex.com%2Frankings%2Fshow%3Forder%3Dquality%26page%3D650%22%5D")
             .addCookie("_pk_ses.2.42fa", "1")
             .addCookie("_sankakucomplex_session", "BAh7BzoMdXNlcl9pZGkDKuwNOg9zZXNzaW9uX2lkIiU0NGRiNGI3YzZiZjUzODcyYTgwNTdlNmI0YzY0NmM0YQ%3D%3D--28314439646bdf2425f974b8a0aabe65141d2dcf")
             .addCookie("auto_page", "0")
@@ -198,23 +198,30 @@ public class SankakuBasicUtils {
         String BaseMpixelsDec = SITE_ORDER_PREFIX.MPIXELS_DEC.getPrefix(artist, offical);
         String BaseProtrait = SITE_ORDER_PREFIX.PORTRAIT.getPrefix(artist, offical);
         String BaseView = SITE_ORDER_PREFIX.VIEW_COUNT.getPrefix(artist, offical);
-
-        if (artworkNum > 2000) { // 2000+ 情况遍历 tag升降序 + date最新 + popular最高 + quality 最高
-            urls = new String[250];
+        if (artworkNum > 2500) {
+            urls = new String[600];
             for (int i = 0; i < 50; i++) {
-                //urls[i] = BaseTagAsc + (i + 1);
-                urls[i + 50-50] = BaseTagDec + (i + 1);
-                urls[i + 100-50] = BaseDate + (i + 1);
+                urls[i] = BaseTagAsc + (i + 1);
+                urls[i + 50] = BaseTagDec + (i + 1);
+                //urls[i + 100] = BaseDate + (i + 1);
                 urls[i + 150-50] = BaseQurlity + (i + 1);
                 urls[i + 200-50] = BasePopular + (i + 1);
                 urls[i + 250-50] = BaseFav + (i + 1);
-//                urls[i + 300] = BaseFilesizeAsc + (i + 1);
-//                urls[i + 350] = BaseFilesizeDes + (i + 1);
-//                urls[i + 400] = BaseLandscape + (i + 1);
-//                urls[i + 450] = BaseMpixelsAsc + (i + 1);
-//                urls[i + 500] = BaseMpixelsDec + (i + 1);
-//                urls[i + 550] = BaseProtrait + (i + 1);
-//                urls[i + 600] = BaseView + (i + 1);
+                urls[i + 300-50] = BaseFilesizeAsc + (i + 1);
+                urls[i + 350-50] = BaseFilesizeDes + (i + 1);
+                urls[i + 400-50] = BaseLandscape + (i + 1);
+                urls[i + 450-50] = BaseMpixelsAsc + (i + 1);
+                urls[i + 500-50] = BaseMpixelsDec + (i + 1);
+                urls[i + 550-50] = BaseProtrait + (i + 1);
+                urls[i + 600-50] = BaseView + (i + 1);
+            }
+        } else if (artworkNum > 2000) { // 2000+ 情况遍历 tag升降序 + date最新 + popular最高 + quality 最高
+            urls = new String[200];
+            for (int i = 0; i < 50; i++) {
+                urls[i] = BaseTagAsc + (i + 1);
+                urls[i + 50] = BaseTagDec + (i + 1);
+                urls[i + 100] = BaseDate + (i + 1);
+                urls[i + 150] = BaseQurlity + (i + 1);
             }
         } else {
             int pageNum = ((Double) (Math.ceil((new Double(artworkNum)) / 20))).intValue();

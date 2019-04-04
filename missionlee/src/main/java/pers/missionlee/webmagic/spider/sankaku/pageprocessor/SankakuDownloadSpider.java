@@ -10,6 +10,7 @@ import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.selector.Html;
 import us.codecraft.webmagic.selector.Selectable;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,11 +28,13 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
     public List<ArtworkInfo> artworkInfos;
     public Map<String, String> artistInfo;
 
-    // root 文件夹
+    // root 路径
     public String rootPath;
+
     // 作者名
     public String artistName;
-
+    // 作者文件夹
+    public File artistFile;
     public List<String> addedList;
     // 下载清空数量
     public int d_suc=0;
@@ -45,6 +48,12 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
         this.artistName = artistName;
         this.artworkInfos =SankakuInfoUtils.getArtworkInfoMap(rootPath+artistName);
         this.addedList = new ArrayList<String>();
+        this.artistFile =new File(rootPath+artistName);
+        if(!artistFile.exists()||!artistFile.isDirectory()){
+            // 可能出现因为网络原因，或者目标nginx阻拦，导致某个作者没有被下载任何作品，但是执行流程
+            // 结束，作者从 name.md文件夹里面出名，此时如果文件夹已经建立，那么在update的时候，还能补救这种情况
+            artistFile.mkdir();
+        }
     }
 
     public List<ArtworkInfo> getArtworkInfos() {
@@ -65,66 +74,66 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
     }
     @Override
     public void process(Page page) {
-        try {
-            Thread.sleep(5000 + new Random().nextInt(30000));
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         String URL = page.getUrl().toString();
         if (URL.contains("tags")) { // 如果访问的时列表页面
-            int thisPageAdded = 0;
-
-            thisPageAdded = addNewArtworkToTarget(page, thisPageAdded);
-            // TODO: 2019/3/17 用于内置的 update模式
-            /**
-             * 更新模式下，如果一个页面查询到的待更新内容超过1个，就添加下一个页面
-             * 更新模式通过  DATE 关键字自动检测
-             * @update 20190327 实际使用中发现大量的本页面更新一两个就够了，找下一页纯属浪费，
-             *          并且在外层processor里面有udpate数量不过尝试遍历作者的方法 所以added改为 > 15
-             * */
-            if(thisPageAdded>15 && URL.contains("date")){
-                String thisPage = URL.substring(URL.length()-1);
-                int thisPageNum = Integer.valueOf(thisPage);
-                if(thisPageNum<50){
-                    String urlPrefix = URL.substring(0,URL.length()-1);
-                    page.addTargetRequest(urlPrefix+ (++thisPageNum));
-                    logger.info("⭐ add： "+urlPrefix+thisPageNum);
-                }
-            }
-
+            processListPage(page, URL);
         } else if (page.getUrl().toString().contains("https://chan.sankakucomplex.com/post/show/")) {
-            // 详情页面
-            Html html = page.getHtml();
-            // 防止被抓,设置一个比较长的睡觉时间 10~30秒
-//            String targetUrl="";
-//            String targetName="";
-//            String subFix = "/pic";
-
-            Target target= getTrgetInfo(html);
-
-            ArtworkInfo artworkInfo = extractArtworkInfo(page, html, target);
-
-            // TODO: 2019/3/2 1.下载 2.内存记录 3.日志记录
-            logger.info("spider - FILE START DOWNLOAD:" + target.targetUrl);
-            if (SankakuDownloadUtils.download(target.targetUrl, target.targetName, rootPath+artistName + target.subFix, page, page.getUrl().toString())) {
-                // 下载成功
-                // TODO: 2019/3/9  【完成】
-                artworkInfos.add(artworkInfo);
-                try {
-                    //infoUtils.appendInfo(artworkInfo);
-                    SankakuInfoUtils.appendArtworkInfo(artworkInfo,rootPath+artistName);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                d_suc++;
-            } else {
-                d_err++;
-            }
-
+            processDetailPage(page);
         } else {
             logger.warn("Went to page: " + page.getUrl());
         }
         logger.info("-suc: [" + d_suc + "/"+d_added+"] -err: [" + d_err + "/"+d_added+ "] -skip: " + d_skip);
+    }
+
+    private void processDetailPage(Page page) {
+        // 详情页面
+        Html html = page.getHtml();
+        Target target= getTrgetInfo(html);
+        ArtworkInfo artworkInfo = extractArtworkInfo(page, html, target);
+        // TODO: 2019/3/2 1.下载 2.内存记录 3.日志记录
+        logger.info("spider - FILE START DOWNLOAD:" + target.targetUrl);
+
+        if (SankakuDownloadUtils.download(target.targetUrl, target.targetName, rootPath+artistName + target.subFix, page, page.getUrl().toString())) {
+            // 下载成功
+            // TODO: 2019/3/9  【完成】
+            artworkInfos.add(artworkInfo);
+            try {
+                //infoUtils.appendInfo(artworkInfo);
+                SankakuInfoUtils.appendArtworkInfo(artworkInfo,rootPath+artistName);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            d_suc++;
+        } else {
+            d_err++;
+        }
+    }
+
+    private void processListPage(Page page, String URL) {
+        try {
+            Thread.sleep(new Random().nextInt(40000));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        int thisPageAdded = 0;
+
+        thisPageAdded = addNewArtworkToTarget(page, thisPageAdded);
+        // TODO: 2019/3/17 用于内置的 update模式
+        /**
+         * 更新模式下，如果一个页面查询到的待更新内容超过1个，就添加下一个页面
+         * 更新模式通过  DATE 关键字自动检测
+         * @update 20190327 实际使用中发现大量的本页面更新一两个就够了，找下一页纯属浪费，
+         *          并且在外层processor里面有udpate数量不过尝试遍历作者的方法 所以added改为 > 15
+         * */
+        if(thisPageAdded>15 && URL.contains("date")){
+            String thisPage = URL.substring(URL.length()-1);
+            int thisPageNum = Integer.valueOf(thisPage);
+            if(thisPageNum<50){
+                String urlPrefix = URL.substring(0,URL.length()-1);
+                page.addTargetRequest(urlPrefix+ (++thisPageNum));
+                logger.info("⭐ add： "+urlPrefix+thisPageNum);
+            }
+        }
     }
 
     private ArtworkInfo extractArtworkInfo(Page page,Html html,Target target) {

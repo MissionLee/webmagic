@@ -25,12 +25,14 @@ public class SankakuDownloadUtils {
     private static Map<String, Integer> downloadErrorCounter = new HashMap<String, Integer>();
 
     public static boolean download(String downloadURL, String filename, String savePath, Page page, String pageURL) {
+
         int downloadStatus = 3;
         try {
             logger.info("[PAGE-RETRY:" + (pageRedoCounter.containsKey(pageURL) ? pageRedoCounter.get(pageURL) + 1 : 1)
                     + " / DO-RETRY:" + (downloadErrorCounter.containsKey(downloadURL) ? downloadErrorCounter.get(downloadURL) + 1 : 1)
                     + "] " + downloadURL);
-            File aimFile = new File(savePath + "/" + filename);
+
+
             if (!new File(savePath + "/" + filename).exists()) {
                 logger.info("downloader - start download");
                 downloadStatus = TimeLimitedHttpDownloader.download(downloadURL, filename, savePath, pageURL);

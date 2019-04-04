@@ -118,7 +118,7 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
     //    public static void fullDownloadAll(String rootPath, boolean official, int threadNum, String... artistname) {
 //
 //    }
-    public void fullDownloadWithInnerList(String rootPath, boolean official, int threadNum,boolean desc) throws IOException {
+    public void fullDownloadWithInnerList(String rootPath, boolean official, int threadNum) throws IOException {
         File nameListFile = new File(rootPath + "name.md");
         String nameListString = FileUtils.readFileToString(nameListFile, "UTF8");
         String[] nameListArray = nameListString.split("\n");
@@ -140,7 +140,7 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
                     }
                 }
         }
-        Map<String, Integer> sortedMap = sortNameList(nameListMap, desc);
+        Map<String, Integer> sortedMap = sortNameList(nameListMap, false);
         rewriteTodoList(nameListFile, sortedMap);
         Map<String, Integer> storageMap = new LinkedHashMap<String, Integer>(sortedMap);
         Set<String> set = sortedMap.keySet();
@@ -175,13 +175,13 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
         if (type == RunType.RUN_WITH_ARTIST_NAME) {
             processor.fullDownloadOne(rootPath, artistName, false, threadNum);
         } else if (type == RunType.RUN_WITH_ARTIST_NAMElIST) {
-            processor.fullDownloadWithInnerList(rootPath, false, threadNum,false);
+            processor.fullDownloadWithInnerList(rootPath, false, threadNum);
         } else if (type == RunType.UPDATE_ARTIST) {
             processor.updateAll(rootPath, false, threadNum);
         } else if (type == RunType.RUN_WITH_COPYRIGHT_NAME) {
             processor.fullDownloadOne(rootPath, artistName, true, threadNum);
         } else if (type == RunType.RUN_WITH_COPYRIGHT_NAMELIST) {
-            processor.fullDownloadWithInnerList(rootPath, true, threadNum,false);
+            processor.fullDownloadWithInnerList(rootPath, true, threadNum);
         } else if (type == RunType.UPDATE_COPYRIGHT) {
             processor.updateAll(rootPath, true, threadNum);
         }
@@ -189,7 +189,7 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
 
     public static void main(String[] args) {
         try {
-            runProcessor(RunType.RUN_WITH_ARTIST_NAMElIST, "F:\\sankaku", "", 7);
+            runProcessor(RunType.RUN_WITH_ARTIST_NAMElIST, "D:\\sankaku", "", 7);
         } catch (IOException e) {
             e.printStackTrace();
         }

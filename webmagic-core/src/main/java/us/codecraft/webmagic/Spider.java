@@ -319,10 +319,16 @@ public class Spider implements Runnable, Task {
                 // TODO: 2019/3/1 怀疑下面的方法导致程序卡死 
                 waitNewUrl();
             } else {
+
                 threadPool.execute(new Runnable() {
                     @Override
                     public void run() {
                         try {
+                            try {
+                                Thread.sleep(new Random().nextInt(30000));
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                             processRequest(request); // 执行
                             onSuccess(request);
                         } catch (Exception e) {
