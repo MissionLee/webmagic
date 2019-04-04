@@ -164,6 +164,8 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
         spider.addUrl(urls).thread(threadNum).run();
         // TODO: 2019/3/4  以上内容运行结束之后，重构对应作者的artistinfo
         ArtistInfo artistInfo = SankakuInfoUtils.freshArtistInfo(sankakuSpider.artworkInfos, rootPath + artistName, artistName);
+        // 运行结束后 清理一下文件夹，删除错误文件
+        SankakuInfoUtils.cleanFiles(new File(rootPath+artistName));
         return artistInfo.getArtworkNum();
     }
 
