@@ -24,9 +24,6 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
 
     private Logger logger = LoggerFactory.getLogger(SankakuSpiderProcessor.class);
 
-
-    private SankakuDownloadSpider diarySankakuSpider;
-    public SankakuFileUtils sankakuInfoUtils;
     public File root;
     public File updateInfoFile;
     public UpdateInfo updateInfo;
