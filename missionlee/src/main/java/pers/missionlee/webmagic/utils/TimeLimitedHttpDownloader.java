@@ -1,6 +1,7 @@
 package pers.missionlee.webmagic.utils;
 
 
+import com.sun.xml.internal.bind.v2.TODO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,8 +17,9 @@ import java.util.concurrent.*;
  */
 
 public class TimeLimitedHttpDownloader {
+    private static ExecutorService executorService = Executors.newFixedThreadPool(10);
     private static Logger logger = LoggerFactory.getLogger(TimeLimitedHttpDownloader.class);
-    private static int downloadSpeedLimit = 2; // Unit: k/s
+    private static int downloadSpeedLimit = 5; // Unit: k/s
     private static DecimalFormat df = new DecimalFormat(".00");
     private static int mb = 1024 * 1024;
 
@@ -131,20 +133,20 @@ public class TimeLimitedHttpDownloader {
 
         long startReadBytes = System.currentTimeMillis();
 
-        final ExecutorService executorService = Executors.newFixedThreadPool(1);
+//        final ExecutorService executorService = Executors.newFixedThreadPool(1);
         CallableInputStreamDownloader downloader = new CallableInputStreamDownloader(in, out, size);
         Future<Object> future = executorService.submit(downloader);
         try {
             if (in != null && out != null)
                 future.get(size / (downloadSpeedLimit * 1024), TimeUnit.SECONDS);
-        } catch (TimeoutException e) {
-            e.printStackTrace();
-            return 1;
         } catch (Exception e) {
             e.printStackTrace();
-
         } finally {
-            executorService.shutdown();
+            //executorService.shutdown();
+            if (out != null)
+                out.close();
+            if (in != null)
+                in.close();
         }
 
         long endReadBytes = System.currentTimeMillis();
@@ -152,14 +154,14 @@ public class TimeLimitedHttpDownloader {
             logger.info("Speed:" + ((size / 1024) / ((endReadBytes - startReadBytes) / 1000)) + "K/s");
         else
             logger.info("Speed: download time less than 1 second");
-        //关闭IO
-        if (out != null)
-            out.close();
-        if (in != null)
-            in.close();
         // MissionLee ： 为什么要用随机命名，然后重命名 ？ 因为如果程序被中断，可能留下错误文件，
         //                而程序的验证机制是验证名称。
-        new File(file.getPath() + "\\" + UUID).renameTo(new File(file.getPath() + "\\" + filename));
+        File tmpFile = new File(file.getPath() + "\\" + UUID);
+        File aimFile = new File(file.getPath() + "\\" + filename);
+        tmpFile.renameTo(aimFile);
+        System.out.println(tmpFile.getName());
+//        new File(file.getPath() + "\\" + UUID).renameTo(new File(file.getPath() + "\\" + filename));
+
         return 0;
     }
 

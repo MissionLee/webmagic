@@ -191,7 +191,7 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
 
     public static void main(String[] args) {
         try {
-            runProcessor(RunType.RUN_WITH_ARTIST_NAMElIST, "D:\\sankaku", "", 7);
+            runProcessor(RunType.RUN_WITH_ARTIST_NAMElIST, "F:\\sankaku", "", 5);
         } catch (IOException e) {
             e.printStackTrace();
         }
