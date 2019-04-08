@@ -43,6 +43,7 @@ public class SankakuDownloadUtils {
                     redownload(downloadURL,filename,savePath,page,pageURL);
                 }
             } else {
+                downloadStatus = true;
                 logger.info("已经存在："+filename+" [跳过]");
             }
             return downloadStatus;
