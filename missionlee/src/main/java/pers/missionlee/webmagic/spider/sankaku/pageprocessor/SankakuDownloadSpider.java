@@ -3,7 +3,7 @@ package pers.missionlee.webmagic.spider.sankaku.pageprocessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pers.missionlee.webmagic.spider.sankaku.SankakuDownloadUtils;
-import pers.missionlee.webmagic.spider.sankaku.SankakuFileUtils;
+import pers.missionlee.webmagic.spider.sankaku.info.SankakuFileUtils;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
@@ -37,34 +37,25 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
     public File artistFile;
     public List<String> addedList;
     // 下载清空数量
-    public int d_suc=0;
-    public int d_skip=0;
-    public int d_err=0;
-    public int d_added=0;
+    public int d_suc = 0;
+    public int d_skip = 0;
+    public int d_err = 0;
+    public int d_added = 0;
 
-    public SankakuDownloadSpider(Site site,String rootPath,String artistName) throws IOException {
-        super(site);
-        this.rootPath =rootPath;
+    public SankakuDownloadSpider(Site site, String rootPath, String artistName) throws IOException {
+        super(site,rootPath,artistName);
+        this.rootPath = rootPath;
         this.artistName = artistName;
-        this.artworkInfos = SankakuFileUtils.getArtworkInfoMap(rootPath+artistName);
+        this.artworkInfos = SankakuFileUtils.getArtworkInfoList(rootPath, artistName);
         this.addedList = new ArrayList<String>();
-        this.artistFile =new File(rootPath+artistName);
-        if(!artistFile.exists()||!artistFile.isDirectory()){
-            // 可能出现因为网络原因，或者目标nginx阻拦，导致某个作者没有被下载任何作品，但是执行流程
-            // 结束，作者从 name.md文件夹里面出名，此时如果文件夹已经建立，那么在update的时候，还能补救这种情况
-            artistFile.mkdir();
-        }
+        //this.artistFile =new File(rootPath+artistName);
+        // 可能出现因为网络原因，或者目标nginx阻拦，导致某个作者没有被下载任何作品，但是执行流程
+        // 结束，作者从 name.md文件夹里面出名，此时如果文件夹已经建立，那么在update的时候，还能补救这种情况
+
+
     }
 
-    public List<ArtworkInfo> getArtworkInfos() {
-        return artworkInfos;
-    }
-
-    public Map<String, String> getArtistInfo() {
-        return artistInfo;
-    }
-
-    private  boolean hasDownloaded(String URL) {
+    private boolean hasDownloaded(String URL) {
         for (ArtworkInfo info :
                 artworkInfos) {
             if (info.getAddress().equals(URL))
@@ -72,6 +63,7 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
         }
         return false;
     }
+
     @Override
     public void process(Page page) {
         String URL = page.getUrl().toString();
@@ -82,24 +74,24 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
         } else {
             logger.warn("Went to page: " + page.getUrl());
         }
-        logger.info("-suc: [" + d_suc + "/"+d_added+"] -err: [" + d_err + "/"+d_added+ "] -skip: " + d_skip);
+        logger.info("-suc: [" + d_suc + "/" + d_added + "] -err: [" + d_err + "/" + d_added + "] -skip: " + d_skip);
     }
 
     private void processDetailPage(Page page) {
         // 详情页面
         Html html = page.getHtml();
-        Target target= getTrgetInfo(html);
+        Target target = getTrgetInfo(html);
         ArtworkInfo artworkInfo = extractArtworkInfo(page, html, target);
         // TODO: 2019/3/2 1.下载 2.内存记录 3.日志记录
         logger.info("spider - FILE START DOWNLOAD:" + target.targetUrl);
 
-        if (SankakuDownloadUtils.download(target.targetUrl, target.targetName, rootPath+artistName + target.subFix, page, page.getUrl().toString())) {
+        if (SankakuDownloadUtils.download(target.targetUrl, target.targetName, SankakuFileUtils.buildPath(rootPath,artistName,target.subFix), page)) {
             // 下载成功
             // TODO: 2019/3/9  【完成】
             artworkInfos.add(artworkInfo);
             try {
                 //infoUtils.appendInfo(artworkInfo);
-                SankakuFileUtils.appendArtworkInfo(artworkInfo,rootPath+artistName);
+                SankakuFileUtils.appendArtworkInfo(artworkInfo, rootPath, artistName);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -125,18 +117,18 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
          * @update 20190327 实际使用中发现大量的本页面更新一两个就够了，找下一页纯属浪费，
          *          并且在外层processor里面有udpate数量不过尝试遍历作者的方法 所以added改为 > 15
          * */
-        if(thisPageAdded>15 && URL.contains("date")){
-            String thisPage = URL.substring(URL.length()-1);
+        if (thisPageAdded > 15 && URL.contains("date")) {
+            String thisPage = URL.substring(URL.length() - 1);
             int thisPageNum = Integer.valueOf(thisPage);
-            if(thisPageNum<50){
-                String urlPrefix = URL.substring(0,URL.length()-1);
-                page.addTargetRequest(urlPrefix+ (++thisPageNum));
-                logger.info("⭐ add： "+urlPrefix+thisPageNum);
+            if (thisPageNum < 50) {
+                String urlPrefix = URL.substring(0, URL.length() - 1);
+                page.addTargetRequest(urlPrefix + (++thisPageNum));
+                logger.info("⭐ add： " + urlPrefix + thisPageNum);
             }
         }
     }
 
-    private ArtworkInfo extractArtworkInfo(Page page,Html html,Target target) {
+    private ArtworkInfo extractArtworkInfo(Page page, Html html, Target target) {
         // 提取标签信息
         Selectable tagSideBar = html.$("#tag-sidebar");
         //  标签-版权
@@ -174,11 +166,11 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
         //  标签-风俗 体裁 样式
         List<String> genreHtmlList = tagSideBar.$(".tag-type-genre").$("a").all();
         List<String> genreList = new ArrayList<String>();
-        extractTags(genreHtmlList,genreList);
+        extractTags(genreHtmlList, genreList);
         //  标签- meta
         List<String> metaHtmlList = tagSideBar.$(".tag-type-meta").$("a").all();
         List<String> metaList = new ArrayList<String>();
-        extractTags(metaHtmlList,metaList);
+        extractTags(metaHtmlList, metaList);
         // 提取文件信息
         Selectable stats = html.$("#stats");
         List<String> statsLiList = stats.$("ul li").all();
@@ -222,11 +214,13 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
         artworkInfo.setTakeTime(System.currentTimeMillis());
         return artworkInfo;
     }
-    private class Target{
+
+    private class Target {
         String targetUrl;
         String targetName;
         String subFix;
     }
+
     private int addNewArtworkToTarget(Page page, int thisPageAdded) {
         List<String> urlList = page.getHtml().$(".thumb").$("a", "href").all();
         /**
@@ -250,7 +244,8 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
         }
         return thisPageAdded;
     }
-    private Target getTrgetInfo(Html html){
+
+    private Target getTrgetInfo(Html html) {
         Target target = new Target();
         List<String> maybe = html.$("#image-link", "href").all();
         if (maybe != null && maybe.size() > 0) {  //如果页面内容是个图片，则存在 #image-link
@@ -270,7 +265,7 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
         String[] split = target.targetUrl.split("/");
         target.targetName = split[split.length - 1].split("\\?")[0];
         String nameLow = target.targetName.toLowerCase();
-        target.subFix="/pic";
+        target.subFix = "/pic";
         if (nameLow.endsWith(".mp4")
                 || nameLow.endsWith(".webm")
                 || nameLow.endsWith(".avi")

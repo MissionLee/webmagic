@@ -1,6 +1,7 @@
 package pers.missionlee.webmagic.spider.sankaku.pageprocessor;
 
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
+import pers.missionlee.webmagic.spider.sankaku.info.SankakuFileUtils;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.processor.PageProcessor;
 
@@ -22,8 +23,11 @@ public abstract class AbstractSankakuSpider implements PageProcessor {
 
     Site site;
 
-    public AbstractSankakuSpider(Site site) {
+    public AbstractSankakuSpider(Site site,String rootPath,String artistName) {
         this.site = site;
+        if(!SankakuFileUtils.makeArtistDir(rootPath, artistName)){
+            throw new RuntimeException("can not create dir:"+artistName);
+        }
     }
 
     public String extractStats(String sourceStr, Pattern pattern) {

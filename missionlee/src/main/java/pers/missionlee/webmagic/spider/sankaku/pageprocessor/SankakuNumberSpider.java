@@ -15,8 +15,8 @@ import java.util.regex.Matcher;
  */
 public class SankakuNumberSpider extends AbstractSankakuSpider {
     boolean offical;
-    public SankakuNumberSpider(Site site,boolean offical) {
-        super(site);
+    public SankakuNumberSpider(Site site,String rootPath,String artistName,boolean offical) {
+        super(site,rootPath,artistName);
         this.offical = offical;
     }
 

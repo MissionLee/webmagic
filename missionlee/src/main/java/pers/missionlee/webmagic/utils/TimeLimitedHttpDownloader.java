@@ -27,11 +27,13 @@ public class TimeLimitedHttpDownloader {
         InputStream in;
         OutputStream out;
         int size;
+        String filename;
 
-        public CallableInputStreamDownloader(InputStream in, OutputStream out, int size) {
+        public CallableInputStreamDownloader(InputStream in, OutputStream out, int size,String filename) {
             this.in = in;
             this.out = out;
             this.size = size;
+            this.filename=filename;
         }
 
         public static int readBufferSize = 1024 * 16;
@@ -53,10 +55,10 @@ public class TimeLimitedHttpDownloader {
                 //再从bytes中写入文件
                 if (i % 32 == 0) {
                     if (size > mb) {
-                        logger.info("[" + df.format(100 * totallen / size) + "%]-[" + (size / mb) + "M] | " + df.format(totallen * 1000 / 1024 / (System.currentTimeMillis() - start)) + "K/S");
+                        logger.info("[" + df.format(100 * totallen / size) + "%]-[" + (size / mb) + "M] | " + df.format(totallen * 1000 / 1024 / (System.currentTimeMillis() - start)) + "K/S "+filename);
 
                     } else {
-                        logger.info("[" + df.format(100 * totallen / size) + "%]-[" + (size / 1024) + "K] | " + df.format(totallen * 1000 / 1024 / (System.currentTimeMillis() - start)) + "K/S");
+                        logger.info("[" + df.format(100 * totallen / size) + "%]-[" + (size / 1024) + "K] | " + df.format(totallen * 1000 / 1024 / (System.currentTimeMillis() - start)) + "K/S "+filename);
                     }
                 }
                 // 把read buffer 的0 ~ len 位置 写到 write buffer 的 writeBufferPointer 位置
@@ -70,7 +72,7 @@ public class TimeLimitedHttpDownloader {
             }
             if (writeBufferPointer > 0)
                 out.write(writeBuffer, 0, writeBufferPointer);
-            logger.info(" -[100.0%]-[" + (size / 1024) + "K] | " + (totallen * 1000 / 1024) / (System.currentTimeMillis() - start) + "K/S");
+            logger.info(" -[100.0%]-[" + (size / 1024) + "K] | " + (totallen * 1000 / 1024) / (System.currentTimeMillis() - start) + "K/S "+filename);
             return null;
         }
     }
@@ -87,7 +89,13 @@ public class TimeLimitedHttpDownloader {
      * @Author: Mission Lee
      * @date: 2019/3/2
      */
-    public static int download(String urlStr, String filename, String savePath, String referer) throws IOException, ExecutionException, InterruptedException {
+    public static boolean download(String urlStr, String filename, String savePath, String referer) throws IOException, ExecutionException, InterruptedException, TimeoutException {
+        boolean status = false;
+
+        // FileUtils 有父路径不存在自动船舰的功能，但是 FileOutputStream没有这个能力，所以要自己判断一下
+        File saveDir = new File(savePath);
+        if(!saveDir.exists())
+            saveDir.mkdir();
 
         URL url = new URL(urlStr);
 
@@ -96,73 +104,64 @@ public class TimeLimitedHttpDownloader {
          //            更保险的形式，我们把Connection换成HttpURLConnection，因为浏览器使用这种方式来创建链接
          //            “GET/POST” 的设置是否恰当会从 405错误看出来
          */
-        HttpURLConnection connection = null;
-        try {
-            connection = (HttpURLConnection) url.openConnection();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // 此处抛出IOException
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         //请求超时时间
         formatConnection(referer, connection);
-        //输入流
         long start = System.currentTimeMillis();
-        InputStream in = null;
-        // TODO: 2019/3/9 原本用try-catch的方式返回1，现在如果报错，外层会进入处理机制
-//        try {
-        in = connection.getInputStream();
-//        } catch (SocketTimeoutException e) {
-//            e.printStackTrace();
-//            return 1;
-//        }
+
+        // 获取输入流 此处抛出 IOException
+        InputStream in =  connection.getInputStream();
         logger.info("web downloader getInputStream - time" + (System.currentTimeMillis() - start));
-        int size = connection.getContentLength();
+        int fileSize = connection.getContentLength();
 
-        // 父目录不存在的时候，创建这个文件夹
-        File file = new File(savePath);
-        if (!file.exists())
-            file.mkdirs();
 
-        String UUID = java.util.UUID.randomUUID().toString();
+        String randomName = java.util.UUID.randomUUID().toString();
         /**  关于FileNotFoundException
          * 1. 如果给定name指向一个目录
          * 2. 给定文件不存在 同时 不能被创建  【暗示会创建文件】
          * 3. 没法打开
          * ！！！ 这里因为我本机的环境，基本不会出现报错的
          * */
-        OutputStream out = new FileOutputStream(file.getPath() + "\\" + UUID);
+        // 输出流 此处抛出 FileNotFoundException
+        OutputStream out = new FileOutputStream(savePath + "\\" + randomName);
 
         long startReadBytes = System.currentTimeMillis();
-
-//        final ExecutorService executorService = Executors.newFixedThreadPool(1);
-        CallableInputStreamDownloader downloader = new CallableInputStreamDownloader(in, out, size);
+        CallableInputStreamDownloader downloader = new CallableInputStreamDownloader(in, out, fileSize,filename);
         Future<Object> future = executorService.submit(downloader);
         try {
-            if (in != null && out != null)
-                future.get(size / (downloadSpeedLimit * 1024), TimeUnit.SECONDS);
+
+
+            if (in != null && out != null){
+                future.get(fileSize / (downloadSpeedLimit * 1024), TimeUnit.SECONDS);
+                status = true;
+            }
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            //executorService.shutdown();
+        }finally {
             if (out != null)
                 out.close();
             if (in != null)
                 in.close();
+            if(!status){//如果下载失败 （超时等其他错误）  注意 stream 必须close之后，文件才能delete
+                new File(savePath+"\\"+randomName).delete();
+            }
         }
 
         long endReadBytes = System.currentTimeMillis();
         if ((endReadBytes - startReadBytes) / 1000 > 0)
-            logger.info("Speed:" + ((size / 1024) / ((endReadBytes - startReadBytes) / 1000)) + "K/s");
+            logger.info("Speed:" + ((fileSize / 1024) / ((endReadBytes - startReadBytes) / 1000)) + "K/s");
         else
             logger.info("Speed: download time less than 1 second");
         // MissionLee ： 为什么要用随机命名，然后重命名 ？ 因为如果程序被中断，可能留下错误文件，
         //                而程序的验证机制是验证名称。
-        File tmpFile = new File(file.getPath() + "\\" + UUID);
-        File aimFile = new File(file.getPath() + "\\" + filename);
-        tmpFile.renameTo(aimFile);
-        System.out.println(tmpFile.getName());
-//        new File(file.getPath() + "\\" + UUID).renameTo(new File(file.getPath() + "\\" + filename));
-
-        return 0;
+        // 这里不用判断状态也可以，因为如果报错了，根本走不到这里
+        if(status){
+            File tmpFile = new File(savePath + "\\" + randomName);
+            File aimFile = new File(savePath + "\\" + filename);
+            tmpFile.renameTo(aimFile);
+        }
+        return status;
     }
 
     private static void formatConnection(String referer, HttpURLConnection connection) throws ProtocolException {
