@@ -72,7 +72,7 @@ public class TimeLimitedHttpDownloader {
             }
             if (writeBufferPointer > 0)
                 out.write(writeBuffer, 0, writeBufferPointer);
-            logger.info(" -[100.0%]-[" + (size / 1024) + "K] | " + (totallen * 1000 / 1024) / (System.currentTimeMillis() - start) + "K/S "+filename);
+            logger.info(" -[100.0%]-[" + (size / 1024) + "K] | " + df.format((totallen * 1000 / 1024) / (System.currentTimeMillis() - start)) + "K/S "+filename);
             return null;
         }
     }
