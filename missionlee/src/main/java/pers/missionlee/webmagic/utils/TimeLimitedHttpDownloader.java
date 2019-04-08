@@ -22,7 +22,9 @@ public class TimeLimitedHttpDownloader {
     private static int downloadSpeedLimit = 5; // Unit: k/s
     private static DecimalFormat df = new DecimalFormat(".00");
     private static int mb = 1024 * 1024;
+    static {
 
+    }
     private static class CallableInputStreamDownloader implements Callable {
         InputStream in;
         OutputStream out;
@@ -98,18 +100,19 @@ public class TimeLimitedHttpDownloader {
             saveDir.mkdir();
 
         URL url = new URL(urlStr);
-
         /**
          //打开url连接  可以用普通的URLConnection,但是根据后台的不同，有些后台回对普通的URLConnection返回500错误
          //            更保险的形式，我们把Connection换成HttpURLConnection，因为浏览器使用这种方式来创建链接
          //            “GET/POST” 的设置是否恰当会从 405错误看出来
          */
+
         // 此处抛出IOException
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
         //请求超时时间
         formatConnection(referer, connection);
         long start = System.currentTimeMillis();
-
+        //connection.connect();
         // 获取输入流 此处抛出 IOException
         InputStream in =  connection.getInputStream();
         logger.info("web downloader getInputStream - time" + (System.currentTimeMillis() - start));
@@ -147,7 +150,7 @@ public class TimeLimitedHttpDownloader {
                 new File(savePath+"\\"+randomName).delete();
             }
         }
-
+        connection.disconnect();
         long endReadBytes = System.currentTimeMillis();
         if ((endReadBytes - startReadBytes) / 1000 > 0)
             logger.info("Speed:" + ((fileSize / 1024) / ((endReadBytes - startReadBytes) / 1000)) + "K/s");
@@ -166,6 +169,7 @@ public class TimeLimitedHttpDownloader {
 
     private static void formatConnection(String referer, HttpURLConnection connection) throws ProtocolException {
         connection.setConnectTimeout(50000);
+        connection.setReadTimeout(50000);
         connection.setRequestMethod("GET");
         connection.setRequestProperty("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
         connection.setRequestProperty("accept-encoding", "gzip, deflate, br");
