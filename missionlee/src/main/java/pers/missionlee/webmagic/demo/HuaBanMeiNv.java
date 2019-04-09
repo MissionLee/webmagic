@@ -36,7 +36,7 @@ public class HuaBanMeiNv implements PageProcessor {
             Map fileMap = (Map)JSON.parse(map.get("file").toString());
 
 //            try {
-////                download("http://img.hb.aicdn.com/"+fileMap.get("key"),fileMap.get("key")+".jpg","C:\\Users\\MissionLee\\Desktop\\表格");
+////                downloadWithAutoRetry("http://img.hb.aicdn.com/"+fileMap.get("key"),fileMap.get("key")+".jpg","C:\\Users\\MissionLee\\Desktop\\表格");
 //            } catch (IOException e) {
 //                e.printStackTrace();
 //            }

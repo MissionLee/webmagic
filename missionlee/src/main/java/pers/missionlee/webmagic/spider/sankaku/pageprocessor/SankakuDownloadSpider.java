@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import pers.missionlee.webmagic.spider.sankaku.SankakuDownloadUtils;
 import pers.missionlee.webmagic.spider.sankaku.info.SankakuFileUtils;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
+import pers.missionlee.webmagic.utils.TimeLimitedHttpDownloader;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.selector.Html;
@@ -12,29 +13,24 @@ import us.codecraft.webmagic.selector.Selectable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
- * @description:
+ * @description: 对于每一次下载工作（下载某个tag对应的内容），都要创建一个此对象
  * @author: Mission Lee
  * @create: 2019-03-02 16:20
  */
 public class SankakuDownloadSpider extends AbstractSankakuSpider {
     Logger logger = LoggerFactory.getLogger(SankakuDownloadSpider.class);
-
-    public List<ArtworkInfo> artworkInfos;
-    public Map<String, String> artistInfo;
-
     // root 路径
     public String rootPath;
-
-    // 作者名
+    /**
+     * 已经下载成功的作品信息（初始状态为本地存储的部分，下载过程中动态添加）
+     */
+    public List<ArtworkInfo> artworkInfos;
+    // 作者名/tag  同时也是当前作者/tag本地文件夹名称
     public String artistName;
-    // 作者文件夹
-    public File artistFile;
+    // 扫描列表页因为存在 不同的排序情况同时使用的可能，借助这个addedList 排除artworkInfos里面没有，但是已经被添加到待下载列表中的文件
     public List<String> addedList;
     // 下载清空数量
     public int d_suc = 0;
@@ -42,8 +38,13 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
     public int d_err = 0;
     public int d_added = 0;
 
+    // == 以下用于下载出错后重新下载的机制
+    private Map<String, Integer> pageRedoCounter = new HashMap<String, Integer>();
+    private Map<String, Integer> downloadErrorCounter = new HashMap<String, Integer>();
+
+
     public SankakuDownloadSpider(Site site, String rootPath, String artistName) throws IOException {
-        super(site,rootPath,artistName);
+        super(site, rootPath, artistName);
         this.rootPath = rootPath;
         this.artistName = artistName;
         this.artworkInfos = SankakuFileUtils.getArtworkInfoList(rootPath, artistName);
@@ -51,8 +52,6 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
         //this.artistFile =new File(rootPath+artistName);
         // 可能出现因为网络原因，或者目标nginx阻拦，导致某个作者没有被下载任何作品，但是执行流程
         // 结束，作者从 name.md文件夹里面出名，此时如果文件夹已经建立，那么在update的时候，还能补救这种情况
-
-
     }
 
     private boolean hasDownloaded(String URL) {
@@ -69,7 +68,7 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
         String URL = page.getUrl().toString();
         if (URL.contains("tags")) { // 如果访问的时列表页面
             processListPage(page, URL);
-        } else if (page.getUrl().toString().contains("https://chan.sankakucomplex.com/post/show/")) {
+        } else if (page.getUrl().toString().startsWith("https://chan.sankakucomplex.com/post/show/")) {
             processDetailPage(page);
         } else {
             logger.warn("Went to page: " + page.getUrl());
@@ -77,29 +76,9 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
         logger.info("-suc: [" + d_suc + "/" + d_added + "] -err: [" + d_err + "/" + d_added + "] -skip: " + d_skip);
     }
 
-    private void processDetailPage(Page page) {
-        // 详情页面
-        Html html = page.getHtml();
-        Target target = getTrgetInfo(html);
-        ArtworkInfo artworkInfo = extractArtworkInfo(page, html, target);
-        // TODO: 2019/3/2 1.下载 2.内存记录 3.日志记录
-        logger.info("spider - FILE START DOWNLOAD:" + target.targetUrl);
 
-        if (SankakuDownloadUtils.download(target.targetUrl, target.targetName, SankakuFileUtils.buildPath(rootPath,artistName,target.subFix), page)) {
-            // 下载成功
-            // TODO: 2019/3/9  【完成】
-            artworkInfos.add(artworkInfo);
-            try {
-                //infoUtils.appendInfo(artworkInfo);
-                SankakuFileUtils.appendArtworkInfo(artworkInfo, rootPath, artistName);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            d_suc++;
-        } else {
-            d_err++;
-        }
-    }
+
+
 
     private void processListPage(Page page, String URL) {
         try {
@@ -109,7 +88,7 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
         }
         int thisPageAdded = 0;
 
-        thisPageAdded = addNewArtworkToTarget(page, thisPageAdded);
+        thisPageAdded = extractDetainPageUrlFromListPageAndAddToTargetRequest(page, thisPageAdded);
         // TODO: 2019/3/17 用于内置的 update模式
         /**
          * 更新模式下，如果一个页面查询到的待更新内容超过1个，就添加下一个页面
@@ -128,7 +107,59 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
         }
     }
 
-    private ArtworkInfo extractArtworkInfo(Page page, Html html, Target target) {
+    /**
+     * 分析列表页面，将需要下载的详情页面加入 TargetRequest
+     */
+    private int extractDetainPageUrlFromListPageAndAddToTargetRequest(Page page, int thisPageAdded) {
+        List<String> urlList = page.getHtml().$(".thumb").$("a", "href").all();
+        /**
+         * 通过 存档记录 判断是否需要添加页面中的子页面
+         * */
+        if (urlList != null && urlList.size() > 0) {
+            for (String url : urlList
+            ) {
+
+                if (!hasDownloaded(BASE_URL + url) && !addedList.contains(url)) {
+                    logger.info("⭐ add " + BASE_URL + url);
+                    page.addTargetRequest(BASE_URL + url);
+                    addedList.add(url);
+                    thisPageAdded++;
+                    d_added++;
+                } else {
+                    d_skip++;
+                }
+            }
+
+        }
+        return thisPageAdded;
+    }
+    /**
+     * 1. 解析作品信息
+     * 2. 解析下载目标信息 URL 文件名
+     * 3. 下载文件，下载成功后将作品信息写入文档记录
+     * */
+    private void processDetailPage(Page page) {
+        // 详情页面
+        Html html = page.getHtml();
+        Target target = extractDownloadTargetInfoFromDetailPage(html);
+        ArtworkInfo artworkInfo = extractArtworkInfoFromDetailPage(page, target);
+        if (download(target.targetUrl, target.targetName, SankakuFileUtils.buildPath(rootPath, artistName, target.subFix), page)) {
+            // 下载成功
+            // TODO: 2019/3/9  【完成】
+            artworkInfos.add(artworkInfo);
+            try {
+                //infoUtils.appendInfo(artworkInfo);
+                SankakuFileUtils.appendArtworkInfo(artworkInfo, rootPath, artistName);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            d_suc++;
+        } else {
+            d_err++;
+        }
+    }
+    private ArtworkInfo extractArtworkInfoFromDetailPage(Page page, Target target) {
+        Html html = page.getHtml();
         // 提取标签信息
         Selectable tagSideBar = html.$("#tag-sidebar");
         //  标签-版权
@@ -216,36 +247,15 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
     }
 
     private class Target {
-        String targetUrl;
-        String targetName;
-        String subFix;
+        String targetUrl; //目标URL
+        String targetName;//目标文件名称
+        String subFix;    //目标文件格式
     }
 
-    private int addNewArtworkToTarget(Page page, int thisPageAdded) {
-        List<String> urlList = page.getHtml().$(".thumb").$("a", "href").all();
-        /**
-         * 通过 存档记录 判断是否需要添加页面中的子页面
-         * */
-        if (urlList != null && urlList.size() > 0) {
-            for (String url : urlList
-            ) {
-
-                if (!hasDownloaded(BASE_URL + url) && !addedList.contains(url)) {
-                    logger.info("⭐ add " + BASE_URL + url);
-                    page.addTargetRequest(BASE_URL + url);
-                    addedList.add(url);
-                    thisPageAdded++;
-                    d_added++;
-                } else {
-                    d_skip++;
-                }
-            }
-
-        }
-        return thisPageAdded;
-    }
-
-    private Target getTrgetInfo(Html html) {
+    /**
+     * 用于分析详情页Html，获取真正要下载的文件信息（主要处理了 1.页面展示缩略图/原图的情况，2.页面为图片/视频/flash文件的情况）
+     */
+    private Target extractDownloadTargetInfoFromDetailPage(Html html) {
         Target target = new Target();
         List<String> maybe = html.$("#image-link", "href").all();
         if (maybe != null && maybe.size() > 0) {  //如果页面内容是个图片，则存在 #image-link
@@ -277,5 +287,16 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
             target.subFix = "/vid";
         }
         return target;
+    }
+    public boolean download(String downloadURL,String filename,String savePath,Page page){
+        boolean returnStatus = false;
+        if(!new File(savePath+filename).exists()){
+            logger.info("开始下载: " + filename);
+            returnStatus = TimeLimitedHttpDownloader.downloadWithAutoRetry(downloadURL,filename,savePath,page.getUrl().toString(),3);
+        }else{
+            logger.info("已经存在: " + filename);
+            returnStatus = true;
+        }
+        return returnStatus;
     }
 }

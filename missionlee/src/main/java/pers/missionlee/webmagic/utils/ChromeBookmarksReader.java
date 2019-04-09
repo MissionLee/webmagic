@@ -42,6 +42,11 @@ public class ChromeBookmarksReader {
     //private Map<String,BookmarkDir> bookmarkDirMap;
     private Map<String,Map> roots;
     private Map<String, List<Map>> dirs;
+    /**
+     * 简单约定：使用chrome标准 json形式的书签源数据
+     *          根书签目录下面不直接放具体书签（因为解析的时候没有考虑）
+     *          没有使用上面的几个内部类，因为写的时候发现 （JSONObject/JSONArray）更加灵活好用一些
+     * */
     public ChromeBookmarksReader(String path) throws IOException {
         this.path = path;
         //this.bookmarkDirMap = new HashMap<String, BookmarkDir>();

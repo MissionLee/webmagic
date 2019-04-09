@@ -22,17 +22,19 @@ public class TimeLimitedHttpDownloader {
     private static int downloadSpeedLimit = 5; // Unit: k/s
     private static DecimalFormat df = new DecimalFormat(".00");
     private static int mb = 1024 * 1024;
+    private static long TEN_MINUTES = 10 * 60L;
+
     private static class CallableInputStreamDownloader implements Callable {
         InputStream in;
         OutputStream out;
         int size;
         String filename;
 
-        public CallableInputStreamDownloader(InputStream in, OutputStream out, int size,String filename) {
+        public CallableInputStreamDownloader(InputStream in, OutputStream out, int size, String filename) {
             this.in = in;
             this.out = out;
             this.size = size;
-            this.filename=filename;
+            this.filename = filename;
         }
 
         public static int readBufferSize = 1024 * 16;
@@ -54,10 +56,10 @@ public class TimeLimitedHttpDownloader {
                 //再从bytes中写入文件
                 if (i % 32 == 0) {
                     if (size > mb) {
-                        logger.info("[" + df.format(100 * totallen / size) + "%]-[" + (size / mb) + "M] | " + df.format(totallen * 1000 / 1024 / (System.currentTimeMillis() - start)) + "K/S "+filename);
+                        logger.info("[" + df.format(100 * totallen / size) + "%]-[" + (size / mb) + "M] | " + df.format(totallen * 1000 / 1024 / (System.currentTimeMillis() - start)) + "K/S " + filename);
 
                     } else {
-                        logger.info("[" + df.format(100 * totallen / size) + "%]-[" + (size / 1024) + "K] | " + df.format(totallen * 1000 / 1024 / (System.currentTimeMillis() - start)) + "K/S "+filename);
+                        logger.info("[" + df.format(100 * totallen / size) + "%]-[" + (size / 1024) + "K] | " + df.format(totallen * 1000 / 1024 / (System.currentTimeMillis() - start)) + "K/S " + filename);
                     }
                 }
                 // 把read buffer 的0 ~ len 位置 写到 write buffer 的 writeBufferPointer 位置
@@ -71,9 +73,56 @@ public class TimeLimitedHttpDownloader {
             }
             if (writeBufferPointer > 0)
                 out.write(writeBuffer, 0, writeBufferPointer);
-            logger.info(" -[100.0%]-[" + (size / 1024) + "K] | " + df.format((totallen * 1000 / 1024) / (System.currentTimeMillis() - start)) + "K/S "+filename);
+            logger.info(" -[100.0%]-[" + (size / 1024) + "K] | " + df.format((totallen * 1000 / 1024) / (System.currentTimeMillis() - start)) + "K/S " + filename);
             return null;
         }
+    }
+
+    /**
+     *
+     * */
+    public static boolean downloadWithAutoRetry(String urlStr, String filename, String savePath, String referer, int retry) {
+        boolean downloadStatus = false;
+        File saveDir = new File(savePath);
+        if (!saveDir.exists()) saveDir.mkdir();
+        while (!downloadStatus && retry > 0) { // 如果没有下载成功，并且重试次数没有用尽，就进行下载尝试
+            logger.info("尝试下载["+(4-retry)+"]: "+filename);
+            retry--;
+            try{
+                URL url = new URL(urlStr);
+                HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+                formatConnection(referer,connection);
+                long startTime = System.currentTimeMillis();
+                int fileSize = connection.getContentLength();
+                InputStream in = connection.getInputStream();
+                long getInputStreamTime = System.currentTimeMillis();
+                String randomName = java.util.UUID.randomUUID().toString();
+                OutputStream out = new FileOutputStream(savePath+randomName);
+                CallableInputStreamDownloader downloader = new CallableInputStreamDownloader(in,out,fileSize,filename);
+                Future<Object> future = executorService.submit(downloader);
+                long timeout = 10;
+                timeout = fileSize/(downloadSpeedLimit*1024);
+                if(timeout>TEN_MINUTES)
+                    timeout=TEN_MINUTES;
+                future.get(timeout,TimeUnit.SECONDS);
+                downloadStatus = true;
+                long endTime = System.currentTimeMillis();
+                logger.info("下载成功["+(4-retry)+"]:[大小:"+fileSize+" | 总耗时:"+(endTime-startTime)/1000+" | 速度:"+((fileSize / 1024) / ((endTime - getInputStreamTime) / 1000)) +" | "+filename+"]");
+            } catch (MalformedURLException e) {
+                logger.error("下载失败["+(4-retry)+"]:错误的URL "+urlStr+e.getMessage());
+            } catch (ProtocolException e) {
+                logger.error("下载失败["+(4-retry)+"]:Connection配置错误"+e.getMessage());
+            } catch (IOException e) {
+                logger.error("下载失败["+(4-retry)+"]:建立输入流/输出流 出错或超时"+e.getMessage());
+            } catch (InterruptedException e) {
+                logger.error("下载失败["+(4-retry)+"]:下载任务意外中断"+e.getMessage());
+            } catch (ExecutionException e) {
+                logger.error("下载失败["+(4-retry)+"]:多线程执行失败"+e.getMessage());
+            } catch (TimeoutException e) {
+                logger.error("下载失败["+(4-retry)+"]:下载超时"+e.getMessage());
+            }
+        }
+        return downloadStatus;
     }
 
     /**
@@ -93,7 +142,7 @@ public class TimeLimitedHttpDownloader {
 
         // FileUtils 有父路径不存在自动船舰的功能，但是 FileOutputStream没有这个能力，所以要自己判断一下
         File saveDir = new File(savePath);
-        if(!saveDir.exists())
+        if (!saveDir.exists())
             saveDir.mkdir();
 
         URL url = new URL(urlStr);
@@ -110,7 +159,7 @@ public class TimeLimitedHttpDownloader {
         long start = System.currentTimeMillis();
 
         // 获取输入流 此处抛出 IOException
-        InputStream in =  connection.getInputStream();
+        InputStream in = connection.getInputStream();
         logger.info("web downloader getInputStream - time" + (System.currentTimeMillis() - start));
         int fileSize = connection.getContentLength();
 
@@ -126,24 +175,30 @@ public class TimeLimitedHttpDownloader {
         OutputStream out = new FileOutputStream(savePath + "\\" + randomName);
 
         long startReadBytes = System.currentTimeMillis();
-        CallableInputStreamDownloader downloader = new CallableInputStreamDownloader(in, out, fileSize,filename);
+        CallableInputStreamDownloader downloader = new CallableInputStreamDownloader(in, out, fileSize, filename);
         Future<Object> future = executorService.submit(downloader);
+        long timeout = 10;
         try {
 
 
-            if (in != null && out != null){
-                future.get(fileSize / (downloadSpeedLimit * 1024), TimeUnit.SECONDS);
+            if (in != null && out != null) {
+                timeout = fileSize / (downloadSpeedLimit * 1024);
+                if (timeout > TEN_MINUTES)// 如果超时时间大于十分钟，那么就设置为10分钟
+                    // 简单计算 如果限速 5k/s 20MB的超时时间超过一小时
+                    timeout = TEN_MINUTES;
+                future.get(timeout, TimeUnit.SECONDS);
                 status = true;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }finally {
+        } catch (TimeoutException e) {
+            long timeoutReadBytes = System.currentTimeMillis();
+            logger.error(" - 下载超时: [" + timeout + "|" + ((timeoutReadBytes - startReadBytes) / 1000) + "] " + filename);
+        } finally {
             if (out != null)
                 out.close();
             if (in != null)
                 in.close();
-            if(!status){//如果下载失败 （超时等其他错误）  注意 stream 必须close之后，文件才能delete
-                new File(savePath+"\\"+randomName).delete();
+            if (!status) {//如果下载失败 （超时等其他错误）  注意 stream 必须close之后，文件才能delete
+                new File(savePath + "\\" + randomName).delete();
             }
         }
 
@@ -151,11 +206,11 @@ public class TimeLimitedHttpDownloader {
         if ((endReadBytes - startReadBytes) / 1000 > 0)
             logger.info("Speed:" + ((fileSize / 1024) / ((endReadBytes - startReadBytes) / 1000)) + "K/s");
         else
-            logger.info("Speed: download time less than 1 second");
+            logger.info("Speed: downloadWithAutoRetry time less than 1 second");
         // MissionLee ： 为什么要用随机命名，然后重命名 ？ 因为如果程序被中断，可能留下错误文件，
         //                而程序的验证机制是验证名称。
         // 这里不用判断状态也可以，因为如果报错了，根本走不到这里
-        if(status){
+        if (status) {
             File tmpFile = new File(savePath + "\\" + randomName);
             File aimFile = new File(savePath + "\\" + filename);
             tmpFile.renameTo(aimFile);
