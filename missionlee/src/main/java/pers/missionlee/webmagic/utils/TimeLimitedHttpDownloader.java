@@ -22,7 +22,6 @@ public class TimeLimitedHttpDownloader {
     private static int downloadSpeedLimit = 5; // Unit: k/s
     private static DecimalFormat df = new DecimalFormat(".00");
     private static int mb = 1024 * 1024;
-
     private static class CallableInputStreamDownloader implements Callable {
         InputStream in;
         OutputStream out;
@@ -147,7 +146,7 @@ public class TimeLimitedHttpDownloader {
                 new File(savePath+"\\"+randomName).delete();
             }
         }
-
+        connection.disconnect();
         long endReadBytes = System.currentTimeMillis();
         if ((endReadBytes - startReadBytes) / 1000 > 0)
             logger.info("Speed:" + ((fileSize / 1024) / ((endReadBytes - startReadBytes) / 1000)) + "K/s");
@@ -166,6 +165,7 @@ public class TimeLimitedHttpDownloader {
 
     private static void formatConnection(String referer, HttpURLConnection connection) throws ProtocolException {
         connection.setConnectTimeout(50000);
+        connection.setReadTimeout(50000);
         connection.setRequestMethod("GET");
         connection.setRequestProperty("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
         connection.setRequestProperty("accept-encoding", "gzip, deflate, br");

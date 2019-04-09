@@ -18,7 +18,7 @@ import java.util.Map;
  * @create: 2019-03-02 16:24
  */
 public class SankakuDownloadUtils {
-    private static Logger logger = LoggerFactory.getLogger(SankakuFileUtils.class);
+    private static Logger logger = LoggerFactory.getLogger(SankakuDownloadUtils.class);
     private static List<String> fatalErrorPageURL = new ArrayList<String>();
     private static Map<String, Integer> pageRedoCounter = new HashMap<String, Integer>();
     private static Map<String, Integer> downloadErrorCounter = new HashMap<String, Integer>();
