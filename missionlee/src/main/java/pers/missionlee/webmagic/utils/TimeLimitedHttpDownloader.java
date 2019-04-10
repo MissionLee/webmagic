@@ -121,11 +121,11 @@ public class TimeLimitedHttpDownloader implements Thread.UncaughtExceptionHandle
                 retry--;
                 InputStream in = null;
                 OutputStream out = null;
+                HttpURLConnection connection = null;
                 String randomName = "random";
                 try {
                     URL url = new URL(urlStr);
-                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
+                    connection = (HttpURLConnection) url.openConnection();
                     formatConnection(referer, connection);
                     long startTime = System.currentTimeMillis();
                     int fileSize = connection.getContentLength();
@@ -164,8 +164,8 @@ public class TimeLimitedHttpDownloader implements Thread.UncaughtExceptionHandle
                     logger.error("下载失败[" + (3 - retry) + "]:下载超时" + filename);
                 } finally {
                     // 下面三个 if的顺序是有要设计的，只要 out.close执行成功，就可以进一步对文件进行操作
-                    // in.close 可能会报错，并且因为 InputStream是从网络资源中获取的，所以报错盖伦也很大
-                    // 但是此时实际上已经成功下载了文件，所以我们尝试
+                    // in.close 可能会报错，并且因为 InputStream是从网络资源中获取的，所以报错概率也很大
+                    // 但是此时实际上已经成功下载了文件，所以我们用下面的顺序来处理 finally
                     if (out != null)
                         out.close();
 
@@ -178,7 +178,8 @@ public class TimeLimitedHttpDownloader implements Thread.UncaughtExceptionHandle
                     }
                     if (in != null)
                         in.close();
-
+                    if(connection !=null)
+                        connection.disconnect();
                 }
             }
         } else {
