@@ -107,19 +107,19 @@ public class TimeLimitedHttpDownloader {
                 future.get(timeout,TimeUnit.SECONDS);
                 downloadStatus = true;
                 long endTime = System.currentTimeMillis();
-                logger.info("下载成功["+(4-retry)+"]:[大小:"+fileSize+" | 总耗时:"+(endTime-startTime)/1000+" | 速度:"+((fileSize / 1024) / ((endTime - getInputStreamTime) / 1000)) +" | "+filename+"]");
+                logger.info("下载成功["+(3-retry)+"]:[大小:"+fileSize+" | 总耗时:"+(endTime-startTime)/1000+" | 速度[K/S]:"+((fileSize*1000 / 1024) / (endTime - getInputStreamTime)) +" | "+filename+"]");
             } catch (MalformedURLException e) {
-                logger.error("下载失败["+(4-retry)+"]:错误的URL "+urlStr+e.getMessage());
+                logger.error("下载失败["+(3-retry)+"]:错误的URL "+urlStr+e.getMessage());
             } catch (ProtocolException e) {
-                logger.error("下载失败["+(4-retry)+"]:Connection配置错误"+e.getMessage());
+                logger.error("下载失败["+(3-retry)+"]:Connection配置错误"+e.getMessage());
             } catch (IOException e) {
-                logger.error("下载失败["+(4-retry)+"]:建立输入流/输出流 出错或超时"+e.getMessage());
+                logger.error("下载失败["+(3-retry)+"]:建立输入流/输出流 出错或超时"+e.getMessage());
             } catch (InterruptedException e) {
-                logger.error("下载失败["+(4-retry)+"]:下载任务意外中断"+e.getMessage());
+                logger.error("下载失败["+(3-retry)+"]:下载任务意外中断"+e.getMessage());
             } catch (ExecutionException e) {
-                logger.error("下载失败["+(4-retry)+"]:多线程执行失败"+e.getMessage());
+                logger.error("下载失败["+(3-retry)+"]:多线程执行失败"+e.getMessage());
             } catch (TimeoutException e) {
-                logger.error("下载失败["+(4-retry)+"]:下载超时"+e.getMessage());
+                logger.error("下载失败["+(3-retry)+"]:下载超时"+e.getMessage());
             }
         }
         return downloadStatus;
@@ -219,7 +219,8 @@ public class TimeLimitedHttpDownloader {
     }
 
     private static void formatConnection(String referer, HttpURLConnection connection) throws ProtocolException {
-        connection.setConnectTimeout(50000);
+        connection.setConnectTimeout(30000);
+        connection.setReadTimeout(30000);
         connection.setRequestMethod("GET");
         connection.setRequestProperty("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
         connection.setRequestProperty("accept-encoding", "gzip, deflate, br");
