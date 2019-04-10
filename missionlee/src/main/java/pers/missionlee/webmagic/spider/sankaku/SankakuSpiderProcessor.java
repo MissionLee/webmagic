@@ -1,5 +1,6 @@
 package pers.missionlee.webmagic.spider.sankaku;
 
+import com.alibaba.fastjson.JSON;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -9,6 +10,7 @@ import pers.missionlee.webmagic.spider.sankaku.info.SankakuFileUtils;
 import pers.missionlee.webmagic.spider.sankaku.info.UpdateInfo;
 import pers.missionlee.webmagic.spider.sankaku.pageprocessor.SankakuDownloadSpider;
 import pers.missionlee.webmagic.spider.sankaku.pageprocessor.SankakuNumberSpider;
+import pers.missionlee.webmagic.spider.sankaku.task.SankakuSpiderTask;
 import us.codecraft.webmagic.Spider;
 
 import java.io.File;
@@ -50,8 +52,9 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
         return spider.getNum();
     }
 
-    private String[] getUrlStringArray(String rootPath,String artistName, boolean official, boolean update) {
+    private String[] getUrlStringArray(String rootPath,String artistName, boolean official, boolean update,SankakuSpiderTask task) {
         if (update) {
+            task.currentDownloadTask.total=9999;
             String[] urls = new String[1];
             urls[0] = SITE_ORDER_PREFIX.DATE.getPrefix(artistName, official) + 1;
             return urls;
@@ -61,6 +64,7 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
             while (artworkNum < 1 && retry < 3) {
                 try {
                     artworkNum = getRealNumOfArtist(rootPath,artistName, official);
+                    task.currentDownloadTask.total=artworkNum;
                 } catch (Exception e) {
                     e.printStackTrace();
                     retry++;
@@ -72,7 +76,12 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
 
 
 
-    public int updateOne(String rootPath, String artistName, boolean official, int threadNum) throws IOException {
+    public int updateOne(String rootPath, String artistName, boolean official, int threadNum,SankakuSpiderTask task) throws IOException {
+        if(task ==null){
+            task = new SankakuSpiderTask(rootPath,threadNum,official,"update");
+
+        }
+        task.resetDownloadTask(artistName);
         int num = 0;
         if (updateInfo == null)
             updateInfo = new UpdateInfo();
@@ -80,14 +89,16 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
 
             logger.info("NEED :  artist: " + artistName + "UPDATED:" + updateInfo.getUpdateDate(artistName));
             int numberNow = getRealNumOfArtist(rootPath,artistName, official);
+            task.currentDownloadTask.total=numberNow;
             int numberStored = SankakuFileUtils.getArtworkNumber(new File(rootPath + artistName));
+            task.currentDownloadTask.stored=numberStored;
             logger.info("numberNow: " + numberNow + " numberStored: " + numberStored);
             if (numberNow > numberStored) { // 如果需要更新的超过1个 开启更新
-                String startPage = getUrlStringArray(rootPath,artistName, false, true)[0];
-                num = startDownloadSpider(rootPath, artistName, threadNum, startPage);
+                String startPage = getUrlStringArray(rootPath,artistName, false, true,task)[0];
+                num = startDownloadSpider(rootPath, artistName, threadNum,task, startPage);
                 logger.info("update num: " + num);
                 if (numberNow < 2000 && (num < numberNow)) {
-                    num = fullDownloadOne(rootPath, artistName, official, threadNum);
+                    num = fullDownloadOne(rootPath, artistName, official, threadNum,task);
                 }
 
             }
@@ -98,27 +109,42 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
         }
         return num;
     }
-
-    public void updateAll(String rootPath, boolean official, int threadNum) throws IOException {
+    public void updateAll(SankakuSpiderTask task) throws IOException {
+        updateAll(task.rootPath,task.offical,task.threadNum,task);
+    }
+    public void updateAll(String rootPath, boolean official, int threadNum,SankakuSpiderTask task) throws IOException {
         if (root.exists()) {
             File[] files = root.listFiles();
             for (int i = 0; i < files.length; i++) {
                 if (files[i].isDirectory()) {
-                    updateOne(rootPath, files[i].getName(), official, threadNum);
+
+                    updateOne(rootPath, files[i].getName(), official, threadNum,task);
                 }
             }
         }
     }
 
-    public int fullDownloadOne(String rootPath, String artistName, boolean official, int threadNum) throws IOException {
-        String[] urls = getUrlStringArray(rootPath,artistName, official, false);
-        return startDownloadSpider(rootPath, artistName, threadNum, urls);
+    public int fullDownloadOne(String rootPath, String artistName, boolean official, int threadNum,SankakuSpiderTask task) throws IOException {
+        if(task==null){
+            task = new SankakuSpiderTask(rootPath,threadNum,official,"new");
+
+        }
+        task.resetDownloadTask(artistName);
+        String[] urls = getUrlStringArray(rootPath,artistName, official, false,task);
+        task.currentDownloadTask.stored = SankakuFileUtils.getArtworkNumber(new File(task.rootPath+task.currentDownloadTask.artistName));
+        return startDownloadSpider(rootPath, artistName, threadNum,task, urls);
     }
 
     //    public static void fullDownloadAll(String rootPath, boolean official, int threadNum, String... artistname) {
 //
 //    }
-    public void fullDownloadWithInnerList(String rootPath, boolean official, int threadNum) throws IOException {
+    public void fullDownloadWithInnerList(SankakuSpiderTask task) throws IOException {
+        fullDownloadWithInnerList(task.rootPath,task.offical,task.threadNum,task);
+    }
+    public void fullDownloadWithInnerList(String rootPath, boolean official, int threadNum,SankakuSpiderTask task) throws IOException {
+        if(task ==null){
+            task = new SankakuSpiderTask(rootPath,threadNum,official,"new");
+        }
         // 1. 获取约定的 name.md 文件
         File nameListFile = new File(rootPath + "name.md");
         String nameListString = FileUtils.readFileToString(nameListFile, "UTF8");
@@ -150,8 +176,9 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
         Iterator iterator = set.iterator();
         while (iterator.hasNext()) {
             String key = (String) iterator.next();
+            //task.resetDownloadTask(key);
             // 3 遍历下载
-            fullDownloadOne(rootPath, key, official, threadNum);
+            fullDownloadOne(rootPath, key, official, threadNum,task);
             // 原本会检测下载数量是否不足，但是update机制完善之后，可以通过update方式来补充下载缺漏
             storageMap.remove(key);
             rewriteTodoList(nameListFile, storageMap);
@@ -162,9 +189,9 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
     /**
      * @Return int 返回当前作者作品总量
      */
-    private int startDownloadSpider(String rootPath, String artistName, int threadNum, String... urls) throws IOException {
+    private int startDownloadSpider(String rootPath, String artistName, int threadNum,SankakuSpiderTask task, String... urls) throws IOException {
         // 1. 创建一个下载用 页面处理器 SankakuDownloadSpider
-        SankakuDownloadSpider sankakuSpider = new SankakuDownloadSpider(site, rootPath, artistName);
+        SankakuDownloadSpider sankakuSpider = new SankakuDownloadSpider(site, rootPath, artistName,task);
         Spider spider = Spider.create(sankakuSpider);
         spider.addUrl(urls).thread(threadNum).run();
         // 2. 更新作者信息
@@ -180,59 +207,39 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
             rootPath = rootPath + "/";
         SankakuSpiderProcessor processor = new SankakuSpiderProcessor(rootPath);
         if (type == RunType.RUN_WITH_ARTIST_NAME) {
-            processor.fullDownloadOne(rootPath, artistName, false, threadNum);
+            processor.fullDownloadOne(rootPath, artistName, false, threadNum,null);
         } else if (type == RunType.RUN_WITH_ARTIST_NAMElIST) {
-            processor.fullDownloadWithInnerList(rootPath, false, threadNum);
+            processor.fullDownloadWithInnerList(rootPath, false, threadNum,null);
         } else if (type == RunType.UPDATE_ARTIST) {
-            processor.updateAll(rootPath, false, threadNum);
+            processor.updateAll(rootPath, false, threadNum,null);
         } else if (type == RunType.RUN_WITH_COPYRIGHT_NAME) {
-            processor.fullDownloadOne(rootPath, artistName, true, threadNum);
+            processor.fullDownloadOne(rootPath, artistName, true, threadNum,null);
         } else if (type == RunType.RUN_WITH_COPYRIGHT_NAMELIST) {
-            processor.fullDownloadWithInnerList(rootPath, true, threadNum);
+            processor.fullDownloadWithInnerList(rootPath, true, threadNum,null);
         } else if (type == RunType.UPDATE_COPYRIGHT) {
-            processor.updateAll(rootPath, true, threadNum);
+            processor.updateAll(rootPath, true, threadNum,null);
         }
     }
     public static void extractSamplePic(String rootPath) throws IOException {
         File rootFile = new File(rootPath);
         SankakuFileUtils.extractSamplePic(rootFile);
     }
-    public static void main(String[] args) {
-        try {
-            runProcessor(RunType.RUN_WITH_ARTIST_NAMElIST, "F:\\sankaku", "", 4);
-        } catch (IOException e) {
-            e.printStackTrace();
+    public static void autoRun(String configPath) throws IOException {
+        SankakuSpiderTask task =SankakuSpiderTask.buildTask(configPath);
+        SankakuSpiderProcessor processor = new SankakuSpiderProcessor(task.rootPath);
+        if(task.taskType.equals("new")){
+            processor.fullDownloadWithInnerList(task);
+        }else{
+            processor.updateAll(task);
         }
-//        runOffical("D:\\sankakuofficial", "league of legends", 941, 4);
 
-//        String help = "| [TYPE] \n" +
-//                "|- run \t[root path] [aim list] [thread num] [asc/desc]\n"+
-//                "|- autoRun \t [rootPath = D:\\sankaku] [aim list = C:\\Users\\Administrator\\Desktop\\sankaku\\20190313.md] [thread num = 4] [asc]\n" +
-//                "|- update\t [root path] [thread num]\n" +
-//                "|- autoUpdate\t [rootPath = D:\\sankaku] [thread num = 4]";
-//        if(args.length ==0 || args[0].equals("help")){
-//            System.out.println(help);
-//        }else{
-//            if(args[0].equals("run") && args.length==6){
-//                boolean desc = true;
-//                if(args[4].equals("asc"))
-//                    desc =false;
-//
-//                runWithNameList(args[1],args[2],Integer.valueOf(args[3]),desc,false);
-//            }else if(args[0].equals("update")&&args.length==3){
-//
-//            }else
-//            if(args[0].equals("autoRun")){
-//                runWithNameList("D:\\sankaku","C:\\Users\\Administrator\\Desktop\\sankaku\\20190313.md",4,true,false);
-//            }else if(args[0].equals("autoUpdate")){
-//                try {
-//                    updateFullPath("D:\\sankaku", 4);
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }else{
-//                System.out.println(help);
-//            }
+    }
+    public static void main(String[] args) throws IOException {
+        autoRun("F:\\sankaku\\taskConfig.json");
+//        try {
+//            runProcessor(RunType.RUN_WITH_ARTIST_NAMElIST, "F:\\sankaku", "", 4);
+//        } catch (IOException e) {
+//            e.printStackTrace();
 //        }
     }
 }

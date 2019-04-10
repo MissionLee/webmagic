@@ -16,7 +16,11 @@ import java.util.Map;
  * @description:
  * @author: Mission Lee
  * @create: 2019-03-02 16:24
+ *
+ * @Deprecated: 原本SankakuDownloadSpider 使用 SankakuDownloadUtils 提供的 [重下载] 机制调用TimeLimitedHttpDownloader进行下载
+ *              ，并且在这个过程中，下载成功与否的状态值，
  */
+@Deprecated
 public class SankakuDownloadUtils {
     private static Logger logger = LoggerFactory.getLogger(SankakuDownloadUtils.class);
     private static List<String> fatalErrorPageURL = new ArrayList<String>();

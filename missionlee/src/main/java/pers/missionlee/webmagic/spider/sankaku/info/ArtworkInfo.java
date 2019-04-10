@@ -314,7 +314,7 @@ public class ArtworkInfo {
     protected static int getArtworkNumber(File artist) {
         int num = 0;
         cleanErrorFiles(artist);
-        File[] files = artist.listFiles();
+        File[] files = artist.listFiles(isPicOrVid);
         for (int i = 0; i < files.length; i++) {
             if (files[i].isDirectory()) {
                 num += files[i].listFiles().length;

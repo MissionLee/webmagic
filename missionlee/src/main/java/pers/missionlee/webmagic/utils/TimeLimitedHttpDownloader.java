@@ -2,12 +2,16 @@ package pers.missionlee.webmagic.utils;
 
 
 import com.sun.xml.internal.bind.v2.TODO;
+import org.apache.xpath.operations.Bool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.net.ssl.SSLException;
 import java.io.*;
 import java.net.*;
 import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.*;
 
 /**
@@ -16,13 +20,19 @@ import java.util.concurrent.*;
  * @create: 2019-02-27 10:05
  */
 
-public class TimeLimitedHttpDownloader {
+public class TimeLimitedHttpDownloader implements Thread.UncaughtExceptionHandler {
     private static ExecutorService executorService = Executors.newFixedThreadPool(10);
     private static Logger logger = LoggerFactory.getLogger(TimeLimitedHttpDownloader.class);
     private static int downloadSpeedLimit = 5; // Unit: k/s
     private static DecimalFormat df = new DecimalFormat(".00");
     private static int mb = 1024 * 1024;
     private static long TEN_MINUTES = 10 * 60L;
+    private static Map<Thread, Map<String, Object>> runInfo = new HashMap<Thread, Map<String, Object>>();
+
+    @Override
+    public void uncaughtException(Thread t, Throwable e) {
+
+    }
 
     private static class CallableInputStreamDownloader implements Callable {
         InputStream in;
@@ -43,85 +53,138 @@ public class TimeLimitedHttpDownloader {
 
         @Override
         public Object call() throws Exception {
-            Long start = System.currentTimeMillis();
-            byte[] writeBuffer = new byte[writeBufferSize]; // 创建一个 16MB的 buffer
-            int writeBufferPointer = 0;
-            byte[] readBuffer = new byte[readBufferSize]; // buffer 改为 16k 大小,因为经过测试，每次read操作最大为16k内容
-            int len;
-            int i = 0;
-            double totallen = 0.0;
-            while ((len = in.read(readBuffer)) != -1) {
-                totallen += len;
-                i++;
-                //再从bytes中写入文件
-                if (i % 32 == 0) {
-                    if (size > mb) {
-                        logger.info("[" + df.format(100 * totallen / size) + "%]-[" + (size / mb) + "M] | " + df.format(totallen * 1000 / 1024 / (System.currentTimeMillis() - start)) + "K/S " + filename);
+            boolean returnStatus = false;
+            try {
+                Long start = System.currentTimeMillis();
+                byte[] writeBuffer = new byte[writeBufferSize]; // 创建一个 16MB的 buffer
+                int writeBufferPointer = 0;
+                byte[] readBuffer = new byte[readBufferSize]; // buffer 改为 16k 大小,因为经过测试，每次read操作最大为16k内容
+                int len;
+                int i = 0;
+                double totallen = 0.0;
+                while ((len = in.read(readBuffer)) != -1) {
+                    totallen += len;
+                    i++;
+                    //再从bytes中写入文件
+                    if (i % 32 == 0) {
+                        if (size > mb) {
+                            logger.info("下载进程:[" + df.format(100 * totallen / size) + "%]-[" + (size / mb) + "M] | " + df.format(totallen * 1000 / 1024 / (System.currentTimeMillis() - start)) + "K/S " + filename);
 
-                    } else {
-                        logger.info("[" + df.format(100 * totallen / size) + "%]-[" + (size / 1024) + "K] | " + df.format(totallen * 1000 / 1024 / (System.currentTimeMillis() - start)) + "K/S " + filename);
+                        } else {
+                            logger.info("下载进程:[" + df.format(100 * totallen / size) + "%]-[" + (size / 1024) + "K] | " + df.format(totallen * 1000 / 1024 / (System.currentTimeMillis() - start)) + "K/S " + filename);
+                        }
                     }
+                    // 把read buffer 的0 ~ len 位置 写到 write buffer 的 writeBufferPointer 位置
+                    System.arraycopy(readBuffer, 0, writeBuffer, writeBufferPointer, len);
+                    writeBufferPointer += len;
+                    if (writeBufferPointer > writePoint) {
+                        out.write(writeBuffer, 0, writeBufferPointer);
+                        writeBufferPointer = 0;
+                    }
+                    //
                 }
-                // 把read buffer 的0 ~ len 位置 写到 write buffer 的 writeBufferPointer 位置
-                System.arraycopy(readBuffer, 0, writeBuffer, writeBufferPointer, len);
-                writeBufferPointer += len;
-                if (writeBufferPointer > writePoint) {
+                if (writeBufferPointer > 0)
                     out.write(writeBuffer, 0, writeBufferPointer);
-                    writeBufferPointer = 0;
-                }
+                logger.info("下载进程:[100.0%]-[" + (size / 1024) + "K] | " + df.format((totallen * 1000 / 1024) / (System.currentTimeMillis() - start)) + "K/S " + filename);
+                returnStatus = true;
+            } catch (Exception e) {
+                // TODO: 2019/4/10 call方法在下载线程中报错，在 downloadWithAutoRetry方法中无法捕捉，
                 //
+                logger.error("下载进程:失败 " + e.getMessage());
+
             }
-            if (writeBufferPointer > 0)
-                out.write(writeBuffer, 0, writeBufferPointer);
-            logger.info(" -[100.0%]-[" + (size / 1024) + "K] | " + df.format((totallen * 1000 / 1024) / (System.currentTimeMillis() - start)) + "K/S " + filename);
-            return null;
+
+            return returnStatus;
         }
     }
 
     /**
-     *
-     * */
-    public static boolean downloadWithAutoRetry(String urlStr, String filename, String savePath, String referer, int retry) {
+     * @Description: 带自动重试
+     * @Param: [urlStr 目标URL字符串形式, filename要保存为的文件名, savePath保存路径, referer Connection的referer字段, retry 尝试下载次数]
+     * @return: boolean
+     * @Throw:
+     * @Author: Mission Lee
+     * @date: 2019/4/10
+     */
+    public static boolean downloadWithAutoRetry(String urlStr, String filename, String savePath, String referer, int retry) throws IOException {
+
         boolean downloadStatus = false;
         File saveDir = new File(savePath);
         if (!saveDir.exists()) saveDir.mkdir();
-        while (!downloadStatus && retry > 0) { // 如果没有下载成功，并且重试次数没有用尽，就进行下载尝试
-            logger.info("尝试下载["+(4-retry)+"]: "+filename);
-            retry--;
-            try{
-                URL url = new URL(urlStr);
-                HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-                formatConnection(referer,connection);
-                long startTime = System.currentTimeMillis();
-                int fileSize = connection.getContentLength();
-                InputStream in = connection.getInputStream();
-                long getInputStreamTime = System.currentTimeMillis();
-                String randomName = java.util.UUID.randomUUID().toString();
-                OutputStream out = new FileOutputStream(savePath+randomName);
-                CallableInputStreamDownloader downloader = new CallableInputStreamDownloader(in,out,fileSize,filename);
-                Future<Object> future = executorService.submit(downloader);
-                long timeout = 10;
-                timeout = fileSize/(downloadSpeedLimit*1024);
-                if(timeout>TEN_MINUTES)
-                    timeout=TEN_MINUTES;
-                future.get(timeout,TimeUnit.SECONDS);
-                downloadStatus = true;
-                long endTime = System.currentTimeMillis();
-                logger.info("下载成功["+(3-retry)+"]:[大小:"+fileSize+" | 总耗时:"+(endTime-startTime)/1000+" | 速度[K/S]:"+((fileSize*1000 / 1024) / (endTime - getInputStreamTime)) +" | "+filename+"]");
-            } catch (MalformedURLException e) {
-                logger.error("下载失败["+(3-retry)+"]:错误的URL "+urlStr+e.getMessage());
-            } catch (ProtocolException e) {
-                logger.error("下载失败["+(3-retry)+"]:Connection配置错误"+e.getMessage());
-            } catch (IOException e) {
-                logger.error("下载失败["+(3-retry)+"]:建立输入流/输出流 出错或超时"+e.getMessage());
-            } catch (InterruptedException e) {
-                logger.error("下载失败["+(3-retry)+"]:下载任务意外中断"+e.getMessage());
-            } catch (ExecutionException e) {
-                logger.error("下载失败["+(3-retry)+"]:多线程执行失败"+e.getMessage());
-            } catch (TimeoutException e) {
-                logger.error("下载失败["+(3-retry)+"]:下载超时"+e.getMessage());
+        File aimFile = new File(savePath + filename);
+        if (!aimFile.exists()) { // ！important 在SankakuDownloadSpider中有本地文件检测机制，
+                                 // 但是如果出现文件已经正常下载，并重命名，但是最后 in.close的时候报错
+                                 // 此错误由本方法抛出，倒是外部[SankakuDownloadSpider]使用方法判定下载失败，
+                                 // 触发外部重新下载机制,这是程序会自动返回下载成功，而不进行重新下载
+            while (!downloadStatus && retry > 0) { // 如果没有下载成功，并且重试次数没有用尽，就进行下载尝试
+                logger.info("尝试下载[" + (4 - retry) + "]: " + filename);
+                retry--;
+                InputStream in = null;
+                OutputStream out = null;
+                String randomName = "random";
+                try {
+                    URL url = new URL(urlStr);
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+                    formatConnection(referer, connection);
+                    long startTime = System.currentTimeMillis();
+                    int fileSize = connection.getContentLength();
+                    int responseCode = connection.getResponseCode();
+                    if (200 == responseCode) {
+                        in = connection.getInputStream();
+                        long getInputStreamTime = System.currentTimeMillis();
+                        randomName = java.util.UUID.randomUUID().toString();
+                        out = new FileOutputStream(savePath + randomName);
+                        CallableInputStreamDownloader downloader = new CallableInputStreamDownloader(in, out, fileSize, filename);
+                        Future<Object> future = executorService.submit(downloader);
+                        long timeout = fileSize / (downloadSpeedLimit * 1024);
+                        if (timeout > TEN_MINUTES)
+                            timeout = TEN_MINUTES;
+                        boolean downloaded = (Boolean) future.get(timeout, TimeUnit.SECONDS);
+                        if (downloaded)
+                            downloadStatus = true;
+                        long endTime = System.currentTimeMillis();
+                        logger.info("下载成功[" + (3 - retry) + "]:[大小:" + fileSize + " | 总耗时:" + (endTime - startTime) / 1000 + " | 速度[K/S]:" + ((fileSize * 1000 / 1024) / (endTime - getInputStreamTime)) + " | " + filename + "]");
+
+                    } else {
+                        logger.error("下载失败[" + (3 - retry) + "]:服务器响应- " + responseCode + " " + filename);
+                    }
+
+                } catch (MalformedURLException e) {
+                    logger.error("下载失败[" + (3 - retry) + "]:错误的URL " + filename + urlStr + e.getMessage());
+                } catch (ProtocolException e) {
+                    logger.error("下载失败[" + (3 - retry) + "]:Connection配置错误" + filename + e.getMessage());
+                } catch (IOException e) {
+                    logger.error("下载失败[" + (3 - retry) + "]:建立输入流/输出流 出错或超时" + filename + e.getMessage());
+                } catch (InterruptedException e) {
+                    logger.error("下载失败[" + (3 - retry) + "]:下载任务意外中断" + filename + e.getMessage());
+                } catch (ExecutionException e) {
+                    logger.error("下载失败[" + (3 - retry) + "]:执行失败" + filename + e.getMessage());
+                } catch (TimeoutException e) {
+                    logger.error("下载失败[" + (3 - retry) + "]:下载超时" + filename);
+                } finally {
+                    // 下面三个 if的顺序是有要设计的，只要 out.close执行成功，就可以进一步对文件进行操作
+                    // in.close 可能会报错，并且因为 InputStream是从网络资源中获取的，所以报错盖伦也很大
+                    // 但是此时实际上已经成功下载了文件，所以我们尝试
+                    if (out != null)
+                        out.close();
+
+                    if (downloadStatus) {// 如果下载成功 临时名称，改为真正名称
+                        File tmpFile = new File(savePath + randomName);
+
+                        tmpFile.renameTo(aimFile);
+                    } else {//如果下载失败 （超时等其他错误）  注意 stream 必须close之后，文件才能delete
+                        new File(savePath + randomName).delete();
+                    }
+                    if (in != null)
+                        in.close();
+
+                }
             }
+        } else {
+            downloadStatus = true;
         }
+
         return downloadStatus;
     }
 
@@ -136,7 +199,9 @@ public class TimeLimitedHttpDownloader {
      * @return:int 0: success 1: socketTimeout/downloadTimeout
      * @Author: Mission Lee
      * @date: 2019/3/2
+     * @Deprecated: 原本下载与重试方案为：在
      */
+    @Deprecated
     public static boolean download(String urlStr, String filename, String savePath, String referer) throws IOException, ExecutionException, InterruptedException, TimeoutException {
         boolean status = false;
 
