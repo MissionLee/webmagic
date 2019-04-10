@@ -113,9 +113,9 @@ public class TimeLimitedHttpDownloader implements Thread.UncaughtExceptionHandle
         if (!saveDir.exists()) saveDir.mkdir();
         File aimFile = new File(savePath + filename);
         if (!aimFile.exists()) { // ！important 在SankakuDownloadSpider中有本地文件检测机制，
-                                 // 但是如果出现文件已经正常下载，并重命名，但是最后 in.close的时候报错
-                                 // 此错误由本方法抛出，倒是外部[SankakuDownloadSpider]使用方法判定下载失败，
-                                 // 触发外部重新下载机制,这是程序会自动返回下载成功，而不进行重新下载
+            // 但是如果出现文件已经正常下载，并重命名，但是最后 in.close的时候报错
+            // 此错误由本方法抛出，倒是外部[SankakuDownloadSpider]使用方法判定下载失败，
+            // 触发外部重新下载机制,这是程序会自动返回下载成功，而不进行重新下载
             while (!downloadStatus && retry > 0) { // 如果没有下载成功，并且重试次数没有用尽，就进行下载尝试
                 logger.info("尝试下载[" + (4 - retry) + "]: " + filename);
                 retry--;
@@ -171,14 +171,13 @@ public class TimeLimitedHttpDownloader implements Thread.UncaughtExceptionHandle
 
                     if (downloadStatus) {// 如果下载成功 临时名称，改为真正名称
                         File tmpFile = new File(savePath + randomName);
-
                         tmpFile.renameTo(aimFile);
                     } else {//如果下载失败 （超时等其他错误）  注意 stream 必须close之后，文件才能delete
                         new File(savePath + randomName).delete();
                     }
                     if (in != null)
                         in.close();
-                    if(connection !=null)
+                    if (connection != null)
                         connection.disconnect();
                 }
             }

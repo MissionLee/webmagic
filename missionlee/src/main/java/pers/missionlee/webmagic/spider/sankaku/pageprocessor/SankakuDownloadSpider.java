@@ -44,12 +44,13 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
     private Map<String, Integer> pageRedoCounter = new HashMap<String, Integer>();
     private Map<String, Integer> downloadErrorCounter = new HashMap<String, Integer>();
 
-    public SankakuDownloadSpider(Site site,SankakuSpiderTask task) throws IOException {
-        this(site,task.rootPath,task.currentDownloadTask.artistName,task);
+    public SankakuDownloadSpider(Site site, SankakuSpiderTask task) throws IOException {
+        this(site, task.rootPath, task.currentDownloadTask.artistName, task);
     }
-    public SankakuDownloadSpider(Site site, String rootPath, String artistName,SankakuSpiderTask task) throws IOException {
+
+    public SankakuDownloadSpider(Site site, String rootPath, String artistName, SankakuSpiderTask task) throws IOException {
         super(site, rootPath, artistName);
-        this.task =task;
+        this.task = task;
         //this.rootPath = rootPath;
         //this.artistName = artistName;
         this.artworkInfos = SankakuFileUtils.getArtworkInfoList(rootPath, artistName);
@@ -299,7 +300,7 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
     public boolean download(String downloadURL, String filename, String savePath, Page page) {
         boolean returnStatus = false;
         if (!new File(savePath + filename).exists()) {
-            logger.info("开始下载: " + filename +" "+page.getUrl());
+            logger.info("开始下载: " + filename + " " + page.getUrl());
             try {
                 returnStatus = TimeLimitedHttpDownloader.downloadWithAutoRetry(downloadURL, filename, savePath, page.getUrl().toString(), 3);
             } catch (IOException e) {
