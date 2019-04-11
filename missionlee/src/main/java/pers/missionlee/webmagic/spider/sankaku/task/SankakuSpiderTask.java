@@ -11,6 +11,7 @@ import java.util.Map;
  * @description:
  * @author: Mission Lee
  * @create: 2019-04-10 11:07
+ * // TODO: 2019-04-11 1.参数检验独立出来 2.配置文件构造 与 直接参数构造
  */
 public class SankakuSpiderTask {
     public class DownloadTask {
@@ -97,6 +98,7 @@ public class SankakuSpiderTask {
     }
 
     public SankakuSpiderTask(String rootPath, int threadNum, boolean offical, String taskType) {
+        
         this.rootPath = rootPath;
         this.threadNum = threadNum;
         this.offical = offical;

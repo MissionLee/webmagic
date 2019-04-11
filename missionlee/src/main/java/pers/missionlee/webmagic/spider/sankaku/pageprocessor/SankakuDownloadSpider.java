@@ -124,7 +124,7 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
             ) {
 
                 if (!hasDownloaded(BASE_URL + url) && !addedList.contains(url)) {
-                    logger.info("⭐ add " + BASE_URL + url);
+                    logger.debug("⭐ add " + BASE_URL + url);
                     page.addTargetRequest(BASE_URL + url);
                     addedList.add(url);
                     thisPageAdded++;

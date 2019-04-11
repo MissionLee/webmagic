@@ -1,12 +1,9 @@
 package pers.missionlee.webmagic.utils;
 
 
-import com.sun.xml.internal.bind.v2.TODO;
-import org.apache.xpath.operations.Bool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.net.ssl.SSLException;
 import java.io.*;
 import java.net.*;
 import java.text.DecimalFormat;
@@ -68,10 +65,10 @@ public class TimeLimitedHttpDownloader implements Thread.UncaughtExceptionHandle
                     //再从bytes中写入文件
                     if (i % 32 == 0) {
                         if (size > mb) {
-                            logger.info("下载进程:[" + df.format(100 * totallen / size) + "%]-[" + (size / mb) + "M] | " + df.format(totallen * 1000 / 1024 / (System.currentTimeMillis() - start)) + "K/S " + filename);
+                            logger.debug("下载进程:[" + df.format(100 * totallen / size) + "%]-[" + (size / mb) + "M] | " + df.format(totallen * 1000 / 1024 / (System.currentTimeMillis() - start)) + "K/S " + filename);
 
                         } else {
-                            logger.info("下载进程:[" + df.format(100 * totallen / size) + "%]-[" + (size / 1024) + "K] | " + df.format(totallen * 1000 / 1024 / (System.currentTimeMillis() - start)) + "K/S " + filename);
+                            logger.debug("下载进程:[" + df.format(100 * totallen / size) + "%]-[" + (size / 1024) + "K] | " + df.format(totallen * 1000 / 1024 / (System.currentTimeMillis() - start)) + "K/S " + filename);
                         }
                     }
                     // 把read buffer 的0 ~ len 位置 写到 write buffer 的 writeBufferPointer 位置
@@ -85,7 +82,7 @@ public class TimeLimitedHttpDownloader implements Thread.UncaughtExceptionHandle
                 }
                 if (writeBufferPointer > 0)
                     out.write(writeBuffer, 0, writeBufferPointer);
-                logger.info("下载进程:[100.0%]-[" + (size / 1024) + "K] | " + df.format((totallen * 1000 / 1024) / (System.currentTimeMillis() - start)) + "K/S " + filename);
+                logger.info("下载统计:[100.0% " + (size / 1024) + "K] | " + df.format((totallen * 1000 / 1024) / (System.currentTimeMillis() - start)) + "K/S " + filename);
                 returnStatus = true;
             } catch (Exception e) {
                 // TODO: 2019/4/10 call方法在下载线程中报错，在 downloadWithAutoRetry方法中无法捕捉，
