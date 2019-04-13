@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
  * @author: Mission Lee
  * @create: 2019-03-02 16:10
  */
+@Deprecated
 public class SankakuSpiderProcessor extends SpiderUtils {
 
     private Logger logger = LoggerFactory.getLogger(SankakuSpiderProcessor.class);
@@ -34,7 +35,7 @@ public class SankakuSpiderProcessor extends SpiderUtils {
 
     private SankakuSpiderProcessor(String rootPath) throws IOException {
         root = new File(rootPath);
-        updateInfoFile = new File(rootPath + "update.json");
+        updateInfoFile = new File(rootPath + "manager.json");
         if(!updateInfoFile.exists())
             updateInfoFile.createNewFile();
         updateInfo = UpdateInfo.getUpdateInfo(updateInfoFile);
@@ -77,7 +78,7 @@ public class SankakuSpiderProcessor extends SpiderUtils {
 
     public int updateOne(String rootPath, String artistName, boolean official, int threadNum,SankakuSpiderTask task) throws IOException {
         if(task ==null){
-            task = new SankakuSpiderTask(rootPath,threadNum,official,"update");
+            task = new SankakuSpiderTask(rootPath,threadNum,official,"manager");
 
         }
         task.resetDownloadTask(artistName);
@@ -95,7 +96,7 @@ public class SankakuSpiderProcessor extends SpiderUtils {
             if (numberNow > numberStored) { // 如果需要更新的超过1个 开启更新
                 String startPage = getUrlStringArray(rootPath,artistName, false, true,task)[0];
                 num = startDownloadSpider(rootPath, artistName, threadNum,task, startPage);
-                logger.info("update num: " + num);
+                logger.info("manager num: " + num);
                 if (numberNow < 2000 && (num < numberNow)) {
                     num = fullDownloadOne(rootPath, artistName, official, threadNum,task);
                 }

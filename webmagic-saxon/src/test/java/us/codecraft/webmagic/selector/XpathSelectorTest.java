@@ -1147,7 +1147,7 @@ public class XpathSelectorTest {
                 + "                },\n"
                 + "                onSuccess:function(response){\n"
                 + "                  Element.scrollTo($('comments'));\n"
-                + "                  var new_comment = new Element('div', {}).update(response.responseText).firstChild;\n"
+                + "                  var new_comment = new Element('div', {}).manager(response.responseText).firstChild;\n"
                 + "                  var comment_id = new_comment.readAttribute('id');\n"
                 + "\n"
                 + "                  $('comments').insert({after:response.responseText});\n"

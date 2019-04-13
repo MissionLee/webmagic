@@ -1,14 +1,10 @@
 package pers.missionlee.webmagic.utils;
 
 
-import com.sun.xml.internal.bind.v2.TODO;
-import org.apache.xpath.operations.Bool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pers.missionlee.webmagic.spider.update.SourceManager;
-import pers.missionlee.webmagic.spider.update.SpiderTask;
+import pers.missionlee.webmagic.spider.sankaku.manager.SpiderTask;
 
-import javax.net.ssl.SSLException;
 import java.io.*;
 import java.net.*;
 import java.text.DecimalFormat;

@@ -544,7 +544,7 @@ public class MockGithubDownloader implements Downloader{
             "        <span class=\"css-truncate css-truncate-target\"><a href=\"/code4craft/webmagic/tree/master/en_docs\" class=\"js-directory-link\" id=\"025516923597c2d7f987828ad6657c14-6f7a9bdb73f0e5e26cbde50c2fbf780c2a4ad4b2\" title=\"en_docs\">en_docs</a></span>\n" +
             "      </td>\n" +
             "      <td class=\"message\">\n" +
-            "        <span class=\"css-truncate css-truncate-target\"><a href=\"/code4craft/webmagic/commit/dcc5d790e4bcbebaa2a1168fd5f9919936bcb831\" class=\"message\" data-pjax=\"true\" title=\"update readme\">update readme</a></span>\n" +
+            "        <span class=\"css-truncate css-truncate-target\"><a href=\"/code4craft/webmagic/commit/dcc5d790e4bcbebaa2a1168fd5f9919936bcb831\" class=\"message\" data-pjax=\"true\" title=\"manager readme\">manager readme</a></span>\n" +
             "      </td>\n" +
             "      <td class=\"age\"><span class=\"css-truncate css-truncate-target\"><time class=\"js-relative-date\" datetime=\"2013-08-17T16:16:33-07:00\" title=\"2013-08-17 16:16:33\">August 17, 2013</time></span></td>\n" +
             "    </tr>\n" +
@@ -583,7 +583,7 @@ public class MockGithubDownloader implements Downloader{
             "        <span class=\"css-truncate css-truncate-target\"><a href=\"/code4craft/webmagic/tree/master/webmagic-lucene\" class=\"js-directory-link\" id=\"e686efe9e2cd770dcf86d93b9ddb2036-e16df360eb86bf0c21be610105981182a5e2ac05\" title=\"webmagic-lucene\">webmagic-lucene</a></span>\n" +
             "      </td>\n" +
             "      <td class=\"message\">\n" +
-            "        <span class=\"css-truncate css-truncate-target\"><a href=\"/code4craft/webmagic/commit/7003426898ec684194a67130914c17c1566ed233\" class=\"message\" data-pjax=\"true\" title=\"update pom\">update pom</a></span>\n" +
+            "        <span class=\"css-truncate css-truncate-target\"><a href=\"/code4craft/webmagic/commit/7003426898ec684194a67130914c17c1566ed233\" class=\"message\" data-pjax=\"true\" title=\"manager pom\">manager pom</a></span>\n" +
             "      </td>\n" +
             "      <td class=\"age\"><span class=\"css-truncate css-truncate-target\"><time class=\"js-relative-date\" datetime=\"2013-08-20T06:52:39-07:00\" title=\"2013-08-20 06:52:39\">August 20, 2013</time></span></td>\n" +
             "    </tr>\n" +
@@ -622,7 +622,7 @@ public class MockGithubDownloader implements Downloader{
             "        <span class=\"css-truncate css-truncate-target\"><a href=\"/code4craft/webmagic/tree/master/webmagic-selenium\" class=\"js-directory-link\" id=\"988c197af393f3198711cebacce7fd65-210d6b3ddaf0bc962553f1244495b6960fbd8994\" title=\"webmagic-selenium\">webmagic-selenium</a></span>\n" +
             "      </td>\n" +
             "      <td class=\"message\">\n" +
-            "        <span class=\"css-truncate css-truncate-target\"><a href=\"/code4craft/webmagic/commit/7003426898ec684194a67130914c17c1566ed233\" class=\"message\" data-pjax=\"true\" title=\"update pom\">update pom</a></span>\n" +
+            "        <span class=\"css-truncate css-truncate-target\"><a href=\"/code4craft/webmagic/commit/7003426898ec684194a67130914c17c1566ed233\" class=\"message\" data-pjax=\"true\" title=\"manager pom\">manager pom</a></span>\n" +
             "      </td>\n" +
             "      <td class=\"age\"><span class=\"css-truncate css-truncate-target\"><time class=\"js-relative-date\" datetime=\"2013-08-20T06:52:39-07:00\" title=\"2013-08-20 06:52:39\">August 20, 2013</time></span></td>\n" +
             "    </tr>\n" +
@@ -635,7 +635,7 @@ public class MockGithubDownloader implements Downloader{
             "        <span class=\"css-truncate css-truncate-target\"><a href=\"/code4craft/webmagic/tree/master/zh_docs\" class=\"js-directory-link\" id=\"bec3b859688b0bbdb94899b1a5b56441-2cf0c7c178e3e0280b023f54e3ef21e9b7b9e3b3\" title=\"zh_docs\">zh_docs</a></span>\n" +
             "      </td>\n" +
             "      <td class=\"message\">\n" +
-            "        <span class=\"css-truncate css-truncate-target\"><a href=\"/code4craft/webmagic/commit/81f75347573f70a39a83afd5d2f7d626b3b305bd\" class=\"message\" data-pjax=\"true\" title=\"update version\">update version</a></span>\n" +
+            "        <span class=\"css-truncate css-truncate-target\"><a href=\"/code4craft/webmagic/commit/81f75347573f70a39a83afd5d2f7d626b3b305bd\" class=\"message\" data-pjax=\"true\" title=\"manager version\">manager version</a></span>\n" +
             "      </td>\n" +
             "      <td class=\"age\"><span class=\"css-truncate css-truncate-target\"><time class=\"js-relative-date\" datetime=\"2013-09-12T06:28:42-07:00\" title=\"2013-09-12 06:28:42\">September 12, 2013</time></span></td>\n" +
             "    </tr>\n" +
@@ -674,7 +674,7 @@ public class MockGithubDownloader implements Downloader{
             "        <span class=\"css-truncate css-truncate-target\"><a href=\"/code4craft/webmagic/blob/master/README.md\" class=\"js-directory-link\" id=\"04c6e90faac2675aa89e2176d2eec7d8-01a868db17802ce7915cc2bcfad10244ef4de064\" title=\"README.md\">README.md</a></span>\n" +
             "      </td>\n" +
             "      <td class=\"message\">\n" +
-            "        <span class=\"css-truncate css-truncate-target\"><a href=\"/code4craft/webmagic/commit/a0d64b76357a449386755b9867163c91d04a2426\" class=\"message\" data-pjax=\"true\" title=\"update version\">update version</a></span>\n" +
+            "        <span class=\"css-truncate css-truncate-target\"><a href=\"/code4craft/webmagic/commit/a0d64b76357a449386755b9867163c91d04a2426\" class=\"message\" data-pjax=\"true\" title=\"manager version\">manager version</a></span>\n" +
             "      </td>\n" +
             "      <td class=\"age\"><span class=\"css-truncate css-truncate-target\"><time class=\"js-relative-date\" datetime=\"2013-09-12T06:06:05-07:00\" title=\"2013-09-12 06:06:05\">September 12, 2013</time></span></td>\n" +
             "    </tr>\n" +

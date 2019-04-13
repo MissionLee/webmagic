@@ -1,4 +1,4 @@
-package pers.missionlee.webmagic.spider.update;
+package pers.missionlee.webmagic.spider.sankaku.manager;
 
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 

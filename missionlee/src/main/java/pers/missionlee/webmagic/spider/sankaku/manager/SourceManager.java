@@ -1,4 +1,4 @@
-package pers.missionlee.webmagic.spider.update;
+package pers.missionlee.webmagic.spider.sankaku.manager;
 
 import org.apache.commons.io.FileUtils;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtistInfo;
@@ -63,7 +63,7 @@ public class SourceManager {
         this.tmpPath = buildPath(rootPath, DIRL1_TMP);
         initSankakuPathInfo();
         initIdolPathInfo();
-        initSankakuArtistList();
+        //getSankakuArtistList();
     }
 
     private void initSankakuPathInfo() {
@@ -84,7 +84,7 @@ public class SourceManager {
         this.idolPathList = new PathList(idolPicPath, idolVidPath, idolInfoPath);
     }
 
-    private void initSankakuArtistList() {
+    public Map<String,Integer> getSankakuArtistList() {
         Map<String, Integer> map = new HashMap<String, Integer>();
         if (sankakuPics == null || sankakuVids == null) {
             initSankakuPathInfo();
@@ -94,8 +94,11 @@ public class SourceManager {
         File[] vidArtists = this.sankakuVids.listFiles();
         countArtists(map, vidArtists);
         this.sankakuArtists = map;
+        return map;
     }
-
+    /**
+     * 统计作者和作品数量，如果名称相同，那么做加法
+     * */
     private void countArtists(Map<String, Integer> map, File[] artists) {
         for (int i = 0; i < artists.length; i++) {
             if (map.containsKey(artists[i].getName())) {
@@ -111,9 +114,7 @@ public class SourceManager {
         return DIRL1_SANKAKU;
     }
 
-    public Map<String, Integer> getSankakuArtists() {
-        return sankakuArtists;
-    }
+
 
     public Map<String, Integer> getIdolArtists() {
         return idolArtists;

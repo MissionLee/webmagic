@@ -2,7 +2,7 @@ package pers.missionlee.webmagic.spider.sankaku.task;
 
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.io.FileUtils;
-import pers.missionlee.webmagic.spider.update.SourceManager;
+import pers.missionlee.webmagic.spider.sankaku.manager.SourceManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +13,7 @@ import java.util.Map;
  * @author: Mission Lee
  * @create: 2019-04-10 11:07
  */
+@Deprecated
 public class SankakuSpiderTask {
     public class DownloadTask {
         public String artistName;//作者名
@@ -56,7 +57,7 @@ public class SankakuSpiderTask {
         String config = FileUtils.readFileToString(new File(configPath), "utf8");
         Map<String, Object> configMap = (Map<String, Object>) JSON.parse(config);
         if (!configMap.containsKey("rootPath") || !configMap.containsKey("taskType")) {
-            System.out.println("配置文件至少包含\n- rootPath :配置文件绝对路径，如果为\"relative\"表示rootPath为配置文件所在目录\n- taskType : \"new\"表示根据rootPath下name.md文件启动爬虫 \"update\"表示进行更新操作");
+            System.out.println("配置文件至少包含\n- rootPath :配置文件绝对路径，如果为\"relative\"表示rootPath为配置文件所在目录\n- taskType : \"new\"表示根据rootPath下name.md文件启动爬虫 \"manager\"表示进行更新操作");
             throw new RuntimeException("请检查配置文件");
         } else {
             if(configMap.get("rootPath").equals("relative")){
@@ -85,8 +86,8 @@ public class SankakuSpiderTask {
             }else{
                 threadNum=4;
             }
-            if(configMap.get("taskType").equals("update")){
-                taskType = "update";
+            if(configMap.get("taskType").equals("manager")){
+                taskType = "manager";
             }else{
                 taskType = "new";
                 // 检测 name.md 是否存在

@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.io.FileUtils;
+import pers.missionlee.webmagic.spider.sankaku.SpiderUtils;
+import pers.missionlee.webmagic.spider.sankaku.manager.SourceManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -98,9 +100,25 @@ public class ChromeBookmarksReader {
             }
         }
     }
+    public static String defaultBookmarkpath = "C:\\Documents and Settings\\Administrator\\Local Settings\\Application Data\\Google\\Chrome\\User Data\\Default\\Bookmarks";
+    public static void extractSankakuNameList(String rootPath,String bookmarkDirName,String aimFilePath) throws IOException {
+        SourceManager sourceManager = new SourceManager(rootPath);
+        Set<String> downloaded = sourceManager.getSankakuArtistList().keySet();
+        ChromeBookmarksReader reader = new ChromeBookmarksReader(defaultBookmarkpath);
+        List<Map> aimDir = reader.getBookMarkListByDirName(bookmarkDirName);
+        StringBuffer buffer = new StringBuffer();
+        for(Map bookmark:aimDir){
+            String tmpName = SpiderUtils.urlDeFormater(bookmark.get("url").toString().split("tags=")[1]);
+            if(!downloaded.contains(tmpName)){
+                buffer.append(tmpName+" 1\n");
+            }
+        }
+        FileUtils.writeStringToFile(new File(aimFilePath),buffer.toString(),"utf8",false);
+    }
+
     public static void main(String[] args) throws IOException {
-        ChromeBookmarksReader reader = new ChromeBookmarksReader("C:\\Documents and Settings\\Administrator\\Local Settings\\Application Data\\Google\\Chrome\\User Data\\Default\\Bookmarks");
-        System.out.println("--------------");
-        System.out.println(reader.dirs.get("DownloadedBySpider").size());
+        extractSankakuNameList("D:\\ROOT","download1","D:\\ROOT\\bookmarks\\sankaku-download1.md");
+        extractSankakuNameList("D:\\ROOT","download2","D:\\ROOT\\bookmarks\\sankaku-download2.md");
+
     }
 }

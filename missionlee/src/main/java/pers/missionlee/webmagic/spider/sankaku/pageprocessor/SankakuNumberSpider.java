@@ -1,6 +1,6 @@
 package pers.missionlee.webmagic.spider.sankaku.pageprocessor;
 
-import pers.missionlee.webmagic.spider.update.SpiderTask;
+import pers.missionlee.webmagic.spider.sankaku.manager.SpiderTask;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 

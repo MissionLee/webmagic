@@ -1,4 +1,4 @@
-package pers.missionlee.webmagic.spider.update;
+package pers.missionlee.webmagic.spider.sankaku.manager;
 
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.io.FileUtils;
@@ -56,7 +56,7 @@ public class SpiderTaskFactory {
                 String taskType = spiderTaskConfig.get("taskType").toString().toLowerCase();
                 if(taskType.equals("new"))
                     this.defaultTaskType= SpiderTask.TaskType.NEW;
-                else if(taskType.equals("update"))
+                else if(taskType.equals("manager"))
                     this.defaultTaskType= SpiderTask.TaskType.UPDATE;
                 else
                     throw new RuntimeException("未知的TaskType："+taskType);

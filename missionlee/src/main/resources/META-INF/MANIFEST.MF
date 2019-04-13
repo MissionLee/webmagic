@@ -1,4 +1,3 @@
 Manifest-Version: 1.0
-Main-Class: pers.missionlee.webmagic.spider.sankaku.SankakuSpiderProce
- ssor
+Main-Class: pers.missionlee.webmagic.spider.sankaku.manager.SpiderManager
 
