@@ -7,7 +7,7 @@ import java.util.ArrayList;
  * @author: Mission Lee
  * @create: 2019-04-08 16:38
  */
-public class ArtworkInfoList<ArtworkInfo> extends ArrayList<ArtworkInfo> {
+public class AutoDeduplicatedArrayList<ArtworkInfo> extends ArrayList<ArtworkInfo> {
     @Override
     public boolean add(ArtworkInfo e) {
         for (ArtworkInfo artistInfo:this

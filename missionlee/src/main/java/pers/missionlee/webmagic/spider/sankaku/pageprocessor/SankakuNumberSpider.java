@@ -1,5 +1,6 @@
 package pers.missionlee.webmagic.spider.sankaku.pageprocessor;
 
+import pers.missionlee.webmagic.spider.update.SpiderTask;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 
@@ -15,6 +16,12 @@ import java.util.regex.Matcher;
  */
 public class SankakuNumberSpider extends AbstractSankakuSpider {
     boolean offical;
+    public SankakuNumberSpider(Site site, SpiderTask task){
+        super(site,task);
+        this.offical =task.isOfficial();
+    }
+
+    @Deprecated
     public SankakuNumberSpider(Site site,String rootPath,String artistName,boolean offical) {
         super(site,rootPath,artistName);
         this.offical = offical;

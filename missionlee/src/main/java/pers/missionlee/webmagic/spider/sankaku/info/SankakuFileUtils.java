@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pers.missionlee.webmagic.spider.sankaku.SpiderUtils;
+import pers.missionlee.webmagic.utils.ChromeBookmarksReader;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -15,7 +17,9 @@ import java.util.*;
  * @description:
  * @author: Mission Lee
  * @create: 2019-03-02 16:24
+ * @Deprecated 用功能更强的SourceManager来管理
  */
+@Deprecated
 public class SankakuFileUtils {
     private static Logger logger = LoggerFactory.getLogger(SankakuFileUtils.class);
     /**
@@ -189,10 +193,20 @@ public class SankakuFileUtils {
             }
         }
     }
+    public static void extractNameFromBookMark() throws IOException {
+        ChromeBookmarksReader reader = new ChromeBookmarksReader("C:\\Documents and Settings\\Administrator\\Local Settings\\Application Data\\Google\\Chrome\\User Data\\Default\\Bookmarks");
+        List<Map> maps = reader.getBookMarkListByDirName("DownloadedBySpider");
+        File aimFile = new File("C:\\Users\\Administrator\\Desktop\\name.txt");
+        for (Map map :
+                maps) {
+            FileUtils.writeStringToFile(aimFile, SpiderUtils.urlDeFormater(map.get("url").toString().split("tags=")[1])+"\n","utf8",true);
+//            FileUtils.writeStringToFile(aimFile, URLDecoder.decode(map.get("url").toString().split("tags=")[1],"utf8")+"\n","utf8",true);
+        }
 
+    }
     public static void main(String[] args) throws IOException {
 //        extractSamplePic(new File("D:\\sankaku"));
 //        removeInfoFiles("D:\\sankaku");
-        System.out.println(buildPath("D:/abc","de/","fg","hij"));
+        extractNameFromBookMark();
     }
 }

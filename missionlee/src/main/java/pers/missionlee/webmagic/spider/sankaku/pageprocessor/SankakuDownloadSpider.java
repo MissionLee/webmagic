@@ -2,10 +2,11 @@ package pers.missionlee.webmagic.spider.sankaku.pageprocessor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pers.missionlee.webmagic.spider.sankaku.SankakuDownloadUtils;
 import pers.missionlee.webmagic.spider.sankaku.info.SankakuFileUtils;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 import pers.missionlee.webmagic.spider.sankaku.task.SankakuSpiderTask;
+import pers.missionlee.webmagic.spider.update.SourceManager;
+import pers.missionlee.webmagic.spider.update.SpiderTask;
 import pers.missionlee.webmagic.utils.TimeLimitedHttpDownloader;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
@@ -23,12 +24,15 @@ import java.util.*;
  */
 public class SankakuDownloadSpider extends AbstractSankakuSpider {
     Logger logger = LoggerFactory.getLogger(SankakuDownloadSpider.class);
+    @Deprecated
     SankakuSpiderTask task;
+
     // root 路径
     //public String rootPath;
     /**
      * 已经下载成功的作品信息（初始状态为本地存储的部分，下载过程中动态添加）
      */
+    @Deprecated
     public List<ArtworkInfo> artworkInfos;
     // 作者名/tag  同时也是当前作者/tag本地文件夹名称
     //public String artistName;
@@ -44,12 +48,22 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
     private Map<String, Integer> pageRedoCounter = new HashMap<String, Integer>();
     private Map<String, Integer> downloadErrorCounter = new HashMap<String, Integer>();
 
-    public SankakuDownloadSpider(Site site,SankakuSpiderTask task) throws IOException {
-        this(site,task.rootPath,task.currentDownloadTask.artistName,task);
+    public SankakuDownloadSpider(Site site, SpiderTask task) {
+        super(site, task);
+        // TODO: 2019/4/12 把这个addedList 放到SpiderTask里面
+        this.addedList = new ArrayList<String>();
+
     }
-    public SankakuDownloadSpider(Site site, String rootPath, String artistName,SankakuSpiderTask task) throws IOException {
+
+    @Deprecated
+    public SankakuDownloadSpider(Site site, SankakuSpiderTask task) throws IOException {
+        this(site, task.rootPath, task.currentDownloadTask.artistName, task);
+    }
+
+    @Deprecated
+    public SankakuDownloadSpider(Site site, String rootPath, String artistName, SankakuSpiderTask task) throws IOException {
         super(site, rootPath, artistName);
-        this.task =task;
+        this.task = task;
         //this.rootPath = rootPath;
         //this.artistName = artistName;
         this.artworkInfos = SankakuFileUtils.getArtworkInfoList(rootPath, artistName);
@@ -59,6 +73,7 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
         // 结束，作者从 name.md文件夹里面出名，此时如果文件夹已经建立，那么在update的时候，还能补救这种情况
     }
 
+    @Deprecated
     private boolean hasDownloaded(String URL) {
         for (ArtworkInfo info :
                 artworkInfos) {
@@ -68,18 +83,28 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
         return false;
     }
 
+
+    private boolean hasDownloaded2(String url) {
+        for (ArtworkInfo info : spiderTask.artworkInfoList)
+            if (info.getAddress().equals(url))
+                return true;
+        return false;
+    }
+
     @Override
     public void process(Page page) {
         String URL = page.getUrl().toString();
         if (URL.contains("tags")) { // 如果访问的时列表页面
             processListPage(page, URL);
         } else if (page.getUrl().toString().startsWith("https://chan.sankakucomplex.com/post/show/")) {
-            processDetailPage(page);
+            //processDetailPage(page);
+            processDetailPage2(page);
         } else {
             logger.warn("Went to page: " + page.getUrl());
         }
         //logger.info("下载信息: [作者:"+artistName+" 下载情况" + d_suc+ "/" +d_err + "/" + d_added  + "]-原始收录: " + d_skip);
-        logger.info(task.getCurrentTaskProgress());
+        //logger.info(task.getCurrentTaskProgress());
+        logger.info(spiderTask.getTaskProgress());
     }
 
 
@@ -122,15 +147,18 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
             for (String url : urlList
             ) {
 
-                if (!hasDownloaded(BASE_URL + url) && !addedList.contains(url)) {
+                if (!hasDownloaded2(BASE_URL + url) && !spiderTask.targetUrl.contains(url)) {
                     logger.info("⭐ add " + BASE_URL + url);
                     page.addTargetRequest(BASE_URL + url);
-                    addedList.add(url);
+                    spiderTask.targetUrl.add(url);
+                    //addedList.add(url);
                     thisPageAdded++;
                     //d_added++;
-                    task.currentDownloadTask.added++;
+                    spiderTask.added++;
+                    //task.currentDownloadTask.added++;
                 } else {
 //                    d_skip++;
+                    logger.info("⭐ skip " + BASE_URL + url);
 
                 }
             }
@@ -139,11 +167,29 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
         return thisPageAdded;
     }
 
+    private void processDetailPage2(Page page) {
+        Html html = page.getHtml();
+        Target target = extractDownloadTargetInfoFromDetailPage(html);
+        ArtworkInfo artworkInfo = extractArtworkInfoFromDetailPage(page, target);
+        if (download(target.targetUrl, target.targetName, page)) {
+            spiderTask.artworkInfoList.add(artworkInfo);
+            try {
+                spiderTask.appendArtworkInfo(artworkInfo);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            spiderTask.downloaded++;
+        } else {
+            spiderTask.failed++;
+        }
+    }
+
     /**
      * 1. 解析作品信息
      * 2. 解析下载目标信息 URL 文件名
      * 3. 下载文件，下载成功后将作品信息写入文档记录
      */
+    @Deprecated
     private void processDetailPage(Page page) {
         // 详情页面
         Html html = page.getHtml();
@@ -283,23 +329,37 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
         target.targetName = split[split.length - 1].split("\\?")[0];
         String nameLow = target.targetName.toLowerCase();
         target.subFix = "/pic";
-        if (nameLow.endsWith(".mp4")
-                || nameLow.endsWith(".webm")
-                || nameLow.endsWith(".avi")
-                || nameLow.endsWith(".rmvb")
-                || nameLow.endsWith(".flv")
-                || nameLow.endsWith(".3gp")
-                || nameLow.endsWith(".mov")
-                || nameLow.endsWith(".swf")) {
+        if (SourceManager.isVideo(nameLow)) {
             target.subFix = "/vid";
         }
         return target;
     }
 
+    public boolean download(String downloadUrl, String filename, Page page) {
+        boolean returnStatus = false;
+        if (!spiderTask.exists(filename)) {
+            logger.info("开始下载: " + filename + " " + page.getUrl());
+            try {
+                returnStatus = TimeLimitedHttpDownloader.downloadWithAutoRetry(downloadUrl, filename, page.getUrl().toString(), spiderTask);
+            } catch (IOException e) {
+                logger.error("下载失败[开始重试]:[下载过程正常]文件保存/重命名/流操作失败" + e.getMessage());
+                try {
+                    returnStatus = TimeLimitedHttpDownloader.downloadWithAutoRetry(downloadUrl, filename, page.getUrl().toString(), spiderTask);
+                } catch (IOException e1) {
+                    logger.error("下载失败[放弃下载]:[下载过程正常]文件保存/重命名/流操作失败" + e1.getMessage());
+                }
+            }
+        } else {
+            returnStatus = true;
+        }
+        return returnStatus;
+    }
+
+    @Deprecated
     public boolean download(String downloadURL, String filename, String savePath, Page page) {
         boolean returnStatus = false;
         if (!new File(savePath + filename).exists()) {
-            logger.info("开始下载: " + filename +" "+page.getUrl());
+            logger.info("开始下载: " + filename + " " + page.getUrl());
             try {
                 returnStatus = TimeLimitedHttpDownloader.downloadWithAutoRetry(downloadURL, filename, savePath, page.getUrl().toString(), 3);
             } catch (IOException e) {

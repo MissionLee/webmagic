@@ -2,7 +2,6 @@ package pers.missionlee.webmagic.spider.sankaku;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pers.missionlee.webmagic.spider.sankaku.info.SankakuFileUtils;
 import pers.missionlee.webmagic.utils.TimeLimitedHttpDownloader;
 import us.codecraft.webmagic.Page;
 

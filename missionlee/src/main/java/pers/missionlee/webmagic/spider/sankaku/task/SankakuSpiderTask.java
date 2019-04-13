@@ -2,6 +2,7 @@ package pers.missionlee.webmagic.spider.sankaku.task;
 
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.io.FileUtils;
+import pers.missionlee.webmagic.spider.update.SourceManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,6 +38,8 @@ public class SankakuSpiderTask {
     public boolean offical;// 是否有官方作品筛选需求
     public String taskType;
     public DownloadTask currentDownloadTask;
+    public SourceManager sourceManager;
+    public SourceManager.SourceType sourceType;
 
     public String getCurrentTaskProgress() {
         return currentDownloadTask.getTaskProgress();
@@ -71,8 +74,8 @@ public class SankakuSpiderTask {
             if(!new File(rootPath).isDirectory()){
                 throw new RuntimeException("rootPath错误:"+rootPath);
             }
-            if(configMap.containsKey("offical")){
-                official = (Boolean) configMap.get("offical");
+            if(configMap.containsKey("official")){
+                official = (Boolean) configMap.get("official");
             }else{
                 official=false;
             }

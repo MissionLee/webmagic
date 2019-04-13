@@ -131,7 +131,7 @@ public class ArtistInfo {
         return JSON.toJSONString(this);
     }
 
-    protected static ArtistInfo getArtistInfoFromArtwork(List<ArtworkInfo> artworkInfos, String name) {
+    public static ArtistInfo getArtistInfoFromArtwork(List<ArtworkInfo> artworkInfos, String name) {
         ArtistInfo artistInfo = new ArtistInfo();
         artistInfo.setArtworkNum((artworkInfos.size()));
         artistInfo.setName(name);
@@ -170,7 +170,7 @@ public class ArtistInfo {
         return artistInfo;
     }
 
-    protected static ArtistInfo updateArtworkInfo(List<ArtworkInfo> artworkInfos, String artistPath, String artistName) throws IOException {
+    public static ArtistInfo updateArtworkInfo(List<ArtworkInfo> artworkInfos, String artistPath, String artistName) throws IOException {
         ArtistInfo artistInfo = getArtistInfoFromArtwork(artworkInfos, artistName);
         FileUtils.writeStringToFile(new File(artistPath + ARTIST_INFO_FILE_NAME), artistInfo.toString(), "UTF8", false);
         return artistInfo;

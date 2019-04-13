@@ -1,6 +1,5 @@
 package pers.missionlee.webmagic.spider.sankaku;
 
-import com.alibaba.fastjson.JSON;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -23,7 +22,7 @@ import java.util.regex.Pattern;
  * @author: Mission Lee
  * @create: 2019-03-02 16:10
  */
-public class SankakuSpiderProcessor extends SankakuBasicUtils {
+public class SankakuSpiderProcessor extends SpiderUtils {
 
     private Logger logger = LoggerFactory.getLogger(SankakuSpiderProcessor.class);
 
@@ -234,8 +233,12 @@ public class SankakuSpiderProcessor extends SankakuBasicUtils {
         }
 
     }
-    public static void main(String[] args) throws IOException {
-        autoRun("F:\\sankaku\\taskConfig.json");
+    public static void main(String[] args)  {
+        try {
+            autoRun("D:\\sankaku\\taskConfig.json");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 //        try {
 //            runProcessor(RunType.RUN_WITH_ARTIST_NAMElIST, "F:\\sankaku", "", 4);
 //        } catch (IOException e) {

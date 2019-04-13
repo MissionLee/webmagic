@@ -2,6 +2,7 @@ package pers.missionlee.webmagic.spider.sankaku.pageprocessor;
 
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 import pers.missionlee.webmagic.spider.sankaku.info.SankakuFileUtils;
+import pers.missionlee.webmagic.spider.update.SpiderTask;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.processor.PageProcessor;
 
@@ -22,7 +23,11 @@ public abstract class AbstractSankakuSpider implements PageProcessor {
     String BASE_URL = "https://chan.sankakucomplex.com";
 
     Site site;
-
+    SpiderTask spiderTask;
+    public AbstractSankakuSpider(Site site, SpiderTask task){
+        this.site =site;
+        this.spiderTask=task;
+    }
     public AbstractSankakuSpider(Site site,String rootPath,String artistName) {
         this.site = site;
         if(!SankakuFileUtils.makeArtistDir(rootPath, artistName)){

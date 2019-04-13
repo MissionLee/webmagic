@@ -54,6 +54,9 @@ public class ChromeBookmarksReader {
         this.dirs = new HashMap<String,List< Map>>();
         init();
     }
+    public List<Map> getBookMarkListByDirName(String dirName){
+        return dirs.get(dirName);
+    }
     private void init() throws IOException {
         String jsonString = FileUtils.readFileToString(new File(path),"utf8");
         JSONObject jsonRoots = (JSONObject) (((Map)JSON.parse(jsonString)).get("roots"));

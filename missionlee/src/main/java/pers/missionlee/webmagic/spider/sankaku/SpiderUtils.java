@@ -5,6 +5,8 @@ import us.codecraft.webmagic.Site;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -15,7 +17,7 @@ import java.util.Set;
  * @author: Mission Lee
  * @create: 2019-03-24 22:01
  */
-public class SankakuBasicUtils {
+public class SpiderUtils {
     public static String UserName = "zuixue3000@163.com";
     public static String UserName2 = "hisanily";
     public static String Password = "mingshun1993";
@@ -95,7 +97,36 @@ public class SankakuBasicUtils {
         }
     }
 
-    protected static String urlFormater(String artistName, boolean offical) {
+    public static String urlDeFormater(String codedName) throws UnsupportedEncodingException {
+        String originName = URLDecoder.decode(codedName.trim(),"UTF8").replaceAll("_"," ");
+//        String originName =codedName
+//                .replaceAll("_"," ")
+//                .replaceAll("%21","!")
+//                .replaceAll("%22","\"")
+//                .replaceAll("%23","#")
+//                .replaceAll("%24","\\$")
+//                .replaceAll("%26","&")
+//                .replaceAll("%27","'")
+//                .replaceAll("%28","(")
+//                .replaceAll("%29",")")
+//                .replaceAll("%2A","*")
+//                .replaceAll("%2B","+")
+//                .replaceAll("%2C",",")
+//                .replaceAll("%2D","-")
+//                .replaceAll("%2E",".")
+//                .replaceAll("%2F","/")
+//                .replaceAll("%3A",":")
+//                .replaceAll("%3B",";")
+//                .replaceAll("%3C","<")
+//                .replaceAll("%3D","=")
+//                .replaceAll("%3E",">")
+//                .replaceAll("%3F","?")
+//                .replaceAll("%40","@")
+//                .replaceAll("%5C","\\\\")
+//                .replaceAll("%7C","|");
+        return originName;
+    }
+    public static String urlFormater(String artistName, boolean offical) {
         // 空格 () ’
         String artistFormat = artistName.trim()
                 .replaceAll(" ", "_")// !important 这里吧空格对应成了下划线，是sankaku的特别处理方法
@@ -180,7 +211,7 @@ public class SankakuBasicUtils {
     }
 
     /**
-     * 给定 作者名称 与 是否 offical 是否 为更新 来获取 目标url
+     * 给定 作者名称 与 是否 official 是否 为更新 来获取 目标url
      * 其中 整体下载的情况下（非update） 可以通过爬虫自动获取 目标数量
      */
     protected String[] urlGenertor(String artist, boolean offical, int artworkNum) {

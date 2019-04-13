@@ -186,7 +186,7 @@ public class ArtworkInfo {
     public boolean equals(Object artworkInfo) {
         return this.getName().equals(((ArtworkInfo) artworkInfo).getName());
     }
-
+    @Deprecated
     private static FileFilter isPicOrVid = new FileFilter() {
         @Override
         public boolean accept(File pathname) {
@@ -201,7 +201,8 @@ public class ArtworkInfo {
      * @Author: Mission Lee
      * @date: 2019/4/8
      */
-    protected static List<String> cleanErrorFiles(File artistFile) {
+    @Deprecated
+    public static List<String> cleanErrorFiles(File artistFile) {
         List<String> deletedNames = new ArrayList<String>();
         File[] files = artistFile.listFiles(isPicOrVid);
         for (int j = 0; j < files.length; j++) { // pic 与 vid
@@ -227,7 +228,7 @@ public class ArtworkInfo {
         return deletedNames;
     }
 
-    protected static void convertArtworkStringToList(List<ArtworkInfo> list, String[] artworkInfoLines) {
+    public static void convertArtworkStringToList(List<ArtworkInfo> list, String[] artworkInfoLines) {
         for (int i = 0; i < artworkInfoLines.length; i++) {
             if (!StringUtils.isEmpty(artworkInfoLines[i])) {
                 ArtworkInfo artworkInfo = JSON.parseObject(artworkInfoLines[i], ArtworkInfo.class);
@@ -246,9 +247,10 @@ public class ArtworkInfo {
      * @Author: Mission Lee
      * @date: 2019/4/8
      */
-    protected static List<ArtworkInfo> getCleanedArtworkInfoList(String artistPath) throws IOException {
+    @Deprecated
+    public static List<ArtworkInfo> getCleanedArtworkInfoList(String artistPath) throws IOException {
 
-        ArtworkInfoList fileInfoJsonList = new ArtworkInfoList();
+        AutoDeduplicatedArrayList fileInfoJsonList = new AutoDeduplicatedArrayList();
         File artworkInfoFile = new File(artistPath + FILE_PATH);
 
         if (artworkInfoFile.exists()) {
@@ -299,8 +301,8 @@ public class ArtworkInfo {
         }
         return fileInfoJsonList;
     }
-
-    protected static void writeArtworkInfoFile(File artworkInfoFile, List<ArtworkInfo> artworkInfos) throws IOException {
+    @Deprecated
+    public static void writeArtworkInfoFile(File artworkInfoFile, List<ArtworkInfo> artworkInfos) throws IOException {
         //System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
         //System.out.println(artworkInfoFile.getName()+FILE_PATH);
         //File artworkInfoFile = new File(artworkInfoFile.getName() + FILE_PATH);
@@ -310,8 +312,8 @@ public class ArtworkInfo {
             FileUtils.writeStringToFile(artworkInfoFile, JSON.toJSONString(iterator.next()) + "\n", "UTF8", true);
         }
     }
-
-    protected static int getArtworkNumber(File artist) {
+    @Deprecated
+    public static int getArtworkNumber(File artist) {
         int num = 0;
         cleanErrorFiles(artist);
         File[] files = artist.listFiles(isPicOrVid);
@@ -326,11 +328,12 @@ public class ArtworkInfo {
     /**
      * 添加一条artworkInfo 到 文件中
      */
-    protected static synchronized void appendArtworkInfo(ArtworkInfo info, String artistPath) throws IOException {
+    @Deprecated
+    public static synchronized void appendArtworkInfo(ArtworkInfo info, String artistPath) throws IOException {
         FileUtils.writeStringToFile(new File(artistPath + FILE_PATH), JSON.toJSONString(info) + "\n", "UTF8", true);
     }
 
-    protected static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException {
         System.out.println(getCleanedArtworkInfoList("D:\\sankakuoffical\\league of legends\\").size());
     }
 }
