@@ -95,12 +95,13 @@ public class TimeLimitedHttpDownloader implements Thread.UncaughtExceptionHandle
             return returnStatus;
         }
     }
-    public static boolean downloadWithAutoRetry(String urlStr, String filename,  String referer,  SpiderTask spiderTask) throws IOException {
+
+    public static boolean downloadWithAutoRetry(String urlStr, String filename, String referer, SpiderTask spiderTask) throws IOException {
         boolean downloadStatus = false;
         String tmpPath = spiderTask.getTmpPath();
         int retry = spiderTask.getDownloadRetryTimes();
-        if(!spiderTask.existsInTmpPath(filename)){
-            while (!downloadStatus && retry>0){
+        if (!spiderTask.existsInTmpPath(filename)) {
+            while (!downloadStatus && retry > 0) {
                 logger.info("尝试下载[" + (4 - retry) + "]: " + filename);
                 retry--;
                 InputStream in = null;
@@ -155,23 +156,27 @@ public class TimeLimitedHttpDownloader implements Thread.UncaughtExceptionHandle
 
                     if (downloadStatus) {// 如果下载成功 临时名称，改为真正名称
                         File tmpFile = new File(tmpPath + randomName);
-                        boolean success = spiderTask.saveFile(tmpFile,filename);
-                        System.out.println("转存成功："+success);
+                        boolean success = spiderTask.saveFile(tmpFile, filename);
+                        if (success)
+                            logger.info("临时文件转存成功 " + filename);
+                        else
+                            logger.error("临时文件转存失败 " + filename);
                     } else {//如果下载失败 （超时等其他错误）  注意 stream 必须close之后，文件才能delete
                         new File(tmpPath + randomName).delete();
                     }
                     if (in != null)
                         in.close();
-                    if(connection !=null)
+                    if (connection != null)
                         connection.disconnect();
                 }
             }
-        }else{
+        } else {
 
-            downloadStatus =true;
+            downloadStatus = true;
         }
         return downloadStatus;
     }
+
     /**
      * @Description: 带自动重试
      * @Param: [urlStr 目标URL字符串形式, filename要保存为的文件名, savePath保存路径, referer Connection的referer字段, retry 尝试下载次数]
@@ -188,9 +193,9 @@ public class TimeLimitedHttpDownloader implements Thread.UncaughtExceptionHandle
         if (!saveDir.exists()) saveDir.mkdir();
         File aimFile = new File(savePath + filename);
         if (!aimFile.exists()) { // ！important 在SankakuDownloadSpider中有本地文件检测机制，
-                                 // 但是如果出现文件已经正常下载，并重命名，但是最后 in.close的时候报错
-                                 // 此错误由本方法抛出，倒是外部[SankakuDownloadSpider]使用方法判定下载失败，
-                                 // 触发外部重新下载机制,这是程序会自动返回下载成功，而不进行重新下载
+            // 但是如果出现文件已经正常下载，并重命名，但是最后 in.close的时候报错
+            // 此错误由本方法抛出，倒是外部[SankakuDownloadSpider]使用方法判定下载失败，
+            // 触发外部重新下载机制,这是程序会自动返回下载成功，而不进行重新下载
             while (!downloadStatus && retry > 0) { // 如果没有下载成功，并且重试次数没有用尽，就进行下载尝试
                 logger.info("尝试下载[" + (4 - retry) + "]: " + filename);
                 retry--;
@@ -253,7 +258,7 @@ public class TimeLimitedHttpDownloader implements Thread.UncaughtExceptionHandle
                     }
                     if (in != null)
                         in.close();
-                    if(connection !=null)
+                    if (connection != null)
                         connection.disconnect();
                 }
             }

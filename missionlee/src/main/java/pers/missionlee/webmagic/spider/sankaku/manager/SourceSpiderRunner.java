@@ -1,5 +1,7 @@
 package pers.missionlee.webmagic.spider.sankaku.manager;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pers.missionlee.webmagic.spider.sankaku.SpiderUtils;
 import pers.missionlee.webmagic.spider.sankaku.pageprocessor.SankakuDownloadSpider;
 import pers.missionlee.webmagic.spider.sankaku.pageprocessor.SankakuNumberSpider;
@@ -15,13 +17,18 @@ import java.io.IOException;
  * 用于取代 SankakuSpiderProcessor
  */
 public class SourceSpiderRunner extends SpiderUtils {
+    Logger logger = LoggerFactory.getLogger(SourceSpiderRunner.class);
     public SourceSpiderRunner() {
     }
     public void runTask(SpiderTask spiderTask) throws IOException {
-        if(spiderTask.getTaskType() == SpiderTask.TaskType.NEW)
+        if(spiderTask.getTaskType() == SpiderTask.TaskType.NEW){
+            logger.debug("尝试下载作者["+spiderTask.getArtistName()+"]的所有作品");
             runNewTask(spiderTask);
-        else
+        }
+        else{
+            logger.debug("尝试更新作者["+spiderTask.getArtistName()+"]的作品");
             runUpdateTask(spiderTask);
+        }
     }
     private SpiderTask runNewTask(SpiderTask spiderTask) throws IOException {
         int realArtworkNum = setTotalNumberWithSpider(spiderTask);
@@ -32,6 +39,7 @@ public class SourceSpiderRunner extends SpiderUtils {
     }
     private SpiderTask runUpdateTask(SpiderTask spiderTask) throws IOException {
         setStartUrlArray(spiderTask);
+        logger.debug("\n爬虫任务详情：\n"+spiderTask);
         runDownLoadSpider(spiderTask);
         return spiderTask;
     }

@@ -37,22 +37,19 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
     // 作者名/tag  同时也是当前作者/tag本地文件夹名称
     //public String artistName;
     // 扫描列表页因为存在 不同的排序情况同时使用的可能，借助这个addedList 排除artworkInfos里面没有，但是已经被添加到待下载列表中的文件
+    @Deprecated // addedList 功能交给 SpiderTask
     public List<String> addedList;
-    // 下载清空数量
-    //public int d_suc = 0;
-    //public int d_skip = 0;
-    //public int d_err = 0;
-    //public int d_added = 0;
-
     // == 以下用于下载出错后重新下载的机制
+    // 重下载机制交给 下载器 TimeLimitedHttpDownloader代理
+    @Deprecated
     private Map<String, Integer> pageRedoCounter = new HashMap<String, Integer>();
+    @Deprecated
     private Map<String, Integer> downloadErrorCounter = new HashMap<String, Integer>();
 
     public SankakuDownloadSpider(Site site, SpiderTask task) {
         super(site, task);
-        // TODO: 2019/4/12 把这个addedList 放到SpiderTask里面
-        this.addedList = new ArrayList<String>();
-
+        // addedList 已经由 task代为管理了
+        // this.addedList = new ArrayList<String>();
     }
 
     @Deprecated
@@ -95,12 +92,14 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
     public void process(Page page) {
         String URL = page.getUrl().toString();
         if (URL.contains("tags")) { // 如果访问的时列表页面
+            logger.debug("从列表页中提取待爬取详情页");
             processListPage(page, URL);
         } else if (page.getUrl().toString().startsWith("https://chan.sankakucomplex.com/post/show/")) {
             //processDetailPage(page);
+            logger.debug("从详情页中提取/下载目标数据");
             processDetailPage2(page);
         } else {
-            logger.warn("Went to page: " + page.getUrl());
+            logger.warn("位置的页面位置: " + page.getUrl());
         }
         //logger.info("下载信息: [作者:"+artistName+" 下载情况" + d_suc+ "/" +d_err + "/" + d_added  + "]-原始收录: " + d_skip);
         //logger.info(task.getCurrentTaskProgress());
@@ -124,7 +123,7 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
          * @update 20190327 实际使用中发现大量的本页面更新一两个就够了，找下一页纯属浪费，
          *          并且在外层processor里面有udpate数量不过尝试遍历作者的方法 所以added改为 > 15
          * */
-        if (thisPageAdded > 15 && URL.contains("date")) {
+        if (thisPageAdded > 10 && URL.contains("date")) {
             String thisPage = URL.substring(URL.length() - 1);
             int thisPageNum = Integer.valueOf(thisPage);
             if (thisPageNum < 50) {
@@ -172,7 +171,6 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
         Target target = extractDownloadTargetInfoFromDetailPage(html);
         ArtworkInfo artworkInfo = extractArtworkInfoFromDetailPage(page, target);
         if (download(target.targetUrl, target.targetName, page)) {
-            spiderTask.artworkInfoList.add(artworkInfo);
             try {
                 spiderTask.appendArtworkInfo(artworkInfo);
             } catch (IOException e) {
@@ -196,8 +194,6 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
         Target target = extractDownloadTargetInfoFromDetailPage(html);
         ArtworkInfo artworkInfo = extractArtworkInfoFromDetailPage(page, target);
         if (download(target.targetUrl, target.targetName, SankakuFileUtils.buildPath(task.rootPath, task.currentDownloadTask.artistName, target.subFix), page)) {
-            // 下载成功
-            // TODO: 2019/3/9  【完成】
             artworkInfos.add(artworkInfo);
             try {
                 //infoUtils.appendInfo(artworkInfo);
@@ -350,6 +346,7 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
                 }
             }
         } else {
+            logger.warn("跳过下载:"+filename+"已存在");
             returnStatus = true;
         }
         return returnStatus;

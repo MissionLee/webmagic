@@ -1,6 +1,9 @@
 package pers.missionlee.webmagic.spider.sankaku.manager;
 
+import com.alibaba.fastjson.JSON;
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtistInfo;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 import pers.missionlee.webmagic.spider.sankaku.info.AutoDeduplicatedArrayList;
@@ -17,11 +20,23 @@ import java.util.*;
  * 1. 自动初始化层级结构目录
  * 2.
  * @create: 2019-04-12 08:50
+ * <p>
+ * // TODO: 2019-04-14
  */
 public class SourceManager {
+    Logger logger = LoggerFactory.getLogger(SourceManager.class);
+
     public enum SourceType {
-        SANKAKU,
-        IDOL
+        SANKAKU("SANKAKU"),
+        SANKAKU_OFFICIAL("SANKAKU_OFFICIAL"),
+        IDOL("IDOL"),
+        IDOL_OFFICIAL("IDOL_OFFICIAL");
+        String desc;
+
+        SourceType(String desc) {
+            this.desc = desc;
+        }
+
     }
 
     private static final String DIRL1_SANKAKU = "sankaku";
@@ -33,6 +48,10 @@ public class SourceManager {
     private static final String FILE_SUBFIX_ARTWORK = ".jsonline";
     private static final String FILE_SUBFIX_ARTIST = ".json";
     private static final String[] ENPTY_STRING_ARRAY = new String[0];
+    // 更新过期时间 1天
+    private static long ONE_DAY_TIME_MILLIS = 7 * 24 * 60 * 60 * 1000L;
+
+
     private String rootPath;
     // sankaku
     private String sankakuRootPath;
@@ -42,6 +61,7 @@ public class SourceManager {
     private PathList sankakuPathList;
     private File sankakuPics;
     private File sankakuVids;
+    private Map<String, Long> sankakuUpdateInfo;
     // idol
     private String idolRootPath;
     private String idolPicPath;
@@ -57,8 +77,11 @@ public class SourceManager {
     private Map<String, Integer> sankakuOfficaialArtists;
     private Map<String, Integer> idolOfficialArtists;
 
-    public SourceManager(String rootPath) {
 
+    public SourceManager(String rootPath) {
+        if (!rootPath.toLowerCase().contains("root")) {
+            throw new RuntimeException("约定根目录名称为某个目录下的 root/ROOT 目录，请检查");
+        }
         this.rootPath = formatPath(rootPath);
         this.tmpPath = buildPath(rootPath, DIRL1_TMP);
         initSankakuPathInfo();
@@ -67,6 +90,7 @@ public class SourceManager {
     }
 
     private void initSankakuPathInfo() {
+
         this.sankakuRootPath = buildPath(rootPath, DIRL1_SANKAKU);
         this.sankakuInfoPath = buildPath(sankakuRootPath, DIRL2_INFO);
         this.sankakuPicPath = buildPath(sankakuRootPath + DIRL2_PIC);
@@ -74,6 +98,12 @@ public class SourceManager {
         this.sankakuPics = new File(sankakuPicPath);
         this.sankakuVids = new File(sankakuVidPath);
         this.sankakuPathList = new PathList(sankakuPicPath, sankakuVidPath, sankakuInfoPath);
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("SANKAKU 根路径：" + sankakuRootPath + "\n");
+        buffer.append("SANKAKU 信息路径：" + sankakuInfoPath + "\n");
+        buffer.append("SANKAKU 图片路径：" + sankakuPicPath + "\n");
+        buffer.append("SANKAKU 视频路径：" + sankakuVidPath + "\n");
+        logger.debug("\n" + buffer.toString());
     }
 
     private void initIdolPathInfo() {
@@ -84,7 +114,9 @@ public class SourceManager {
         this.idolPathList = new PathList(idolPicPath, idolVidPath, idolInfoPath);
     }
 
-    public Map<String,Integer> getSankakuArtistList() {
+    public Map<String, Integer> getSankakuArtistList() {
+        if (sankakuArtists != null)
+            return sankakuArtists;
         Map<String, Integer> map = new HashMap<String, Integer>();
         if (sankakuPics == null || sankakuVids == null) {
             initSankakuPathInfo();
@@ -94,11 +126,13 @@ public class SourceManager {
         File[] vidArtists = this.sankakuVids.listFiles();
         countArtists(map, vidArtists);
         this.sankakuArtists = map;
+        logger.debug("SANKAKU作者列表：" + map.toString());
         return map;
     }
+
     /**
      * 统计作者和作品数量，如果名称相同，那么做加法
-     * */
+     */
     private void countArtists(Map<String, Integer> map, File[] artists) {
         for (int i = 0; i < artists.length; i++) {
             if (map.containsKey(artists[i].getName())) {
@@ -113,7 +147,6 @@ public class SourceManager {
     public static String getDirl1Sankaku() {
         return DIRL1_SANKAKU;
     }
-
 
 
     public Map<String, Integer> getIdolArtists() {
@@ -220,6 +253,7 @@ public class SourceManager {
                 rebuildArtworkInfoFile(sourceType, artistName, artworkInfoList);
             }
         }
+        logger.debug(artistName + " 作品：" + artworkInfoList);
         return artworkInfoList;
     }
 
@@ -234,6 +268,7 @@ public class SourceManager {
         while (iterator.hasNext()) {
             appendArtworkInfoToFile(artworkInfoFile, (ArtworkInfo) iterator.next());
         }
+        logger.debug("重写[" + artistName + "]作品信息：" + artworkInfos);
     }
 
     /**
@@ -243,6 +278,7 @@ public class SourceManager {
         PathList pathList = getPathList(sourceType);
         File artworkInfoFile = new File(pathList.InfoPath + artistName + FILE_SUBFIX_ARTWORK);
         FileUtils.writeStringToFile(artworkInfoFile, artworkInfo.toString() + "\n", "utf8", true);
+        logger.debug("追加作品信息[" + artistName + "]:" + artworkInfo);
     }
 
     /**
@@ -294,7 +330,6 @@ public class SourceManager {
      */
     public Boolean saveFile(SourceType sourceType, File tmpFile, String artistName, String artworkName) {
         String parentPath = getParentPath(sourceType, artworkName);
-        //return tmpFile.renameTo(new File(parentPath + artistName + "/" + artworkName));
         try {
             FileUtils.moveFile(tmpFile, new File(parentPath + artistName + "/" + artworkName));
             return true;
@@ -312,7 +347,6 @@ public class SourceManager {
         } else {
             parentPath = pathList.PicPath;
         }
-        System.out.println(parentPath);
         return parentPath;
     }
 
@@ -332,11 +366,75 @@ public class SourceManager {
     }
 
     /**
+     * 更新控制：查询知否需要更新
+     */
+    public boolean isUpdated(SourceType sourceType, String artistName) throws IOException {
+        if (sourceType == SourceType.SANKAKU) {
+            if (sankakuUpdateInfo == null) {
+                initUpdateInfo(SourceType.SANKAKU);
+            }
+            if (sankakuUpdateInfo.containsKey(artistName)) {
+                return System.currentTimeMillis() < sankakuUpdateInfo.get(artistName);
+            } else return false;
+        } else {
+            throw new RuntimeException("目前仅支持更新 SANKAKU");
+        }
+    }
+
+    /**
+     * 更新控制：更新
+     */
+    public void update(SourceType sourceType, String artistName,int updatedNum) throws IOException {
+        int times = 1; // 如果更新数量 超过40 下次更新为1天后
+        if(updatedNum==0){ // 如果更新数量为0 30天后尝试更新
+            times=30;
+        }else if(updatedNum<5){ // 15 天
+            times=15;
+        }else if(updatedNum<21){ // 7 天
+            times=7;
+        }else if(updatedNum<41){ // 3天
+            times=3;
+        }
+        if (sourceType == SourceType.SANKAKU) {
+            // 设定下次更新的时间
+            sankakuUpdateInfo.put(artistName, System.currentTimeMillis()+times*ONE_DAY_TIME_MILLIS);
+            FileUtils.writeStringToFile(new File(sankakuInfoPath + UPDATE_INFO_FILE_NAME),
+                    JSON.toJSONString(sankakuUpdateInfo), "utf8", false);
+        } else {
+            throw new RuntimeException("目前仅支持更新 SANKAKU");
+        }
+    }
+
+    private static final String UPDATE_INFO_FILE_NAME = "update_info.json";
+
+    /**
+     * 更新控制：初始化更新信息
+     */
+    private void initUpdateInfo(SourceType sourceType) throws IOException {
+
+        logger.debug("获取["+sourceType.desc+"]更新信息存档");
+        if (sourceType == SourceType.SANKAKU) {
+            File updateInfoFile = new File(sankakuInfoPath + UPDATE_INFO_FILE_NAME);
+            if (updateInfoFile.exists()) {
+                String jsonInfo = FileUtils.readFileToString(updateInfoFile, "utf8");
+                sankakuUpdateInfo = (Map<String, Long>) JSON.parse(jsonInfo);
+                if (sankakuUpdateInfo == null) {
+                    sankakuUpdateInfo = new HashMap<String, Long>();
+                }
+            } else {
+                sankakuUpdateInfo = new HashMap<String, Long>();
+            }
+        } else {
+            throw new RuntimeException("目前仅支持更新 SANKAKU");
+        }
+    }
+
+    /**
      * 用于把旧版本的文件组织形式变为新版本的形式，当所有文件转移成功后，这份方法就不再有用
      */
     public static void convertOldSourceFileStructureToNewOne() throws IOException {
-//        if (true)
-//            throw new RuntimeException("必须看好新旧目录，目前仅支持 sankaku");
+        if (true)
+            throw new RuntimeException("必须看好新旧目录，目前仅支持 sankaku");
         SourceManager sourceManager = new SourceManager("D:\\ROOT");
 
         File oldSanRootFile = new File("D:\\sankaku");
@@ -368,14 +466,14 @@ public class SourceManager {
                         if (jsonFiles[k].getName().endsWith("json")) {
                             File renamed = new File(jsonFiles[k].getParent() + "/" + artistName + ".json");
                             if (jsonFiles[k].renameTo(renamed)) {
-                                if(!new File(infoDir.getPath()+"/"+renamed.getName()).exists())
+                                if (!new File(infoDir.getPath() + "/" + renamed.getName()).exists())
 
                                     FileUtils.moveFileToDirectory(renamed, infoDir, true);
                             }
                         } else if (jsonFiles[k].getName().endsWith("jsonline")) {
                             File renamed = new File(jsonFiles[k].getParent() + "/" + artistName + ".jsonline");
                             if (jsonFiles[k].renameTo(renamed))
-                                if(!new File(infoDir.getPath()+"/"+renamed.getName()).exists())
+                                if (!new File(infoDir.getPath() + "/" + renamed.getName()).exists())
 
                                     FileUtils.moveFileToDirectory(renamed, infoDir, true);
                         }
@@ -405,6 +503,12 @@ public class SourceManager {
 
     public static void main(String[] args) throws IOException {
         //new File("C:\\Users\\Administrator\\Desktop\\ttt\\a.txt").renameTo(new File("C:\\Users\\Administrator\\Desktop\\ttt\\abc\\d.txt"));
-        convertOldSourceFileStructureToNewOne();
+        //convertOldSourceFileStructureToNewOne();
+        SourceManager sourceManager = new SourceManager("D:\\ROOT");
+        boolean need = sourceManager.isUpdated(SourceType.SANKAKU, "test");
+        boolean need1 = sourceManager.isUpdated(SourceType.SANKAKU, "test1");
+        System.out.println(need);
+        System.out.println(need1);
+
     }
 }

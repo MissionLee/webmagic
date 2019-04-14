@@ -15,8 +15,12 @@ import java.util.List;
 public class SpiderTask {
     private static String[] emptyStringArray = new String[0];
     public enum TaskType {
-        UPDATE,
-        NEW
+        UPDATE("更新"),
+        NEW("遍历");
+        String desc;
+        TaskType(String desc) {
+            this.desc=desc;
+        }
     }
     // 创建时参数 这些值
     private SourceManager sourceManager;
@@ -97,6 +101,17 @@ public class SpiderTask {
         return this.sourceManager.saveFile(this.sourceType,tmpFile,this.artistName,artworkName);
     }
     public void appendArtworkInfo(ArtworkInfo artworkInfo) throws IOException {
+        this.artworkInfoList.add(artworkInfo);
         this.sourceManager.appendArtworkInfoToFile(this.sourceType,this.artistName,artworkInfo);
+    }
+    @Override
+    public String toString(){
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("-------------------");
+        buffer.append("\n| 作者："+artistName);
+        buffer.append("\n| 源类型："+sourceType.desc);
+        buffer.append("\n| 任务类型："+taskType.desc);
+        buffer.append("\n-------------------");
+        return buffer.toString();
     }
 }

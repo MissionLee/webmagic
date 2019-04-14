@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 这里的status = error 控制的是log4j自身的日志 -->
-<configuration status="error">
+<configuration status="info">
     <appenders>
         <Console name="Console" target="SYSTEM_OUT">
             <!--                      时间：时分秒毫秒   线程    logger名称   信息 换行-->
