@@ -1,0 +1,6 @@
+{
+  "name":"描述一下这份配置",
+  "root":"ROOT根目录路径",
+  "sourceType":"SANKAKU/SANKAKU_OFFICIAL/IDOL/IDOL_OFFICIAL",
+  "taskType":"UPDATE/NEW/RETRY 更新/新建/以新建方式更新"
+}
