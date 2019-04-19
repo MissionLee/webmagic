@@ -30,6 +30,16 @@ public class SpiderTask {
     private boolean official;
     private int downloadRetryTimes;
     private TaskType taskType;
+    // 获取全部标志位 在NEW/UPDATE 情况下会根据不同的判断条件开启 二次重下载 以尝试获取全部内容（仅额外尝试一次）
+    private boolean getAll;
+
+    public void setTaskType(TaskType taskType) {
+        this.taskType = taskType;
+    }
+
+    public boolean isGetAll() {
+        return getAll;
+    }
 
     public SourceManager getSourceManager() {
         return sourceManager;
@@ -66,10 +76,10 @@ public class SpiderTask {
     public int downloaded=0;// 成功下载的数量
     public int failed=0;// 下载失败的数量
     public String[] startUrls=emptyStringArray;
-    public List<ArtworkInfo> artworkInfoList = new ArrayList<ArtworkInfo>();
+    public List<String> artworkAddress = new ArrayList<String>();
     public List<String> targetUrl = new ArrayList<String>();
 
-    public SpiderTask(SourceManager sourceManager, SourceManager.SourceType sourceType, int threadNum, String artistName, boolean official, int downloadRetryTimes, TaskType taskType) {
+    public SpiderTask(SourceManager sourceManager, SourceManager.SourceType sourceType, int threadNum, String artistName, boolean official, int downloadRetryTimes, TaskType taskType,boolean getAll) {
         this.sourceManager = sourceManager;
         this.sourceType = sourceType;
         this.threadNum = threadNum;
@@ -77,6 +87,7 @@ public class SpiderTask {
         this.official = official;
         this.downloadRetryTimes = downloadRetryTimes;
         this.taskType = taskType;
+        this.getAll = getAll;
     }
     public String getTmpPath(){
         return this.sourceManager.tmpPath;
@@ -101,7 +112,7 @@ public class SpiderTask {
         return this.sourceManager.saveFile(this.sourceType,tmpFile,this.artistName,artworkName);
     }
     public void appendArtworkInfo(ArtworkInfo artworkInfo) throws IOException {
-        this.artworkInfoList.add(artworkInfo);
+        this.artworkAddress.add(artworkInfo.getAddress());
         this.sourceManager.appendArtworkInfoToFile(this.sourceType,this.artistName,artworkInfo);
     }
     @Override

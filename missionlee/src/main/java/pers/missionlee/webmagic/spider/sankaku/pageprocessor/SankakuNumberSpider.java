@@ -27,7 +27,7 @@ public class SankakuNumberSpider extends AbstractSankakuSpider {
         this.offical = offical;
     }
 
-    private int num=0;
+    private int num=Integer.MAX_VALUE;
     @Override
     public void process(Page page) {
         List<String> list = new ArrayList<String>();

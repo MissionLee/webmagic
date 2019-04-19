@@ -225,7 +225,6 @@ public class SourceManager {
         if (artworkInfoFile.exists()) {
             String artworkInfos = FileUtils.readFileToString(artworkInfoFile, "utf8");
             String[] artworkInfoStringArray = artworkInfos.split("\n");
-            int jsonLength = artworkInfoStringArray.length;
             ArtworkInfo.convertArtworkStringToList(artworkInfoList, artworkInfoStringArray);
             // 处理 json记录与实际文件不符合的内容
             File pics = new File(pathList.PicPath + artistName);

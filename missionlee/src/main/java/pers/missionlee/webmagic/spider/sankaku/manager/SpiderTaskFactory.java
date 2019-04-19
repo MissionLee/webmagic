@@ -2,9 +2,11 @@ package pers.missionlee.webmagic.spider.sankaku.manager;
 
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.io.FileUtils;
+import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,16 +30,16 @@ public class SpiderTaskFactory {
         if (spiderTaskConfig.containsKey("sourceType")) {
             if (spiderTaskConfig.get("sourceType").getClass() == SourceManager.SourceType.class)
                 this.defaultSourceType = (SourceManager.SourceType) spiderTaskConfig.get("sourceType");
-            else if(spiderTaskConfig.get("sourceType").getClass() == String.class){
-                if(spiderTaskConfig.get("sourceType").toString().toLowerCase().equals("idol")){
+            else if (spiderTaskConfig.get("sourceType").getClass() == String.class) {
+                if (spiderTaskConfig.get("sourceType").toString().toLowerCase().equals("idol")) {
                     this.defaultSourceType = SourceManager.SourceType.IDOL;
-                }else if(spiderTaskConfig.get("sourceType").toString().toLowerCase().equals("sankaku")){
+                } else if (spiderTaskConfig.get("sourceType").toString().toLowerCase().equals("sankaku")) {
 
-                }else{
-                    throw new RuntimeException("未知的SourceType："+spiderTaskConfig.get("sourceType"));
+                } else {
+                    throw new RuntimeException("未知的SourceType：" + spiderTaskConfig.get("sourceType"));
                 }
-            }else{
-                throw new RuntimeException("不支持的SourceType类型："+spiderTaskConfig.get("sourceType").getClass());
+            } else {
+                throw new RuntimeException("不支持的SourceType类型：" + spiderTaskConfig.get("sourceType").getClass());
             }
         }
         if (spiderTaskConfig.containsKey("threadNum")) {
@@ -50,18 +52,18 @@ public class SpiderTaskFactory {
             this.defaultThreadNum = Integer.parseInt(spiderTaskConfig.get("downloadRetryTimes").toString());
         }
         if (spiderTaskConfig.containsKey("taskType")) {
-            if(spiderTaskConfig.get("taskType").getClass() == SpiderTask.TaskType.class)
-            this.defaultTaskType = (SpiderTask.TaskType) spiderTaskConfig.get("taskType");
-            else if(spiderTaskConfig.get("taskType").getClass() == String.class){
+            if (spiderTaskConfig.get("taskType").getClass() == SpiderTask.TaskType.class)
+                this.defaultTaskType = (SpiderTask.TaskType) spiderTaskConfig.get("taskType");
+            else if (spiderTaskConfig.get("taskType").getClass() == String.class) {
                 String taskType = spiderTaskConfig.get("taskType").toString().toLowerCase();
-                if(taskType.equals("new"))
-                    this.defaultTaskType= SpiderTask.TaskType.NEW;
-                else if(taskType.equals("manager"))
-                    this.defaultTaskType= SpiderTask.TaskType.UPDATE;
+                if (taskType.equals("new"))
+                    this.defaultTaskType = SpiderTask.TaskType.NEW;
+                else if (taskType.equals("manager"))
+                    this.defaultTaskType = SpiderTask.TaskType.UPDATE;
                 else
-                    throw new RuntimeException("未知的TaskType："+taskType);
-            }else{
-                throw new RuntimeException("不支持的TaskType类型："+spiderTaskConfig.get("taskType").getClass());
+                    throw new RuntimeException("未知的TaskType：" + taskType);
+            } else {
+                throw new RuntimeException("不支持的TaskType类型：" + spiderTaskConfig.get("taskType").getClass());
 
             }
         }
@@ -85,8 +87,15 @@ public class SpiderTaskFactory {
         return this;
     }
 
-    public SpiderTask getSpiderTask(SourceManager.SourceType sourceType, String artistName, boolean offical, SpiderTask.TaskType taskType) {
-        SpiderTask spiderTask = new SpiderTask(this.sourceManager, sourceType, defaultThreadNum, artistName, offical, defaultDownloadRetryTimes, taskType);
+    public SpiderTask getSpiderTask(SourceManager.SourceType sourceType, String artistName, boolean offical, SpiderTask.TaskType taskType, boolean getAll, SourceManager sourceManager) throws IOException {
+        SpiderTask spiderTask = new SpiderTask(this.sourceManager, sourceType, defaultThreadNum, artistName, offical, defaultDownloadRetryTimes, taskType, getAll);
+        List<ArtworkInfo> artworkInfos = sourceManager.getArtworkOfArtist(sourceType, artistName);
+        for (ArtworkInfo a :
+                artworkInfos) {
+            spiderTask.artworkAddress.add(a.getAddress());
+
+        }
+        spiderTask.stored = sourceManager.getArtworkNum(sourceType, artistName);
         return spiderTask;
     }
 

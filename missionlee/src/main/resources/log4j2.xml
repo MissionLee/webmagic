@@ -43,7 +43,7 @@
             <appender-ref ref="Console"/>
         </logger>
 
-        <root level="info">
+        <root level="debug">
             <appender-ref ref="Console"/>
             <!--<appender-ref ref="RollingFileError"/>-->
         </root>

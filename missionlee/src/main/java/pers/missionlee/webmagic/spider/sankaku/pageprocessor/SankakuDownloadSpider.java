@@ -79,15 +79,6 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
         }
         return false;
     }
-
-
-    private boolean hasDownloaded2(String url) {
-        for (ArtworkInfo info : spiderTask.artworkInfoList)
-            if (info.getAddress().equals(url))
-                return true;
-        return false;
-    }
-
     @Override
     public void process(Page page) {
         String URL = page.getUrl().toString();
@@ -146,7 +137,7 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
             for (String url : urlList
             ) {
 
-                if (!hasDownloaded2(BASE_URL + url) && !spiderTask.targetUrl.contains(url)) {
+                if (!spiderTask.artworkAddress.contains(BASE_URL + url) && !spiderTask.targetUrl.contains(url)) {
                     logger.info("⭐ add " + BASE_URL + url);
                     page.addTargetRequest(BASE_URL + url);
                     spiderTask.targetUrl.add(url);

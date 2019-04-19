@@ -29,16 +29,17 @@ public class SpiderManager extends SpiderUtils {
 //        IDOLOFFICIAL
 //    }
 
-    public static void update(SourceManager sourceManager, SourceManager.SourceType updateSourceType) throws IOException {
+    public static void update(SourceManager sourceManager, SourceManager.SourceType updateSourceType, boolean getAll) throws IOException {
         if (updateSourceType == SourceManager.SourceType.SANKAKU) {
             Map<String, Integer> artists = sourceManager.getSankakuArtistList();
             Set<String> artistNames = artists.keySet();
             for (String name :
                     artistNames) {
                 if (!sourceManager.isUpdated(SourceManager.SourceType.SANKAKU, name)) {
-                    int downloaded = startSpider(sourceManager, SourceManager.SourceType.SANKAKU, SpiderTask.TaskType.UPDATE, name, false);
-                    logger.info("更新清空：作者["+name+"]本次更新 "+downloaded);
-                    sourceManager.update(SourceManager.SourceType.SANKAKU, name,downloaded);
+                    SpiderTask task = startSpider(sourceManager, SourceManager.SourceType.SANKAKU, SpiderTask.TaskType.UPDATE, name, false,getAll);
+                    int downloaded = task.downloaded;
+                    logger.info("更新清空：作者[" + name + "]本次更新 " + downloaded);
+                    sourceManager.update(SourceManager.SourceType.SANKAKU, name, downloaded);
                 }
             }
         }
@@ -60,22 +61,23 @@ public class SpiderManager extends SpiderUtils {
         logger.info("初始化目标列表：" + nameList);
         for (String name :
                 nameList) {
-            startSpider(sourceManager, sourceType, taskType, name, official);
+            startSpider(sourceManager, sourceType, taskType, name, official,true);
         }
     }
 
-    public static int startSpider(SourceManager sourceManager, SourceManager.SourceType sourceType, SpiderTask.TaskType taskType, String artistName, boolean official) throws IOException {
+    public static SpiderTask startSpider(SourceManager sourceManager, SourceManager.SourceType sourceType, SpiderTask.TaskType taskType, String artistName, boolean official,boolean getAll) throws IOException {
         SpiderTaskFactory factory = new SpiderTaskFactory(sourceManager);
-        SpiderTask task = factory.getSpiderTask(sourceType, artistName, official, taskType);
-        task.artworkInfoList = sourceManager.getArtworkOfArtist(sourceType,artistName);
+        SpiderTask task = factory.getSpiderTask(sourceType, artistName, official, taskType,getAll,sourceManager);
         SourceSpiderRunner runner = new SourceSpiderRunner();
-        runner.runTask(task);
-        return task.downloaded;
+        try {
+            runner.runTask(task);
+        } catch (Exception e) {
+            logger.info("获取作者作品数量失败，爬虫无法执行");
+        }
+        return task;
     }
 
-    @Deprecated
-    public static void runWithNameList(String filePath) throws IOException {
-        SourceManager sourceManager = new SourceManager("D:\\ROOT");
+    public static void runWithNameList(String filePath,SourceManager sourceManager) throws IOException {
 
         File nameListFile = new File(filePath);
         String nameListString = FileUtils.readFileToString(nameListFile, "UTF8");
@@ -96,10 +98,11 @@ public class SpiderManager extends SpiderUtils {
             }
         }
         Set<String> set = nameListMap.keySet();
-        Iterator iterator = set.iterator();
+        Set<String> setForLoop = new HashSet<String>(set);
+        Iterator iterator = setForLoop.iterator();
         while (iterator.hasNext()) {
-            String key = (String) iterator.next();
-            startSpider(sourceManager, SourceManager.SourceType.SANKAKU, SpiderTask.TaskType.NEW, key, false);
+            String key =  iterator.next().toString();
+            startSpider(sourceManager, SourceManager.SourceType.SANKAKU, SpiderTask.TaskType.NEW, key, false,true);
             nameListMap.remove(key);
             rewriteTodoList(nameListFile, nameListMap);
         }
@@ -108,7 +111,8 @@ public class SpiderManager extends SpiderUtils {
     public static void main(String[] args) throws IOException {
 
         SourceManager sourceManager = new SourceManager("D:\\ROOT");
-        //runWithChromeDir(sourceManager, SourceManager.SourceType.SANKAKU, SpiderTask.TaskType.NEW, "download2", false);
-        update(sourceManager,SourceManager.SourceType.SANKAKU);
+        runWithNameList("D:\\sankaku\\name.md",sourceManager);
+//        runWithChromeDir(sourceManager, SourceManager.SourceType.SANKAKU, SpiderTask.TaskType.NEW, "download2", false);
+//        update(sourceManager, SourceManager.SourceType.SANKAKU,true);
     }
 }
