@@ -434,9 +434,9 @@ public class SourceManager {
     public static void convertOldSourceFileStructureToNewOne() throws IOException {
         if (true)
             throw new RuntimeException("必须看好新旧目录，目前仅支持 sankaku");
-        SourceManager sourceManager = new SourceManager("D:\\ROOT");
+        SourceManager sourceManager = new SourceManager("F:\\ROOT");
 
-        File oldSanRootFile = new File("D:\\sankaku");
+        File oldSanRootFile = new File("F:\\sankaku");
         System.out.println(oldSanRootFile.getName());
         FileFilter dirFilter = new FileFilter() {
             @Override
@@ -502,12 +502,12 @@ public class SourceManager {
 
     public static void main(String[] args) throws IOException {
         //new File("C:\\Users\\Administrator\\Desktop\\ttt\\a.txt").renameTo(new File("C:\\Users\\Administrator\\Desktop\\ttt\\abc\\d.txt"));
-        //convertOldSourceFileStructureToNewOne();
-        SourceManager sourceManager = new SourceManager("D:\\ROOT");
-        boolean need = sourceManager.isUpdated(SourceType.SANKAKU, "test");
-        boolean need1 = sourceManager.isUpdated(SourceType.SANKAKU, "test1");
-        System.out.println(need);
-        System.out.println(need1);
+//        convertOldSourceFileStructureToNewOne();
+//        SourceManager sourceManager = new SourceManager("D:\\ROOT");
+//        boolean need = sourceManager.isUpdated(SourceType.SANKAKU, "test");
+//        boolean need1 = sourceManager.isUpdated(SourceType.SANKAKU, "test1");
+//        System.out.println(need);
+//        System.out.println(need1);
 
     }
 }

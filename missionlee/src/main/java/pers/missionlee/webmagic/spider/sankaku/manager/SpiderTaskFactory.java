@@ -17,7 +17,7 @@ import java.util.Map;
 public class SpiderTaskFactory {
     private SourceManager sourceManager;
     private SourceManager.SourceType defaultSourceType = SourceManager.SourceType.SANKAKU;
-    private int defaultThreadNum = 4;
+    private int defaultThreadNum = 3;
     private boolean defaultOfficial = false;
     private int defaultDownloadRetryTimes = 3;
     private SpiderTask.TaskType defaultTaskType = SpiderTask.TaskType.NEW;

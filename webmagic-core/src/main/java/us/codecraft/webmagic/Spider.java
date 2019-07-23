@@ -325,7 +325,7 @@ public class Spider implements Runnable, Task {
                     public void run() {
                         try {
                             try {
-                                Thread.sleep(new Random().nextInt(30000));
+                                Thread.sleep(new Random().nextInt(300));
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }

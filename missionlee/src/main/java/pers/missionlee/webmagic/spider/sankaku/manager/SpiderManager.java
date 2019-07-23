@@ -38,7 +38,7 @@ public class SpiderManager extends SpiderUtils {
                 if (!sourceManager.isUpdated(SourceManager.SourceType.SANKAKU, name)) {
                     SpiderTask task = startSpider(sourceManager, SourceManager.SourceType.SANKAKU, SpiderTask.TaskType.UPDATE, name, false,getAll);
                     int downloaded = task.downloaded;
-                    logger.info("更新清空：作者[" + name + "]本次更新 " + downloaded);
+                    logger.info("更新情况：作者[" + name + "]本次更新 " + downloaded);
                     sourceManager.update(SourceManager.SourceType.SANKAKU, name, downloaded);
                 }
             }
@@ -110,9 +110,10 @@ public class SpiderManager extends SpiderUtils {
 
     public static void main(String[] args) throws IOException {
 
-        SourceManager sourceManager = new SourceManager("D:\\ROOT");
-        runWithNameList("D:\\sankaku\\name.md",sourceManager);
+        SourceManager sourceManager = new SourceManager("F:\\ROOT");
+        runWithNameList("F:\\ROOT\\san4.md",sourceManager);
 //        runWithChromeDir(sourceManager, SourceManager.SourceType.SANKAKU, SpiderTask.TaskType.NEW, "download2", false);
 //        update(sourceManager, SourceManager.SourceType.SANKAKU,true);
     }
+
 }

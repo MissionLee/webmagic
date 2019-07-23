@@ -58,6 +58,7 @@ public class SourceSpiderRunner extends SpiderUtils {
             // 如果由获取全部内容的需求
             int nowWeHave = spiderTask.artworkAddress.size();
             int nowTheyHave = setTotalNumberWithSpider(spiderTask);
+            logger.info("作者："+spiderTask.getArtistName()+" | 已经存储作品数量/最新数量"+nowWeHave+"/"+nowTheyHave);
             if (nowWeHave < 2000) { // 本地存储大于2000 不再尝试全部获取
                 if (
                         (nowTheyHave >= 2000 && nowWeHave < 1950) //总量大于两千，本地少于1950
@@ -67,8 +68,11 @@ public class SourceSpiderRunner extends SpiderUtils {
                 ) {// 实际数量>2000
                     spiderTask.total = nowTheyHave;
                     spiderTask.setTaskType(SpiderTask.TaskType.NEW);
+                    logger.info("符合强制全部更新限定，使用 new task的方式，更新其余作品");
                     runNewTask(spiderTask, false);
                 }
+            }else{
+                logger.info("未通过强制全部更新限定，本次更新结束");
             }
         }
         return spiderTask;
@@ -76,6 +80,7 @@ public class SourceSpiderRunner extends SpiderUtils {
 
     // ⭐ 此方法实际运行一个爬虫
     private void runDownLoadSpider(SpiderTask spiderTask) throws IOException {
+        logger.info("使用 Update方式更新作品");
         SankakuDownloadSpider sankakuDownloadSpider = new SankakuDownloadSpider(site, spiderTask);
         Spider.create(sankakuDownloadSpider).addUrl(spiderTask.startUrls).thread(spiderTask.getThreadNum()).run();
     }
