@@ -11,10 +11,12 @@ import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.impl.client.*;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.protocol.HttpContext;
+import org.apache.http.ssl.SSLContexts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import us.codecraft.webmagic.Site;
@@ -22,8 +24,12 @@ import us.codecraft.webmagic.Site;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -32,13 +38,32 @@ import java.util.Map;
 /**
  * @author code4crafter@gmail.com <br>
  * @since 0.4.0
+ *
+ * MissionLee: 添加本地对于 pixiv nginx反向代理跳过长城的证书
  */
 public class HttpClientGenerator {
+
 	
 	private transient Logger logger = LoggerFactory.getLogger(getClass());
 	
     private PoolingHttpClientConnectionManager connectionManager;
 
+    private static SSLContext pixivSSL;
+    static {
+        try {
+            KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            FileInputStream inputStream = new FileInputStream(new File("C:\\Program Files\\Pixiv-Nginx-master\\pixiv.keystore"));
+            keyStore.load(inputStream,"589454".toCharArray());
+            pixivSSL = SSLContexts.custom()
+                    //.loadKeyMaterial(keyStore,"589454".toCharArray())
+                    .loadTrustMaterial(keyStore,new TrustSelfSignedStrategy())
+                    .build();
+        } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        }
+    }
     public HttpClientGenerator() {
         Registry<ConnectionSocketFactory> reg = RegistryBuilder.<ConnectionSocketFactory>create()
                 .register("http", PlainConnectionSocketFactory.INSTANCE)
@@ -96,7 +121,8 @@ public class HttpClientGenerator {
 
     private CloseableHttpClient generateClient(Site site) {
         HttpClientBuilder httpClientBuilder = HttpClients.custom();
-        
+        // TODO: 2019-07-24  不知道对不对，先这样写着了
+        httpClientBuilder.setSSLContext(pixivSSL);
         httpClientBuilder.setConnectionManager(connectionManager);
         if (site.getUserAgent() != null) {
             httpClientBuilder.setUserAgent(site.getUserAgent());
@@ -126,6 +152,7 @@ public class HttpClientGenerator {
         connectionManager.setDefaultSocketConfig(socketConfig);
         httpClientBuilder.setRetryHandler(new DefaultHttpRequestRetryHandler(site.getRetryTimes(), true));
         generateCookie(httpClientBuilder, site);
+        
         return httpClientBuilder.build();
     }
 

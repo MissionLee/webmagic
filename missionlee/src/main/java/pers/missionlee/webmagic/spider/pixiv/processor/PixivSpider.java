@@ -27,6 +27,7 @@ import java.util.Map;
  * @create: 2019-07-23 14:57
  */
 public class PixivSpider  implements PageProcessor {
+    boolean login = false;
     static {
 
     }
