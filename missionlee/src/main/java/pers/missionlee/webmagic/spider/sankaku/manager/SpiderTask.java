@@ -27,6 +27,7 @@ public class SpiderTask {
     private SourceManager.SourceType sourceType;
     private int threadNum;
     private String artistName;//作者名
+    private String dirName;
     private boolean official;
     private int downloadRetryTimes;
     private TaskType taskType;
@@ -79,7 +80,7 @@ public class SpiderTask {
     public List<String> artworkAddress = new ArrayList<String>();
     public List<String> targetUrl = new ArrayList<String>();
 
-    public SpiderTask(SourceManager sourceManager, SourceManager.SourceType sourceType, int threadNum, String artistName, boolean official, int downloadRetryTimes, TaskType taskType,boolean getAll) {
+    public SpiderTask(SourceManager sourceManager, SourceManager.SourceType sourceType, int threadNum, String artistName,String dirName, boolean official, int downloadRetryTimes, TaskType taskType,boolean getAll) {
         this.sourceManager = sourceManager;
         this.sourceType = sourceType;
         this.threadNum = threadNum;
@@ -88,6 +89,13 @@ public class SpiderTask {
         this.downloadRetryTimes = downloadRetryTimes;
         this.taskType = taskType;
         this.getAll = getAll;
+        this.dirName = dirName;
+        // 检测本地是否有作者名称对应的文件
+        try {
+            sourceManager.guaranteeArtistInfoFileExists(this.sourceType,this.dirName);
+        } catch (IOException e) {
+            System.out.println("= xx =");
+        }
     }
     public String getTmpPath(){
         return this.sourceManager.tmpPath;
@@ -106,14 +114,15 @@ public class SpiderTask {
 
     }
     public boolean exists(String filename){
-        return this.sourceManager.exists(this.sourceType,this.artistName,filename);
+        return this.sourceManager.exists(this.sourceType,this.dirName,filename);
     }
     public Boolean saveFile(File tmpFile,String artworkName){
-        return this.sourceManager.saveFile(this.sourceType,tmpFile,this.artistName,artworkName);
+        // TODO: 2019-04-26  
+        return this.sourceManager.saveFile(this.sourceType,tmpFile,this.dirName,artworkName);
     }
     public void appendArtworkInfo(ArtworkInfo artworkInfo) throws IOException {
         this.artworkAddress.add(artworkInfo.getAddress());
-        this.sourceManager.appendArtworkInfoToFile(this.sourceType,this.artistName,artworkInfo);
+        this.sourceManager.appendArtworkInfoToFile(this.sourceType,this.dirName,artworkInfo);
     }
     @Override
     public String toString(){

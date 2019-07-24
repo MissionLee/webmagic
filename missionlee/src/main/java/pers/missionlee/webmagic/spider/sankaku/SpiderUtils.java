@@ -7,10 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @description:
@@ -98,7 +95,7 @@ public class SpiderUtils {
     }
 
     public static String urlDeFormater(String codedName) throws UnsupportedEncodingException {
-        String originName = URLDecoder.decode(codedName.trim(),"UTF8").replaceAll("_"," ");
+        String originName = URLDecoder.decode(codedName.trim(), "UTF8").replaceAll("_", " ");
 //        String originName =codedName
 //                .replaceAll("_"," ")
 //                .replaceAll("%21","!")
@@ -126,6 +123,7 @@ public class SpiderUtils {
 //                .replaceAll("%7C","|");
         return originName;
     }
+
     public static String urlFormater(String artistName, boolean offical) {
         // 空格 () ’
         String artistFormat = artistName.trim()
@@ -230,29 +228,31 @@ public class SpiderUtils {
         String BaseProtrait = SITE_ORDER_PREFIX.PORTRAIT.getPrefix(artist, offical);
         String BaseView = SITE_ORDER_PREFIX.VIEW_COUNT.getPrefix(artist, offical);
         if (artworkNum > 2500) {
-            urls = new String[600];
-            for (int i = 0; i < 50; i++) {
-                urls[i] = BaseTagAsc + (i + 1);
-                urls[i + 50] = BaseTagDec + (i + 1);
-                //urls[i + 100] = BaseDate + (i + 1);
-                urls[i + 150-50] = BaseQurlity + (i + 1);
-                urls[i + 200-50] = BasePopular + (i + 1);
-                urls[i + 250-50] = BaseFav + (i + 1);
-                urls[i + 300-50] = BaseFilesizeAsc + (i + 1);
-                urls[i + 350-50] = BaseFilesizeDes + (i + 1);
-                urls[i + 400-50] = BaseLandscape + (i + 1);
-                urls[i + 450-50] = BaseMpixelsAsc + (i + 1);
-                urls[i + 500-50] = BaseMpixelsDec + (i + 1);
-                urls[i + 550-50] = BaseProtrait + (i + 1);
-                urls[i + 600-50] = BaseView + (i + 1);
-            }
-        } else if (artworkNum > 2000) { // 2000+ 情况遍历 tag升降序 + date最新 + popular最高 + quality 最高
-            urls = new String[200];
+            urls = new String[650];
             for (int i = 0; i < 50; i++) {
                 urls[i] = BaseTagAsc + (i + 1);
                 urls[i + 50] = BaseTagDec + (i + 1);
                 urls[i + 100] = BaseDate + (i + 1);
                 urls[i + 150] = BaseQurlity + (i + 1);
+                urls[i + 200] = BasePopular + (i + 1);
+                urls[i + 250] = BaseFav + (i + 1);
+                urls[i + 300] = BaseFilesizeAsc + (i + 1);
+                urls[i + 350] = BaseFilesizeDes + (i + 1);
+                urls[i + 400] = BaseLandscape + (i + 1);
+                urls[i + 450] = BaseMpixelsAsc + (i + 1);
+                urls[i + 500] = BaseMpixelsDec + (i + 1);
+                urls[i + 550] = BaseProtrait + (i + 1);
+                urls[i + 600] = BaseView + (i + 1);
+            }
+        } else if (artworkNum > 2000) { // 2000+ 情况遍历 tag升降序 + date最新 + popular最高 + quality 最高
+            urls = new String[250];
+            for (int i = 0; i < 50; i++) {
+                urls[i] = BaseTagAsc + (i + 1);
+                urls[i + 50] = BaseTagDec + (i + 1);
+                urls[i + 100] = BaseDate + (i + 1);
+                urls[i + 150] = BaseQurlity + (i + 1);
+                urls[i + 200] = BaseDate + i + 1;
+
             }
         } else {
             int pageNum = ((Double) (Math.ceil((new Double(artworkNum)) / 20))).intValue();
@@ -276,6 +276,15 @@ public class SpiderUtils {
         }
 
         return urls;
+    }
+    private static Map<String,String> SPECIAL_NAME = new HashMap<String, String>(){{put("rib:y(uhki)","rib_y(uhki)");}};
+    public String fileNameGenerator(String artistName){
+        artistName = artistName.trim();
+        if(SPECIAL_NAME.containsKey(artistName))
+            return SPECIAL_NAME.get(artistName);
+        else{
+            return artistName.endsWith(".")?artistName.substring(0,artistName.length()-1):artistName;
+        }
     }
 
 }

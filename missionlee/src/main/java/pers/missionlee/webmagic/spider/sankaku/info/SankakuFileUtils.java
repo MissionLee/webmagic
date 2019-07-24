@@ -34,13 +34,7 @@ public class SankakuFileUtils {
         return formatPath(formatPath(rootPath)+artistName);
     }
     public static String buildPath(String... paths){
-        String aimPath = "";
-        for (int i = 0; i < paths.length; i++) {
-            if(paths[i].startsWith("/"))
-                paths[i]=paths[i].substring(1);
-            aimPath+=formatPath(paths[i]);
-        }
-        return aimPath;
+        return "";
     }
     /**
      * 创建作者目录

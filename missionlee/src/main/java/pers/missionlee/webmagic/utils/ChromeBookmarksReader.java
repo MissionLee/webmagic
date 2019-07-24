@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pers.missionlee.webmagic.spider.sankaku.SpiderUtils;
 import pers.missionlee.webmagic.spider.sankaku.manager.SourceManager;
 
@@ -17,6 +19,7 @@ import java.util.*;
  * @create: 2019-04-08 22:52
  */
 public class ChromeBookmarksReader {
+    static Logger logger = LoggerFactory.getLogger(ChromeBookmarksReader.class);
     public static class BookmarkNode{
         public String date_added;
         public String id;
@@ -55,6 +58,9 @@ public class ChromeBookmarksReader {
         this.roots = new HashMap<String, Map>();
         this.dirs = new HashMap<String,List< Map>>();
         init();
+    }
+    public ChromeBookmarksReader() throws IOException {
+        this(defaultBookmarkpath);
     }
     public List<Map> getBookMarkListByDirName(String dirName){
         return dirs.get(dirName);
@@ -100,25 +106,44 @@ public class ChromeBookmarksReader {
             }
         }
     }
+    public Set<String> getArtistNameFromBookNarkDir(String bookmarkDirName) throws IOException {
+        ChromeBookmarksReader reader = new ChromeBookmarksReader(defaultBookmarkpath);
+        Set<String> names = new HashSet<String>();
+        List<Map> aimDir = reader.getBookMarkListByDirName(bookmarkDirName);
+        for(Map bookmark:aimDir){
+            if(bookmark.get("url").toString().contains("tags=")) {
+                String codedName = bookmark.get("url").toString().split("tags=")[1];
+                String realName = SpiderUtils.urlDeFormater(codedName);
+                names.add(realName);
+            }
+        }
+            return names;
+    }
     public static String defaultBookmarkpath = "C:\\Documents and Settings\\Administrator\\Local Settings\\Application Data\\Google\\Chrome\\User Data\\Default\\Bookmarks";
-    public static void extractSankakuNameList(String rootPath,String bookmarkDirName,String aimFilePath) throws IOException {
+    public static void extractNonDownloadedSankakuNameList(String rootPath, String bookmarkDirName, String aimFilePath) throws IOException {
         SourceManager sourceManager = new SourceManager(rootPath);
-        Set<String> downloaded = sourceManager.getSankakuArtistList().keySet();
+        Set<String> downloaded = sourceManager.getSankakuArtistListByJson().keySet();
         ChromeBookmarksReader reader = new ChromeBookmarksReader(defaultBookmarkpath);
         List<Map> aimDir = reader.getBookMarkListByDirName(bookmarkDirName);
         StringBuffer buffer = new StringBuffer();
         for(Map bookmark:aimDir){
-            String tmpName = SpiderUtils.urlDeFormater(bookmark.get("url").toString().split("tags=")[1]);
-            if(!downloaded.contains(tmpName)){
-                buffer.append(tmpName+" 1\n");
+            if(bookmark.get("url").toString().contains("tags=")){
+                String urlName = bookmark.get("url").toString().split("tags=")[1];
+                String tmpName = SpiderUtils.urlDeFormater(urlName);
+                logger.info("URL: "+urlName+"\tDEFORMATER: "+tmpName);
+                if(!downloaded.contains(tmpName)){
+                    buffer.append(tmpName+" 1\n");
+                }
+            }else{
+                System.out.println(bookmark.get("url").toString());
             }
+
         }
-        FileUtils.writeStringToFile(new File(aimFilePath),buffer.toString(),"utf8",false);
+          FileUtils.writeStringToFile(new File(aimFilePath),buffer.toString(),"utf8",false);
     }
 
     public static void main(String[] args) throws IOException {
-        extractSankakuNameList("D:\\ROOT","download1","D:\\ROOT\\bookmarks\\sankaku-download1.md");
-        extractSankakuNameList("D:\\ROOT","download2","D:\\ROOT\\bookmarks\\sankaku-download2.md");
-
+        extractNonDownloadedSankakuNameList("E:\\ROOT","san4","C:\\Users\\Administrator\\Desktop\\san4.md");
+//        extractNonDownloadedSankakuNameList("D:\\ROOT","download2","D:\\ROOT\\bookmarks\\sankaku-download2.md");
     }
 }

@@ -2,6 +2,8 @@ package pers.missionlee.webmagic.spider.sankaku.manager;
 
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 
 import java.io.File;
@@ -15,6 +17,7 @@ import java.util.Map;
  * @create: 2019-04-13 08:57
  */
 public class SpiderTaskFactory {
+    static Logger logger = LoggerFactory.getLogger(SpiderTaskFactory.class);
     private SourceManager sourceManager;
     private SourceManager.SourceType defaultSourceType = SourceManager.SourceType.SANKAKU;
     private int defaultThreadNum = 4;
@@ -87,15 +90,17 @@ public class SpiderTaskFactory {
         return this;
     }
 
-    public SpiderTask getSpiderTask(SourceManager.SourceType sourceType, String artistName, boolean offical, SpiderTask.TaskType taskType, boolean getAll, SourceManager sourceManager) throws IOException {
-        SpiderTask spiderTask = new SpiderTask(this.sourceManager, sourceType, defaultThreadNum, artistName, offical, defaultDownloadRetryTimes, taskType, getAll);
-        List<ArtworkInfo> artworkInfos = sourceManager.getArtworkOfArtist(sourceType, artistName);
+    public SpiderTask getSpiderTask(SourceManager.SourceType sourceType, String artistName,String dirName ,boolean offical, SpiderTask.TaskType taskType, boolean getAll, SourceManager sourceManager) throws IOException {
+        SpiderTask spiderTask = new SpiderTask(this.sourceManager, sourceType, defaultThreadNum, artistName, dirName,offical, defaultDownloadRetryTimes, taskType, getAll);
+        List<ArtworkInfo> artworkInfos = sourceManager.getArtworkOfArtist(sourceType, dirName);
         for (ArtworkInfo a :
                 artworkInfos) {
             spiderTask.artworkAddress.add(a.getAddress());
 
         }
-        spiderTask.stored = sourceManager.getArtworkNum(sourceType, artistName);
+
+        spiderTask.stored = sourceManager.getArtworkNum(sourceType, dirName);
+
         return spiderTask;
     }
 

@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pers.missionlee.webmagic.spider.sankaku.info.SankakuFileUtils;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
-import pers.missionlee.webmagic.spider.sankaku.task.SankakuSpiderTask;
 import pers.missionlee.webmagic.spider.sankaku.manager.SourceManager;
 import pers.missionlee.webmagic.spider.sankaku.manager.SpiderTask;
 import pers.missionlee.webmagic.utils.TimeLimitedHttpDownloader;
@@ -24,8 +23,7 @@ import java.util.*;
  */
 public class SankakuDownloadSpider extends AbstractSankakuSpider {
     Logger logger = LoggerFactory.getLogger(SankakuDownloadSpider.class);
-    @Deprecated
-    SankakuSpiderTask task;
+
 
     // root 路径
     //public String rootPath;
@@ -52,33 +50,7 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
         // this.addedList = new ArrayList<String>();
     }
 
-    @Deprecated
-    public SankakuDownloadSpider(Site site, SankakuSpiderTask task) throws IOException {
-        this(site, task.rootPath, task.currentDownloadTask.artistName, task);
-    }
 
-    @Deprecated
-    public SankakuDownloadSpider(Site site, String rootPath, String artistName, SankakuSpiderTask task) throws IOException {
-        super(site, rootPath, artistName);
-        this.task = task;
-        //this.rootPath = rootPath;
-        //this.artistName = artistName;
-        this.artworkInfos = SankakuFileUtils.getArtworkInfoList(rootPath, artistName);
-        this.addedList = new ArrayList<String>();
-        //this.artistFile =new File(rootPath+artistName);
-        // 可能出现因为网络原因，或者目标nginx阻拦，导致某个作者没有被下载任何作品，但是执行流程
-        // 结束，作者从 name.md文件夹里面出名，此时如果文件夹已经建立，那么在update的时候，还能补救这种情况
-    }
-
-    @Deprecated
-    private boolean hasDownloaded(String URL) {
-        for (ArtworkInfo info :
-                artworkInfos) {
-            if (info.getAddress().equals(URL))
-                return true;
-        }
-        return false;
-    }
     @Override
     public void process(Page page) {
         String URL = page.getUrl().toString();
@@ -114,7 +86,7 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
          * @update 20190327 实际使用中发现大量的本页面更新一两个就够了，找下一页纯属浪费，
          *          并且在外层processor里面有udpate数量不过尝试遍历作者的方法 所以added改为 > 15
          * */
-        if (thisPageAdded > 10 && URL.contains("date")) {
+        if (thisPageAdded > 10 && URL.contains("date") && spiderTask.getTaskType() == SpiderTask.TaskType.UPDATE) {
             String thisPage = URL.substring(URL.length() - 1);
             int thisPageNum = Integer.valueOf(thisPage);
             if (thisPageNum < 50) {
@@ -178,27 +150,7 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
      * 2. 解析下载目标信息 URL 文件名
      * 3. 下载文件，下载成功后将作品信息写入文档记录
      */
-    @Deprecated
-    private void processDetailPage(Page page) {
-        // 详情页面
-        Html html = page.getHtml();
-        Target target = extractDownloadTargetInfoFromDetailPage(html);
-        ArtworkInfo artworkInfo = extractArtworkInfoFromDetailPage(page, target);
-        if (download(target.targetUrl, target.targetName, SankakuFileUtils.buildPath(task.rootPath, task.currentDownloadTask.artistName, target.subFix), page)) {
-            artworkInfos.add(artworkInfo);
-            try {
-                //infoUtils.appendInfo(artworkInfo);
-                SankakuFileUtils.appendArtworkInfo(artworkInfo, task.rootPath, task.currentDownloadTask.artistName);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            //d_suc++;
-            task.currentDownloadTask.downloaded++;
-        } else {
-            //d_err++;
-            task.currentDownloadTask.failed++;
-        }
-    }
+
 
     private ArtworkInfo extractArtworkInfoFromDetailPage(Page page, Target target) {
         Html html = page.getHtml();
@@ -343,26 +295,5 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
         return returnStatus;
     }
 
-    @Deprecated
-    public boolean download(String downloadURL, String filename, String savePath, Page page) {
-        boolean returnStatus = false;
-        if (!new File(savePath + filename).exists()) {
-            logger.info("开始下载: " + filename + " " + page.getUrl());
-            try {
-                returnStatus = TimeLimitedHttpDownloader.downloadWithAutoRetry(downloadURL, filename, savePath, page.getUrl().toString(), 3);
-            } catch (IOException e) {
-                // 此处报错可能原因是 downloadWithAutoRetry 执行技术，在finally部分 in.close out.close发生的错误
-                logger.error("下载失败[开始重试]:[下载过程正常]文件保存/重命名/流操作失败" + e.getMessage());
-                try {
-                    returnStatus = TimeLimitedHttpDownloader.downloadWithAutoRetry(downloadURL, filename, savePath, page.getUrl().toString(), 3);
-                } catch (IOException e1) {
-                    logger.error("下载失败[放弃下载]:[下载过程正常]文件保存/重命名/流操作失败");
-                }
-            }
-        } else {
-            logger.info("已经存在: " + filename);
-            returnStatus = true;
-        }
-        return returnStatus;
-    }
+
 }

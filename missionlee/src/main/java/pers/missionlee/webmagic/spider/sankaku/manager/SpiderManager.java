@@ -29,55 +29,64 @@ public class SpiderManager extends SpiderUtils {
 //        IDOLOFFICIAL
 //    }
 
-    public static void update(SourceManager sourceManager, SourceManager.SourceType updateSourceType, boolean getAll) throws IOException {
+    public  void update(SourceManager sourceManager, SourceManager.SourceType updateSourceType, boolean getAll,int minPriority) throws IOException {
         if (updateSourceType == SourceManager.SourceType.SANKAKU) {
-            Map<String, Integer> artists = sourceManager.getSankakuArtistList();
+            Map<String, Integer> artists = sourceManager.getSankakuArtistListByJson();
             Set<String> artistNames = artists.keySet();
             for (String name :
                     artistNames) {
-                if (!sourceManager.isUpdated(SourceManager.SourceType.SANKAKU, name)) {
+
+                if (!sourceManager.isUpdated(SourceManager.SourceType.SANKAKU, name,minPriority)) {
                     SpiderTask task = startSpider(sourceManager, SourceManager.SourceType.SANKAKU, SpiderTask.TaskType.UPDATE, name, false,getAll);
                     int downloaded = task.downloaded;
                     logger.info("更新清空：作者[" + name + "]本次更新 " + downloaded);
-                    sourceManager.update(SourceManager.SourceType.SANKAKU, name, downloaded);
+                    sourceManager.update(SourceManager.SourceType.SANKAKU, name,fileNameGenerator(name), downloaded);
                 }
             }
         }
     }
 
-    public static void runWithChromeDir(SourceManager sourceManager, SourceManager.SourceType sourceType, SpiderTask.TaskType taskType, String chromeBookmarkDirName, boolean official) throws IOException {
+    public  void runWithChromeDir(SourceManager sourceManager, SourceManager.SourceType sourceType, SpiderTask.TaskType taskType, String chromeBookmarkDirName, boolean official) throws IOException {
         ChromeBookmarksReader reader = new ChromeBookmarksReader(ChromeBookmarksReader.defaultBookmarkpath);
-        List<Map> artistList = reader.getBookMarkListByDirName(chromeBookmarkDirName);
+        List<Map> artistListInChrome = reader.getBookMarkListByDirName(chromeBookmarkDirName);
 
-        Set<String> downloaded = sourceManager.getSankakuArtistList().keySet();
+//        Set<String> downloadedDir = sourceManager.getSankakuArtistsListByDir().keySet();
+//        Set<String> downloadedJson = sourceManager.getSankakuArtistListByJson().keySet();
         List<String> nameList = new ArrayList<String>();
-        for (Map bookmark : artistList
+        for (Map bookmark : artistListInChrome
         ) {
+            System.out.println(bookmark.get("url"));
             String tmpName = SpiderUtils.urlDeFormater(bookmark.get("url").toString().split("tags=")[1]);
-            if (!downloaded.contains(tmpName)) {
+//            String artistFileName = fileNameGenerator(tmpName);
+            // 如果 tmpName 是以 . 结尾的 实际文件是没有
+//            if (!downloadedDir.contains(artistFileName)) {
+//                nameList.add(tmpName);
+//            }
+            // TODO: 2019-04-26 有些作者名称以 . 结尾 创建目录的时候 最后一个 . 会被忽略，不如直接查看作品数量
+            if(sourceManager.getArtworkNum(SourceManager.SourceType.SANKAKU,fileNameGenerator(tmpName))==0){
                 nameList.add(tmpName);
             }
         }
-        logger.info("初始化目标列表：" + nameList);
+        logger.info("初始化目标列表["+nameList.size()+"]：" + nameList);
         for (String name :
                 nameList) {
             startSpider(sourceManager, sourceType, taskType, name, official,true);
         }
     }
 
-    public static SpiderTask startSpider(SourceManager sourceManager, SourceManager.SourceType sourceType, SpiderTask.TaskType taskType, String artistName, boolean official,boolean getAll) throws IOException {
+    public  SpiderTask startSpider(SourceManager sourceManager, SourceManager.SourceType sourceType, SpiderTask.TaskType taskType, String artistName, boolean official,boolean getAll) throws IOException {
         SpiderTaskFactory factory = new SpiderTaskFactory(sourceManager);
-        SpiderTask task = factory.getSpiderTask(sourceType, artistName, official, taskType,getAll,sourceManager);
+        SpiderTask task = factory.getSpiderTask(sourceType, artistName,fileNameGenerator(artistName), official, taskType,getAll,sourceManager);
         SourceSpiderRunner runner = new SourceSpiderRunner();
         try {
-            runner.runTask(task);
+              runner.runTask(task);
         } catch (Exception e) {
             logger.info("获取作者作品数量失败，爬虫无法执行");
         }
         return task;
     }
 
-    public static void runWithNameList(String filePath,SourceManager sourceManager) throws IOException {
+    public  void runWithNameList(String filePath,SourceManager sourceManager) throws IOException {
 
         File nameListFile = new File(filePath);
         String nameListString = FileUtils.readFileToString(nameListFile, "UTF8");
@@ -110,9 +119,11 @@ public class SpiderManager extends SpiderUtils {
 
     public static void main(String[] args) throws IOException {
 
-        SourceManager sourceManager = new SourceManager("D:\\ROOT");
-        runWithNameList("D:\\sankaku\\name.md",sourceManager);
-//        runWithChromeDir(sourceManager, SourceManager.SourceType.SANKAKU, SpiderTask.TaskType.NEW, "download2", false);
-//        update(sourceManager, SourceManager.SourceType.SANKAKU,true);
+        SourceManager sourceManager = new SourceManager("E:\\ROOT");
+        SpiderManager spiderManager = new SpiderManager();
+//        spiderManager.startSpider(sourceManager, SourceManager.SourceType.SANKAKU, SpiderTask.TaskType.UPDATE,"kamadeva",false,true);
+//        spiderManager.runWithChromeDir(sourceManager, SourceManager.SourceType.SANKAKU, SpiderTask.TaskType.NEW, "san6", false);
+         spiderManager.update(sourceManager, SourceManager.SourceType.SANKAKU,true,1);
+//         spiderManager.runWithNameList("D:\\sankaku\\name.md",sourceManager);
     }
 }
