@@ -19,6 +19,7 @@ public class SpiderUtils {
     public static String UserName2 = "hisanily";
     public static String Password = "mingshun1993";
     public static final String BASE_SITE = "https://chan.sankakucomplex.com/?tags=";
+    private static final String www_sankakucomplex_com_IP="208.100.24.252";
     private static final String chan_sankakucomplex_com_IP = "208.100.27.32";
     private static final String cs_sankakucomplex_com_IP = "208.100.24.254";
     protected static Site site = Site.me()

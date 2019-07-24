@@ -98,9 +98,13 @@ public class TimeLimitedHttpDownloader implements Thread.UncaughtExceptionHandle
 
     public static boolean downloadWithAutoRetry(String urlStr, String filename, String referer, SpiderTask spiderTask) throws IOException {
         boolean downloadStatus = false;
+//        String tmpPath;
+//        if(spiderTask!=null)
         String tmpPath = spiderTask.getTmpPath();
+//        else tmpPath = "C:\\Users\\MissionLee\\Desktop\\img";
         int retry = spiderTask.getDownloadRetryTimes();
-        if (!spiderTask.existsInTmpPath(filename)) {
+//        int retry = 2;
+        if (true||!spiderTask.existsInTmpPath(filename)) {
             while (!downloadStatus && retry > 0) {
                 logger.info("尝试下载[" + (4 - retry) + "]: " + filename);
                 retry--;
@@ -181,14 +185,16 @@ public class TimeLimitedHttpDownloader implements Thread.UncaughtExceptionHandle
         connection.setConnectTimeout(30000);
         connection.setReadTimeout(30000);
         connection.setRequestMethod("GET");
-        connection.setRequestProperty("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
-        connection.setRequestProperty("accept-encoding", "gzip, deflate, br");
-        connection.setRequestProperty("accept-language", "zh-CN,zh;q=0.9");
-        connection.setRequestProperty("cache-control", "no-cache");
-        connection.setRequestProperty("pragma", "no-cache");
-        connection.setRequestProperty("referer", referer);
-        connection.setRequestProperty("upgrade-insecure-requests", "1");
-        connection.setRequestProperty("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.119 Safari/537.36");
+//        connection.setRequestProperty("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
+//        connection.setRequestProperty("accept-encoding", "gzip, deflate, br");
+//        connection.setRequestProperty("accept-language", "zh-CN,zh;q=0.9");
+//        connection.setRequestProperty("cache-control", "no-cache");
+//        connection.setRequestProperty("pragma", "no-cache");
+        System.out.println(referer);
+        connection.setRequestProperty("Referer", referer);
+//        connection.setRequestProperty("upgrade-insecure-requests", "1");
+        connection.setRequestProperty("User-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.119 Safari/537.36");
+
     }
 }
 

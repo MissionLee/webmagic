@@ -316,7 +316,7 @@ public class Spider implements Runnable, Task {
                     break;
                 }
                 // wait until new url added
-                // TODO: 2019/3/1 怀疑下面的方法导致程序卡死 
+                // TODO: 2019/3/1 怀疑下面的方法导致程序卡死
                 waitNewUrl();
             } else {
 

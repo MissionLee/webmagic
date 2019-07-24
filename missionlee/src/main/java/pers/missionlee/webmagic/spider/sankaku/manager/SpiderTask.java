@@ -14,6 +14,7 @@ import java.util.List;
  */
 public class SpiderTask {
     private static String[] emptyStringArray = new String[0];
+//    private static List<String> emptyStringList = new ArrayList<String>();
     public enum TaskType {
         UPDATE("更新"),
         NEW("遍历");
@@ -96,6 +97,16 @@ public class SpiderTask {
         } catch (IOException e) {
             System.out.println("= xx =");
         }
+    }
+    public void resetRunTimeParams(){
+        this.total = 0;
+        this.stored = 0;
+        this.added=0;
+        this.downloaded=0;
+        this.failed =0;
+        this.startUrls = emptyStringArray;
+        this.artworkAddress = new ArrayList<String>();
+        this.targetUrl = new ArrayList<String>();
     }
     public String getTmpPath(){
         return this.sourceManager.tmpPath;

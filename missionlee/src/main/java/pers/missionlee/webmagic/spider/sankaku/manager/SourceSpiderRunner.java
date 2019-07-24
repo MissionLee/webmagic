@@ -23,7 +23,6 @@ public class SourceSpiderRunner extends SpiderUtils {
     }
 
     public void runTask(SpiderTask spiderTask) throws Exception {
-
         if (spiderTask.getTaskType() == SpiderTask.TaskType.NEW) {
             logger.debug("尝试下载作者[" + spiderTask.getArtistName() + "]的所有作品");
             runNewTask(spiderTask, true);
@@ -59,7 +58,6 @@ public class SourceSpiderRunner extends SpiderUtils {
             // 如果由获取全部内容的需求
             int nowWeHave = spiderTask.artworkAddress.size();
             int nowTheyHave = setTotalNumberWithSpider(spiderTask);
-
             if (nowWeHave < 2000) { // 本地存储大于2000 不再尝试全部获取
                 if (
                         (nowTheyHave >= 2000 && nowWeHave < 1950) //总量大于两千，本地少于1950
