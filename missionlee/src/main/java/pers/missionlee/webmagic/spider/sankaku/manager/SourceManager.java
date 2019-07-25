@@ -101,7 +101,14 @@ public class SourceManager {
     FileFilter selectedFileFilter = new FileFilter() {
         @Override
         public boolean accept(File pathname) {
-            return pathname.getName().startsWith("pic-") || pathname.getName().startsWith("vid-")||pathname.getName().startsWith("图-")||pathname.getName().startsWith("视-")||pathname.getName().startsWith("T-")   ;
+            return pathname.getName().startsWith("pic-")
+                    || pathname.getName().startsWith("vid-")
+                    || pathname.getName().startsWith("图-")
+                    || pathname.getName().startsWith("视-")
+                    || pathname.getName().startsWith("T-")
+                    || pathname.getName().startsWith("V-")
+                    || pathname.getName().startsWith("pic")
+                    || pathname.getName().startsWith("vid");
         }
     };
     FilenameFilter jsonlineFilenameFilter = new FilenameFilter() {
@@ -110,6 +117,7 @@ public class SourceManager {
             return name.endsWith(".jsonline");
         }
     };
+
     public SourceManager(String rootPath) {
         if (!rootPath.toLowerCase().contains("root")) {
             throw new RuntimeException("约定根目录名称为某个目录下的 root/ROOT 目录，请检查");
@@ -138,18 +146,26 @@ public class SourceManager {
         Map<String, List<String>> specialPicList = new HashMap<String, List<String>>();
         Map<String, List<String>> specialVidList = new HashMap<String, List<String>>();
         for (int i = 0; i < files.length; i++) {
-             logger.info("初始化：" + files[i].getName());
+            logger.info("初始化：" + files[i].getName());
             String[] artist = files[i].list();
-            if (files[i].getName().startsWith("pic-") || files[i].getName().startsWith("图-")|| files[i].getName().startsWith("T-"))
+            if (files[i].getName().startsWith("pic-")
+                    || files[i].getName().startsWith("图-")
+                    || files[i].getName().startsWith("T-")
+                    || files[i].getName().startsWith("pic")
+            )
                 specialPicList.put(buildPath(files[i].getPath()), Arrays.asList(artist));
 
-            else if (files[i].getName().startsWith("vid-")||files[i].getName().startsWith("视-"))
+            else if (files[i].getName().startsWith("vid-")
+                    || files[i].getName().startsWith("视-")
+                    || files[i].getName().startsWith("V-")
+                    || files[i].getName().startsWith("vid")
+            )
                 specialVidList.put(buildPath(files[i].getPath()), Arrays.asList(artist));
         }
         this.specialSelectedPicArtistPathMap = specialPicList;
         this.specialSelectedVidArtistPathMap = specialVidList;
-         logger.info(specialPicList.toString());
-         logger.info(specialVidList.toString());
+        logger.info(specialPicList.toString());
+        logger.info(specialVidList.toString());
         StringBuffer buffer = new StringBuffer();
         buffer.append("SANKAKU 根路径：" + sankakuRootPath + "\n");
         buffer.append("SANKAKU 信息路径：" + sankakuDefaultInfoPath + "\n");
@@ -157,6 +173,7 @@ public class SourceManager {
         buffer.append("SANKAKU 视频路径：" + sankakuDefaultVidPath + "\n");
         // logger.debug("\n" + buffer.toString());
         logger.info("初始化完成");
+        System.out.println("xxxxxxxxxxxxx " + specialSelectedPicArtistPathMap.size());
     }
 
     private void initIdolPathInfo() {
@@ -166,19 +183,38 @@ public class SourceManager {
         this.idolVidPath = buildPath(idolRootPath, DIR_VID);
         this.idolPathList = new PathList(idolPicPath, idolVidPath, idolInfoPath);
     }
-
+    /**
+     * 增加对 分级目录的兼容
+     * */
     public Map<String, Integer> getSankakuArtistsListByDir() {
-        if (sankakuArtists != null)
-            return sankakuArtists;
-
+//        if (sankakuArtists != null)
+//            return sankakuArtists;
+//
         Map<String, Integer> map = new HashMap<String, Integer>();
-        if (sankakuDefaultPics == null || sankakuDefaultVids == null) {
-            initSankakuPathInfo();
+//        if (sankakuDefaultPics == null || sankakuDefaultVids == null) {
+//            initSankakuPathInfo();
+//        }
+//        File[] picArtists = this.sankakuDefaultPics.listFiles();
+//        countArtists(map, picArtists);
+//        File[] vidArtists = this.sankakuDefaultVids.listFiles();
+//        countArtists(map, vidArtists);
+        Set<String> picKey = specialSelectedPicArtistPathMap.keySet();
+        for (String key:picKey
+             ) {
+            List<String> artists =  specialSelectedPicArtistPathMap.get(key);
+            for (String name: artists) {
+                map.put(name,1);
+            }
         }
-        File[] picArtists = this.sankakuDefaultPics.listFiles();
-        countArtists(map, picArtists);
-        File[] vidArtists = this.sankakuDefaultVids.listFiles();
-        countArtists(map, vidArtists);
+        Set<String> vidKey = specialSelectedVidArtistPathMap.keySet();
+        for (String key :
+                vidKey) {
+            List<String> artists = specialSelectedVidArtistPathMap.get(key);
+            for (String name :
+                    artists) {
+                map.put(name,1);
+            }
+        }
         return map;
     }
 
@@ -342,17 +378,36 @@ public class SourceManager {
             Iterator iterator = artworkInfoList.iterator();
             while (iterator.hasNext()) {
                 if (!artworks.contains(((ArtworkInfo) iterator.next()).getName())) {
-                    iterator.remove();
-                    removed++;
+                    // TODO: 2019-07-25 remove 机制暂时取消
+                    System.out.println("remove 机制暂时取消掉了");
+//                    iterator.remove();
+//                    removed++;
                 }
             }
             if (removed > 0) {
                 logger.info("因为实际作品缺失，删除文本记录：" + removed);
-                rebuildArtworkInfoFile(sourceType, artistFileName, artworkInfoList);
+                // TODO: 2019-07-25 remove 机制暂时取消
+                // rebuildArtworkInfoFile(sourceType, artistFileName, artworkInfoList);
             }
         }
         logger.debug(artistFileName + " 作品：" + artworkInfoList);
         return artworkInfoList;
+    }
+    public Map<String,Integer> getRealAartworkNum(SourceType sourceType,String artist){
+        artist = cleanArtistFileName(artist);
+        Map<String,Integer> numMap = new HashMap<>();
+        numMap.put("saved_pic_num",0);
+        numMap.put("saved_vid_num",0);
+
+        if(sourceType == SourceType.SANKAKU){
+            File pics = new File(getArtistPath(sourceType,".jpg",artist));
+            File vids = new File(getArtistPath(sourceType,".mp4",artist));
+            if(pics.list()!=null)
+            numMap.put("saved_pic_num",pics.list().length);
+            if(vids.list()!=null)
+            numMap.put("saved_vid_num",vids.list().length);
+        }
+        return numMap;
     }
 
     /**
@@ -473,7 +528,7 @@ public class SourceManager {
         String fullPath = getArtistPath(sourceType, artworkName, artistFileName);
         try {
             FileUtils.moveFile(tmpFile, new File(fullPath + artworkName));
-            logger.debug("文件转存："+fullPath+artworkName);
+            logger.debug("文件转存：" + fullPath + artworkName);
             return true;
         } catch (IOException e) {
             e.printStackTrace();
@@ -481,7 +536,7 @@ public class SourceManager {
         }
     }
 
-    private String getArtistPath(SourceType sourceType, String artworkName, String artistFileName) {
+    public String getArtistPath(SourceType sourceType, String artworkName, String artistFileName) {
         artistFileName = cleanArtistFileName(artistFileName);
 //        if(artistFileName.endsWith("."))
 //            artistFileName = artworkName.substring(0,artistFileName.length()-1);
@@ -517,6 +572,14 @@ public class SourceManager {
         String fullPath = getArtistPath(sourceType, artworkName, artistFileName);
         return new File(fullPath + artworkName).exists();
     }
+//    /**
+//     * 文件存储： 返回文件路径
+//     * */
+//    public String getPathOfArtwork(SourceType sourceType,String artistFileName,String artworkName){
+//        artistFileName = cleanArtistFileName(artistFileName);
+//        String fullPath = getArtistPath(sourceType, artworkName, artistFileName);
+//        // TODO: 2019-07-25
+//    }
 
     /**
      * 文件存储：返回临时路径文件
@@ -528,11 +591,11 @@ public class SourceManager {
     /**
      * 更新控制：查询知否需要更新 1 表示已经更新
      */
-    public boolean isUpdated(SourceType sourceType, String artistName,int minPriority) throws IOException {
+    public boolean isUpdated(SourceType sourceType, String artistName, int minPriority) throws IOException {
 
-        int priority = getPriorityFromPathName(sourceType,artistName);
-        logger.warn("作者："+artistName+" 优先级："+priority);
-        if(priority>minPriority)
+        int priority = getPriorityFromPathName(sourceType, artistName);
+        logger.warn("作者：" + artistName + " 优先级：" + priority);
+        if (priority > minPriority)
             return true;
 
 
@@ -556,7 +619,7 @@ public class SourceManager {
         int priority = getPriorityFromPathName(sourceType, artistFileName);
         int times = 30;
         if (priority == 5) {
-             doUpdate = false;
+            doUpdate = false;
 //            times = 36000; // 5表示废弃 用不更新
         } else if (priority == 4) {
             times = 720;
@@ -577,7 +640,7 @@ public class SourceManager {
             sankakuUpdateInfo.put(artistName, System.currentTimeMillis() + times * ONE_DAY_TIME_MILLIS);
             FileUtils.writeStringToFile(new File(sankakuDefaultInfoPath + UPDATE_INFO_FILE_NAME),
                     JSON.toJSONString(sankakuUpdateInfo), "utf8", false);
-            logger.info("更新完毕："+artistName +"\t下次更新："+times+"天");
+            logger.info("更新完毕：" + artistName + "\t下次更新：" + times + "天");
         } else {
             logger.warn("未做更近记录 ##########");
         }
@@ -585,7 +648,7 @@ public class SourceManager {
 
     static Pattern priorityPattern = Pattern.compile("-([0-9])-");
 
-    private int getPriorityFromPathName(SourceType sourceType, String artistFileName) {
+    public int getPriorityFromPathName(SourceType sourceType, String artistFileName) {
         int priority = 5;
         String parentPathPic = getArtistPath(sourceType, ".jpg", artistFileName);
         String parentPathVid = getArtistPath(sourceType, ".mp4", artistFileName);
@@ -600,6 +663,22 @@ public class SourceManager {
             priority = priority > tmpPriority ? tmpPriority : priority;
         }
         return priority;
+    }
+    public Map<String,Integer> getPriority(SourceType sourceType, String artistFileName) {
+        Map<String,Integer> priMap = new HashMap<>();
+        String parentPathPic = getArtistPath(sourceType, ".jpg", artistFileName);
+        String parentPathVid = getArtistPath(sourceType, ".mp4", artistFileName);
+        Matcher matcherPic = priorityPattern.matcher(parentPathPic);
+        Matcher matcherVid = priorityPattern.matcher(parentPathVid);
+        priMap.put("pic_level",10);
+        priMap.put("vid_level",10);
+        if (matcherPic.find()) {
+            priMap.put("pic_level",Integer.valueOf(matcherPic.group(1)));
+        }
+        if (matcherVid.find()) {
+            priMap.put("vid_level",Integer.valueOf(matcherVid.group(1)));
+        }
+        return priMap;
     }
 
     private static final String UPDATE_INFO_FILE_NAME = "update_info.json";
@@ -748,15 +827,32 @@ public class SourceManager {
                 }
             }
         }
+
+
+        Map<String, String> tmpList2 = new HashMap<String, String>();
+        Iterator<String> iterator2 = specialSelectedVidArtistPathMap.keySet().iterator();
+        while (iterator2.hasNext()) {
+            String key = iterator2.next();
+            logger.info(key);
+            List<String> namelist2 = specialSelectedVidArtistPathMap.get(key);
+            for (String name :
+                    namelist2) {
+                if (!tmpList2.containsKey(name)) {
+                    tmpList2.put(name, key);
+                } else {
+                    logger.info("============== " + name + " | " + tmpList2.get(name) + " | " + key);
+                }
+            }
+        }
     }
 
     public void dealWithVidArtistWithSamllNumberOfVid() throws IOException {
         File vid01234 = new File(sankakuRootPath + "vid-01234/");
-        if(!vid01234.exists()) vid01234.mkdir();
+        if (!vid01234.exists()) vid01234.mkdir();
         File[] defaultFiles = sankakuDefaultVids.listFiles();
         // 寻找 01234 目录里面作品数量超过4个的 把他们移动到默认vid
         List<String> nameLow = specialSelectedVidArtistPathMap.get(sankakuRootPath + "vid-01234/");
-        if(nameLow!=null){
+        if (nameLow != null) {
             for (String name :
                     nameLow) {
                 File artist = new File(sankakuRootPath + "vid-01234/" + name);
@@ -812,95 +908,98 @@ public class SourceManager {
 
 
     }
+
     /**
      * 给定 artistFileName 如果有对应的文件夹，但是没有 jsonline 文件，那就创建一个
      * ！ artistFileName 是减少过最后的 . 的，所以 jsonline 文件的名称 要从 Chrome书签获得真正的名称
-     * */
-    public  void buildMissingJsonLineFileForArtist(SourceType sourceType,Set<String> artists) throws IOException {
+     */
+    public void buildMissingJsonLineFileForArtist(SourceType sourceType, Set<String> artists) throws IOException {
         SpiderUtils spiderUtils = new SpiderUtils();
-        if(sourceType==SourceType.SANKAKU){
+        if (sourceType == SourceType.SANKAKU) {
             // 获取所有 jsonline 文件名称
             String[] jsonlines = new File(sankakuDefaultInfoPath).list(jsonlineFilenameFilter);
             Set<String> jsonlineName = new HashSet<String>();
             // 获取 jsonline 文件对应的作者名称
             for (int i = 0; i < jsonlines.length; i++) {
-                jsonlineName.add(jsonlines[i].substring(0,jsonlines[i].length()-9));
+                jsonlineName.add(jsonlines[i].substring(0, jsonlines[i].length() - 9));
             }
             // 循环给定的作者列表： 这个列表应该使用 ChromeReader 获得的收藏的作者列表
-            for (String artistName:artists
-                 ) {
+            for (String artistName : artists
+            ) {
                 // 如果有这个 作者的作品
 
-                if(!jsonlineName.contains(artistName)){
-                    int num = getArtworkNum(SourceType.SANKAKU,spiderUtils.fileNameGenerator(artistName));
-                    System.out.println("没有文件："+artistName+"\t作品数量"+num);
-                    if(num>0){
-                        boolean created = new File(sankakuDefaultInfoPath+artistName+".jsonline").createNewFile();
-                        System.out.println(sankakuDefaultInfoPath+artistName+".jsonline"+"\t创建"+created);
+                if (!jsonlineName.contains(artistName)) {
+                    int num = getArtworkNum(SourceType.SANKAKU, spiderUtils.fileNameGenerator(artistName));
+                    System.out.println("没有文件：" + artistName + "\t作品数量" + num);
+                    if (num > 0) {
+                        boolean created = new File(sankakuDefaultInfoPath + artistName + ".jsonline").createNewFile();
+                        System.out.println(sankakuDefaultInfoPath + artistName + ".jsonline" + "\t创建" + created);
                     }
                 }
             }
         }
 
     }
-    public void initSankakuLevelPath(){
+
+    public void initSankakuLevelPath() {
         // 图-0-重口
         String pic = "T";
         String vid = "V";
-        Map<Integer,String> picLevelName = new HashMap<Integer, String>(){{
-            put(0,"典藏");
-            put(1,"核心");
-            put(2,"优秀");
-            put(3,"良好");
-            put(4,"一般");
-            put(5,"及格");
-            put(6,"废弃");
+        Map<Integer, String> picLevelName = new HashMap<Integer, String>() {{
+            put(0, "典藏");
+            put(1, "核心");
+            put(2, "优秀");
+            put(3, "良好");
+            put(4, "一般");
+            put(5, "及格");
+            put(6, "废弃");
         }};
-        Map<Integer,String> vidLevelName = new HashMap<Integer,String>(){{
-            put(0,"典藏");
-            put(1,"优秀");
-            put(2,"良好");
-            put(3,"一般");
-            put(4,"废弃");
+        Map<Integer, String> vidLevelName = new HashMap<Integer, String>() {{
+            put(0, "典藏");
+            put(1, "优秀");
+            put(2, "良好");
+            put(3, "一般");
+            put(4, "废弃");
         }};
         int picSize = picLevelName.size();
         int vidSize = vidLevelName.size();
-        List<String> picSpec = Arrays.asList("可爱","硬核","诱惑","3D","安全","重口");
-        List<String> vidSpec = Arrays.asList("高分","口味","2D");
+        List<String> picSpec = Arrays.asList("可爱", "硬核", "诱惑", "3D", "安全", "重口");
+        List<String> vidSpec = Arrays.asList("高分", "口味", "2D");
         for (int i = 0; i < picSize; i++) {
             StringBuffer nameBuffer = new StringBuffer();
             nameBuffer.append(pic).append("-").append(i).append("-").append(picLevelName.get(i)).append("-");
             String prefix = nameBuffer.toString();
             for (String sp :
                     picSpec) {
-                if(!new File(sankakuRootPath+prefix+sp).exists())
-                new File(sankakuRootPath+prefix+sp).mkdir();
+                if (!new File(sankakuRootPath + prefix + sp).exists())
+                    new File(sankakuRootPath + prefix + sp).mkdir();
             }
         }
         for (int i = 0; i < vidSize; i++) {
             StringBuffer nameBuffer = new StringBuffer();
             nameBuffer.append(vid).append("-").append(i).append("-").append(vidLevelName.get(i)).append("-");
             String prefix = nameBuffer.toString();
-            for(String sp:vidSpec){
-                if(!new File(sankakuRootPath+prefix+sp).exists()){
-                    new File(sankakuRootPath+prefix+sp).mkdir();
+            for (String sp : vidSpec) {
+                if (!new File(sankakuRootPath + prefix + sp).exists()) {
+                    new File(sankakuRootPath + prefix + sp).mkdir();
                 }
             }
         }
     }
+
     public static void main(String[] args) throws IOException {
         SourceManager testSourceManager = new SourceManager("E:\\ROOT");
         // 初始化本地文件目录 ，需要手动创建父级目录
 //        testSourceManager.initSankakuLevelPath();
         // 查询重复的作者
-//        testSourceManager.findDuplicationDir();
+        testSourceManager.findDuplicationDir();
 
 //        testSourceManager.getArtistListByJson(SourceType.SANKAKU);
 //        testSourceManager.getSankakuArtistsListByDir();
 //        testSourceManager.getSankakuArtistListByJson();
 //        testSourceManager.cleanInfo();
 
-        testSourceManager.dealWithVidArtistWithSamllNumberOfVid();
+//        testSourceManager.dealWithVidArtistWithSamllNumberOfVid();
 //        testSourceManager.cleanRootDir();
 
 //        ChromeBookmarksReader reader = new ChromeBookmarksReader();

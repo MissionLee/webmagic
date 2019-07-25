@@ -1,7 +1,125 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="san">
-	<select id="findArtist" resultType="map">
-		select * from san_artist
+    <!-- ======================= 作品部分 ==================== -->
+    <insert id="addArtwork"  parameterType="map" >
+		INSERT INTO san_artwork(
+			`FILE_NAME`,
+			`SAN_CODE`,
+			`FILE_SIZE`,
+			`FILE_FORMAT`,
+			`POST_DATE`,
+			`RATING`,
+			`RESOLUTION_RATIO`,
+			`STATUS`,
+			`RELATIVE_PATH`,
+			`CREATE_TIME`,
+			`UPDATE_TIME`,
+			`INFORMATION`
+			) VALUES (
+			#{fileName},
+			#{sanCode},
+			#{fileSize},
+			#{fileFormat},
+			#{postDate},
+			#{rating},
+			#{resolutionRatio},
+			#{status},
+			#{relativePath},
+			now(),
+			now(),
+			#{information}
+			)
+	</insert>
+    <select id="findArtworkWithSanCode" resultType="map" parameterType="String">
+		SELECT
+			`FILE_NAME` AS fileName,
+			`SAN_CODE` AS sanCode,
+			`FILE_SIZE` AS fileSize,
+			`FILE_FORMAT` AS fileFormat,
+			`POST_DATE` AS postDate,
+			`RATING` AS rating,
+			`RESOLUTION_RATIO` AS resolutionRatio,
+			`STATUS` AS status,
+			`RELATIVE_PATH` AS relativePath,
+			`CREATE_TIME` AS createTime,
+			`UPDATE_TIME` AS updateTime
+			FROM san_artwork WHERE SAN_CODE = #{SANCODE}
 	</select>
+    <!-- ===================  作者部分 =======================  -->
+	<insert id="insertArtist" parameterType="map" useGeneratedKeys="true" keyProperty="artist_id">
+		INSERT INTO san_artist(
+			`NAME`,
+			`DEL_NUMS`,
+			`PIC_LEVEL`,
+			`VID_LEVEL`,
+			`ARTWORK_UPDATE_TIME`,
+			`SAVED_PIC_NUM`,
+			`SAVED_VID_NUM`,
+			`INFOED_NUM`,
+			`create_time`,
+			`update_time`
+			) VALUES (
+			#{name},
+			0,
+			#{pic_level},
+			#{vid_level},
+			null,
+			#{saved_pic_num},
+			#{saved_vid_num},
+			#{infoed_num},
+			now(),
+			now()
+			)
+	</insert>
+	<update id="updateArtist" parameterType="map">
+		UPDATE san_artist SET
+			`PIC_LEVEL` = #{pic_level},
+			`VID_LEVEL` = #{vid_level},
+			`SAVED_PIC_NUM` = #{saved_pic_num},
+			`SAVED_VID_NUM` = #{saved_vid_num},
+			`INFOED_NUM` = #{infoed_num},
+			`update_time` = now()
+			WHERE `name` = #{name}
+	</update>
+    <insert id="insertArtistOnlyName" parameterType="map" useGeneratedKeys="true" keyProperty="artist_id">
+		insert into san_artist(`name`,`create_time`,`update_time`) values (#{name},now(),now())
+	</insert>
+    <select id="getArtistId" parameterType="String" resultType="BigInteger">
+		select artist_id as artistId from san_artist where `name` = #{name}
+	</select>
+    <!-- 根据作品名称 和 作者名称，添加 作者 作品 关系表 -->
+    <insert id="addArtistRel" parameterType="map">
+		insert into artwork_artist_rel(san_code,artist_id) values(#{sanCode},#{artist_id})
+	</insert>
+    <!--  =============== 角色 character 部分 ===========-->
+    <insert id="insertCharacter" parameterType="map" useGeneratedKeys="true" keyProperty="character_id">
+		insert into san_character(`name`) values(#{name})
+    </insert>
+	<select id="getCharacterId" parameterType="String" resultType="BigInteger">
+		select character_id as characterId from san_character where `name` = #{name}
+	</select>
+	<insert id="addCharacterRel" parameterType="map">
+		insert into artwork_character_rel(san_code,character_id) values(#{sanCode},#{character_id})
+	</insert>
+	<!--==================  Copyright 部分 ================== -->
+	<insert id="insertCopyright" parameterType="String" useGeneratedKeys="true" keyProperty="copyright_id">
+		insert into san_copyright(`name`) values(#{name})
+	</insert>
+	<select id="getCopyrightId" parameterType="String" resultType="BigInteger">
+		select copyright_id as copyrightId from san_copyright where `name` = #{name}
+	</select>
+	<insert id="addCopyrightRel" parameterType="map">
+		insert into artwork_copyright_rel(san_code,copyright_id) values(#{sanCode},#{copyright_id})
+	</insert>
+	<!-- ================= Tag 部分 ==========================-->
+	<insert id="insertTag" parameterType="map" useGeneratedKeys="true" keyProperty="tag_id">
+		insert into san_tag(`name`,`type`)values(#{name},#{type})
+	</insert>
+	<select id="getTagId" parameterType="map" resultType="BigInteger">
+		select tag_id as tagId from san_tag where `name` = #{name} and `type` = #{type}
+	</select>
+	<insert id="addTagRel" parameterType="map">
+		insert into artwork_tag_rel(san_code,tag_id)values(#{sanCode},#{tag_id})
+	</insert>
 </mapper>

@@ -30,10 +30,11 @@ public class ArtworkInfo {
     private Long takeTime;
 
     // 以下来自标签栏
-    private List<String> tagCopyright;
-    private List<String> tagStudio;
-    private List<String> tagCharacter;
     private List<String> tagArtist;
+    private List<String> tagCharacter;
+    private List<String> tagCopyright;
+
+    private List<String> tagStudio;
     private List<String> tagMedium;
     private List<String> tagGeneral;
     private List<String> tagGenre;
