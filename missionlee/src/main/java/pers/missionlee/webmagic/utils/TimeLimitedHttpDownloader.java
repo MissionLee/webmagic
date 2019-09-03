@@ -27,12 +27,15 @@ public class TimeLimitedHttpDownloader implements Thread.UncaughtExceptionHandle
     private static long TEN_MINUTES = 10 * 60L;
     private static Map<Thread, Map<String, Object>> runInfo = new HashMap<Thread, Map<String, Object>>();
 
+    private Map<String,Integer> dbArtistMap;
+
     @Override
     public void uncaughtException(Thread t, Throwable e) {
 
     }
 
     private static class CallableInputStreamDownloader implements Callable {
+
         InputStream in;
         OutputStream out;
         int size;

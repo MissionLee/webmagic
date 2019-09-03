@@ -27,8 +27,10 @@ import java.util.regex.Pattern;
  * @create: 2019-04-12 08:50
  * <p>
  * // TODO: 2019-04-14
+ * // TODO: 2019-07-25  引入 SankakuDBSourceManager 让SourceManger 能够兼容新业务： 重复的作品在不同作者明下，现在会被删除了
  */
 public class SourceManager {
+    SankakuDBSourceManager sankakuDBSourceManager;
     static Logger logger = LoggerFactory.getLogger(SourceManager.class);
 
     public enum SourceType {
@@ -119,6 +121,8 @@ public class SourceManager {
     };
 
     public SourceManager(String rootPath) {
+        sankakuDBSourceManager = new SankakuDBSourceManager();
+
         if (!rootPath.toLowerCase().contains("root")) {
             throw new RuntimeException("约定根目录名称为某个目录下的 root/ROOT 目录，请检查");
         }
@@ -186,7 +190,10 @@ public class SourceManager {
     /**
      * 增加对 分级目录的兼容
      * */
+    @Deprecated
     public Map<String, Integer> getSankakuArtistsListByDir() {
+
+
 //        if (sankakuArtists != null)
 //            return sankakuArtists;
 //
@@ -198,6 +205,9 @@ public class SourceManager {
 //        countArtists(map, picArtists);
 //        File[] vidArtists = this.sankakuDefaultVids.listFiles();
 //        countArtists(map, vidArtists);
+
+
+
         Set<String> picKey = specialSelectedPicArtistPathMap.keySet();
         for (String key:picKey
              ) {
@@ -217,8 +227,11 @@ public class SourceManager {
         }
         return map;
     }
-
+    @Deprecated
     public Map<String, Integer> getSankakuArtistListByJson() {
+//        // TODO: 2019-07-25 数据没有迁移完成，可以考虑两者合一？
+//        if(true)
+//            return sankakuDBSourceManager.getArtists();
         Map themap = getArtistListByJson(SourceType.SANKAKU);
         //logger.debug("SANKAKU作者列表[数量+"+themap.size()+"]：" + themap.toString());
         return themap;
@@ -227,33 +240,33 @@ public class SourceManager {
     /**
      * 统计作者和作品数量，如果名称相同，那么做加法
      */
-    private void countArtists(Map<String, Integer> map, File[] artists) {
-        for (int i = 0; i < artists.length; i++) {
-            if (map.containsKey(artists[i].getName())) {
-                map.put(artists[i].getName(),
-                        map.get(artists[i].getName()) + artists[i].list().length);
-            } else {
-                map.put(artists[i].getName(), artists[i].list().length);
-            }
-        }
-    }
-
-    public static String getDirSankaku() {
-        return DIR_SANKAKU;
-    }
-
-
-    public Map<String, Integer> getIdolArtists() {
-        return idolArtists;
-    }
-
-    public Map<String, Integer> getSankakuOfficaialArtists() {
-        return sankakuOfficaialArtists;
-    }
-
-    public Map<String, Integer> getIdolOfficialArtists() {
-        return idolOfficialArtists;
-    }
+//    private void countArtists(Map<String, Integer> map, File[] artists) {
+//        for (int i = 0; i < artists.length; i++) {
+//            if (map.containsKey(artists[i].getName())) {
+//                map.put(artists[i].getName(),
+//                        map.get(artists[i].getName()) + artists[i].list().length);
+//            } else {
+//                map.put(artists[i].getName(), artists[i].list().length);
+//            }
+//        }
+//    }
+//
+//    public static String getDirSankaku() {
+//        return DIR_SANKAKU;
+//    }
+//
+//
+//    public Map<String, Integer> getIdolArtists() {
+//        return idolArtists;
+//    }
+//
+//    public Map<String, Integer> getSankakuOfficaialArtists() {
+//        return sankakuOfficaialArtists;
+//    }
+//
+//    public Map<String, Integer> getIdolOfficialArtists() {
+//        return idolOfficialArtists;
+//    }
 
     private class PathList {
         String PicPath;
@@ -302,7 +315,7 @@ public class SourceManager {
         artistFileName = artistFileName.trim();
         return artistFileName.endsWith(".") ? artistFileName.substring(0, artistFileName.length() - 1) : artistFileName;
     }
-
+    @Deprecated
     public static boolean isMetaFile(String fileName) {
         return fileName.toLowerCase().endsWith(".json") || fileName.toLowerCase().endsWith(".jsonline");
     }
@@ -341,6 +354,7 @@ public class SourceManager {
      * 作品信息：读取本地文件，返回排重，排错后的作品信息列表
      */
     public <T extends List<ArtworkInfo>> T getArtworkOfArtist(SourceType sourceType, String artistFileName) throws IOException {
+
         artistFileName = cleanArtistFileName(artistFileName);
         PathList pathList = getPathList(sourceType);
         T artworkInfoList = (T) new AutoDeduplicatedArrayList();
@@ -348,47 +362,47 @@ public class SourceManager {
         if (artworkInfoFile.exists()) {
             String artworkInfos = FileUtils.readFileToString(artworkInfoFile, "utf8");
             String[] artworkInfoStringArray = artworkInfos.split("\n");
-            logger.info("JSONLINE文件解析作品数量：" + artworkInfoStringArray.length);
+//            logger.info("JSONLINE文件解析作品数量：" + artworkInfoStringArray.length);
             ArtworkInfo.convertArtworkStringToList(artworkInfoList, artworkInfoStringArray);
-            logger.info("以名称排重后剩余数量：" + artworkInfoList.size());
+//            logger.info("以名称排重后剩余数量：" + artworkInfoList.size());
             // 处理 json记录与实际文件不符合的内容
-            File pics = new File(getArtistPath(sourceType, ".jpg", artistFileName));
-            File vids = new File(getArtistPath(sourceType, ".mp4", artistFileName));
-            //File pics = new File(pathList.PicPath + artistFileName);
-            //File vids = new File(pathList.VidPath + artistFileName);
-            String[] picNames = pics.list();
-            String[] vidNames = vids.list();
-            List<String> artworks = new ArrayList<String>();
-            int removed = 0;
-            if (picNames != null) {
-                for (int i = 0; i < picNames.length; i++) {
-                    artworks.add(picNames[i]);
-                }
-                logger.info("实际图片作品数量：" + picNames.length);
-            }
-
-
-            if (vidNames != null) {
-                for (int i = 0; i < vidNames.length; i++) {
-                    artworks.add(vidNames[i]);
-                }
-                logger.info("实际视频作品数量：" + vidNames.length);
-            }
-
-            Iterator iterator = artworkInfoList.iterator();
-            while (iterator.hasNext()) {
-                if (!artworks.contains(((ArtworkInfo) iterator.next()).getName())) {
-                    // TODO: 2019-07-25 remove 机制暂时取消
-                    System.out.println("remove 机制暂时取消掉了");
-//                    iterator.remove();
-//                    removed++;
-                }
-            }
-            if (removed > 0) {
-                logger.info("因为实际作品缺失，删除文本记录：" + removed);
-                // TODO: 2019-07-25 remove 机制暂时取消
-                // rebuildArtworkInfoFile(sourceType, artistFileName, artworkInfoList);
-            }
+//            File pics = new File(getArtistPath(sourceType, ".jpg", artistFileName));
+//            File vids = new File(getArtistPath(sourceType, ".mp4", artistFileName));
+//            //File pics = new File(pathList.PicPath + artistFileName);
+//            //File vids = new File(pathList.VidPath + artistFileName);
+//            String[] picNames = pics.list();
+//            String[] vidNames = vids.list();
+//            List<String> artworks = new ArrayList<String>();
+//            int removed = 0;
+//            if (picNames != null) {
+//                for (int i = 0; i < picNames.length; i++) {
+//                    artworks.add(picNames[i]);
+//                }
+//                logger.info("实际图片作品数量：" + picNames.length);
+//            }
+//
+//
+//            if (vidNames != null) {
+//                for (int i = 0; i < vidNames.length; i++) {
+//                    artworks.add(vidNames[i]);
+//                }
+//                logger.info("实际视频作品数量：" + vidNames.length);
+//            }
+//
+//            Iterator iterator = artworkInfoList.iterator();
+//            while (iterator.hasNext()) {
+//                if (!artworks.contains(((ArtworkInfo) iterator.next()).getName())) {
+//                    // TODO: 2019-07-25 remove 机制暂时取消
+//                    System.out.println("remove 机制暂时取消掉了");
+////                    iterator.remove();
+////                    removed++;
+//                }
+//            }
+//            if (removed > 0) {
+//                logger.info("因为实际作品缺失，删除文本记录：" + removed);
+//                // TODO: 2019-07-25 remove 机制暂时取消
+//                // rebuildArtworkInfoFile(sourceType, artistFileName, artworkInfoList);
+//            }
         }
         logger.debug(artistFileName + " 作品：" + artworkInfoList);
         return artworkInfoList;
@@ -989,10 +1003,11 @@ public class SourceManager {
 
     public static void main(String[] args) throws IOException {
         SourceManager testSourceManager = new SourceManager("E:\\ROOT");
+        System.out.println(testSourceManager.getArtistPath(SourceType.SANKAKU,".mp4","trubka"));
         // 初始化本地文件目录 ，需要手动创建父级目录
 //        testSourceManager.initSankakuLevelPath();
         // 查询重复的作者
-        testSourceManager.findDuplicationDir();
+//        testSourceManager.findDuplicationDir();
 
 //        testSourceManager.getArtistListByJson(SourceType.SANKAKU);
 //        testSourceManager.getSankakuArtistsListByDir();

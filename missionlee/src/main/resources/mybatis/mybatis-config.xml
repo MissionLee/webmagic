@@ -5,7 +5,7 @@
 <configuration>
     <properties>
         <property name="jdbc.driver.class" value="com.mysql.cj.jdbc.Driver"/>
-        <property name="jdbc.url" value="jdbc:mysql://localhost:3306/sankaku?characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=true"/>
+        <property name="jdbc.url" value="jdbc:mysql://localhost:3306/sankaku?characterEncoding=UTF-8&amp;serverTimezone=UTC&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=true"/>
         <property name="jdbc.username" value="root"/>
         <property name="jdbc.password" value="Ro998otPass&amp;"/>
     </properties>
@@ -74,6 +74,9 @@
                 <property name="url" value="${jdbc.url}"/>
                 <property name="username" value="${jdbc.username}"/>
                 <property name="password" value="${jdbc.password}"/>
+                <property name="poolMaximumActiveConnections" value="100"/>
+                <property name="poolMaximumIdleConnections" value="50"/>
+                <property name="poolTimeToWait" value="20000"/>
             </dataSource>
         </environment>
     </environments>

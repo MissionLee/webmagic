@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="san">
     <!-- ======================= 作品部分 ==================== -->
-    <insert id="addArtwork"  parameterType="map" >
+    <insert id="addArtwork" parameterType="map">
 		INSERT INTO san_artwork(
 			`FILE_NAME`,
 			`SAN_CODE`,
@@ -47,7 +47,7 @@
 			FROM san_artwork WHERE SAN_CODE = #{SANCODE}
 	</select>
     <!-- ===================  作者部分 =======================  -->
-	<insert id="insertArtist" parameterType="map" useGeneratedKeys="true" keyProperty="artist_id">
+    <insert id="insertArtist" parameterType="map" useGeneratedKeys="true" keyProperty="artist_id">
 		INSERT INTO san_artist(
 			`NAME`,
 			`DEL_NUMS`,
@@ -58,7 +58,8 @@
 			`SAVED_VID_NUM`,
 			`INFOED_NUM`,
 			`create_time`,
-			`update_time`
+			`update_time`,
+			`is_target`
 			) VALUES (
 			#{name},
 			0,
@@ -69,24 +70,48 @@
 			#{saved_vid_num},
 			#{infoed_num},
 			now(),
-			now()
+			now(),
+			1
 			)
 	</insert>
-	<update id="updateArtist" parameterType="map">
+    <update id="updateArtist" parameterType="map">
 		UPDATE san_artist SET
 			`PIC_LEVEL` = #{pic_level},
 			`VID_LEVEL` = #{vid_level},
 			`SAVED_PIC_NUM` = #{saved_pic_num},
 			`SAVED_VID_NUM` = #{saved_vid_num},
 			`INFOED_NUM` = #{infoed_num},
-			`update_time` = now()
+			`update_time` = now(),
+			`is_target` = 1
 			WHERE `name` = #{name}
 	</update>
     <insert id="insertArtistOnlyName" parameterType="map" useGeneratedKeys="true" keyProperty="artist_id">
-		insert into san_artist(`name`,`create_time`,`update_time`) values (#{name},now(),now())
+		insert into san_artist(`name`,`create_time`,`update_time`,`is_target`) values (#{name},now(),now(),0)
 	</insert>
     <select id="getArtistId" parameterType="String" resultType="BigInteger">
 		select artist_id as artistId from san_artist where `name` = #{name}
+	</select>
+    <select id="getAllTargetArtist" resultType="map">
+		SELECT
+		`ARTIST_ID` AS artistId,
+		`NAME` AS name,
+		`DEL_NUMS` AS delNums,
+		`PIC_LEVEL` AS picLevel,
+		`VID_LEVEL` AS vidLevel,
+		`ARTWORK_UPDATE_TIME` AS artworkUpdateTime,
+		`SAVED_PIC_NUM` AS savedPicNum,
+		`SAVED_VID_NUM` AS savedVidNum,
+		`INFOED_NUM` AS infoedNum,
+		`CREATE_TIME` AS createTime,
+		`UPDATE_TIME` AS updateTime,
+		`IS_TARGET` AS isTarget,
+		UNIX_TIMESTAMP(`AIM_UPDATE_TIME`) AS aimUpdateTime
+		FROM san_artist WHERE is_target = 1
+	</select>
+	<select id="getTargetArtistList" resultType="String">
+		SELECT
+		`name`
+		FROM san_artist WHERE is_target = 1
 	</select>
     <!-- 根据作品名称 和 作者名称，添加 作者 作品 关系表 -->
     <insert id="addArtistRel" parameterType="map">
@@ -96,30 +121,47 @@
     <insert id="insertCharacter" parameterType="map" useGeneratedKeys="true" keyProperty="character_id">
 		insert into san_character(`name`) values(#{name})
     </insert>
-	<select id="getCharacterId" parameterType="String" resultType="BigInteger">
+    <select id="getCharacterId" parameterType="String" resultType="BigInteger">
 		select character_id as characterId from san_character where `name` = #{name}
 	</select>
-	<insert id="addCharacterRel" parameterType="map">
+    <insert id="addCharacterRel" parameterType="map">
 		insert into artwork_character_rel(san_code,character_id) values(#{sanCode},#{character_id})
 	</insert>
-	<!--==================  Copyright 部分 ================== -->
-	<insert id="insertCopyright" parameterType="String" useGeneratedKeys="true" keyProperty="copyright_id">
+    <!--==================  Copyright 部分 ================== -->
+    <insert id="insertCopyright" parameterType="String" useGeneratedKeys="true" keyProperty="copyright_id">
 		insert into san_copyright(`name`) values(#{name})
 	</insert>
-	<select id="getCopyrightId" parameterType="String" resultType="BigInteger">
+    <select id="getCopyrightId" parameterType="String" resultType="BigInteger">
 		select copyright_id as copyrightId from san_copyright where `name` = #{name}
 	</select>
-	<insert id="addCopyrightRel" parameterType="map">
+    <insert id="addCopyrightRel" parameterType="map">
 		insert into artwork_copyright_rel(san_code,copyright_id) values(#{sanCode},#{copyright_id})
 	</insert>
-	<!-- ================= Tag 部分 ==========================-->
-	<insert id="insertTag" parameterType="map" useGeneratedKeys="true" keyProperty="tag_id">
+    <!-- ================= Tag 部分 ==========================-->
+    <insert id="insertTag" parameterType="map" useGeneratedKeys="true" keyProperty="tag_id">
 		insert into san_tag(`name`,`type`)values(#{name},#{type})
 	</insert>
-	<select id="getTagId" parameterType="map" resultType="BigInteger">
+    <select id="getTagId" parameterType="map" resultType="BigInteger">
 		select tag_id as tagId from san_tag where `name` = #{name} and `type` = #{type}
 	</select>
-	<insert id="addTagRel" parameterType="map">
+    <insert id="addTagRel" parameterType="map">
 		insert into artwork_tag_rel(san_code,tag_id)values(#{sanCode},#{tag_id})
 	</insert>
+
+    <!-- 以下 综合查询业务 -->
+    <select id="getArtworkInfoByArtistName" parameterType="String" resultType="map">
+		SELECT
+			SA.file_name as information
+		FROM san_artwork SA
+		join artwork_artist_rel AAR on SA.SAN_CODE = AAR.SAN_CODE
+		JOIN SAN_ARTIST SAT ON AAR.ARTIST_ID = SAT.ARTIST_ID WHERE SAT.NAME = #{name}
+	</select>
+    <!-- 验证是否有 这个 target 用户-->
+    <select id="getTargetArtist" parameterType="String" resultType="BigInteger">
+		select artist_id as artistId from san_artist where name = #{name} and is_target = 1
+	</select>
+    <!-- 查询用户在数据库中存储的作品数量 -->
+	<select id="getStoredArtworkNum" parameterType="BigInteger" resultType="Integer">
+		select count(*) from artwork_artist_rel where artist_id = #{artistId}
+	</select>
 </mapper>
