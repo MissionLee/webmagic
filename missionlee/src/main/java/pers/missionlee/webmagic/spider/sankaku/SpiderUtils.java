@@ -279,7 +279,7 @@ public class SpiderUtils {
         return urls;
     }
     private static Map<String,String> SPECIAL_NAME = new HashMap<String, String>(){{put("rib:y(uhki)","rib_y(uhki)");}};
-    public String fileNameGenerator(String artistName){
+    public static String fileNameGenerator(String artistName){
         artistName = artistName.trim();
         if(SPECIAL_NAME.containsKey(artistName))
             return SPECIAL_NAME.get(artistName);

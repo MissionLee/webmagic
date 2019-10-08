@@ -128,12 +128,13 @@ public class SpiderTask {
         return this.sourceManager.exists(this.sourceType,this.dirName,filename);
     }
     public Boolean saveFile(File tmpFile,String artworkName){
-        // TODO: 2019-04-26  
+        // TODO: 2019-04-26
         return this.sourceManager.saveFile(this.sourceType,tmpFile,this.dirName,artworkName);
     }
-    public void appendArtworkInfo(ArtworkInfo artworkInfo) throws IOException {
+    public void appendArtworkInfo(ArtworkInfo artworkInfo,String artistName) throws IOException {
         this.artworkAddress.add(artworkInfo.getAddress());
-        this.sourceManager.appendArtworkInfoToFile(this.sourceType,this.dirName,artworkInfo);
+        this.sourceManager.appendArtworkInfoToFile(this.sourceType,this.dirName,artworkInfo,artistName);
+
     }
     @Override
     public String toString(){
@@ -144,5 +145,8 @@ public class SpiderTask {
         buffer.append("\n| 任务类型："+taskType.desc);
         buffer.append("\n-------------------");
         return buffer.toString();
+    }
+    public int getArtworkNumOfDB(String artistName){
+        return sourceManager.sankakuDBSourceManager.getArtistWorkNum(artistName);
     }
 }

@@ -46,7 +46,21 @@
 			`UPDATE_TIME` AS updateTime
 			FROM san_artwork WHERE SAN_CODE = #{SANCODE}
 	</select>
+	<!-- 给定文件名称，是否存在，有可能是存在被删除，也可能在不同作者名下 -->
+	<select id="fileExists" resultType="Integer" parameterType="String">
+		select count(*) from san_artwork where FILE_NAME = #{fileName}
+	</select>
     <!-- ===================  作者部分 =======================  -->
+	<!-- 给定作者，查询作品数量 -->
+	<select id="getArtistWorkNum" parameterType="String" resultType="Integer">
+		select count(*) from artwork_artist_rel AAR join san_artist SA  on AAR.artist_id = SA.artist_id where sa.name = #{name}
+	</select>
+	<update id="refreshUpdateTime" parameterType="map">
+		UPDATE SAN_ARTIST SET
+		`update_time` = CURRENT_TIMESTAMP ,
+		`aim_update_time` = FROM_UNIXTIME(#{time})
+		where `name` = #{theName}
+	</update>
     <insert id="insertArtist" parameterType="map" useGeneratedKeys="true" keyProperty="artist_id">
 		INSERT INTO san_artist(
 			`NAME`,

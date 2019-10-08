@@ -57,13 +57,22 @@ public class SourceSpiderRunner extends SpiderUtils {
         if (spiderTask.isGetAll()) {
             // 如果由获取全部内容的需求
             int nowWeHave = spiderTask.artworkAddress.size();
+            int nowWeHaveInDB = spiderTask.getSourceManager().getArtworkNumOfDB(spiderTask.getArtistName());
+            if (nowWeHaveInDB > nowWeHave) {
+
+                nowWeHave = nowWeHaveInDB;
+                System.out.println("数据库记录的数量多一些，数据库：" + nowWeHaveInDB + " 工具：" + nowWeHave);
+
+            }
             int nowTheyHave = setTotalNumberWithSpider(spiderTask);
             if (nowWeHave < 2000) { // 本地存储大于2000 不再尝试全部获取
                 if (
                         (nowTheyHave >= 2000 && nowWeHave < 1950) //总量大于两千，本地少于1950
                                 || (nowTheyHave < 2000 && nowTheyHave >= 1500 && (nowTheyHave - nowWeHave > 20))// 总量1500~2000，本地比总量少
                                 || (nowTheyHave < 1500 && nowTheyHave >= 1000 && (nowTheyHave - nowWeHave > 10))// 总量1000~15000 差值大于10
-                                || (nowTheyHave - nowWeHave > 5)// 总量1000 以下 差值大于5
+                                || (nowTheyHave < 1000 && nowTheyHave >= 500 && (nowTheyHave - nowWeHave > 5))// 总量1000 以下 差值大于5
+                                || (nowTheyHave - nowWeHave) > 0
+
                 ) {// 实际数量>2000
                     spiderTask.total = nowTheyHave;
                     spiderTask.setTaskType(SpiderTask.TaskType.NEW);
@@ -88,9 +97,9 @@ public class SourceSpiderRunner extends SpiderUtils {
         do {
             Spider.create(spider).addUrl(url).thread(1).run();
 
-        }while (retry-->0 && spider.getNum()==Integer.MAX_VALUE);
-        if(spider.getNum()==Integer.MAX_VALUE){
-            throw  new Exception("未能成功获取数量");
+        } while (retry-- > 0 && spider.getNum() == Integer.MAX_VALUE);
+        if (spider.getNum() == Integer.MAX_VALUE) {
+            throw new Exception("未能成功获取数量");
         }
         return spider.getNum();
     }

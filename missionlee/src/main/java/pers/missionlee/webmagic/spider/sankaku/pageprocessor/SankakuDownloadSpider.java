@@ -135,11 +135,12 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
         ArtworkInfo artworkInfo = extractArtworkInfoFromDetailPage(page, target);
         if (download(target.targetUrl, target.targetName, page)) {
             try {
-                spiderTask.appendArtworkInfo(artworkInfo);
+                spiderTask.appendArtworkInfo(artworkInfo,spiderTask.getArtistName());
             } catch (IOException e) {
                 e.printStackTrace();
             }
             spiderTask.downloaded++;
+
         } else {
             spiderTask.failed++;
         }

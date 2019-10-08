@@ -4,6 +4,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pers.missionlee.webmagic.dbbasedsankaku.SankakuDBSourceManager;
 import pers.missionlee.webmagic.spider.sankaku.SpiderUtils;
 import pers.missionlee.webmagic.utils.ChromeBookmarksReader;
 
@@ -21,7 +22,7 @@ import java.util.*;
  */
 public class SpiderManager extends SpiderUtils {
     static Logger logger = LoggerFactory.getLogger(SpiderManager.class);
-
+//    static SankakuDBSourceManager dbSourceManager = new SankakuDBSourceManager();
 //    public enum UpdateType {
 //        SANKAKU,
 //        SANKAKUOFFICIAL,
@@ -31,7 +32,10 @@ public class SpiderManager extends SpiderUtils {
 
     public  void update(SourceManager sourceManager, SourceManager.SourceType updateSourceType, boolean getAll,int minPriority) throws IOException {
         if (updateSourceType == SourceManager.SourceType.SANKAKU) {
-            Map<String, Integer> artists = sourceManager.getSankakuArtistListByJson();
+            // TODO: 2019-10-04 改动1
+//            List<String> artists = dbSourceManager.getArtists();
+//            Map<String, Integer> artists = sourceManager.getSankakuArtistListByJson();
+            Map<String,Integer> artists = sourceManager.getArtistListByDB();
             Set<String> artistNames = artists.keySet();
             for (String name :
                     artistNames) {
@@ -123,7 +127,7 @@ public class SpiderManager extends SpiderUtils {
         SpiderManager spiderManager = new SpiderManager();
 //        spiderManager.startSpider(sourceManager, SourceManager.SourceType.SANKAKU, SpiderTask.TaskType.UPDATE,"kamadeva",false,true);
 //        spiderManager.runWithChromeDir(sourceManager, SourceManager.SourceType.SANKAKU, SpiderTask.TaskType.NEW, "san6", false);
-         spiderManager.update(sourceManager, SourceManager.SourceType.SANKAKU,true,1);
+         spiderManager.update(sourceManager, SourceManager.SourceType.SANKAKU,true,0);
 //         spiderManager.runWithNameList("D:\\sankaku\\name.md",sourceManager);
     }
 }
