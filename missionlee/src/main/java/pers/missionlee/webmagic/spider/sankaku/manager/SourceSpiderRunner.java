@@ -58,20 +58,22 @@ public class SourceSpiderRunner extends SpiderUtils {
             // 如果由获取全部内容的需求
             int nowWeHave = spiderTask.artworkAddress.size();
             int nowWeHaveInDB = spiderTask.getSourceManager().getArtworkNumOfDB(spiderTask.getArtistName());
+                System.out.println("数据库：" + nowWeHaveInDB + " 本作者文件夹：" + nowWeHave);
             if (nowWeHaveInDB > nowWeHave) {
-
+                spiderTask.stored = nowWeHaveInDB;
+                spiderTask.downloaded = nowWeHaveInDB;
                 nowWeHave = nowWeHaveInDB;
-                System.out.println("数据库记录的数量多一些，数据库：" + nowWeHaveInDB + " 工具：" + nowWeHave);
 
             }
             int nowTheyHave = setTotalNumberWithSpider(spiderTask);
-            if (nowWeHave < 2000) { // 本地存储大于2000 不再尝试全部获取
+            System.out.println("已有：" + nowWeHave + " SAN有：" + nowTheyHave);
+            if (nowWeHave < 2500) { // 本地存储大于2000 不再尝试全部获取
                 if (
-                        (nowTheyHave >= 2000 && nowWeHave < 1950) //总量大于两千，本地少于1950
+                        (nowTheyHave >= 2000 && (nowTheyHave-nowWeHave >50 )) //总量大于两千，本地少于1950
                                 || (nowTheyHave < 2000 && nowTheyHave >= 1500 && (nowTheyHave - nowWeHave > 20))// 总量1500~2000，本地比总量少
                                 || (nowTheyHave < 1500 && nowTheyHave >= 1000 && (nowTheyHave - nowWeHave > 10))// 总量1000~15000 差值大于10
                                 || (nowTheyHave < 1000 && nowTheyHave >= 500 && (nowTheyHave - nowWeHave > 5))// 总量1000 以下 差值大于5
-                                || (nowTheyHave - nowWeHave) > 0
+                                || (nowTheyHave < 500 && ((nowTheyHave - nowWeHave) > 0))
 
                 ) {// 实际数量>2000
                     spiderTask.total = nowTheyHave;

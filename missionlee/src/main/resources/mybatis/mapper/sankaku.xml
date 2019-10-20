@@ -2,6 +2,19 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="san">
     <!-- ======================= 作品部分 ==================== -->
+	<!-- 通过sanCode 查询所有这个sanCode的正式作者列表 -->
+	<select id="getArtistListBySanCode" parameterType="String" resultType="map">
+		SELECT
+			SA.SAN_CODE,
+			ST. NAME,
+			ST.IS_TARGET
+		FROM
+			SAN_ARTWORK SA
+		LEFT JOIN ARTWORK_ARTIST_REL AAR ON SA.SAN_CODE = AAR.SAN_CODE
+		LEFT JOIN SAN_ARTIST ST ON AAR.ARTIST_ID = ST.ARTIST_ID
+		WHERE
+			SA.SAN_CODE = #{sanCode}
+	</select>
     <insert id="addArtwork" parameterType="map">
 		INSERT INTO san_artwork(
 			`FILE_NAME`,

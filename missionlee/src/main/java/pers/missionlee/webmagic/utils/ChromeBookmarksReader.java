@@ -143,7 +143,7 @@ public class ChromeBookmarksReader {
     }
 
     public static void main(String[] args) throws IOException {
-        extractNonDownloadedSankakuNameList("E:\\ROOT","san4","C:\\Users\\Administrator\\Desktop\\san4.md");
+        extractNonDownloadedSankakuNameList("E:\\ROOT","san6","C:\\Users\\Administrator\\Desktop\\san6.md");
 //        extractNonDownloadedSankakuNameList("D:\\ROOT","download2","D:\\ROOT\\bookmarks\\sankaku-download2.md");
     }
 }

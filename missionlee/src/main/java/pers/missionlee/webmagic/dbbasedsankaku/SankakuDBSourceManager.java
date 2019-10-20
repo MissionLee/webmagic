@@ -123,7 +123,9 @@ public class SankakuDBSourceManager {
         }
         return simpleArtist;
     }
-
+    public List<Map<String,Object>> getArtistsOfArtworkSanCode(String sanCode){
+        return sqlSession.selectList("san.getArtistListBySanCode",sanCode);
+    }
     public Map<String, Object> getArtistInfo(String artistName) {
         return artistFullInfo.get(artistName);
     }
