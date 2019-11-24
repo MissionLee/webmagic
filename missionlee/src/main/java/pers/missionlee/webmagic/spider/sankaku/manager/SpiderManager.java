@@ -4,7 +4,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pers.missionlee.webmagic.dbbasedsankaku.SankakuDBSourceManager;
 import pers.missionlee.webmagic.spider.sankaku.SpiderUtils;
 import pers.missionlee.webmagic.utils.ChromeBookmarksReader;
 
@@ -72,6 +71,7 @@ public class SpiderManager extends SpiderUtils {
             }
         }
         logger.info("初始化目标列表["+nameList.size()+"]：" + nameList);
+
         for (String name :
                 nameList) {
             startSpider(sourceManager, sourceType, taskType, name, official,true);
@@ -128,8 +128,8 @@ public class SpiderManager extends SpiderUtils {
 //        Thread.sleep(1000*60*60*7);
 //        spiderManager.startSpider(sourceM
 //        anager, SourceManager.SourceType.SANKAKU, SpiderTask.TaskType.UPDATE,"kamadeva",false,true);
-//        spiderManager.runWithChromeDir(sourceManager, SourceManager.SourceType.SANKAKU, SpiderTask.TaskType.NEW, "san6", false);
-         spiderManager.update(sourceManager, SourceManager.SourceType.SANKAKU,true,0);
+        spiderManager.runWithChromeDir(sourceManager, SourceManager.SourceType.SANKAKU, SpiderTask.TaskType.NEW, "san7", false);
+         spiderManager.update(sourceManager, SourceManager.SourceType.SANKAKU,false,1);
 //         spiderManager.runWithNameList("D:\\sankaku\\name.md",sourceManager);
     }
 }

@@ -67,7 +67,7 @@ public class TimeLimitedHttpDownloader implements Thread.UncaughtExceptionHandle
                     totallen += len;
                     i++;
                     //再从bytes中写入文件
-                    if (i % 32 == 0) {
+                    if (i % 128 == 0) {
                         if (size > mb) {
                             logger.info("下载进程:[" + df.format(100 * totallen / size) + "%]-[" + (size / mb) + "M] | " + df.format(totallen * 1000 / 1024 / (System.currentTimeMillis() - start)) + "K/S " + filename);
 
