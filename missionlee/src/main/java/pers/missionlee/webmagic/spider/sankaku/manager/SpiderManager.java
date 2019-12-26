@@ -125,11 +125,18 @@ public class SpiderManager extends SpiderUtils {
 
         SourceManager sourceManager = new SourceManager("E:\\ROOT");
         SpiderManager spiderManager = new SpiderManager();
+
 //        Thread.sleep(1000*60*60*7);
 //        spiderManager.startSpider(sourceM
 //        anager, SourceManager.SourceType.SANKAKU, SpiderTask.TaskType.UPDATE,"kamadeva",false,true);
+
+//         spiderManager.update(sourceManager, SourceManager.SourceType.SANKAKU,false,1);
         spiderManager.runWithChromeDir(sourceManager, SourceManager.SourceType.SANKAKU, SpiderTask.TaskType.NEW, "san7", false);
-         spiderManager.update(sourceManager, SourceManager.SourceType.SANKAKU,false,1);
 //         spiderManager.runWithNameList("D:\\sankaku\\name.md",sourceManager);
+
+        // nyamota
+        // ion (cation)
+        // cait
+        // limgae
     }
 }

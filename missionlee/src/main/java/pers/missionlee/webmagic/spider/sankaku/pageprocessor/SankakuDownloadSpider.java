@@ -86,7 +86,7 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
          * @update 20190327 实际使用中发现大量的本页面更新一两个就够了，找下一页纯属浪费，
          *          并且在外层processor里面有udpate数量不过尝试遍历作者的方法 所以added改为 > 15
          * */
-        if (thisPageAdded > 10 && URL.contains("date") && spiderTask.getTaskType() == SpiderTask.TaskType.UPDATE) {
+        if (thisPageAdded > 1 && URL.contains("date") && spiderTask.getTaskType() == SpiderTask.TaskType.UPDATE) {
             String thisPage = URL.substring(URL.length() - 1);
             int thisPageNum = Integer.valueOf(thisPage);
             if (thisPageNum < 50) {
@@ -109,7 +109,9 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
             for (String url : urlList
             ) {
 
-                if (  !spiderTask.artworkAddress.contains(BASE_URL + url) && !spiderTask.targetUrl.contains(url)&& !spiderTask.getSourceManager().containsSanCodeWithinUrl(url) ) {
+                if (  !spiderTask.artworkAddress.contains(BASE_URL + url)
+                        && !spiderTask.targetUrl.contains(url)
+                        && !spiderTask.getSourceManager().containsSanCodeWithinUrl(url) ) {
                     logger.info("⭐ add " + BASE_URL + url);
                     page.addTargetRequest(BASE_URL + url);
                     spiderTask.targetUrl.add(url);
