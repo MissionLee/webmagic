@@ -119,7 +119,7 @@ public class ChromeBookmarksReader {
         }
             return names;
     }
-    public static String defaultBookmarkpath = "C:\\Documents and Settings\\Administrator\\Local Settings\\Application Data\\Google\\Chrome\\User Data\\Default\\Bookmarks";
+    public static String defaultBookmarkpath = "C:\\Documents and Settings\\MissionLee\\Local Settings\\Application Data\\Google\\Chrome\\User Data\\Default\\Bookmarks";
     public static void extractNonDownloadedSankakuNameList(String rootPath, String bookmarkDirName, String aimFilePath) throws IOException {
         SourceManager sourceManager = new SourceManager(rootPath);
         Set<String> downloaded = sourceManager.getSankakuArtistListByJson().keySet();

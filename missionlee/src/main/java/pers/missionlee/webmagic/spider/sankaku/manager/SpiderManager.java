@@ -119,10 +119,10 @@ public class SpiderManager extends SpiderUtils {
 
     public static void main(String[] args) throws IOException {
 
-        SourceManager sourceManager = new SourceManager("E:\\ROOT");
+        SourceManager sourceManager = new SourceManager("H:\\ROOT");
         SpiderManager spiderManager = new SpiderManager();
 //        spiderManager.startSpider(sourceManager, SourceManager.SourceType.SANKAKU, SpiderTask.TaskType.UPDATE,"kamadeva",false,true);
-//        spiderManager.runWithChromeDir(sourceManager, SourceManager.SourceType.SANKAKU, SpiderTask.TaskType.NEW, "san6", false);
+//        spiderManager.runWithChromeDir(sourceManager, SourceManager.SourceType.SANKAKU, SpiderTask.TaskType.NEW, "san7", false);
          spiderManager.update(sourceManager, SourceManager.SourceType.SANKAKU,true,1);
 //         spiderManager.runWithNameList("D:\\sankaku\\name.md",sourceManager);
     }
