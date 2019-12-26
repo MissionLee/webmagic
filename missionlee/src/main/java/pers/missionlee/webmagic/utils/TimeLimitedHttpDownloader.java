@@ -24,7 +24,7 @@ public class TimeLimitedHttpDownloader implements Thread.UncaughtExceptionHandle
     private static int downloadSpeedLimit = 5; // Unit: k/s
     private static DecimalFormat df = new DecimalFormat(".00");
     private static int mb = 1024 * 1024;
-    private static long TEN_MINUTES = 10 * 60L;
+    private static long MAX_DOWNLOAD_LIMIT_SECONDS = 100 * 60L;
     private static Map<Thread, Map<String, Object>> runInfo = new HashMap<Thread, Map<String, Object>>();
 
     private Map<String,Integer> dbArtistMap;
@@ -101,12 +101,8 @@ public class TimeLimitedHttpDownloader implements Thread.UncaughtExceptionHandle
 
     public static boolean downloadWithAutoRetry(String urlStr, String filename, String referer, SpiderTask spiderTask) throws IOException {
         boolean downloadStatus = false;
-//        String tmpPath;
-//        if(spiderTask!=null)
         String tmpPath = spiderTask.getTmpPath();
-//        else tmpPath = "C:\\Users\\MissionLee\\Desktop\\img";
         int retry = spiderTask.getDownloadRetryTimes();
-//        int retry = 2;
         if (true||!spiderTask.existsInTmpPath(filename)) {
             while (!downloadStatus && retry > 0) {
                 logger.info("尝试下载[" + (4 - retry) + "]: " + filename);
@@ -130,8 +126,8 @@ public class TimeLimitedHttpDownloader implements Thread.UncaughtExceptionHandle
                         CallableInputStreamDownloader downloader = new CallableInputStreamDownloader(in, out, fileSize, filename);
                         Future<Object> future = executorService.submit(downloader);
                         long timeout = fileSize / (downloadSpeedLimit * 1024);
-                        if (timeout > TEN_MINUTES)
-                            timeout = TEN_MINUTES;
+                        if (timeout > MAX_DOWNLOAD_LIMIT_SECONDS)
+                            timeout = MAX_DOWNLOAD_LIMIT_SECONDS;
                         boolean downloaded = (Boolean) future.get(timeout, TimeUnit.SECONDS);
                         if (downloaded)
                             downloadStatus = true;

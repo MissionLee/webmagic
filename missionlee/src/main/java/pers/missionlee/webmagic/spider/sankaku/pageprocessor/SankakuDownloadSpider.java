@@ -109,7 +109,7 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
             for (String url : urlList
             ) {
 
-                if (!spiderTask.artworkAddress.contains(BASE_URL + url) && !spiderTask.targetUrl.contains(url)) {
+                if (  !spiderTask.artworkAddress.contains(BASE_URL + url) && !spiderTask.targetUrl.contains(url)&& !spiderTask.getSourceManager().containsSanCodeWithinUrl(url) ) {
                     logger.info("⭐ add " + BASE_URL + url);
                     page.addTargetRequest(BASE_URL + url);
                     spiderTask.targetUrl.add(url);
@@ -135,11 +135,12 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
         ArtworkInfo artworkInfo = extractArtworkInfoFromDetailPage(page, target);
         if (download(target.targetUrl, target.targetName, page)) {
             try {
-                spiderTask.appendArtworkInfo(artworkInfo);
+                spiderTask.appendArtworkInfo(artworkInfo,spiderTask.getArtistName());
             } catch (IOException e) {
                 e.printStackTrace();
             }
             spiderTask.downloaded++;
+
         } else {
             spiderTask.failed++;
         }

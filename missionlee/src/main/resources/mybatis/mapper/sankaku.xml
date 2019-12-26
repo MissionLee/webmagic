@@ -2,6 +2,19 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="san">
     <!-- ======================= 作品部分 ==================== -->
+	<!-- 通过sanCode 查询所有这个sanCode的正式作者列表 -->
+	<select id="getArtistListBySanCode" parameterType="String" resultType="map">
+		SELECT
+			SA.SAN_CODE,
+			ST. NAME,
+			ST.IS_TARGET
+		FROM
+			SAN_ARTWORK SA
+		LEFT JOIN ARTWORK_ARTIST_REL AAR ON SA.SAN_CODE = AAR.SAN_CODE
+		LEFT JOIN SAN_ARTIST ST ON AAR.ARTIST_ID = ST.ARTIST_ID
+		WHERE
+			SA.SAN_CODE = #{sanCode}
+	</select>
     <insert id="addArtwork" parameterType="map">
 		INSERT INTO san_artwork(
 			`FILE_NAME`,
@@ -46,7 +59,21 @@
 			`UPDATE_TIME` AS updateTime
 			FROM san_artwork WHERE SAN_CODE = #{SANCODE}
 	</select>
+	<!-- 给定文件名称，是否存在，有可能是存在被删除，也可能在不同作者名下 -->
+	<select id="fileExists" resultType="Integer" parameterType="String">
+		select count(*) from san_artwork where FILE_NAME = #{fileName}
+	</select>
     <!-- ===================  作者部分 =======================  -->
+	<!-- 给定作者，查询作品数量 -->
+	<select id="getArtistWorkNum" parameterType="String" resultType="Integer">
+		select count(*) from artwork_artist_rel AAR join san_artist SA  on AAR.artist_id = SA.artist_id where sa.name = #{name}
+	</select>
+	<update id="refreshUpdateTime" parameterType="map">
+		UPDATE SAN_ARTIST SET
+		`update_time` = CURRENT_TIMESTAMP ,
+		`aim_update_time` = FROM_UNIXTIME(#{time})
+		where `name` = #{theName}
+	</update>
     <insert id="insertArtist" parameterType="map" useGeneratedKeys="true" keyProperty="artist_id">
 		INSERT INTO san_artist(
 			`NAME`,

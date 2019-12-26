@@ -214,6 +214,7 @@ public class SpiderUtils {
      * 其中 整体下载的情况下（非update） 可以通过爬虫自动获取 目标数量
      */
     protected String[] urlGenertor(String artist, boolean offical, int artworkNum) {
+        System.out.println("初始URL生成器，目标数量 "+artworkNum);
         String[] urls;
         String BaseTagAsc = SITE_ORDER_PREFIX.TAG_COUNT_ASC.getPrefix(artist, offical);
         String BaseTagDec = SITE_ORDER_PREFIX.TAG_COUNT_DEC.getPrefix(artist, offical);
@@ -228,7 +229,7 @@ public class SpiderUtils {
         String BaseMpixelsDec = SITE_ORDER_PREFIX.MPIXELS_DEC.getPrefix(artist, offical);
         String BaseProtrait = SITE_ORDER_PREFIX.PORTRAIT.getPrefix(artist, offical);
         String BaseView = SITE_ORDER_PREFIX.VIEW_COUNT.getPrefix(artist, offical);
-        if (artworkNum > 2500) {
+        if (false) {
             urls = new String[650];
             for (int i = 0; i < 50; i++) {
                 urls[i] = BaseTagAsc + (i + 1);
@@ -246,13 +247,13 @@ public class SpiderUtils {
                 urls[i + 600] = BaseView + (i + 1);
             }
         } else if (artworkNum > 2000) { // 2000+ 情况遍历 tag升降序 + date最新 + popular最高 + quality 最高
-            urls = new String[250];
+            urls = new String[200];
             for (int i = 0; i < 50; i++) {
                 urls[i] = BaseTagAsc + (i + 1);
                 urls[i + 50] = BaseTagDec + (i + 1);
                 urls[i + 100] = BaseDate + (i + 1);
                 urls[i + 150] = BaseQurlity + (i + 1);
-                urls[i + 200] = BaseDate + i + 1;
+//                urls[i + 200] = BaseDate + (i + 1);
 
             }
         } else {
@@ -275,11 +276,13 @@ public class SpiderUtils {
                 }
             }
         }
-
+        for (int i = 0; i < urls.length; i++) {
+            System.out.println(urls[i]);
+        }
         return urls;
     }
     private static Map<String,String> SPECIAL_NAME = new HashMap<String, String>(){{put("rib:y(uhki)","rib_y(uhki)");}};
-    public String fileNameGenerator(String artistName){
+    public static String fileNameGenerator(String artistName){
         artistName = artistName.trim();
         if(SPECIAL_NAME.containsKey(artistName))
             return SPECIAL_NAME.get(artistName);
