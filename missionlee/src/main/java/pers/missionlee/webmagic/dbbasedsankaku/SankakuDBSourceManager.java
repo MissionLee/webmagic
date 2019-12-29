@@ -14,6 +14,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
@@ -348,10 +351,11 @@ public class SankakuDBSourceManager {
         sqlSession.commit();
         return updated ==1;
     }
-    public static void main(String[] args) {
-        SankakuDBSourceManager db = new SankakuDBSourceManager(null);
-//        boolean x =db.exists("0b2fd737759f76ed15e00c4fd7ba3865.jpg");
-        boolean y = db.updateArtist("suzuki (artist)",System.currentTimeMillis()+1999999);
-        System.out.println(y);
+    public static void main(String[] args) throws ClassNotFoundException, SQLException {
+//        SankakuDBSourceManager db = new SankakuDBSourceManager(null);
+////        boolean x =db.exists("0b2fd737759f76ed15e00c4fd7ba3865.jpg");
+//        boolean y = db.updateArtist("suzuki (artist)",System.currentTimeMillis()+1999999);
+//        System.out.println(y);
+
     }
 }

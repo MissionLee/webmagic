@@ -22,7 +22,7 @@ import java.util.*;
  */
 public class SpiderManager extends SpiderUtils {
     static Logger logger = LoggerFactory.getLogger(SpiderManager.class);
-
+//    static SankakuDBSourceManager dbSourceManager = new SankakuDBSourceManager();
 //    public enum UpdateType {
 //        SANKAKU,
 //        SANKAKUOFFICIAL,
@@ -121,13 +121,15 @@ public class SpiderManager extends SpiderUtils {
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
 
         SourceManager sourceManager = new SourceManager("E:\\ROOT");
         SpiderManager spiderManager = new SpiderManager();
-//        spiderManager.startSpider(sourceManager, SourceManager.SourceType.SANKAKU, SpiderTask.TaskType.UPDATE,"kamadeva",false,true);
+//        Thread.sleep(1000*60*60*7);
+//        spiderManager.startSpider(sourceM
+//        anager, SourceManager.SourceType.SANKAKU, SpiderTask.TaskType.UPDATE,"kamadeva",false,true);
 //        spiderManager.runWithChromeDir(sourceManager, SourceManager.SourceType.SANKAKU, SpiderTask.TaskType.NEW, "san6", false);
-         spiderManager.update(sourceManager, SourceManager.SourceType.SANKAKU,true,1);
+         spiderManager.update(sourceManager, SourceManager.SourceType.SANKAKU,true,0);
 //         spiderManager.runWithNameList("D:\\sankaku\\name.md",sourceManager);
     }
 }

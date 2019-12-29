@@ -629,16 +629,17 @@ public class SourceManager {
     /**
      * 更新控制：查询知否需要更新 1 表示已经更新
      */
-    public boolean flag = false;
+
     int i = 0;
 
     public boolean isUpdated(SourceType sourceType, String artistName, int minPriority) throws IOException {
-        if (artistName.equals("matias habert")) flag = true;
-//   hydrafxx   ke-ta  niodreth
+//        if (artistName.equals("matias habert")) flag = true;
+//   hydrafxx   ke-ta  niodreth  generalbutch
         int priority = getPriorityFromPathName(sourceType, artistName);
         logger.warn("作者：" + artistName + " 优先级：" + priority);
         if (priority > minPriority)
             return true;
+
 //        if(true) return false;
         System.out.println(i++);
         if (sourceType == SourceType.SANKAKU) {
@@ -647,11 +648,8 @@ public class SourceManager {
             }
             if (sankakuUpdateInfo.containsKey(artistName)) {
 //                if(artistName.contains("derpixon")) flag = true;
-
-
-                if (flag) return false;
-
-                return System.currentTimeMillis() < sankakuUpdateInfo.get(artistName);
+                return false;
+//                return System.currentTimeMillis() < sankakuUpdateInfo.get(artistName);
             } else return false;
         } else {
             throw new RuntimeException("目前仅支持更新 SANKAKU");
@@ -752,6 +750,7 @@ public class SourceManager {
             }
         } else {
             throw new RuntimeException("目前仅支持更新 SANKAKU");
+            //继承了男爵爵位与领主地位的帕图里
         }
     }
 
