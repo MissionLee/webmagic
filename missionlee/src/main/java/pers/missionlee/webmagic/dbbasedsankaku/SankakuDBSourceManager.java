@@ -10,12 +10,9 @@ import org.slf4j.LoggerFactory;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 import pers.missionlee.webmagic.spider.sankaku.manager.SourceManager;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -53,7 +50,7 @@ public class SankakuDBSourceManager {
         try {
             InputStream inputStream = Resources.getResourceAsStream(resource);
             SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
-            sqlSession = sqlSessionFactory.openSession();
+            sqlSession = sqlSessionFactory.openSession(true);
             List<Map<String, Object>> tmpartists = sqlSession.selectList("san.getAllTargetArtist");
             artistFullInfo = new HashMap<>();
             long nowTimeStamp = System.currentTimeMillis()/1000;
@@ -62,23 +59,21 @@ public class SankakuDBSourceManager {
 //                System.out.println(m.get("name"));
                 artistFullInfo.put(m.get("name").toString(), m);
                 int picLevel = 10;
-                if (!StringUtils.isEmpty(m.get("picLevel").toString()))
+                if (m.containsKey("picLevel")&&!StringUtils.isEmpty(m.get("picLevel").toString()))
                     picLevel = Integer.parseInt(m.get("picLevel").toString());
                 int vidLevel = 10;
-                if (!StringUtils.isEmpty(m.get("vidLevel").toString()))
+                if (m.containsKey("vidLevel")&&!StringUtils.isEmpty(m.get("vidLevel").toString()))
                     vidLevel = Integer.parseInt(m.get("vidLevel").toString());
                 String name = m.get("name").toString();
                 Integer minLevel = Math.min(picLevel, vidLevel);
                 long updateTime = null == m.get("aimUpdateTime") ? 0 : (long) m.get("aimUpdateTime");
                 artistLevel.put(name, minLevel);
                 if (updateTime < nowTimeStamp) {
-                    System.out.println("updateTIme: "+updateTime);
-                    System.out.println("timeNow: "+nowTimeStamp);
                     artistNeedUpdate.put(name, minLevel);
                 }
             }
-            System.out.println("当前总收录作者：" + artistFullInfo.size());
-            System.out.println("需要更新的作者：" + artistNeedUpdate.size());
+            System.out.println("数据库-当前总收录作者：" + artistFullInfo.size());
+            System.out.println("数据库-需要更新的作者：" + artistNeedUpdate.size());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -162,7 +157,7 @@ public class SankakuDBSourceManager {
 //                int status = 1;
             // 关闭了 配置文件 remove 机制，就算找不到文件，现在不改动信息文件
             int status = 2; // 1 正常 2 丢失 3 删除
-            if (sourceManager.exists(SourceManager.SourceType.SANKAKU, artist, fileName)) {
+            if (sourceManager.existInDB(SourceManager.SourceType.SANKAKU, artist, fileName)) {
                 System.out.println("文件存在 " + artist + "  |  " + fileName);
                 status = 1;
             }
@@ -351,11 +346,39 @@ public class SankakuDBSourceManager {
         sqlSession.commit();
         return updated ==1;
     }
+    synchronized  public  void updateArtistPathAndLevel(String name,int pic_level,String pic_path,int vid_level,String vid_path){
+        Map<String,Object> params = new HashMap<>();
+        params.put("name",name);
+        params.put("pic_level",pic_level);
+        params.put("vid_level",vid_level);
+        params.put("pic_path",pic_path);
+        params.put("vid_path",vid_path);
+        System.out.println(params);
+        Object x = sqlSession.update("san.updateArtistPathLevel",params);
+        sqlSession.commit();
+        System.out.println("----");
+    }
+    public static Map<String,Long> updateInfo;
+    public Map<String,Long> getUpdateInfo(){
+        if(updateInfo == null){
+            updateInfo = new HashMap<>();
+            List<Map<String,Object>> infos = sqlSession.selectList("san.getUpdateInfo");
+            for (Map<String, Object> m :
+                    infos) {
+                updateInfo.put(m.get("name").toString(),(long)m.get("updateTime"));
+            }
+        }
+        return updateInfo;
+    }
+    public List<String> getArtworkSanCodes(String name){
+        return sqlSession.selectList("san.getArtworkSanCode",name);
+    }
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
-//        SankakuDBSourceManager db = new SankakuDBSourceManager(null);
+        SankakuDBSourceManager db = new SankakuDBSourceManager(null);
 ////        boolean x =db.exists("0b2fd737759f76ed15e00c4fd7ba3865.jpg");
 //        boolean y = db.updateArtist("suzuki (artist)",System.currentTimeMillis()+1999999);
 //        System.out.println(y);
-
+//        System.out.println(db.getUpdateInfo());
+        System.out.println(db.getArtworkSanCodes("futs"));
     }
 }

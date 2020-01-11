@@ -1,6 +1,5 @@
 package pers.missionlee.webmagic.spider.sankaku.manager;
 
-import com.alibaba.fastjson.JSON;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,12 +22,10 @@ import java.util.regex.Pattern;
  * @description:
  * @author: Mission Lee
  * 本地文件管理器
- * 1. 自动初始化层级结构目录
- * 2.
  * @create: 2019-04-12 08:50
  * <p>
- * // TODO: 2019-04-14
- * // TODO: 2019-07-25  引入 SankakuDBSourceManager 让SourceManger 能够兼容新业务： 重复的作品在不同作者明下，现在会被删除了
+ * 2020-01-11 ： 支持多个路径的Root ， 我的一个移动硬盘只有2t，放不下了
+ * <p>
  */
 public class SourceManager {
     public SankakuDBSourceManager sankakuDBSourceManager;
@@ -53,7 +50,9 @@ public class SourceManager {
     private static final String DIR_PIC = "pic";
     private static final String DIR_VID = "vid";
     private static final String DIR_INFO = "info";
+    @Deprecated
     private static final String FILE_SUFFIX_ARTWORK = ".jsonline";
+    @Deprecated
     private static final String FILE_SUFFIX_ARTIST = ".json";
     private static final String[] ENPTY_STRING_ARRAY = new String[0];
     // 更新过期时间 1天
@@ -61,6 +60,7 @@ public class SourceManager {
 
 
     private String rootPath;
+    private String[] additionalRootPath;
     // sankaku
     private String sankakuRootPath;
     private String sankakuDefaultPicPath;
@@ -121,9 +121,9 @@ public class SourceManager {
         }
     };
 
+    @Deprecated
     public SourceManager(String rootPath) {
-        sankakuDBSourceManager = new SankakuDBSourceManager(this);
-
+         sankakuDBSourceManager = new SankakuDBSourceManager(this);
         if (!rootPath.toLowerCase().contains("root")) {
             throw new RuntimeException("约定根目录名称为某个目录下的 root/ROOT 目录，请检查");
         }
@@ -131,18 +131,46 @@ public class SourceManager {
         this.rootPath = formatPath(rootPath);
         this.tmpPath = buildPath(rootPath, DIR_TMP);
         initSankakuPathInfo();
-        // initIdolPathInfo();
-        // getSankakuArtistListByJson();
+
     }
 
-    public boolean containsSanCodeWithinUrl(String url) {
-        System.out.println(url);
+    public SourceManager(String rootPath, String... additionalRootPath) {
+        this(rootPath);
+        initAdditionPathInfo(additionalRootPath);
+
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("SANKAKU 根路径：" + sankakuRootPath + "\n");
+        buffer.append("SANKAKU 信息路径：" + sankakuDefaultInfoPath + "\n");
+        buffer.append("SANKAKU 图片路径：" + sankakuDefaultPicPath + "\n");
+        buffer.append("SANKAKU 视频路径：" + sankakuDefaultVidPath + "\n");
+        logger.debug("\n" + buffer.toString());
+        logger.info(specialSelectedPicArtistPathMap.toString());
+        logger.info(specialSelectedVidArtistPathMap.toString());
+        logger.info("初始化完成");
+    }
+
+    public boolean includedUnderArtist(String url, String artistName) {
         String sanCode = url.substring(url.lastIndexOf("/") + 1);
         List<Map<String, Object>> artists = sankakuDBSourceManager.getArtistsOfArtworkSanCode(sanCode);
         if (artists != null && artists.size() > 0) {
-            System.out.println(artists);
+            for (int j = 0; j < artists.size(); j++) {
+                Map<String, Object> art = artists.get(i);
+                if (art.get("name").toString().equals(artistName)) return true;
+            }
+            return false;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean included(String url) {
+        String sanCode = url.substring(url.lastIndexOf("/") + 1);
+        List<Map<String, Object>> artists = sankakuDBSourceManager.getArtistsOfArtworkSanCode(sanCode);
+        if (artists != null && artists.size() > 0) {
+            logger.debug("作品已收录：" + sanCode);
             return true;
         } else {
+            logger.debug("作品未收录：" + sanCode);
             return false;
         }
     }
@@ -185,18 +213,39 @@ public class SourceManager {
         }
         this.specialSelectedPicArtistPathMap = specialPicList;
         this.specialSelectedVidArtistPathMap = specialVidList;
-        logger.info(specialPicList.toString());
-        logger.info(specialVidList.toString());
-        StringBuffer buffer = new StringBuffer();
-        buffer.append("SANKAKU 根路径：" + sankakuRootPath + "\n");
-        buffer.append("SANKAKU 信息路径：" + sankakuDefaultInfoPath + "\n");
-        buffer.append("SANKAKU 图片路径：" + sankakuDefaultPicPath + "\n");
-        buffer.append("SANKAKU 视频路径：" + sankakuDefaultVidPath + "\n");
-        // logger.debug("\n" + buffer.toString());
-        logger.info("初始化完成");
-        System.out.println("xxxxxxxxxxxxx " + specialSelectedPicArtistPathMap.size());
+
     }
 
+    private void initAdditionPathInfo(String[] additionalRootPath) {
+        this.additionalRootPath = additionalRootPath;
+        for (int i = 0; i < additionalRootPath.length; i++) {
+            String adpath = buildPath(additionalRootPath[i], DIR_SANKAKU);
+            System.out.println(adpath);
+            File[] files = new File(adpath).listFiles(selectedFileFilter);
+            System.out.println(files);
+            for (int j = 0; j < files.length; j++) {
+                logger.info("初始化：" + files[j].getName());
+                String[] artist = files[j].list();
+                if (files[j].getName().startsWith("pic-")
+                        || files[j].getName().startsWith("图-")
+                        || files[j].getName().startsWith("T-")
+                        || files[j].getName().startsWith("pic")
+                )
+                    this.specialSelectedPicArtistPathMap.put(buildPath(files[j].getPath()), Arrays.asList(artist));
+
+                else if (files[j].getName().startsWith("vid-")
+                        || files[j].getName().startsWith("视-")
+                        || files[j].getName().startsWith("V-")
+                        || files[j].getName().startsWith("vid")
+                )
+                    specialSelectedVidArtistPathMap.put(buildPath(files[j].getPath()), Arrays.asList(artist));
+
+            }
+        }
+
+    }
+
+    @Deprecated
     private void initIdolPathInfo() {
         this.idolRootPath = buildPath(rootPath + DIR_IDOL);
         this.idolInfoPath = buildPath(idolRootPath, DIR_INFO);
@@ -210,21 +259,7 @@ public class SourceManager {
      */
     @Deprecated
     public Map<String, Integer> getSankakuArtistsListByDir() {
-
-
-//        if (sankakuArtists != null)
-//            return sankakuArtists;
-//
         Map<String, Integer> map = new HashMap<String, Integer>();
-//        if (sankakuDefaultPics == null || sankakuDefaultVids == null) {
-//            initSankakuPathInfo();
-//        }
-//        File[] picArtists = this.sankakuDefaultPics.listFiles();
-//        countArtists(map, picArtists);
-//        File[] vidArtists = this.sankakuDefaultVids.listFiles();
-//        countArtists(map, vidArtists);
-
-
         Set<String> picKey = specialSelectedPicArtistPathMap.keySet();
         for (String key : picKey
         ) {
@@ -247,44 +282,14 @@ public class SourceManager {
 
     @Deprecated
     public Map<String, Integer> getSankakuArtistListByJson() {
+        if (true)
+            throw new RuntimeException("Deprecated");
 //        // TODO: 2019-07-25 数据没有迁移完成，可以考虑两者合一？
         if (true)
             return sankakuDBSourceManager.getArtists();
         Map themap = getArtistListByJson(SourceType.SANKAKU);
-        //logger.debug("SANKAKU作者列表[数量+"+themap.size()+"]：" + themap.toString());
         return themap;
     }
-
-    /**
-     * 统计作者和作品数量，如果名称相同，那么做加法
-     */
-//    private void countArtists(Map<String, Integer> map, File[] artists) {
-//        for (int i = 0; i < artists.length; i++) {
-//            if (map.containsKey(artists[i].getName())) {
-//                map.put(artists[i].getName(),
-//                        map.get(artists[i].getName()) + artists[i].list().length);
-//            } else {
-//                map.put(artists[i].getName(), artists[i].list().length);
-//            }
-//        }
-//    }
-//
-//    public static String getDirSankaku() {
-//        return DIR_SANKAKU;
-//    }
-//
-//
-//    public Map<String, Integer> getIdolArtists() {
-//        return idolArtists;
-//    }
-//
-//    public Map<String, Integer> getSankakuOfficaialArtists() {
-//        return sankakuOfficaialArtists;
-//    }
-//
-//    public Map<String, Integer> getIdolOfficialArtists() {
-//        return idolOfficialArtists;
-//    }
 
     private class PathList {
         String PicPath;
@@ -330,8 +335,9 @@ public class SourceManager {
      * 理论上传进来的路径是正确的，此处多一重保证
      */
     private static String cleanArtistFileName(String artistFileName) {
-        artistFileName = artistFileName.trim();
-        return artistFileName.endsWith(".") ? artistFileName.substring(0, artistFileName.length() - 1) : artistFileName;
+        return artistFileName;
+//        artistFileName = artistFileName.trim();
+//        return artistFileName.endsWith(".") ? artistFileName.substring(0, artistFileName.length() - 1) : artistFileName;
     }
 
     @Deprecated
@@ -371,7 +377,10 @@ public class SourceManager {
 
     /**
      * 作品信息：读取本地文件，返回排重，排错后的作品信息列表
+     *
+     * @Deprecated 数据全都放在了数据库里面
      */
+    @Deprecated
     public <T extends List<ArtworkInfo>> T getArtworkOfArtist(SourceType sourceType, String artistFileName) throws IOException {
 
         artistFileName = cleanArtistFileName(artistFileName);
@@ -381,7 +390,6 @@ public class SourceManager {
         if (artworkInfoFile.exists()) {
             String artworkInfos = FileUtils.readFileToString(artworkInfoFile, "utf8");
             String[] artworkInfoStringArray = artworkInfos.split("\n");
-//            logger.info("JSONLINE文件解析作品数量：" + artworkInfoStringArray.length);
             ArtworkInfo.convertArtworkStringToList(artworkInfoList, artworkInfoStringArray);
 //            logger.info("以名称排重后剩余数量：" + artworkInfoList.size());
             // 处理 json记录与实际文件不符合的内容
@@ -427,6 +435,10 @@ public class SourceManager {
         return artworkInfoList;
     }
 
+    /**
+     * @Deprecated 因为单个作品在多个作者名下，这个方法没有实际意义，从数据库解析更准确
+     */
+    @Deprecated
     public Map<String, Integer> getRealAartworkNum(SourceType sourceType, String artist) {
         artist = cleanArtistFileName(artist);
         Map<String, Integer> numMap = new HashMap<>();
@@ -447,6 +459,7 @@ public class SourceManager {
     /**
      * 作品信息：清空原本的作品信息文件，写入新的内容
      */
+    @Deprecated
     private void rebuildArtworkInfoFile(SourceType sourceType, String artistFileName, List<ArtworkInfo> artworkInfos) throws IOException {
         artistFileName = cleanArtistFileName(artistFileName);
         PathList pathList = getPathList(sourceType);
@@ -454,27 +467,30 @@ public class SourceManager {
         FileUtils.writeStringToFile(artworkInfoFile, "", "utf8", false);
         Iterator iterator = artworkInfos.iterator();
         while (iterator.hasNext()) {
-            appendArtworkInfoToFile(artworkInfoFile, (ArtworkInfo) iterator.next());
+            recordArtworkInfo(artworkInfoFile, (ArtworkInfo) iterator.next());
         }
         logger.debug("重写[" + artistFileName + "]作品信息：" + artworkInfos);
     }
 
     /**
      * 作品信息：向作品信息文件追加一条新的作品信息
+     * <p>
+     * ！important  原名appendArtworkInfoToFile，现在不再旺文本文件写入数据，改名
      */
-    public synchronized void appendArtworkInfoToFile(SourceType sourceType, String artistFileName, ArtworkInfo artworkInfo, String artistName) throws IOException {
-        artistFileName = cleanArtistFileName(artistFileName);
-        PathList pathList = getPathList(sourceType);
-        File artworkInfoFile = new File(pathList.InfoPath + artistFileName + FILE_SUFFIX_ARTWORK);
-        FileUtils.writeStringToFile(artworkInfoFile, artworkInfo.toString() + "\n", "utf8", true);
+    public synchronized void recordArtworkInfo(SourceType sourceType, String artistFileName, ArtworkInfo artworkInfo, String artistName) throws IOException {
         sankakuDBSourceManager.addArtworkInfo(artistName, artworkInfo);
         logger.debug("追加作品信息[" + artistFileName + "]:" + artworkInfo);
+        // artistFileName = cleanArtistFileName(artistFileName);
+        // PathList pathList = getPathList(sourceType);
+        // File artworkInfoFile = new File(pathList.InfoPath + artistFileName + FILE_SUFFIX_ARTWORK);
+        // FileUtils.writeStringToFile(artworkInfoFile, artworkInfo.toString() + "\n", "utf8", true);
     }
 
     /**
      * 作品信息：向作品信息文件追加一条新的作品信息
      */
-    private synchronized void appendArtworkInfoToFile(File artworkInfoFile, ArtworkInfo artworkInfo) throws IOException {
+    @Deprecated
+    private synchronized void recordArtworkInfo(File artworkInfoFile, ArtworkInfo artworkInfo) throws IOException {
         FileUtils.writeStringToFile(artworkInfoFile, artworkInfo.toString() + "\n", "utf8", true);
     }
 
@@ -482,6 +498,7 @@ public class SourceManager {
      * 作品信息：获取作者的作品数量
      */
     public int getArtworkNum(SourceType sourceType, String artistFileName) {
+        System.out.println("从本地目录获取已收录作品数量");
         artistFileName = cleanArtistFileName(artistFileName);
 
         int num = 0;
@@ -520,15 +537,18 @@ public class SourceManager {
      * ！important
      */
     public boolean guaranteeArtistInfoFileExists(SourceType sourceType, String artistFileName) throws IOException {
-        artistFileName = cleanArtistFileName(artistFileName);
-        PathList pathList = getPathList(sourceType);
-        File artistInfoFile = new File(pathList.InfoPath + artistFileName + FILE_SUFFIX_ARTIST);
-        if (!artistInfoFile.exists()) {
-            System.out.println("create:" + artistInfoFile.getPath() + " | " + artistInfoFile.getName());
-            return artistInfoFile.createNewFile();
-        } else {
-            return true;
-        }
+        // TODO: 2019-12-29
+        System.out.println("新版本完全依赖于数据库，不再创建本地文件");
+        return true;
+        // artistFileName = cleanArtistFileName(artistFileName);
+        // PathList pathList = getPathList(sourceType);
+        // File artistInfoFile = new File(pathList.InfoPath + artistFileName + FILE_SUFFIX_ARTIST);
+        // if (!artistInfoFile.exists()) {
+        //     System.out.println("create:" + artistInfoFile.getPath() + " | " + artistInfoFile.getName());
+        //     return artistInfoFile.createNewFile();
+        // } else {
+        //     return true;
+        // }
     }
 
     /**
@@ -571,14 +591,16 @@ public class SourceManager {
         }
     }
 
+    /**
+     * @Description 从作品找作者，使用的时候 传入个 .mp4  .jpg 这样的字符串，就能用于定位作者位置
+     * @Updated 2020-01-11 支持多ROOT存储之后，对方法进行了适配
+     */
     public String getArtistPath(SourceType sourceType, String artworkName, String artistFileName) {
-        artistFileName = cleanArtistFileName(artistFileName);
-//        if(artistFileName.endsWith("."))
-//            artistFileName = artworkName.substring(0,artistFileName.length()-1);
+        artistFileName = cleanArtistFileName(artistFileName); // 作者名字最后可能带着一个  .  但是路径里面没有
         String parentPath = "";
         PathList pathList = getPathList(sourceType);
         Iterator<Map.Entry<String, List<String>>> iterator = specialSelectedVidArtistPathMap.entrySet().iterator();
-        if (isVideo(artworkName)) {
+        if (isVideo(artworkName)) { //
             while (iterator.hasNext()) {
                 Map.Entry<String, List<String>> entry = iterator.next();
                 if (entry.getValue().contains(artistFileName)) {
@@ -603,12 +625,17 @@ public class SourceManager {
      * 文件存储：判断文件是否存在
      * <p>
      * 更新：文件也可能存在于其他作者（所以这里用数据库判断一下重名情况）
+     *
+     * @Update 2020-01-11 此方法以数据库存在为准，
      */
-    public boolean exists(SourceType sourceType, String artistFileName, String artworkName) {
+    public boolean existInDB(SourceType sourceType, String artistFileName, String artworkName) {
+        return sankakuDBSourceManager.exists(artworkName);
+    }
+
+    public boolean existsInDisk(SourceType sourceType, String artistFileName, String artworkName) {
         artistFileName = cleanArtistFileName(artistFileName);
         String fullPath = getArtistPath(sourceType, artworkName, artistFileName);
-        System.out.println("存在性判断中的artworkName： " + artworkName);
-        return new File(fullPath + artworkName).exists() || sankakuDBSourceManager.exists(artworkName);
+        return new File(fullPath + artworkName).exists();
     }
 //    /**
 //     * 文件存储： 返回文件路径
@@ -628,28 +655,23 @@ public class SourceManager {
 
     /**
      * 更新控制：查询知否需要更新 1 表示已经更新
+     *
+     * @update 2020-01-11 已经完全交给数据库控制
      */
 
     int i = 0;
 
     public boolean isUpdated(SourceType sourceType, String artistName, int minPriority) throws IOException {
-//        if (artistName.equals("matias habert")) flag = true;
-//   hydrafxx   ke-ta  niodreth  generalbutch
         int priority = getPriorityFromPathName(sourceType, artistName);
         logger.warn("作者：" + artistName + " 优先级：" + priority);
         if (priority > minPriority)
             return true;
-
-//        if(true) return false;
-        System.out.println(i++);
         if (sourceType == SourceType.SANKAKU) {
             if (sankakuUpdateInfo == null) {
                 initUpdateInfo(SourceType.SANKAKU);
             }
             if (sankakuUpdateInfo.containsKey(artistName)) {
-//                if(artistName.contains("derpixon")) flag = true;
-                return false;
-//                return System.currentTimeMillis() < sankakuUpdateInfo.get(artistName);
+                return System.currentTimeMillis() < sankakuUpdateInfo.get(artistName);
             } else return false;
         } else {
             throw new RuntimeException("目前仅支持更新 SANKAKU");
@@ -658,6 +680,8 @@ public class SourceManager {
 
     /**
      * 更新控制：更新
+     *
+     * @Update 基于数据库字段控制更新，不再依赖本地文件
      */
     public void update(SourceType sourceType, String artistName, String artistFileName, int updatedNum) throws IOException {
         boolean doUpdate = true;
@@ -667,11 +691,11 @@ public class SourceManager {
             doUpdate = false;
 //            times = 36000; // 5表示废弃 用不更新
         } else if (priority == 4) {
-            times = 720;
-        } else if (priority == 3) {
             times = 360;
-        } else if (priority == 2) {
+        } else if (priority == 3) {
             times = 180;
+        } else if (priority == 2) {
+            times = 90;
         } else if (priority == 1 && updatedNum > 0) {
             times = 45;
 
@@ -683,11 +707,11 @@ public class SourceManager {
         if (doUpdate && sourceType == SourceType.SANKAKU) {
             long aimUpdateTime = System.currentTimeMillis() + times * ONE_DAY_TIME_MILLIS;
             // 设定下次更新的时间
-            sankakuUpdateInfo.put(artistName, aimUpdateTime);
-            FileUtils.writeStringToFile(new File(sankakuDefaultInfoPath + UPDATE_INFO_FILE_NAME),
-                    JSON.toJSONString(sankakuUpdateInfo), "utf8", false);
+            // sankakuUpdateInfo.put(artistName, aimUpdateTime);
+            // FileUtils.writeStringToFile(new File(sankakuDefaultInfoPath + UPDATE_INFO_FILE_NAME),
+            //         JSON.toJSONString(sankakuUpdateInfo), "utf8", false);
             sankakuDBSourceManager.updateArtist(artistName, aimUpdateTime / 1000);
-            logger.info("更新完毕：" + artistName + "\t下次更新：" + times + "天");
+            logger.info("更新完毕：" + artistName + "\t下次更新：" + times + "天 不再更新文本记录，只更新数据库记录");
         } else {
             logger.warn("未做更近记录 ##########");
         }
@@ -695,8 +719,11 @@ public class SourceManager {
 
     static Pattern priorityPattern = Pattern.compile("-([0-9])-");
 
+    /**
+     * 数据库中，更新作者优先级是手动控制的，可能不及时，所以从文本文件还是可以的
+     */
     public int getPriorityFromPathName(SourceType sourceType, String artistFileName) {
-        int priority = 5;
+        int priority = 10;
         String parentPathPic = getArtistPath(sourceType, ".jpg", artistFileName);
         String parentPathVid = getArtistPath(sourceType, ".mp4", artistFileName);
         Matcher matcherPic = priorityPattern.matcher(parentPathPic);
@@ -738,25 +765,33 @@ public class SourceManager {
 
         logger.debug("获取[" + sourceType.desc + "]更新信息存档");
         if (sourceType == SourceType.SANKAKU) {
-            File updateInfoFile = new File(sankakuDefaultInfoPath + UPDATE_INFO_FILE_NAME);
-            if (updateInfoFile.exists()) {
-                String jsonInfo = FileUtils.readFileToString(updateInfoFile, "utf8");
-                sankakuUpdateInfo = (Map<String, Long>) JSON.parse(jsonInfo);
-                if (sankakuUpdateInfo == null) {
-                    sankakuUpdateInfo = new HashMap<String, Long>();
-                }
-            } else {
-                sankakuUpdateInfo = new HashMap<String, Long>();
-            }
+            // TODO: 2019-12-27 这里是从文本文件载入更新信息
+//            File updateInfoFile = new File(sankakuDefaultInfoPath + UPDATE_INFO_FILE_NAME);
+//            if (updateInfoFile.exists()) {
+//                String jsonInfo = FileUtils.readFileToString(updateInfoFile, "utf8");
+//                sankakuUpdateInfo = (Map<String, Long>) JSON.parse(jsonInfo);
+//                if (sankakuUpdateInfo == null) {
+//                    sankakuUpdateInfo = new HashMap<String, Long>();
+//                }
+//            } else {
+//                sankakuUpdateInfo = new HashMap<String, Long>();
+//            }
+            // TODO: 2019-12-27 这里是从数据库载入更新信息
+            logger.debug("获取数据库中的更新时间记录");
+            Map<String, Long> infos = sankakuDBSourceManager.getUpdateInfo();
+            if (infos != null && infos.size() > 0)
+                sankakuUpdateInfo = infos;
+            else
+                sankakuUpdateInfo = new HashMap<>();
         } else {
             throw new RuntimeException("目前仅支持更新 SANKAKU");
-            //继承了男爵爵位与领主地位的帕图里
         }
     }
 
     /**
      * 用于把旧版本的文件组织形式变为新版本的形式，当所有文件转移成功后，这份方法就不再有用
      */
+    @Deprecated
     public static void convertOldSourceFileStructureToNewOne() throws IOException {
         if (true)
             throw new RuntimeException("必须看好新旧目录，目前仅支持 sankaku");
@@ -825,7 +860,9 @@ public class SourceManager {
         }
     }
 
+    @Deprecated
     public void cleanInfo() throws IOException {
+        // TODO: 2019-12-29 早期版本遗留问题处理，使用过后已经没有价值了 
         ChromeBookmarksReader reader = new ChromeBookmarksReader(ChromeBookmarksReader.defaultBookmarkpath);
         List<Map> maps = reader.getBookMarkListByDirName("download1");
         List<Map> maps1 = reader.getBookMarkListByDirName("download2");
@@ -927,11 +964,12 @@ public class SourceManager {
      *
      * @Deprecated 现在所有临时文件都在tmp目录中，这个方法用于处理早期版本造成的临时文件遗留问题
      **/
+    @Deprecated
     public void cleanRootDir() {
         File root = new File(rootPath);
         doRecusiveClean(root);
     }
-
+    @Deprecated
     private void doRecusiveClean(File dir) {
         File[] files = dir.listFiles();
         if (files != null) {
@@ -962,6 +1000,7 @@ public class SourceManager {
      * 给定 artistFileName 如果有对应的文件夹，但是没有 jsonline 文件，那就创建一个
      * ！ artistFileName 是减少过最后的 . 的，所以 jsonline 文件的名称 要从 Chrome书签获得真正的名称
      */
+    @Deprecated
     public void buildMissingJsonLineFileForArtist(SourceType sourceType, Set<String> artists) throws IOException {
         SpiderUtils spiderUtils = new SpiderUtils();
         if (sourceType == SourceType.SANKAKU) {
@@ -1040,27 +1079,51 @@ public class SourceManager {
         return sankakuDBSourceManager.getArtists();
     }
 
+    public void updateArtistPathAndLevel() {
+        System.out.println("更新作者作品路径与级别");
+        Map<String, Integer> artists = getArtistListByDB();
+        Set<String> names = artists.keySet();
+        int i = 0;
+        for (String name :
+                names) {
+            if (true) {
+                System.out.println(i++);
+                String vid_path = getArtistPath(SourceType.SANKAKU, "vid.mp4", name);
+                String pic_path = getArtistPath(SourceType.SANKAKU, "pic.jpg", name);
+                Matcher matcherPic = priorityPattern.matcher(pic_path);
+                Matcher matcherVid = priorityPattern.matcher(vid_path);
+                int pic_level = 10;
+                int vid_level = 10;
+                if (matcherPic.find()) {
+                    pic_level = Integer.valueOf(matcherPic.group(1));
+                }
+                if (matcherVid.find()) {
+                    vid_level = Integer.valueOf(matcherVid.group(1));
+                }
+
+                System.out.println(name + " " + vid_path + " " + vid_level + " " + pic_path + " " + pic_level);
+                sankakuDBSourceManager.updateArtistPathAndLevel(name, pic_level, pic_path.substring(16), vid_level, vid_path.substring(16));
+            }
+
+        }
+    }
+
+    public List<String> getArtworkAddresses(String name) {
+
+        List<String> sanCodes = sankakuDBSourceManager.getArtworkSanCodes(name);
+        List<String> address = new ArrayList<>();
+        for (String code : sanCodes
+        ) {
+            address.add("https://chan.sankakucomplex.com/post/show/" + code);
+        }
+        return address;
+    }
+
     public static void main(String[] args) throws IOException {
-        SourceManager testSourceManager = new SourceManager("E:\\ROOT");
-        System.out.println(testSourceManager.getArtistPath(SourceType.SANKAKU, ".mp4", "trubka"));
-        // 初始化本地文件目录 ，需要手动创建父级目录
-//        testSourceManager.initSankakuLevelPath();
-        // 查询重复的作者
-//        testSourceManager.findDuplicationDir();
-
-//        testSourceManager.getArtistListByJson(SourceType.SANKAKU);
-//        testSourceManager.getSankakuArtistsListByDir();
-//        testSourceManager.getSankakuArtistListByJson();
-//        testSourceManager.cleanInfo();
-
-//        testSourceManager.dealWithVidArtistWithSamllNumberOfVid();
-//        testSourceManager.cleanRootDir();
-
-//        ChromeBookmarksReader reader = new ChromeBookmarksReader();
-//        Set<String> artists = reader.getArtistNameFromBookNarkDir("san5");
-//        System.out.println("xxxxxxx");
-//        System.out.println(artists);
-//        testSourceManager.buildMissingJsonLineFileForArtist(SourceType.SANKAKU,artists);
+        SourceManager testSourceManager = new SourceManager("H:\\ROOT", "G:\\ROOT");
+        String path = testSourceManager.getArtistPath(SourceType.SANKAKU, ".jpg", "cosine");
+        System.out.println(path);
+//        testSourceManager.updateArtistPathAndLevel();
 
 
     }

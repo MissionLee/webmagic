@@ -4,11 +4,9 @@ import com.alibaba.fastjson.JSON;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -91,14 +89,17 @@ public class SpiderTaskFactory {
     }
 
     public SpiderTask getSpiderTask(SourceManager.SourceType sourceType, String artistName,String dirName ,boolean offical, SpiderTask.TaskType taskType, boolean getAll, SourceManager sourceManager) throws IOException {
-        SpiderTask spiderTask = new SpiderTask(this.sourceManager, sourceType, defaultThreadNum, artistName, dirName,offical, defaultDownloadRetryTimes, taskType, getAll);
-        List<ArtworkInfo> artworkInfos = sourceManager.getArtworkOfArtist(sourceType, dirName);
-        for (ArtworkInfo a :
-                artworkInfos) {
-            spiderTask.artworkAddress.add(a.getAddress());
-
-        }
-
+        SpiderTask spiderTask =
+                new SpiderTask(this.sourceManager, sourceType, defaultThreadNum, artistName, dirName,offical, defaultDownloadRetryTimes, taskType, getAll);
+        logger.warn("原本作者作品信息地址从文本文件解析提取，现在直接从数据库查询");
+        // TODO: 2019-12-27 这里是 通过获取作品信息文本文件，提取作品地址的方法
+//        List<ArtworkInfo> artworkInfos = sourceManager.getArtworkOfArtist(sourceType, dirName);
+//        for (ArtworkInfo a :
+//                artworkInfos) {
+//            spiderTask.artworkAddress.add(a.getAddress());
+//        }
+        // TODO: 2019-12-27 这个是从数据库查询
+        spiderTask.artworkAddress = sourceManager.getArtworkAddresses(artistName);
         spiderTask.stored = sourceManager.getArtworkNum(sourceType, dirName);
 
         return spiderTask;

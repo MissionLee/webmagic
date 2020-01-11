@@ -2,7 +2,6 @@ package pers.missionlee.webmagic.spider.sankaku.pageprocessor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pers.missionlee.webmagic.spider.sankaku.info.SankakuFileUtils;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 import pers.missionlee.webmagic.spider.sankaku.manager.SourceManager;
 import pers.missionlee.webmagic.spider.sankaku.manager.SpiderTask;
@@ -12,7 +11,6 @@ import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.selector.Html;
 import us.codecraft.webmagic.selector.Selectable;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -108,10 +106,12 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
         if (urlList != null && urlList.size() > 0) {
             for (String url : urlList
             ) {
-
+                System.out.println("判断目标是否已经下载过");
+                System.out.println(BASE_URL + url);
+                System.out.println("已经下载 "+spiderTask.artworkAddress.contains(BASE_URL + url) +"\t已经加到本次下载目录 "+spiderTask.targetUrl.contains(url));
                 if (  !spiderTask.artworkAddress.contains(BASE_URL + url)
                         && !spiderTask.targetUrl.contains(url)
-                        && !spiderTask.getSourceManager().containsSanCodeWithinUrl(url) ) {
+                        && !spiderTask.getSourceManager().included(url) ) {
                     logger.info("⭐ add " + BASE_URL + url);
                     page.addTargetRequest(BASE_URL + url);
                     spiderTask.targetUrl.add(url);

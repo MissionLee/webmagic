@@ -5,12 +5,14 @@
 <configuration>
     <properties>
         <property name="jdbc.driver.class" value="com.mysql.cj.jdbc.Driver"/>
-        <property name="jdbc.url" value="jdbc:mysql://localhost:3306/sankaku?characterEncoding=UTF-8&amp;serverTimezone=UTC&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=true"/>
+        <property name="jdbc.url" value="jdbc:mysql://localhost:3307/sankaku?characterEncoding=UTF-8&amp;serverTimezone=UTC&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=true&amp;useAffectedRows=true"/>
         <property name="jdbc.username" value="root"/>
-        <property name="jdbc.password" value="Ro998otPass&amp;"/>
+        <property name="jdbc.password" value="shunzhiai"/>
     </properties>
 
     <settings>
+        <!--<setting name="logImpl" value="SLF4J"/>-->
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
         <setting name="cacheEnabled" value="true"/>
         <setting name="lazyLoadingEnabled" value="true"/>
         <setting name="multipleResultSetsEnabled" value="true"/>

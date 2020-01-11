@@ -93,6 +93,7 @@ public class SpiderTask {
         this.dirName = dirName;
         // 检测本地是否有作者名称对应的文件
         try {
+            // TODO: 2019-12-29  原本直接调用创建 json文本信息的方法 
             sourceManager.guaranteeArtistInfoFileExists(this.sourceType,this.dirName);
         } catch (IOException e) {
             System.out.println("= xx =");
@@ -125,15 +126,16 @@ public class SpiderTask {
 
     }
     public boolean exists(String filename){
-        return this.sourceManager.exists(this.sourceType,this.dirName,filename);
+        return this.sourceManager.existInDB(this.sourceType,this.dirName,filename);
     }
     public Boolean saveFile(File tmpFile,String artworkName){
         // TODO: 2019-04-26
         return this.sourceManager.saveFile(this.sourceType,tmpFile,this.dirName,artworkName);
     }
     public void appendArtworkInfo(ArtworkInfo artworkInfo,String artistName) throws IOException {
-        this.artworkAddress.add(artworkInfo.getAddress());
-        this.sourceManager.appendArtworkInfoToFile(this.sourceType,this.dirName,artworkInfo,artistName);
+        String address = artworkInfo.getAddress();
+        this.artworkAddress.add(address);
+        this.sourceManager.recordArtworkInfo(this.sourceType,this.dirName,artworkInfo,artistName);
 
     }
     @Override

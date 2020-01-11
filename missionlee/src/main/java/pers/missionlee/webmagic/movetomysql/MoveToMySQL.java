@@ -25,6 +25,7 @@ import java.util.function.Predicate;
  * <p>
  *
  */
+@Deprecated
 public class MoveToMySQL {
     static Logger logger = LoggerFactory.getLogger(MoveToMySQL.class);
     private static ExecutorService executorService = Executors.newFixedThreadPool(10);
@@ -112,7 +113,7 @@ public class MoveToMySQL {
 //                int status = 1;
                 // 关闭了 配置文件 remove 机制，就算找不到文件，现在不改动信息文件
                 int status = 2; // 1 正常 2 丢失 3 删除
-                if (sourceManager.exists(SourceManager.SourceType.SANKAKU, artist, fileName)) {
+                if (sourceManager.existInDB(SourceManager.SourceType.SANKAKU, artist, fileName)) {
                     System.out.println("文件存在 " + artist + "  |  " + fileName);
                     status = 1;
                 }

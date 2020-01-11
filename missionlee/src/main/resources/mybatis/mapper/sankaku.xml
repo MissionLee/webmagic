@@ -5,9 +5,9 @@
 	<!-- 通过sanCode 查询所有这个sanCode的正式作者列表 -->
 	<select id="getArtistListBySanCode" parameterType="String" resultType="map">
 		SELECT
-			SA.SAN_CODE,
-			ST. NAME,
-			ST.IS_TARGET
+			SA.SAN_CODE as sanCode,
+			ST.`NAME` as name ,
+			ST.IS_TARGET as isTarget
 		FROM
 			SAN_ARTWORK SA
 		LEFT JOIN ARTWORK_ARTIST_REL AAR ON SA.SAN_CODE = AAR.SAN_CODE
@@ -112,6 +112,14 @@
 			`is_target` = 1
 			WHERE `name` = #{name}
 	</update>
+	<update id="updateArtistPathLevel" parameterType="map" >
+			UPDATE san_artist SET
+			pic_level = #{pic_level} ,
+			pic_path = #{pic_path} ,
+			vid_level = #{vid_level} ,
+			vid_path = #{vid_path}
+			WHERE `name` = #{name}
+	</update>
     <insert id="insertArtistOnlyName" parameterType="map" useGeneratedKeys="true" keyProperty="artist_id">
 		insert into san_artist(`name`,`create_time`,`update_time`,`is_target`) values (#{name},now(),now(),0)
 	</insert>
@@ -190,5 +198,19 @@
     <!-- 查询用户在数据库中存储的作品数量 -->
 	<select id="getStoredArtworkNum" parameterType="BigInteger" resultType="Integer">
 		select count(*) from artwork_artist_rel where artist_id = #{artistId}
+	</select>
+	<!-- 查询用户作品更新时间	-->
+	<select id="getUpdateInfo" resultType="map">
+		select
+		name as name,
+		aim_update_time * 1000 as updateTime
+		from san_artist where is_target = 1
+	</select>
+<!-- 获取作品地址列表-下载排重用	-->
+	<select id="getArtworkSanCode" parameterType="String" resultType="String">
+		select
+			san_code as sanCode
+		from artwork_artist_rel join san_artist
+		on artwork_artist_rel.artist_id = san_artist.artist_id and san_artist.name = #{name}
 	</select>
 </mapper>
