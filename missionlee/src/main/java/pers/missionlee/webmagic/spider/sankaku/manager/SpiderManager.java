@@ -123,10 +123,10 @@ public class SpiderManager extends SpiderUtils {
         SourceManager sourceManager = new SourceManager("H:\\ROOT", "G:\\ROOT");
         SpiderManager spiderManager = new SpiderManager();
         // 更新特定作者
-//        spiderManager.update(sourceManager,"cosine",false);
+//        spiderManager.update(sourceManager,"arti202",true);
 //         解析下载 Chrome 的某个文件目录
-        spiderManager.runWithChromeDir(sourceManager, SourceManager.SourceType.SANKAKU, SpiderTask.TaskType.NEW, "san7", false);
+//        spiderManager.runWithChromeDir(sourceManager, SourceManager.SourceType.SANKAKU, SpiderTask.TaskType.NEW, "san7", false);
         // 更新某个级别
-//         spiderManager.update(sourceManager, SourceManager.SourceType.SANKAKU,true,1);
+         spiderManager.update(sourceManager, SourceManager.SourceType.SANKAKU,false,1);
     }
 }

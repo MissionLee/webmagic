@@ -365,7 +365,7 @@ public class SankakuDBSourceManager {
             List<Map<String,Object>> infos = sqlSession.selectList("san.getUpdateInfo");
             for (Map<String, Object> m :
                     infos) {
-                updateInfo.put(m.get("name").toString(),(long)m.get("updateTime"));
+                updateInfo.put(m.get("name").toString(),(long)m.get("aimUpdateTime"));
             }
         }
         return updateInfo;

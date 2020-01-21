@@ -669,8 +669,10 @@ public class SourceManager {
         if (sourceType == SourceType.SANKAKU) {
             if (sankakuUpdateInfo == null) {
                 initUpdateInfo(SourceType.SANKAKU);
+                System.out.println(sankakuUpdateInfo);
             }
             if (sankakuUpdateInfo.containsKey(artistName)) {
+
                 return System.currentTimeMillis() < sankakuUpdateInfo.get(artistName);
             } else return false;
         } else {

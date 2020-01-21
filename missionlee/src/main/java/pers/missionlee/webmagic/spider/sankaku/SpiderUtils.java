@@ -19,31 +19,32 @@ public class SpiderUtils {
     public static String UserName2 = "hisanily";
     public static String Password = "mingshun1993";
     public static final String BASE_SITE = "https://chan.sankakucomplex.com/?tags=";
-    private static final String www_sankakucomplex_com_IP="208.100.24.252";
+    private static final String www_sankakucomplex_com_IP = "208.100.24.252";
     private static final String chan_sankakucomplex_com_IP = "208.100.27.32";
     private static final String cs_sankakucomplex_com_IP = "208.100.24.254";
     protected static Site site = Site.me()
             .setRetryTimes(3)
             .setTimeOut(100000)
             .addCookie("__atuvc", "1%7C13")
-            .addCookie("__atuvs", "5c9f8f6e66a18234000")
-            .addCookie("_pk_id.1.eee1", "7330c3726912358c.1551925508.3.1552697306.1552697159.")
-            .addCookie("_pk_id.2.42fa", "adde0e4a1e63d583.1551189849.179.1553961084.1553956438.")
-            .addCookie("_pk_ref.1.eee1", "%5B%22%22%2C%22%22%2C1552697159%2C%22https%3A%2F%2Fchan.sankakucomplex.com%2Frankings%2Fshow%3Forder%3Dquality%26page%3D650%22%5D")
+            .addCookie("__atuvs", "5e1c553c1930ff14000")
+            .addCookie("_pk_id.1.eee1", "660572c708fea8cf.1577603237.2.1577610247.1577610215.")
+            .addCookie("_pk_id.2.42fa", "6dde919d87bd0a25.1552866104.85.1578915132.1578913654.")
+            .addCookie("_pk_ref.1.eee1", "%5B%22%22%2C%22%22%2C1577610215%2C%22https%3A%2F%2Fchan.sankakucomplex.com%2F%3Fnext%3D2.35934045118749%2B19090001%26tags%3Ddate%3A2019-12-21..2019-12-28%20order%3Aquality%26page%3D74%22%5D")
             .addCookie("_pk_ses.2.42fa", "1")
-            .addCookie("_sankakucomplex_session", "BAh7BzoMdXNlcl9pZGkDKuwNOg9zZXNzaW9uX2lkIiU0NGRiNGI3YzZiZjUzODcyYTgwNTdlNmI0YzY0NmM0YQ%3D%3D--28314439646bdf2425f974b8a0aabe65141d2dcf")
+            .addCookie("_pk_testcookie.2.42fa", "1")
+            .addCookie("_sankakucomplex_session", "BAh7BzoMdXNlcl9pZGkD5lgGOg9zZXNzaW9uX2lkIiVlMzI1YjQ5MDg1ZTRiNTcyMzA2ZGMyMGJlZTM0OGRjNQ%3D%3D--93955adb171cc48de8ee353139d97ead3a364311")
             .addCookie("auto_page", "0")
             .addCookie("blacklisted_tags", "")
-            .addCookie("loc", "MDAwMDBBU0NOSlMyMTQ0Mjk4NDA3NjAwMDBDSA==")
+            .addCookie("loc", "MDAwMDBBU0NOSlMyMTQzMjk4NDA3NjAwMDBDSA==")
             .addCookie("locale", "en")
-            .addCookie("login", "hisanily")
+            .addCookie("login", "zuixue3000")
             .addCookie("mode", "view")
-            .addCookie("na_id", "2018122723475293368621024808")
+            .addCookie("na_id", "2019013108302142389291160478")
             .addCookie("na_tc", "Y")
-            .addCookie("ouid", "5c2564a80001da35a1ed736217e8a4379998383b2fa5f1877d3a")
+            .addCookie("ouid", "5c52b21d0001851467bf69b6fdc7c24e116c87aa31768b505e9b")
             .addCookie("pass_hash", "b1f471dcd8cc8df0ed2b84f033ba2baae5de013b")
-            .addCookie("uid", "5c2564a827f935b5")
-            .addCookie("uvc", "9%7C5%2C0%7C6%2C3%7C7%2C13%7C8%2C46%7C9")
+            .addCookie("uid", "5c52b21d9f7161d1")
+            .addCookie("uvc", "0%7C1%2C13%7C52%2C466%7C1%2C780%7C2%2C643%7C3")
             .addCookie("PHPSESSID", "rrb6lkmc07f4b0fapkcln52eht")
             .addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
             .addHeader("Accept-Encoding", "gzip, deflate, br")
@@ -214,8 +215,9 @@ public class SpiderUtils {
      * 其中 整体下载的情况下（非update） 可以通过爬虫自动获取 目标数量
      */
     protected String[] urlGenertor(String artist, boolean offical, int artworkNum) {
-        System.out.println("初始URL生成器，目标数量 "+artworkNum);
+        System.out.println("初始URL生成器，目标数量 " + artworkNum);
         String[] urls;
+        // TODO: 2020-01-13 sankaku网站变了 tag count 直接跳转某个页面应该有检测（目测是有bug）,部分排序结果 一个页面只有一两个结果，甚至么有结果了
         String BaseTagAsc = SITE_ORDER_PREFIX.TAG_COUNT_ASC.getPrefix(artist, offical);
         String BaseTagDec = SITE_ORDER_PREFIX.TAG_COUNT_DEC.getPrefix(artist, offical);
         String BaseDate = SITE_ORDER_PREFIX.DATE.getPrefix(artist, offical);
@@ -229,14 +231,14 @@ public class SpiderUtils {
         String BaseMpixelsDec = SITE_ORDER_PREFIX.MPIXELS_DEC.getPrefix(artist, offical);
         String BaseProtrait = SITE_ORDER_PREFIX.PORTRAIT.getPrefix(artist, offical);
         String BaseView = SITE_ORDER_PREFIX.VIEW_COUNT.getPrefix(artist, offical);
-        if (false) {
+        if (artworkNum > 1000) {
             urls = new String[650];
             for (int i = 0; i < 50; i++) {
+                urls[i + 200] = BasePopular + (i + 1);
+                urls[i + 150] = BaseQurlity + (i + 1);
                 urls[i] = BaseTagAsc + (i + 1);
                 urls[i + 50] = BaseTagDec + (i + 1);
                 urls[i + 100] = BaseDate + (i + 1);
-                urls[i + 150] = BaseQurlity + (i + 1);
-                urls[i + 200] = BasePopular + (i + 1);
                 urls[i + 250] = BaseFav + (i + 1);
                 urls[i + 300] = BaseFilesizeAsc + (i + 1);
                 urls[i + 350] = BaseFilesizeDes + (i + 1);
@@ -246,34 +248,16 @@ public class SpiderUtils {
                 urls[i + 550] = BaseProtrait + (i + 1);
                 urls[i + 600] = BaseView + (i + 1);
             }
-        } else if (artworkNum > 2000) { // 2000+ 情况遍历 tag升降序 + date最新 + popular最高 + quality 最高
-            urls = new String[200];
-            for (int i = 0; i < 50; i++) {
-                urls[i] = BaseTagAsc + (i + 1);
-                urls[i + 50] = BaseTagDec + (i + 1);
-                urls[i + 100] = BaseDate + (i + 1);
-                urls[i + 150] = BaseQurlity + (i + 1);
-//                urls[i + 200] = BaseDate + (i + 1);
 
-            }
-        } else {
+        } else { // 1-1000
             int pageNum = ((Double) (Math.ceil((new Double(artworkNum)) / 20))).intValue();
-            urls = new String[pageNum];
-            if (pageNum > 50) {// 1001~2000 tag升降序
-
-                for (int i = 0; i < pageNum; i++) {
-                    if ((i + 1) <= 50) {
-                        urls[i] = BaseTagDec + (i + 1);
-                    } else {
-                        urls[i] = BaseTagAsc + (i - 49);
-                    }
-                }
-
-            } else {// 1~999 date遍历
-
-                for (int i = 0; i < pageNum; i++) {
-                    urls[i] = BasePopular + (i + 1);
-                }
+//            urls = new String[pageNum];
+            urls = new String[pageNum*3];
+            // TODO: 2020-01-13  popular 应该不会有问题，所以不需要做额外限制
+            for (int i = 0; i < pageNum; i++) {
+                urls[i] = BasePopular + (i + 1);
+                urls[i + pageNum] = BaseDate + (i + 1);
+                urls[i + pageNum*2] = BaseQurlity + (i + 1);
             }
         }
         for (int i = 0; i < urls.length; i++) {
@@ -281,13 +265,17 @@ public class SpiderUtils {
         }
         return urls;
     }
-    private static Map<String,String> SPECIAL_NAME = new HashMap<String, String>(){{put("rib:y(uhki)","rib_y(uhki)");}};
-    public static String fileNameGenerator(String artistName){
+
+    private static Map<String, String> SPECIAL_NAME = new HashMap<String, String>() {{
+        put("rib:y(uhki)", "rib_y(uhki)");
+    }};
+
+    public static String fileNameGenerator(String artistName) {
         artistName = artistName.trim();
-        if(SPECIAL_NAME.containsKey(artistName))
+        if (SPECIAL_NAME.containsKey(artistName))
             return SPECIAL_NAME.get(artistName);
-        else{
-            return artistName.endsWith(".")?artistName.substring(0,artistName.length()-1):artistName;
+        else {
+            return artistName.endsWith(".") ? artistName.substring(0, artistName.length() - 1) : artistName;
         }
     }
 

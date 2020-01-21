@@ -203,7 +203,7 @@
 	<select id="getUpdateInfo" resultType="map">
 		select
 		name as name,
-		aim_update_time * 1000 as updateTime
+		unix_timestamp(aim_update_time) * 1000 as aimUpdateTime
 		from san_artist where is_target = 1
 	</select>
 <!-- 获取作品地址列表-下载排重用	-->
