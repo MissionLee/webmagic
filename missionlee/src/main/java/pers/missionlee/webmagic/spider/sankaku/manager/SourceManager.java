@@ -485,7 +485,9 @@ public class SourceManager {
         // File artworkInfoFile = new File(pathList.InfoPath + artistFileName + FILE_SUFFIX_ARTWORK);
         // FileUtils.writeStringToFile(artworkInfoFile, artworkInfo.toString() + "\n", "utf8", true);
     }
-
+    public void confirmArtworkArtistRel(String fullUrl,String artistName){
+        sankakuDBSourceManager.confirmArtworkArtistRel(fullUrl,artistName);
+    }
     /**
      * 作品信息：向作品信息文件追加一条新的作品信息
      */
@@ -505,10 +507,17 @@ public class SourceManager {
         //PathList pathList = getPathList(sourceType);
         File pics = new File(getArtistPath(sourceType, "1.jpg", artistFileName));
         File vids = new File(getArtistPath(sourceType, "1.mp4", artistFileName));
-        if (pics.exists() && pics.listFiles() != null)
+
+        if (pics.exists() &&  !(pics.listFiles() == null)){
+            System.out.println(pics.getAbsolutePath());
             num += pics.listFiles().length;
-        if (vids.exists() && vids.listFiles() != null)
+        }
+
+        if (vids.exists() && vids.listFiles() != null){
+            System.out.println(vids.getAbsolutePath());
             num += vids.listFiles().length;
+        }
+
         return num;
     }
     /**
@@ -664,8 +673,15 @@ public class SourceManager {
     public boolean isUpdated(SourceType sourceType, String artistName, int minPriority) throws IOException {
         int priority = getPriorityFromPathName(sourceType, artistName);
         logger.warn("作者：" + artistName + " 优先级：" + priority);
-        if (priority > minPriority)
+        boolean flag = true;
+//        if(artistName.equals("sunmomo")) flag = true;
+
+        if (priority > minPriority) // 大于1 不更新
             return true;
+        else if(priority==0 && !flag){ // 如果等于0 并且没有 0 置位 也不更新
+            return true;
+        }
+//        if(artistName.equals("kimdonga")) flag = true;
         if (sourceType == SourceType.SANKAKU) {
             if (sankakuUpdateInfo == null) {
                 initUpdateInfo(SourceType.SANKAKU);
@@ -1123,10 +1139,11 @@ public class SourceManager {
 
     public static void main(String[] args) throws IOException {
         SourceManager testSourceManager = new SourceManager("H:\\ROOT", "G:\\ROOT");
-        String path = testSourceManager.getArtistPath(SourceType.SANKAKU, ".jpg", "cosine");
-        System.out.println(path);
-//        testSourceManager.updateArtistPathAndLevel();
-
+//        String path = testSourceManager.getArtistPath(SourceType.SANKAKU, ".jpg", "cosine");
+//        System.out.println(path);
+        testSourceManager.updateArtistPathAndLevel();
+//        int x =testSourceManager.getArtworkNum(SourceType.SANKAKU,"kidmo");
+//        System.out.println(x);
 
     }
 }

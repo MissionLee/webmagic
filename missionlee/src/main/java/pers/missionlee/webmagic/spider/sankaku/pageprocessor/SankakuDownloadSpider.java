@@ -123,7 +123,8 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
                 } else {
 //                    d_skip++;
                     logger.info("⭐ skip " + BASE_URL + url);
-
+                    // TODO: 2020-03-10 如果已经下载过了，需要确保这个作品和作者关联
+                    spiderTask.confirmArtworkArtistRel(BASE_URL + url);
                 }
             }
 
@@ -279,7 +280,7 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
 
     public boolean download(String downloadUrl, String filename, Page page) {
         boolean returnStatus = false;
-        if (!spiderTask.exists(filename)) {
+        if (!spiderTask.exists(filename)) { // 如果文件不存在
             logger.info("开始下载: " + filename + " " + page.getUrl());
             try {
                 returnStatus = TimeLimitedHttpDownloader.downloadWithAutoRetry(downloadUrl, filename, page.getUrl().toString(), spiderTask);

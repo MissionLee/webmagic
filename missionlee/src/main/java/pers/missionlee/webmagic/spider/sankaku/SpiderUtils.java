@@ -231,33 +231,41 @@ public class SpiderUtils {
         String BaseMpixelsDec = SITE_ORDER_PREFIX.MPIXELS_DEC.getPrefix(artist, offical);
         String BaseProtrait = SITE_ORDER_PREFIX.PORTRAIT.getPrefix(artist, offical);
         String BaseView = SITE_ORDER_PREFIX.VIEW_COUNT.getPrefix(artist, offical);
-        if (artworkNum > 1000) {
-            urls = new String[650];
+        if (artworkNum > 2000) {// 大于2000 只能用尽量覆盖
+            urls = new String[400];
             for (int i = 0; i < 50; i++) {
-                urls[i + 200] = BasePopular + (i + 1);
-                urls[i + 150] = BaseQurlity + (i + 1);
                 urls[i] = BaseTagAsc + (i + 1);
                 urls[i + 50] = BaseTagDec + (i + 1);
                 urls[i + 100] = BaseDate + (i + 1);
+                urls[i + 150] = BaseQurlity + (i + 1);
+                urls[i + 200] = BasePopular + (i + 1);
                 urls[i + 250] = BaseFav + (i + 1);
                 urls[i + 300] = BaseFilesizeAsc + (i + 1);
                 urls[i + 350] = BaseFilesizeDes + (i + 1);
-                urls[i + 400] = BaseLandscape + (i + 1);
-                urls[i + 450] = BaseMpixelsAsc + (i + 1);
-                urls[i + 500] = BaseMpixelsDec + (i + 1);
-                urls[i + 550] = BaseProtrait + (i + 1);
-                urls[i + 600] = BaseView + (i + 1);
+//                urls[i + 400] = BaseLandscape + (i + 1);
+//                urls[i + 450] = BaseMpixelsAsc + (i + 1);
+//                urls[i + 500] = BaseMpixelsDec + (i + 1);
+            }
+            
+        } else if (artworkNum > 1000) { // 1000 - 2000 一个条件的升降就可以覆盖
+            urls = new String[100];
+            for (int i = 0; i < 50; i++) {
+                urls[i] = BaseTagAsc + (i + 1);
+                urls[i + 50] = BaseTagDec + (i + 1);
+//                urls[i + 100] = BaseDate + (i + 1);
+//                urls[i + 150] = BaseQurlity + (i + 1);
+//                urls[i + 200] = BasePopular + (i + 1);
             }
 
         } else { // 1-1000
             int pageNum = ((Double) (Math.ceil((new Double(artworkNum)) / 20))).intValue();
-//            urls = new String[pageNum];
-            urls = new String[pageNum*3];
+            urls = new String[pageNum];
+//            urls = new String[pageNum * 3];
             // TODO: 2020-01-13  popular 应该不会有问题，所以不需要做额外限制
             for (int i = 0; i < pageNum; i++) {
                 urls[i] = BasePopular + (i + 1);
-                urls[i + pageNum] = BaseDate + (i + 1);
-                urls[i + pageNum*2] = BaseQurlity + (i + 1);
+//                urls[i + pageNum] = BaseDate + (i + 1);
+//                urls[i + pageNum * 2] = BaseQurlity + (i + 1);
             }
         }
         for (int i = 0; i < urls.length; i++) {

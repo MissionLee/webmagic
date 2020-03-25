@@ -67,7 +67,7 @@ public class SourceSpiderRunner extends SpiderUtils {
             }
             int nowTheyHave = setTotalNumberWithSpider(spiderTask);
             System.out.println("已有：" + nowWeHave + " SAN有：" + nowTheyHave);
-            if (nowWeHave < 2500) { // 本地存储大于2000 不再尝试全部获取
+            if (nowWeHave < 2500) { // 本地存储大于2500 不再尝试全部获取
                 if (
                         (nowTheyHave >= 2000 && (nowTheyHave-nowWeHave >50 )) //总量大于两千，本地少于1950
                                 || (nowTheyHave < 2000 && nowTheyHave >= 1500 && (nowTheyHave - nowWeHave > 20))// 总量1500~2000，本地比总量少
@@ -77,6 +77,7 @@ public class SourceSpiderRunner extends SpiderUtils {
 
                 ) {// 实际数量>2000
                     spiderTask.total = nowTheyHave;
+                    // 讲任务类型改为“新”，从而触发全部下载
                     spiderTask.setTaskType(SpiderTask.TaskType.NEW);
                     runNewTask(spiderTask, false);
                 }

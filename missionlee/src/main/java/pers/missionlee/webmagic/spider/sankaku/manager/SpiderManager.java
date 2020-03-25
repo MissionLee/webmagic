@@ -30,13 +30,13 @@ public class SpiderManager extends SpiderUtils {
 //        IDOL,
 //        IDOLOFFICIAL
 //    }
-    public void update(SourceManager sourceManager, String name, boolean getAll) throws IOException {
-        SpiderTask task = startSpider(sourceManager, SourceManager.SourceType.SANKAKU, SpiderTask.TaskType.UPDATE, name, false, getAll);
+    public void update(SourceManager sourceManager, String name, boolean getAll,boolean official) throws IOException {
+        SpiderTask task = startSpider(sourceManager, SourceManager.SourceType.SANKAKU, SpiderTask.TaskType.UPDATE, name, official, getAll);
         sourceManager.update(SourceManager.SourceType.SANKAKU, name, fileNameGenerator(name), task.downloaded);
         logger.info("更新清空：作者[" + name + "]本次更新 " + task.downloaded);
     }
 
-    public void update(SourceManager sourceManager, SourceManager.SourceType updateSourceType, boolean getAll, int minPriority) throws IOException {
+    public void update(SourceManager sourceManager, SourceManager.SourceType updateSourceType, boolean getAll, int minPriority,boolean official) throws IOException {
         if (updateSourceType == SourceManager.SourceType.SANKAKU) {
             // TODO: 2019-10-04 作者列表从数据库获取
             Map<String, Integer> artists = sourceManager.getArtistListByDB();
@@ -44,7 +44,7 @@ public class SpiderManager extends SpiderUtils {
             for (String name :
                     artistNames) {
                 if (!sourceManager.isUpdated(SourceManager.SourceType.SANKAKU, name, minPriority)) {
-                    this.update(sourceManager, name, getAll);
+                    this.update(sourceManager, name, getAll,official);
                 }
             }
         }
@@ -123,10 +123,13 @@ public class SpiderManager extends SpiderUtils {
         SourceManager sourceManager = new SourceManager("H:\\ROOT", "G:\\ROOT");
         SpiderManager spiderManager = new SpiderManager();
         // 更新特定作者
-//        spiderManager.update(sourceManager,"arti202",true);
+        spiderManager.update(sourceManager,"ban!",true,false);
 //         解析下载 Chrome 的某个文件目录
-//        spiderManager.runWithChromeDir(sourceManager, SourceManager.SourceType.SANKAKU, SpiderTask.TaskType.NEW, "san7", false);
+        spiderManager.runWithChromeDir(sourceManager, SourceManager.SourceType.SANKAKU, SpiderTask.TaskType.NEW, "san6", false);
+
+        spiderManager.runWithChromeDir(sourceManager, SourceManager.SourceType.SANKAKU, SpiderTask.TaskType.NEW, "san7", false);
         // 更新某个级别
-         spiderManager.update(sourceManager, SourceManager.SourceType.SANKAKU,false,1);
+
+//         spiderManager.update(sourceManager, SourceManager.SourceType.SANKAKU,false,1,false);
     }
 }

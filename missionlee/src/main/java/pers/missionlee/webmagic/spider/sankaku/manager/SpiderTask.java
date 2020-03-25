@@ -138,6 +138,9 @@ public class SpiderTask {
         this.sourceManager.recordArtworkInfo(this.sourceType,this.dirName,artworkInfo,artistName);
 
     }
+    public void confirmArtworkArtistRel(String fullUrl){
+        this.sourceManager.confirmArtworkArtistRel(fullUrl,this.getArtistName());
+    }
     @Override
     public String toString(){
         StringBuffer buffer = new StringBuffer();

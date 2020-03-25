@@ -158,6 +158,7 @@
     </insert>
     <select id="getCharacterId" parameterType="String" resultType="BigInteger">
 		select character_id as characterId from san_character where `name` = #{name}
+		select character_id as characterId from san_character where `name` = #{name}
 	</select>
     <insert id="addCharacterRel" parameterType="map">
 		insert into artwork_character_rel(san_code,character_id) values(#{sanCode},#{character_id})
@@ -212,5 +213,18 @@
 			san_code as sanCode
 		from artwork_artist_rel join san_artist
 		on artwork_artist_rel.artist_id = san_artist.artist_id and san_artist.name = #{name}
+	</select>
+<!--	查询某个san code 是否在某个用户名下 -->
+	<select id="confirmArtworkOfSomeone" parameterType="map" resultType="map">
+SELECT
+	artwork_artist_rel.san_code AS sanCode,
+	san_artist.artist_id AS artistId,
+	san_artist.`name` AS `name`
+FROM
+	artwork_artist_rel
+RIGHT JOIN san_artist ON artwork_artist_rel.san_code = #{sanCode}
+AND artwork_artist_rel.artist_id = san_artist.artist_id
+WHERE
+	san_artist.`name` = #{name}
 	</select>
 </mapper>

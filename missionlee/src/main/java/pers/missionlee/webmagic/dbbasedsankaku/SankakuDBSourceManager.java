@@ -143,7 +143,29 @@ public class SankakuDBSourceManager {
             return true;
         return false;
     }
+    public void confirmArtworkArtistRel(String fullUrl,String artistName){
+        String sanCode = fullUrl.substring(fullUrl.lastIndexOf("/")+1);
+        Map<String,Object> map = new HashMap<>();
+        map.put("sanCode",sanCode);
+        map.put("name",artistName);
+        List<Map<String,Object>> list = sqlSession.selectList("san.confirmArtworkOfSomeone",map);
+        if(list != null
+                && list.size()==1
 
+        ){
+            Map<String,Object> map1 = list.get(0);
+            if(map1.containsKey("sanCode") && sanCode.equals(map.get("sanCode"))){
+                System.out.println("作者："+artistName +"  与作品 "+sanCode+" 关系正常");
+            }else{
+                System.out.println("作者："+artistName +"  与作品 "+sanCode+" 未建立关系[后续自动补充关系]");
+                map1.put("sanCode",sanCode);
+                map1.put("artist_id",map1.get("artistId"));
+                sqlSession.insert("san.addArtistRel",map1);
+            }
+        }else{
+            System.out.println("验证作者作品关系时，未找到指定作者");
+        }
+    }
     public void addArtworkInfo(String artist, ArtworkInfo ar) {
         try {
 
