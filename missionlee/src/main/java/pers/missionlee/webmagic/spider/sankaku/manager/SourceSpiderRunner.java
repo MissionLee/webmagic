@@ -26,9 +26,11 @@ public class SourceSpiderRunner extends SpiderUtils {
         if (spiderTask.getTaskType() == SpiderTask.TaskType.NEW) {
             logger.debug("尝试下载作者[" + spiderTask.getArtistName() + "]的所有作品");
             runNewTask(spiderTask, true);
-        } else {
+        } else if(spiderTask.getTaskType() == SpiderTask.TaskType.UPDATE){
             logger.debug("尝试更新作者[" + spiderTask.getArtistName() + "]的作品");
             runUpdateTask(spiderTask);
+        } else if(spiderTask.getTaskType() == SpiderTask.TaskType.POPULAR){
+            runPopularTask(spiderTask);
         }
     }
 
@@ -49,7 +51,11 @@ public class SourceSpiderRunner extends SpiderUtils {
         runDownLoadSpider(spiderTask);
         return spiderTask;
     }
-
+    private SpiderTask runPopularTask(SpiderTask spiderTask) throws IOException {
+        setPopularUrlArray(spiderTask);
+        runDownLoadSpider(spiderTask);
+        return spiderTask;
+    }
     private SpiderTask runUpdateTask(SpiderTask spiderTask) throws Exception {
         setStartUrlArray(spiderTask);
         logger.debug("\n爬虫任务详情：\n" + spiderTask);
@@ -119,4 +125,14 @@ public class SourceSpiderRunner extends SpiderUtils {
             return spiderTask.startUrls;
         }
     }
+    private String[] setPopularUrlArray(SpiderTask spiderTask){
+        String[] urls = new String[spiderTask.popularPageNum];
+        String prefix = SITE_ORDER_PREFIX.POPULAR.getPrefix(spiderTask.getArtistName(),spiderTask.isOfficial());
+        for (int i = 0; i < spiderTask.popularPageNum; i++) {
+            urls[i] = prefix+(i+1);
+        }
+        spiderTask.startUrls = urls;
+        return urls;
+    }
+
 }

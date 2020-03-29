@@ -17,7 +17,8 @@ public class SpiderTask {
 //    private static List<String> emptyStringList = new ArrayList<String>();
     public enum TaskType {
         UPDATE("更新"),
-        NEW("遍历");
+        NEW("遍历"),
+        POPULAR("进步作者获取热门即可");
         String desc;
         TaskType(String desc) {
             this.desc=desc;
@@ -34,7 +35,7 @@ public class SpiderTask {
     private TaskType taskType;
     // 获取全部标志位 在NEW/UPDATE 情况下会根据不同的判断条件开启 二次重下载 以尝试获取全部内容（仅额外尝试一次）
     private boolean getAll;
-
+    public int popularPageNum = 1;
     public void setTaskType(TaskType taskType) {
         this.taskType = taskType;
     }

@@ -477,6 +477,7 @@ public class SourceManager {
      * <p>
      * ！important  原名appendArtworkInfoToFile，现在不再旺文本文件写入数据，改名
      */
+
     public synchronized void recordArtworkInfo(SourceType sourceType, String artistFileName, ArtworkInfo artworkInfo, String artistName) throws IOException {
         sankakuDBSourceManager.addArtworkInfo(artistName, artworkInfo);
         logger.debug("追加作品信息[" + artistFileName + "]:" + artworkInfo);

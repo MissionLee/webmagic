@@ -35,7 +35,12 @@ public class SpiderManager extends SpiderUtils {
         sourceManager.update(SourceManager.SourceType.SANKAKU, name, fileNameGenerator(name), task.downloaded);
         logger.info("更新清空：作者[" + name + "]本次更新 " + task.downloaded);
     }
+    public void popular(SourceManager sourceManager,String name,int page,boolean official) throws IOException {
+        SpiderTask task = startSpider(sourceManager,SourceManager.SourceType.SANKAKU,SpiderTask.TaskType.POPULAR,name,official,false,page);
+        sourceManager.update(SourceManager.SourceType.SANKAKU,name,fileNameGenerator(name),task.downloaded);
+        logger.info("更新清空：作者[" + name + "]本次更新 " + task.downloaded);
 
+    }
     public void update(SourceManager sourceManager, SourceManager.SourceType updateSourceType, boolean getAll, int minPriority,boolean official) throws IOException {
         if (updateSourceType == SourceManager.SourceType.SANKAKU) {
             // TODO: 2019-10-04 作者列表从数据库获取
@@ -86,6 +91,18 @@ public class SpiderManager extends SpiderUtils {
         }
         return task;
     }
+    public SpiderTask startSpider(SourceManager sourceManager, SourceManager.SourceType sourceType, SpiderTask.TaskType taskType, String artistName, boolean official, boolean getAll,int popularPage) throws IOException {
+        SpiderTaskFactory factory = new SpiderTaskFactory(sourceManager);
+        SpiderTask task = factory.getSpiderTask(sourceType, artistName, fileNameGenerator(artistName), official, taskType, getAll, sourceManager);
+        task.popularPageNum = popularPage;
+        SourceSpiderRunner runner = new SourceSpiderRunner();
+        try {
+            runner.runTask(task);
+        } catch (Exception e) {
+            logger.info("获取作者作品数量失败，爬虫无法执行");
+        }
+        return task;
+    }
 
     public void runWithNameList(String filePath, SourceManager sourceManager) throws IOException {
 
@@ -123,10 +140,10 @@ public class SpiderManager extends SpiderUtils {
         SourceManager sourceManager = new SourceManager("H:\\ROOT", "G:\\ROOT");
         SpiderManager spiderManager = new SpiderManager();
         // 更新特定作者
-        spiderManager.update(sourceManager,"ban!",true,false);
+        spiderManager.update(sourceManager,"mibu natsuki",false,false);
 //         解析下载 Chrome 的某个文件目录
-        spiderManager.runWithChromeDir(sourceManager, SourceManager.SourceType.SANKAKU, SpiderTask.TaskType.NEW, "san6", false);
-
+//        spiderManager.runWithChromeDir(sourceManager, SourceManager.SourceType.SANKAKU, SpiderTask.TaskType.NEW, "san6", false);
+        spiderManager.popular(sourceManager,"ez6",10,false);
         spiderManager.runWithChromeDir(sourceManager, SourceManager.SourceType.SANKAKU, SpiderTask.TaskType.NEW, "san7", false);
         // 更新某个级别
 
