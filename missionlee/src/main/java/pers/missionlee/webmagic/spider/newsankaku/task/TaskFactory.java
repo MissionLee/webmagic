@@ -6,7 +6,7 @@ package pers.missionlee.webmagic.spider.newsankaku.task;
  * @create: 2020-03-30 19:24
  */
 public class TaskFactory {
-    public static Task getBean(){
+    public static Task getArtistTask(){
         return new ArtistTask();
     }
 }

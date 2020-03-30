@@ -2,6 +2,9 @@ package pers.missionlee.webmagic.spider.newsankaku.task;
 
 import pers.missionlee.webmagic.spider.newsankaku.type.AimType;
 import pers.missionlee.webmagic.spider.newsankaku.type.WorkMode;
+import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
+
+import java.io.File;
 
 /**
  * @description: 特殊目标下载任务
@@ -9,7 +12,7 @@ import pers.missionlee.webmagic.spider.newsankaku.type.WorkMode;
  * @create: 2020-03-30 19:16
  */
 public interface Task {
-    public void setAimType();
+    public void setAimType(AimType aimType);
     public AimType getAimType();
 
     public String[] getStartUrls();
@@ -24,4 +27,12 @@ public interface Task {
 
     public void setWorkMode(WorkMode workMode);
     public WorkMode getWorkMode();
+
+    public void setTempPath(String path);
+    public String getTempPath();
+
+    public void setRetryLimit(int limit);
+    public int getRetryLimit();
+
+    public boolean storeFile(File tempFile, String fileName, ArtworkInfo artworkInfo);
 }

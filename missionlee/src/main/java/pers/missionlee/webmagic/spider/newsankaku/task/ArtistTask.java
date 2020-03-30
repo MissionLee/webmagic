@@ -7,8 +7,8 @@ import pers.missionlee.webmagic.spider.newsankaku.type.AimType;
  * @author: Mission Lee
  * @create: 2020-03-30 19:23
  */
-//public class ArtistTask implements Task {
-//    public AimType getAimType(){
-//        return AimType.ARTIST;
-//    }
-//}
+public class ArtistTask extends AbstractTask {
+    public AimType getAimType(){
+        return AimType.ARTIST;
+    }
+}
