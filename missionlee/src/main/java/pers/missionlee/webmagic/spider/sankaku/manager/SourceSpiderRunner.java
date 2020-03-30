@@ -2,6 +2,7 @@ package pers.missionlee.webmagic.spider.sankaku.manager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pers.missionlee.webmagic.spider.newsankaku.task.Task;
 import pers.missionlee.webmagic.spider.sankaku.SpiderUtils;
 import pers.missionlee.webmagic.spider.sankaku.pageprocessor.SankakuDownloadSpider;
 import pers.missionlee.webmagic.spider.sankaku.pageprocessor.SankakuNumberSpider;
@@ -33,7 +34,9 @@ public class SourceSpiderRunner extends SpiderUtils {
             runPopularTask(spiderTask);
         }
     }
-
+//    public void runTask(Task task){
+//
+//    }
     /**
      * @Description:
      * @Param: [spiderTask , needCheckTotalNumber 有些情况下，spiderTask中会携带有效的作品总量，这个标志为会让此方法跳过总量检测阶段]

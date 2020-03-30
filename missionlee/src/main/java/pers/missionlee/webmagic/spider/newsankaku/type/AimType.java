@@ -7,5 +7,6 @@ package pers.missionlee.webmagic.spider.newsankaku.type;
  */
 public enum AimType {
     ARTIST,
-    COPYRIGHTL;
+    COPYRIGHTL,
+    DOA;
 }
