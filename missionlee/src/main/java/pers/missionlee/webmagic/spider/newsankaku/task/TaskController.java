@@ -11,9 +11,15 @@ import java.io.File;
  * @author: Mission Lee
  * @create: 2020-03-30 19:16
  */
-public interface Task {
+public interface TaskController {
+    public void setAimKeys(String... name);
+    public String[] getAimKeys();
+
     public void setAimType(AimType aimType);
     public AimType getAimType();
+
+    public void setAimNum(int num);
+    public int getAimNum();
 
     public String[] getStartUrls();
     public void setStartUrls(String[] urls);
@@ -35,4 +41,8 @@ public interface Task {
     public int getRetryLimit();
 
     public boolean storeFile(File tempFile, String fileName, ArtworkInfo artworkInfo);
+
+    public String getNumberCheckUrl();
+
+    public Boolean existOnDisk(String filename);
 }

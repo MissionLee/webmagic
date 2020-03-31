@@ -6,6 +6,7 @@ package pers.missionlee.webmagic.spider.newsankaku.type;
  * @create: 2020-03-30 20:01
  */
 public enum  WorkMode {
+    NEW,
     ALL,
     UPDATE;
 }

@@ -1,6 +1,6 @@
 package pers.missionlee.webmagic.spider.newsankaku;
 
-import pers.missionlee.webmagic.spider.newsankaku.task.Task;
+import pers.missionlee.webmagic.spider.newsankaku.task.TaskController;
 import pers.missionlee.webmagic.spider.newsankaku.type.AimType;
 
 /**
@@ -9,7 +9,7 @@ import pers.missionlee.webmagic.spider.newsankaku.type.AimType;
  * @create: 2020-03-30 19:30
  */
 public class NewSpiderRunner {
-    public void runTask(Task task){
+    public void runTask(TaskController task){
         AimType aimType = task.getAimType();
         if(aimType == AimType.ARTIST){
             doArtist(task);
@@ -19,7 +19,7 @@ public class NewSpiderRunner {
 
         }
     }
-    private void doArtist(Task task){
+    private void doArtist(TaskController task){
         // 1. 初始化基础 url
 
         //

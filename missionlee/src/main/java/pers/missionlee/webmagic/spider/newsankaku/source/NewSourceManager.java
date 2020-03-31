@@ -2,9 +2,10 @@ package pers.missionlee.webmagic.spider.newsankaku.source;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pers.missionlee.webmagic.spider.newsankaku.task.ArtistTaskController;
 import pers.missionlee.webmagic.spider.newsankaku.type.AimType;
 import pers.missionlee.webmagic.spider.newsankaku.utlis.PathUtils;
-import pers.missionlee.webmagic.spider.sankaku.manager.SourceManager;
+import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 
 import java.io.File;
 import java.util.*;
@@ -16,6 +17,10 @@ import java.util.*;
  */
 public class NewSourceManager {
     static Logger logger = LoggerFactory.getLogger(NewSourceManager.class);
+    /**
+     *
+     * */
+    public SourceService sourceService = new SourceService();
     /**
      * baseRoot：基础目录（权限目标的作品存储默认位置）
      * roots:分盘存储目录
@@ -56,22 +61,25 @@ public class NewSourceManager {
      */
     private void init() {
         this.PATH_SANKAKU_BASE_ROOT = PathUtils.buildPath(baseRoot + DIR_SANKAKU);
-        this.PATH_SANKAKU_DEFAULT_PIC = PathUtils.buildPath(baseRoot, DIR_PIC);
-        this.PATH_SANKAKU_DEFAULT_VID = PathUtils.buildPath(baseRoot, DIR_VID);
+        this.PATH_SANKAKU_DEFAULT_PIC = PathUtils.buildPath(PATH_SANKAKU_BASE_ROOT, DIR_PIC);
+        this.PATH_SANKAKU_DEFAULT_VID = PathUtils.buildPath(PATH_SANKAKU_BASE_ROOT, DIR_VID);
         // 初始化默认路径 和 已经分类的特殊路径
         Map pics = new HashMap();
         Map vids = new HashMap();
-        File[] baseRootChildrenFiles = new File(baseRoot).listFiles(PathUtils.aimFileFilter());
+        File[] baseRootChildrenFiles = new File(PATH_SANKAKU_BASE_ROOT).listFiles(PathUtils.aimFileFilter());
         extractPathInfo(baseRootChildrenFiles, pics, vids);
         for (int i = 0; i < addRoots.length; i++) {
             String addPoot = PathUtils.buildPath(addRoots[i],DIR_SANKAKU);
             File[] addRootChildrenFiles = new File(addPoot).listFiles(PathUtils.aimFileFilter());
             extractPathInfo(addRootChildrenFiles,pics,vids);
         }
+        PATH_SANKAKU_PICS = pics;
+        PATH_SANKAKU_VIDS = vids;
 
     }
 
     private void extractPathInfo(File[] childrenDir, Map picMap, Map vidMap) {
+        System.out.println(childrenDir.length);
         for (int i = 0; i < childrenDir.length; i++) {
             String[] artists = childrenDir[i].list();
             String childDirName = childrenDir[i].getName();
@@ -82,43 +90,74 @@ public class NewSourceManager {
             else if (childDirName.startsWith("vid")
                     || childDirName.startsWith("V-")
                     || childDirName.startsWith("视-"))
-                picMap.put(PathUtils.buildPath(childrenDir[i].getPath()), Arrays.asList(artists));
+                vidMap.put(PathUtils.buildPath(childrenDir[i].getPath()), Arrays.asList(artists));
         }
+        System.out.println("------------");
+        System.out.println(picMap);
+        System.out.println(vidMap);
+    }
+    /**
+     * 获取临时文件路径
+     * */
+    public String getTempPath(){
+        return PathUtils.buildPath(baseRoot,"tmp");
+    }
+    /**
+     * 根据 ArtistTask 重置 作者信息
+     * */
+    public void touchArtist(ArtistTaskController artistTask){
+
+    }
+    public void touchArtist(String name){
+        sourceService.touchArtist(name);
+    }
+    /**
+     * 写入作品信息
+     * */
+    public void saveArtworkInfo(ArtworkInfo info){
+        sourceService.addArtworkInfo(info);
     }
     /**
      * 获取作者已经收录的作品数量
      * */
     public int getArtworkNumOfArtist(AimType aimType, String name){
         if(aimType == AimType.ARTIST){
-            return 10;
-
+            return sourceService.getArtistWorkNum(name);
         }else if(aimType == AimType.COPYRIGHTL){
-            return 10;
-        }
-        return 10;
+            throw new RuntimeException("代码没写完");
 
+        }else{
+            throw new RuntimeException("代码没写完");
+        }
+
+    }
+    /**
+     * 获取作者已经收录的 sanCode
+     * */
+    public List<String> getSanCodeOfArtist(String artistName){
+        return sourceService.getArtworkSanCodes(artistName);
     }
     /**
      * 获取作品应该放在的路径
      * 1.已经存在，返回当前位置 2.返回默认路径
      * */
-    public String getArtworkPathOfAim(AimType aimType, String artworkName,String aimName){
+    public String getArtworkDicOfAimArtist(AimType aimType, String artworkName, String aimName){
         String aimFileName = transformAimToFile(aimName);
         // 遍历已收录，看看是不是已经存在
         if(PathUtils.isVideo(artworkName)){
             Iterator<Map.Entry<String, List<String>>> iterator = PATH_SANKAKU_VIDS.entrySet().iterator();
             while (iterator.hasNext()){
                 Map.Entry<String, List<String>> entry = iterator.next();
-                if(entry.getValue().equals(aimFileName))
-                    return PathUtils.buildPath(entry.getKey(),artworkName);
+                if(entry.getValue().contains(aimFileName))
+                    return PathUtils.buildPath(entry.getKey(),aimFileName);
             }
             return PathUtils.buildPath(PATH_SANKAKU_DEFAULT_VID,aimFileName);
         }else{
             Iterator<Map.Entry<String, List<String>>> iterator = PATH_SANKAKU_PICS.entrySet().iterator();
             while (iterator.hasNext()){
                 Map.Entry<String, List<String>> entry = iterator.next();
-                if(entry.getValue().equals(aimFileName))
-                    return PathUtils.buildPath(entry.getKey(),artworkName);
+                if(entry.getValue().contains(aimFileName))
+                    return PathUtils.buildPath(entry.getKey(),aimFileName);
             }
             return PathUtils.buildPath(PATH_SANKAKU_DEFAULT_PIC,aimFileName);
         }

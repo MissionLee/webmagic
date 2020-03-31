@@ -20,6 +20,10 @@ public class ArtworkInfo {
     private static String FILE_PATH = "info/artworkInfo.jsonline";
     private static final String[] emptyStringArray = new String[0];
 
+    public String sanCode;
+    public String relativePath;
+
+
     // 文件名
     private String name;
     // 格式

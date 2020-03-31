@@ -2,18 +2,14 @@ package pers.missionlee.webmagic.spider.newsankaku;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pers.missionlee.webmagic.spider.newsankaku.task.Task;
+import pers.missionlee.webmagic.spider.newsankaku.task.TaskController;
 import pers.missionlee.webmagic.spider.newsankaku.type.WorkMode;
 import pers.missionlee.webmagic.spider.newsankaku.utlis.Downloader;
 import pers.missionlee.webmagic.spider.newsankaku.utlis.SpiderUtils;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 import pers.missionlee.webmagic.spider.sankaku.manager.SourceManager;
-import pers.missionlee.webmagic.spider.sankaku.pageprocessor.SankakuDownloadSpider;
-import pers.missionlee.webmagic.utils.TimeLimitedHttpDownloader;
-import sun.security.provider.ConfigFile;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
-import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
 import us.codecraft.webmagic.selector.Html;
 import us.codecraft.webmagic.selector.Selectable;
@@ -30,9 +26,9 @@ import java.util.List;
 public class TaskSpider implements PageProcessor {
     Logger logger = LoggerFactory.getLogger(TaskSpider.class);
 
-    private Task task;
+    private TaskController task;
 
-    public TaskSpider(Task task) {
+    public TaskSpider(TaskController task) {
         this.task = task;
     }
 
@@ -58,7 +54,7 @@ public class TaskSpider implements PageProcessor {
 
     @Override
     public Site getSite() {
-        return null;
+        return SpiderUtils.site;
     }
 
     /**
@@ -75,13 +71,15 @@ public class TaskSpider implements PageProcessor {
             int added = 0;
             for (String url :
                     urlList) {
+                // 此处获得 url形式为 /post/show/5287781
                 if (task.addTarget(url)) {
-                    page.addTargetRequest(SpiderUtils.BASE_URL + url);
+                    page.addTargetRequest(url);
                     added++;
                 } else {
                     task.confirmRel(SpiderUtils.BASE_URL + url);
                 }
             }
+            logger.info("新增："+added+" 页面:"+page.getUrl().toString());
             return added;
         }
         return 0;
@@ -99,7 +97,9 @@ public class TaskSpider implements PageProcessor {
         Html html = page.getHtml();
         Target target = extractDownloadTargetInfoFromDetailPage(html);
         ArtworkInfo artworkInfo = extractArtworkInfoFromDetailPage(page,target);
+        System.out.println(artworkInfo);
         try {
+
             Downloader.download(target.targetUrl,target.targetName,page.getUrl().toString(),task,artworkInfo);
         } catch (IOException e) {
             e.printStackTrace();
@@ -196,6 +196,9 @@ public class TaskSpider implements PageProcessor {
         artworkInfo.setTagGenre(genreList);
         artworkInfo.setTagMeta(metaList);
         artworkInfo.setTakeTime(System.currentTimeMillis());
+
+        artworkInfo.sanCode = page.getUrl().toString().substring(page.getUrl().toString().lastIndexOf("/")+1);
+
         return artworkInfo;
     }
 

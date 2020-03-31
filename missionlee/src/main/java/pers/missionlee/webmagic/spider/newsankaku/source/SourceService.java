@@ -47,7 +47,6 @@ public class SourceService {
     static Map<String, Integer> artistNeedUpdate = new HashMap<>();
     Map<String, Integer> simpleArtist;
 
-    NewSourceManager newSourceManager;
     static {
         try {
             // 解析MyBatis配置文件
@@ -80,7 +79,7 @@ public class SourceService {
             e.printStackTrace();
         }
     }
-    public SourceService(NewSourceManager sourceManager){this.newSourceManager = sourceManager;}
+    public SourceService(){}
 
     public List<String> getArtists(boolean onlyNeedUpdate, int minLevel) {
         List<String> aimList = new ArrayList<>();
@@ -142,6 +141,18 @@ public class SourceService {
             return true;
         return false;
     }
+    /**
+     * 记录作者作品被更新的时间，保证作者 is_target  = 1
+     * */
+    public boolean touchArtist(String name){
+        Map<String,Object> params = new HashMap<>();
+        params.put("theName",name);
+        params.put("time",System.currentTimeMillis()/1000);
+        int updated = sqlSession.update("san.refreshUpdateTime",params);
+        return updated == 1;
+
+    }
+
     public void confirmArtworkArtistRel(String fullUrl,String artistName){
         String sanCode = fullUrl.substring(fullUrl.lastIndexOf("/")+1);
         Map<String,Object> map = new HashMap<>();
@@ -165,38 +176,23 @@ public class SourceService {
             System.out.println("验证作者作品关系时，未找到指定作者");
         }
     }
-    public void addArtworkInfo(String artist, ArtworkInfo ar) {
+    public void addArtworkInfo(ArtworkInfo ar) {
         try {
 
-            String sanCode = ar.getAddress().substring(ar.getAddress().lastIndexOf("/") + 1);
-            String relativePath = newSourceManager.getArtistPath(SourceManager.SourceType.SANKAKU, ar.getName(), artist).replace("E:/ROOT", "");
-            String fileName = ar.getName();
-            String fileSize = ar.getFileSize();
-            String postDate = ar.getPostDate();
-            String rating = ar.getRating();
-            String resolutionRatio = ar.getResolutionRatio();
-//                int status = 1;
-            // 关闭了 配置文件 remove 机制，就算找不到文件，现在不改动信息文件
-            int status = 2; // 1 正常 2 丢失 3 删除
-            if (sourceManager.existInDB(SourceManager.SourceType.SANKAKU, artist, fileName)) {
-                System.out.println("文件存在 " + artist + "  |  " + fileName);
-                status = 1;
-            }
+
             Long createTime = ar.getTakeTime();
             Map<String, Object> artworkInfoMap = new HashMap<>();
-            artworkInfoMap.put("sanCode", sanCode);
-            artworkInfoMap.put("relativePath", relativePath);
-            artworkInfoMap.put("fileName", fileName);
-            artworkInfoMap.put("fileSize", fileSize);
-            artworkInfoMap.put("postDate", postDate);
-            artworkInfoMap.put("rating", rating);
-            artworkInfoMap.put("resolutionRatio", resolutionRatio);
-            artworkInfoMap.put("status", status);
+            artworkInfoMap.put("sanCode", ar.sanCode);
+            artworkInfoMap.put("relativePath", ar.relativePath);
+            artworkInfoMap.put("fileName", ar.getName());
+            artworkInfoMap.put("fileSize", ar.getFileSize());
+            artworkInfoMap.put("postDate", ar.getPostDate());
+            artworkInfoMap.put("rating", ar.getRating());
+            artworkInfoMap.put("resolutionRatio", ar.getResolutionRatio());
+            artworkInfoMap.put("status", 1);
             artworkInfoMap.put("fileFormat", ar.getFormat());
             artworkInfoMap.put("createTime", createTime);
             artworkInfoMap.put("information", ar.toString());
-            // System.out.println(map);
-
             Boolean stored = false;
             try {
                 // todo 2.1 作品信息写入数据库
@@ -204,34 +200,14 @@ public class SourceService {
                 sqlSession.commit();
             } catch (Exception e) {
                 logger.info("已有作品");
-                // System.out.println("写入作品信息失败");
-                // todo 2.1.1 如果作品的 名称 或者 sancode 重复了，都会报错
-                // 1. 作品可能重复（也就是 一个作品有多个作者，但是实际上 已经下载了多份） 重复就会报错
-                // 2. 这段代码跑过多次
-                Map<String, Object> map1 = sqlSession.selectOne("san.findArtworkWithSanCode", sanCode);
-                if (relativePath.equals(map1.get("relativePath"))) {
-                    // 如果 相对路径一样，表示代码跑重复了，没啥问题
-                    logger.warn("已有作品在当前用户文件夹下");
-                } else {
-                    // 如果 当前路径和库里面的路径不一样，表示 真的重复了，删除后面出现的
-                    logger.warn("这是个重复的作品-多个作者 删除当前这个");
-                    String depFullPath = sourceManager.getArtistPath(SourceManager.SourceType.SANKAKU, ar.getName(), artist) + ar.getName();
-                    System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-                    System.out.println("重复/删除" + depFullPath);
-//                    FileUtils.writeStringToFile(depFile, depFullPath + "\n", "utf8", true);
-//                    new File(depFullPath).delete();
-                }
                 stored = true;
             }
             if (true) { // 如果信息没有存储过： 可以相信只要存储过一次，所有的信息存储都是玩完整的
                 //  ！！！ 事实证明 作品被存储过 也不一定 信息完整
                 // 作者 ----------
                 Map<String, Object> params = new HashMap<>();
-                params.put("sanCode", sanCode);
+                params.put("sanCode", ar.sanCode);
                 logger.info("添加作者关系" + ar.getTagArtist());
-                if (ar.getTagArtist().size() == 0) {
-                    logger.error("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-                }
                 for (String artistName : ar.getTagArtist()) {
                     BigInteger id;
                     // 查询 名称对应的作者id

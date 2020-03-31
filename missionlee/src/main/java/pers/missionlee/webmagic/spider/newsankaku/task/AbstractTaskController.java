@@ -1,22 +1,48 @@
 package pers.missionlee.webmagic.spider.newsankaku.task;
 
+import com.alibaba.fastjson.JSON;
+import pers.missionlee.webmagic.spider.newsankaku.source.NewSourceManager;
 import pers.missionlee.webmagic.spider.newsankaku.type.AimType;
 import pers.missionlee.webmagic.spider.newsankaku.type.WorkMode;
-import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 
-import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
-public  class AbstractTask implements Task{
+public abstract class AbstractTaskController implements TaskController {
+    protected String[] aimKeys;
+    protected AimType aimType;
+    protected int aimNum;
+    protected String[] startUrls;
+    protected long sleepTime = 100;
+    protected List<String> storedSanCode;
+    protected List<String> aimSanCode = new ArrayList<>();
 
-    private AimType aimType;
-    private String[] startUrls;
-    private long sleepTime;
-    private List<String> storedSanCode;
-    private List<String> aimSanCode;
-    private WorkMode workMode;
-    private String tempPath;
-    private int retryLimit;
+    protected NewSourceManager sourceManager;
+
+
+    public AbstractTaskController(NewSourceManager newSourceManager) {
+        this.sourceManager = newSourceManager;
+    }
+
+    @Override
+    public void setStartUrls(String[] urls) {
+
+    }
+
+    protected WorkMode workMode;
+    protected String tempPath;
+    protected int retryLimit = 3;
+
+    @Override
+    public void setAimKeys(String... keys) {
+        this.aimKeys = keys;
+    }
+
+    @Override
+    public String[] getAimKeys() {
+        return aimKeys;
+    }
+
     @Override
     public void setAimType(AimType aimType) {
         this.aimType = aimType;
@@ -28,13 +54,13 @@ public  class AbstractTask implements Task{
     }
 
     @Override
-    public String[] getStartUrls() {
-        return startUrls;
+    public void setAimNum(int num) {
+        this.aimNum = num;
     }
 
     @Override
-    public void setStartUrls(String[] urls) {
-        this.startUrls = urls;
+    public int getAimNum() {
+        return aimNum;
     }
 
     @Override
@@ -50,6 +76,7 @@ public  class AbstractTask implements Task{
     @Override
     public boolean addTarget(String fullUrl) {
         String sanCode = fullUrl.substring(fullUrl.lastIndexOf("/")+1);
+        System.out.println(sanCode);
         if(storedSanCode.contains(sanCode)) return false;
         else if(aimSanCode.contains(sanCode)) return false;
         else{
@@ -79,7 +106,7 @@ public  class AbstractTask implements Task{
 
     @Override
     public String getTempPath() {
-        return tempPath;
+        return sourceManager.getTempPath();
     }
 
     @Override
@@ -92,8 +119,14 @@ public  class AbstractTask implements Task{
         return retryLimit;
     }
 
+
     @Override
-    public boolean storeFile(File tempFile, String fileName, ArtworkInfo artworkInfo) {
-        return false;
+    public String getNumberCheckUrl() {
+        return null;
+    }
+
+    @Override
+    public String toString() {
+        return JSON.toJSONString(this);
     }
 }

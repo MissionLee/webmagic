@@ -71,7 +71,8 @@
 	<update id="refreshUpdateTime" parameterType="map">
 		UPDATE SAN_ARTIST SET
 		`update_time` = CURRENT_TIMESTAMP ,
-		`aim_update_time` = FROM_UNIXTIME(#{time})
+		`aim_update_time` = FROM_UNIXTIME(#{time}),
+		`is_target` = 1
 		where `name` = #{theName}
 	</update>
     <insert id="insertArtist" parameterType="map" useGeneratedKeys="true" keyProperty="artist_id">

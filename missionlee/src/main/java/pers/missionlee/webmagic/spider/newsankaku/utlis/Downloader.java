@@ -2,9 +2,8 @@ package pers.missionlee.webmagic.spider.newsankaku.utlis;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pers.missionlee.webmagic.spider.newsankaku.task.Task;
+import pers.missionlee.webmagic.spider.newsankaku.task.TaskController;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
-import pers.missionlee.webmagic.utils.TimeLimitedHttpDownloader;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -86,80 +85,90 @@ public class Downloader {
         }
     }
 
-    public static boolean download(String urlStr, String filename, String referer, Task task, ArtworkInfo artworkInfo) throws IOException {
+    public static boolean download(String urlStr, String filename, String referer, TaskController task, ArtworkInfo artworkInfo) throws IOException {
+        System.out.println("download");
         boolean success = false; // 下载成功
         boolean stored = false; // 保存成功
         String tmpPath = task.getTempPath();
         int retry = task.getRetryLimit();
         while (!(success && stored) && retry-- > 0) { // 如果下载和保存不成功，并且还没超过重试限制，级重试
-            InputStream in = null;
-            OutputStream out = null;
-            HttpURLConnection connection = null;
-            String randomName = "random";
-            try {
-                URL url = new URL(urlStr);
-                connection = (HttpURLConnection) url.openConnection();
-                formatConnection(referer, connection);
-                long startTime = System.currentTimeMillis();
-                int fileSize = connection.getContentLength();
-                int responseCode = connection.getResponseCode();
-                if (200 == responseCode) {
-                    in = connection.getInputStream();
-                    long getInputStreamTime = System.currentTimeMillis();
-                    randomName = java.util.UUID.randomUUID().toString();
-                    out = new FileOutputStream(tmpPath + randomName);
-                    CallableStreamDownloader downloader = new CallableStreamDownloader(in, out, fileSize, filename);
-                    Future<Object> future = executorService.submit(downloader);
-                    long timeout = fileSize / (downloadSpeedLimit * 1024);
-                    if (timeout > MAX_DOWNLOAD_LIMIT_SECONDS)
-                        timeout = MAX_DOWNLOAD_LIMIT_SECONDS;
-                    boolean downloaded = (Boolean) future.get(timeout, TimeUnit.SECONDS);
-                    if (downloaded)
-                        success = true;
-                    long endTime = System.currentTimeMillis();
-                    logger.info("下载成功[" + (3 - retry) + "]:[大小:" + fileSize + " | 总耗时:" + (endTime - startTime) / 1000 + " | 速度[K/S]:" + ((fileSize * 1000 / 1024) / (endTime - getInputStreamTime)) + " | " + filename + "]");
+            if(task.existOnDisk(filename)){
+                // 已经下载了，但是没有对应的数据记录
+                System.out.println("已经存在该文件 "+filename);
+                success = true;
+                stored = true;
+            }else{
+                System.out.println("尝试下载：" + (task.getRetryLimit() - retry));
+                InputStream in = null;
+                OutputStream out = null;
+                HttpURLConnection connection = null;
+                String randomName = "random";
+                try {
+                    URL url = new URL(urlStr);
+                    connection = (HttpURLConnection) url.openConnection();
+                    formatConnection(referer, connection);
+                    long startTime = System.currentTimeMillis();
+                    int fileSize = connection.getContentLength();
+                    int responseCode = connection.getResponseCode();
+                    if (200 == responseCode) {
+                        in = connection.getInputStream();
+                        long getInputStreamTime = System.currentTimeMillis();
+                        randomName = java.util.UUID.randomUUID().toString();
+                        out = new FileOutputStream(tmpPath + randomName);
+                        CallableStreamDownloader downloader = new CallableStreamDownloader(in, out, fileSize, filename);
+                        Future<Object> future = executorService.submit(downloader);
+                        long timeout = fileSize / (downloadSpeedLimit * 1024);
+                        if (timeout > MAX_DOWNLOAD_LIMIT_SECONDS)
+                            timeout = MAX_DOWNLOAD_LIMIT_SECONDS;
+                        boolean downloaded = (Boolean) future.get(timeout, TimeUnit.SECONDS);
+                        if (downloaded)
+                            success = true;
+                        long endTime = System.currentTimeMillis();
+                        logger.info("下载成功[" + (3 - retry) + "]:[大小:" + fileSize + " | 总耗时:" + (endTime - startTime) / 1000 + " | 速度[K/S]:" + ((fileSize * 1000 / 1024) / (endTime - getInputStreamTime)) + " | " + filename + "]");
 
-                } else {
-                    logger.error("下载失败[" + (3 - retry) + "]:服务器响应- " + responseCode + " " + filename);
-                }
-
-            } catch (MalformedURLException e) {
-                logger.error("下载失败[" + (3 - retry) + "]:错误的URL " + filename + urlStr + e.getMessage());
-            } catch (ProtocolException e) {
-                logger.error("下载失败[" + (3 - retry) + "]:Connection配置错误" + filename + e.getMessage());
-            } catch (IOException e) {
-                logger.error("下载失败[" + (3 - retry) + "]:建立输入流/输出流 出错或超时" + filename + e.getMessage());
-            } catch (InterruptedException e) {
-                logger.error("下载失败[" + (3 - retry) + "]:下载任务意外中断" + filename + e.getMessage());
-            } catch (ExecutionException e) {
-                logger.error("下载失败[" + (3 - retry) + "]:执行失败" + filename + e.getMessage());
-            } catch (TimeoutException e) {
-                logger.error("下载失败[" + (3 - retry) + "]:下载超时" + filename);
-            } finally {
-                // 下面三个 if的顺序是有要设计的，只要 out.close执行成功，就可以进一步对文件进行操作
-                // in.close 可能会报错，并且因为 InputStream是从网络资源中获取的，所以报错概率也很大
-                // 但是此时实际上已经成功下载了文件，所以我们用下面的顺序来处理 finally
-                if (out != null)
-                    out.close();
-
-                if (success) {// 如果下载成功 临时名称，改为真正名称
-                    File tmpFile = new File(tmpPath + randomName);
-                    stored = task.storeFile(tmpFile, filename, artworkInfo);
-                    if (stored)
-                        logger.info("临时文件转存成功 " + filename);
-                    else {
-                        logger.error("临时文件转存失败 " + filename);
-
+                    } else {
+                        logger.error("下载失败[" + (3 - retry) + "]:服务器响应- " + responseCode + " " + filename);
                     }
-                } else {//如果下载失败 （超时等其他错误）  注意 stream 必须close之后，文件才能delete
-                    new File(tmpPath + randomName).delete();
-                }
-                if (in != null)
-                    in.close();
-                if (connection != null)
-                    connection.disconnect();
 
+                } catch (MalformedURLException e) {
+                    logger.error("下载失败[" + (3 - retry) + "]:错误的URL " + filename + urlStr + e.getMessage());
+                } catch (ProtocolException e) {
+                    logger.error("下载失败[" + (3 - retry) + "]:Connection配置错误" + filename + e.getMessage());
+                } catch (IOException e) {
+                    logger.error("下载失败[" + (3 - retry) + "]:建立输入流/输出流 出错或超时" + filename + e.getMessage());
+                } catch (InterruptedException e) {
+                    logger.error("下载失败[" + (3 - retry) + "]:下载任务意外中断" + filename + e.getMessage());
+                } catch (ExecutionException e) {
+                    logger.error("下载失败[" + (3 - retry) + "]:执行失败" + filename + e.getMessage());
+                } catch (TimeoutException e) {
+                    logger.error("下载失败[" + (3 - retry) + "]:下载超时" + filename);
+                } finally {
+                    // 下面三个 if的顺序是有要设计的，只要 out.close执行成功，就可以进一步对文件进行操作
+                    // in.close 可能会报错，并且因为 InputStream是从网络资源中获取的，所以报错概率也很大
+                    // 但是此时实际上已经成功下载了文件，所以我们用下面的顺序来处理 finally
+                    if (out != null)
+                        out.close();
+
+                    if (success) {// 如果下载成功 临时名称，改为真正名称
+                        File tmpFile = new File(tmpPath + randomName);
+                        stored = task.storeFile(tmpFile, filename, artworkInfo);
+                        if (stored)
+                            logger.info("临时文件转存成功 " + filename);
+                        else {
+                            logger.error("临时文件转存失败 " + filename);
+
+                        }
+                    } else {//如果下载失败 （超时等其他错误）  注意 stream 必须close之后，文件才能delete
+                        new File(tmpPath + randomName).delete();
+                    }
+                    if (in != null)
+                        in.close();
+                    if (connection != null)
+                        connection.disconnect();
+
+                }
             }
+
 
         }
         return success&&stored;
