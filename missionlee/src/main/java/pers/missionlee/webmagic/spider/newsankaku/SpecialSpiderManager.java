@@ -6,6 +6,8 @@ import pers.missionlee.webmagic.spider.newsankaku.task.TaskController;
 import pers.missionlee.webmagic.spider.newsankaku.type.AimType;
 import pers.missionlee.webmagic.spider.newsankaku.type.WorkMode;
 import pers.missionlee.webmagic.spider.newsankaku.utlis.SpiderUtils;
+import pers.missionlee.webmagic.spider.sankaku.manager.SourceManager;
+import pers.missionlee.webmagic.spider.sankaku.manager.SpiderManager;
 import pers.missionlee.webmagic.utils.ChromeBookmarksReader;
 import us.codecraft.webmagic.Spider;
 
@@ -35,7 +37,7 @@ public class SpecialSpiderManager {
     }
 
     public void updateArtist(String name, WorkMode workMode) {
-        TaskController artistTask = new ArtistTaskController(newSourceManager,name);
+        TaskController artistTask = new ArtistTaskController(newSourceManager, name);
 
         artistTask.setWorkMode(workMode); // 更新或新建
         if (workMode == WorkMode.NEW) {
@@ -61,6 +63,7 @@ public class SpecialSpiderManager {
     public void updateDOA() {
 
     }
+
     public void downLoadChromeArtistDir(String dir) throws IOException {
         ChromeBookmarksReader reader = new ChromeBookmarksReader(ChromeBookmarksReader.defaultBookmarkpath);
         List<Map> artistList = reader.getBookMarkListByDirName(dir);
@@ -68,20 +71,23 @@ public class SpecialSpiderManager {
         for (Map bookmark :
                 artistList) {
             System.out.println(bookmark.get("url"));
-            String artistName = SpiderUtils.urlDeFormater( bookmark.get("url").toString().split("tags=")[1]);
-            if(newSourceManager.getArtworkNumOfArtist(AimType.ARTIST,artistName) == 0){
+            String artistName = SpiderUtils.urlDeFormater(bookmark.get("url").toString().split("tags=")[1]);
+            if (newSourceManager.getArtworkNumOfArtistDirectly(artistName) == 0
+                    && newSourceManager.getArtworkNumOfArtist(AimType.ARTIST, artistName) == 0) {
                 namelist.add(artistName);
-            }else{
-               //  newSourceManager.touchArtist(artistName);
+                System.out.println(artistName);
+            } else {
+                //  newSourceManager.touchArtist(artistName);
             }
         }
-        System.out.println("本次下载目标["+namelist.size()+"] "+namelist);
+        System.out.println("本次下载目标[" + namelist.size() + "] " + namelist);
         for (String name :
                 namelist) {
-            updateArtist(name,WorkMode.NEW);
+            updateArtist(name, WorkMode.NEW);
         }
 
     }
+
     private TaskController startSpider(TaskController task) {
         NewSpiderRunner runner = new NewSpiderRunner();
         runner.runTask(task);
@@ -89,8 +95,13 @@ public class SpecialSpiderManager {
     }
 
     public static void main(String[] args) throws IOException {
-        SpecialSpiderManager manager = new SpecialSpiderManager(new NewSourceManager("H:\\ROOT","G:\\ROOT"));
-//        manager.updateArtist("jmostro",WorkMode.NEW);
+        SpecialSpiderManager manager = new SpecialSpiderManager(new NewSourceManager("H:\\ROOT", "G:\\ROOT"));
+//        manager.updateArtist("combos & doodles",WorkMode.NEW);
         manager.downLoadChromeArtistDir("san7");
+        // combos &amp; doodles
+
+        SourceManager sourceManager = new SourceManager("H:\\ROOT", "G:\\ROOT");
+        SpiderManager spiderManager = new SpiderManager();
+        spiderManager.update(sourceManager, SourceManager.SourceType.SANKAKU,false,1,false);
     }
 }

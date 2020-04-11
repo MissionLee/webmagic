@@ -92,12 +92,13 @@ public class Downloader {
         String tmpPath = task.getTempPath();
         int retry = task.getRetryLimit();
         while (!(success && stored) && retry-- > 0) { // 如果下载和保存不成功，并且还没超过重试限制，级重试
-            if(task.existOnDisk(filename)){
+            if (task.existOnDisk(filename)) {
                 // 已经下载了，但是没有对应的数据记录
-                System.out.println("已经存在该文件 "+filename);
+                System.out.println("已经存在该文件 " + filename);
+                task.storeFile(new File(""), filename, artworkInfo, true);
                 success = true;
                 stored = true;
-            }else{
+            } else {
                 System.out.println("尝试下载：" + (task.getRetryLimit() - retry));
                 InputStream in = null;
                 OutputStream out = null;
@@ -151,7 +152,7 @@ public class Downloader {
 
                     if (success) {// 如果下载成功 临时名称，改为真正名称
                         File tmpFile = new File(tmpPath + randomName);
-                        stored = task.storeFile(tmpFile, filename, artworkInfo);
+                        stored = task.storeFile(tmpFile, filename, artworkInfo, false);
                         if (stored)
                             logger.info("临时文件转存成功 " + filename);
                         else {
@@ -171,7 +172,7 @@ public class Downloader {
 
 
         }
-        return success&&stored;
+        return success && stored;
 
     }
 

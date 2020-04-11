@@ -9,7 +9,9 @@ import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @description:
@@ -36,6 +38,7 @@ public class ArtistTaskController extends AbstractTaskController {
     private void init(){
         // 获取作者名下 所有的sancode 存入 storedSanCode
         List<String> codes = sourceManager.getSanCodeOfArtist(artistName);
+        System.out.println(codes);
         storedSanCode = codes;
         System.out.println(storedSanCode);
     }
@@ -60,6 +63,8 @@ public class ArtistTaskController extends AbstractTaskController {
         return startUrls;
     }
 
+
+
     @Override
     public String getNumberCheckUrl() {
         return SpiderUtils.getNumberCheckUrl(aimKeys);
@@ -73,33 +78,40 @@ public class ArtistTaskController extends AbstractTaskController {
     }
 
     @Override
-    public boolean storeFile(File tempFile, String fileName, ArtworkInfo artworkInfo) {
-        String aimDic = getArtistPath(artistName,fileName);
-        try {
-            if(!new File(aimDic+fileName).exists())
-            FileUtils.moveFile(tempFile,new File(aimDic+fileName));
-            System.out.println("文件存储成功 "+ aimDic+"/"+fileName);
-            artworkInfo.relativePath = aimDic.substring(aimDic.indexOf(":")+1);
-            System.out.println("保存前artworkInfo： "+artworkInfo);
+    public boolean storeFile(File tempFile, String fileName, ArtworkInfo artworkInfo,boolean infoOnly) {
+        if(infoOnly){
             sourceManager.saveArtworkInfo(artworkInfo);
             return true;
+        }else{
+            String aimDic = getArtistPath(artistName,fileName);
+            try {
+                if(!new File(aimDic+fileName).exists())
+                    FileUtils.moveFile(tempFile,new File(aimDic+fileName));
+                System.out.println("文件存储成功 "+ aimDic+"/"+fileName);
+                artworkInfo.relativePath = aimDic.substring(aimDic.indexOf(":")+1);
+                System.out.println("保存前artworkInfo： "+artworkInfo);
+                sourceManager.saveArtworkInfo(artworkInfo);
+                return true;
 
-        } catch (IOException e) {
-            e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+
         return  false;
 
     }
 
     public String getArtistPath(String artistName,String filename){
         // TODO: 2020-03-31 这里需要对特别的作者名字进行改变
+
         String parentPath = sourceManager.getArtworkDicOfAimArtist(AimType.ARTIST,filename,artistName);
         System.out.println(parentPath);
         return parentPath;
     }
 
     public static void main(String[] args) {
-        ArtistTaskController task = new ArtistTaskController( new NewSourceManager("H:\\ROOT","G:\\ROOT"));
-        task.getArtistPath("li chunfu","a.jpg");
+        ArtistTaskController task = new ArtistTaskController( new NewSourceManager("H:\\ROOT","G:\\ROOT"),"combos & doodles");
+//        task.getArtistPath("li chunfu","a.jpg");
     }
 }

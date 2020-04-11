@@ -226,4 +226,8 @@ public class SpiderUtils {
 //                .replaceAll("%7C","|");
         return originName;
     }
+
+    public static void main(String[] args) throws UnsupportedEncodingException {
+        System.out.println(URLDecoder.decode("combos_%26_doodles".trim(), "UTF8").replaceAll("_", " "));
+    }
 }

@@ -132,11 +132,24 @@ public class NewSourceManager {
 
     }
     /**
+     * 获取直接放在作者名字命名文件夹中的作品数量： 用于快速判断这个作者需要在 新下载工作中进行下载嘛
+     * */
+    public int getArtworkNumOfArtistDirectly(String artistName){
+
+        String picPath = getArtworkDicOfAimArtist(AimType.ARTIST,"a.jpg",artistName);
+        String vidPath = getArtworkDicOfAimArtist(AimType.ARTIST,"a.mp4",artistName);
+        int pic = new File(picPath).exists()?new File(picPath).listFiles().length:0;
+        int vid = new File(vidPath).exists()?new File(vidPath).listFiles().length:0;
+        return pic+vid;
+    }
+    /**
      * 获取作者已经收录的 sanCode
      * */
     public List<String> getSanCodeOfArtist(String artistName){
         return sourceService.getArtworkSanCodes(artistName);
     }
+
+
     /**
      * 获取作品应该放在的路径
      * 1.已经存在，返回当前位置 2.返回默认路径
@@ -164,8 +177,14 @@ public class NewSourceManager {
     }
     // ========= 工具类 =========
     // 有些作者名字叫 a. 最终落盘文件名称为 a，有些作者名字里有不能出现在文件夹名称的字符，所以需要下面两个转换
+    public static Map<String,String> specialName = new HashMap<>();
+    static {
+        specialName.put("xiao shei..","xiao shei__");
+    }
+
     public  String transformAimToFile(String aim){
-        return aim;
+
+        return specialName.containsKey(aim)?specialName.get(aim):aim;
     }
     public  String transformFileToAim(String file){
         return file;
