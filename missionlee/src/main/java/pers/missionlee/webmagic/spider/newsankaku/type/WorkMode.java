@@ -7,6 +7,6 @@ package pers.missionlee.webmagic.spider.newsankaku.type;
  */
 public enum  WorkMode {
     NEW,
-    ALL,
+    UPDATE_ALL,
     UPDATE;
 }

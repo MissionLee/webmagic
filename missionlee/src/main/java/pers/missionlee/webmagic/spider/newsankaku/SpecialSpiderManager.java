@@ -6,8 +6,6 @@ import pers.missionlee.webmagic.spider.newsankaku.task.TaskController;
 import pers.missionlee.webmagic.spider.newsankaku.type.AimType;
 import pers.missionlee.webmagic.spider.newsankaku.type.WorkMode;
 import pers.missionlee.webmagic.spider.newsankaku.utlis.SpiderUtils;
-import pers.missionlee.webmagic.spider.sankaku.manager.SourceManager;
-import pers.missionlee.webmagic.spider.sankaku.manager.SpiderManager;
 import pers.missionlee.webmagic.utils.ChromeBookmarksReader;
 import us.codecraft.webmagic.Spider;
 
@@ -36,7 +34,7 @@ public class SpecialSpiderManager {
 
     }
 
-    public void updateArtist(String name, WorkMode workMode) {
+    public void downloadArtist(String name, WorkMode workMode) {
         TaskController artistTask = new ArtistTaskController(newSourceManager, name);
 
         artistTask.setWorkMode(workMode); // 更新或新建
@@ -52,10 +50,12 @@ public class SpecialSpiderManager {
             Spider.create(taskSpider).addUrl(urls).thread(3).run();
             // 更新作者 信息
             newSourceManager.touchArtist(name);
-        } else if (workMode == WorkMode.ALL) { // 全部获取，遍历目标
+        } else if (workMode == WorkMode.UPDATE_ALL) { // 全部获取，遍历目标
 
         } else if (workMode == WorkMode.UPDATE) {
-
+            String[] urls = artistTask.getStartUrls();
+            TaskSpider taskSpider = new TaskSpider(artistTask);
+            Spider.create(taskSpider).addUrl(urls).thread(3).run();
         }
 
     }
@@ -63,7 +63,10 @@ public class SpecialSpiderManager {
     public void updateDOA() {
 
     }
-
+    // =======================  一下两个入库 为 作者模式 ============================
+    /**
+     * 以作者模式，读取本地 chrome 的书签文件，解析作者名称，并创建对应下载任务
+     * */
     public void downLoadChromeArtistDir(String dir) throws IOException {
         ChromeBookmarksReader reader = new ChromeBookmarksReader(ChromeBookmarksReader.defaultBookmarkpath);
         List<Map> artistList = reader.getBookMarkListByDirName(dir);
@@ -83,11 +86,34 @@ public class SpecialSpiderManager {
         System.out.println("本次下载目标[" + namelist.size() + "] " + namelist);
         for (String name :
                 namelist) {
-            updateArtist(name, WorkMode.NEW);
+            downloadArtist(name, WorkMode.NEW);
         }
 
     }
-
+    /**
+     * 以作者模式，更新指定分析的作者
+     *
+     * maxLevel : 要更新的作者的最高等级（等级越低，优先级越高）
+     * updateLevel : 是否需要刷新当前用户在数据库里面的等级（例如我重排等级，挪动文件夹位置）
+     * forceUpdate: 没到更新时间的作者是否更新（有时候我需要强制更新 0 / 1 这种收藏级别）
+     * */
+    public void downLoadArtistByLevel(int maxLevel,boolean updateLevel,boolean forceUpdate){
+        /**
+         * 1.更新数据库中的作者等级
+         * 2.从数据库中搜索指定等级的作者列表
+         * 3.启动更新
+         * */
+        List<String> artists = newSourceManager.getArtistsByMaxLevel(!forceUpdate,maxLevel);
+        System.out.println("本次任务需要更新："+artists.size());
+        System.out.println(artists);
+        for (String artist :
+                artists) {
+            downloadArtist(artist,WorkMode.UPDATE);
+        }
+    }
+    public void downLoadArtistByLevel(int maxLevel){
+        downLoadArtistByLevel(maxLevel,false,false);
+    }
     private TaskController startSpider(TaskController task) {
         NewSpiderRunner runner = new NewSpiderRunner();
         runner.runTask(task);
@@ -97,11 +123,10 @@ public class SpecialSpiderManager {
     public static void main(String[] args) throws IOException {
         SpecialSpiderManager manager = new SpecialSpiderManager(new NewSourceManager("H:\\ROOT", "G:\\ROOT"));
 //        manager.updateArtist("combos & doodles",WorkMode.NEW);
-        manager.downLoadChromeArtistDir("san7");
         // combos &amp; doodles
+        manager.downloadArtist("sakimichan",WorkMode.UPDATE);
+        manager.downLoadArtistByLevel(0,false,true);
+        manager.downLoadChromeArtistDir("san8");
 
-        SourceManager sourceManager = new SourceManager("H:\\ROOT", "G:\\ROOT");
-        SpiderManager spiderManager = new SpiderManager();
-        spiderManager.update(sourceManager, SourceManager.SourceType.SANKAKU,false,1,false);
     }
 }

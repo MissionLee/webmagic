@@ -9,9 +9,7 @@ import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @description:
@@ -54,7 +52,7 @@ public class ArtistTaskController extends AbstractTaskController {
         }
         if(workMode == WorkMode.NEW){
             startUrls = SpiderUtils.getStartUrls(aimNum,aimKeys);
-        }else if(workMode == WorkMode.ALL){
+        }else if(workMode == WorkMode.UPDATE_ALL){
             startUrls = SpiderUtils.getStartUrls(aimNum,aimKeys);
         }else if(workMode == WorkMode.UPDATE){
             startUrls = new String[1];

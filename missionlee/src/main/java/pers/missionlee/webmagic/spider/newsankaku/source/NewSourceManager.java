@@ -175,18 +175,20 @@ public class NewSourceManager {
             return PathUtils.buildPath(PATH_SANKAKU_DEFAULT_PIC,aimFileName);
         }
     }
+    public List<String> getArtistsByMaxLevel(boolean onlyNeedUpdate,int maxLevel){
+        return sourceService.getArtists(onlyNeedUpdate,maxLevel);
+    }
     // ========= 工具类 =========
     // 有些作者名字叫 a. 最终落盘文件名称为 a，有些作者名字里有不能出现在文件夹名称的字符，所以需要下面两个转换
     public static Map<String,String> specialName = new HashMap<>();
     static {
         specialName.put("xiao shei..","xiao shei__");
     }
-
+    /**
+     * 将目标名称 转换为 文件名，其中需要处理一些特殊名字，例如作者的名字存在不能在文件夹中出现的字符
+     * */
     public  String transformAimToFile(String aim){
-
         return specialName.containsKey(aim)?specialName.get(aim):aim;
     }
-    public  String transformFileToAim(String file){
-        return file;
-    }
+
 }
