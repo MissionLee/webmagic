@@ -1,6 +1,7 @@
 package pers.missionlee.webmagic.spider.newsankaku.task;
 
 import pers.missionlee.webmagic.spider.newsankaku.source.NewSourceManager;
+import pers.missionlee.webmagic.spider.newsankaku.type.WorkMode;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 
 import java.io.File;
@@ -19,16 +20,16 @@ import java.util.List;
  * 每次以 update 模式运行
  * 排除重复策略
  * - 对于已经下载到 ARTIST 文件夹里面的，采取
- *
+ * <p>
  * // TODO: 2020-04-14
  * king of fighters - 拳皇  不知火舞 麻宫雅典娜
  * fatal fury  - 饿狼传说
  * street fighter - 街头霸王
  * art of fighting/ryuko no ken - 龙虎之拳
  * samurai spirits - 侍魂
- *
+ * <p>
  * 主系列 (3D格鬥遊戲系列)
- *
+ * <p>
  * ==========死或生5
  * Dead or Alive（1996）(Sega Saturn 1997) (PlayStation 1998)
  * Dead or Alive 2 （1999）
@@ -52,14 +53,14 @@ import java.util.List;
  * Dead or Alive Xtreme 3 Fortune(PS4版)、Venus(PSV版) (2016)
  * Dead or Alive Xtreme Venus Vacation (2017)（死或生沙灘排球:維納斯假期）（PC端網遊）
  * Dead or Alive Xtreme 3: Scarlet (2019)
- *
+ * <p>
  * 阅读更多：死或生系列（https://zh.moegirl.org/%E6%AD%BB%E6%88%96%E7%94%9F%E7%B3%BB%E5%88%97）
  * 本文引自萌娘百科(https://zh.moegirl.org)，文字内容默认使用《知识共享 署名-非商业性使用-相同方式共享 3.0》协议。
  */
 public class DOATaskController extends AbstractTaskController {
     private static List<String> characters = new ArrayList<>();
     private static List<String> coryRights = new ArrayList<>();
-
+    private static List<String> searchTag = new ArrayList<>();
     static {
         // === DOA 1
         characters.add("kasumi (dead or alive)");// Kasumi（かすみ，霞），初次登场：DOA，配音：丹下樱（2代之前），桑岛法子（3代开始）
@@ -118,14 +119,27 @@ public class DOATaskController extends AbstractTaskController {
 //        coryRights.add("ninja gaiden sigma");//忍者龙剑传Σ
 //        coryRights.add("ninja gaiden sigma 2 ");//忍者龙剑传Σ 2
 //        coryRights.add("ninja gaiden dragon sword");//忍者龙剑传:龙剑
+
+        searchTag.add("3d");
+        searchTag.add("");
     }
 
     public DOATaskController(NewSourceManager newSourceManager) {
         super(newSourceManager);
     }
 
+    /**
+     * 1.
+     */
     @Override
     public String[] getStartUrls() {
+        if (startUrls != null) { // 如果通过 setStartUrls 配置了，就下载指定的
+
+        } else if (workMode == WorkMode.UPDATE) {
+
+        } else if (workMode == WorkMode.UPDATE_ALL || workMode == WorkMode.NEW) {
+
+        }
         return new String[0];
     }
 

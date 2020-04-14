@@ -1,4 +1,4 @@
-package pers.missionlee.webmagic.spider.newsankaku;
+package pers.missionlee.webmagic.spider.newsankaku.spider;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

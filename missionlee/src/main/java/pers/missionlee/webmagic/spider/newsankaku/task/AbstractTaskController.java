@@ -27,7 +27,7 @@ public abstract class AbstractTaskController implements TaskController {
 
     @Override
     public void setStartUrls(String[] urls) {
-
+        this.startUrls = urls;
     }
 
     protected WorkMode workMode;

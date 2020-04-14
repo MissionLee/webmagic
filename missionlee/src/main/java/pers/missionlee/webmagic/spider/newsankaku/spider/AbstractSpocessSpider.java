@@ -1,9 +1,8 @@
-package pers.missionlee.webmagic.spider.newsankaku;
+package pers.missionlee.webmagic.spider.newsankaku.spider;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pers.missionlee.webmagic.spider.newsankaku.task.TaskController;
-import pers.missionlee.webmagic.spider.newsankaku.type.WorkMode;
 import pers.missionlee.webmagic.spider.newsankaku.utlis.Downloader;
 import pers.missionlee.webmagic.spider.newsankaku.utlis.SpiderUtils;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
@@ -18,49 +17,35 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @description:
- * @author: Mission Lee
- * @create: 2020-03-30 19:39
- */
-public class TaskSpider implements PageProcessor {
-    Logger logger = LoggerFactory.getLogger(TaskSpider.class);
+public abstract class AbstractSpocessSpider implements PageProcessor {
+    Logger logger = LoggerFactory.getLogger(ArtistSpider.class);
 
-    private TaskController task;
+    protected TaskController task;
 
-    public TaskSpider(TaskController task) {
+    public AbstractSpocessSpider(TaskController task) {
         this.task = task;
-    }
-
-    @Override
-    public void process(Page page) {
-        String url = page.getUrl().toString();
-        if (url.contains("tags")) {
-            int added = processList(page);
-            if (task.getWorkMode() == WorkMode.UPDATE
-                    && added > 0
-                    && url.contains("date")) {
-                String thisPage = url.substring(url.length() - 1);
-                int thisPageNum = Integer.valueOf(thisPage);
-                if (thisPageNum < 50) {
-                    String urlPrefix = url.substring(0, url.length() - 1);
-                    page.addTargetRequest(urlPrefix + (++thisPageNum));
-                }
-            }
-        } else if (url.startsWith("https://chan.sankakucomplex.com/post/show/")) {
-            processAim(page);
-        }
     }
 
     @Override
     public Site getSite() {
         return SpiderUtils.site;
     }
-
+    /**
+     * 将当前分页下一页加入爬虫任务
+     * */
+    protected void getNextPage(Page page){
+        String url = page.getUrl().toString();
+        String thisPage = url.substring(url.length() - 1);
+        int thisPageNum = Integer.valueOf(thisPage);
+        if (thisPageNum < 50) {
+            String urlPrefix = url.substring(0, url.length() - 1);
+            page.addTargetRequest(urlPrefix + (++thisPageNum));
+        }
+    }
     /**
      * 从列表中提取详情页
      */
-    private int processList(Page page) {
+    protected int processList(Page page) {
         try {
             Thread.sleep(task.getSleepTime());
         } catch (InterruptedException e) {
@@ -88,14 +73,14 @@ public class TaskSpider implements PageProcessor {
     /**
      * 从详情页开始下载
      */
-    private void processAim(Page page) {
+    protected void processAim(Page page) {
         try {
             Thread.sleep(task.getSleepTime());
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         Html html = page.getHtml();
-        Target target = extractDownloadTargetInfoFromDetailPage(html);
+        ArtistSpider.Target target = extractDownloadTargetInfoFromDetailPage(html);
         ArtworkInfo artworkInfo = extractArtworkInfoFromDetailPage(page,target);
         System.out.println(artworkInfo);
         try {
@@ -113,7 +98,7 @@ public class TaskSpider implements PageProcessor {
      */
 
 
-    private ArtworkInfo extractArtworkInfoFromDetailPage(Page page, Target target) {
+    protected ArtworkInfo extractArtworkInfoFromDetailPage(Page page, ArtistSpider.Target target) {
         Html html = page.getHtml();
         // 提取标签信息
         Selectable tagSideBar = html.$("#tag-sidebar");
@@ -210,7 +195,7 @@ public class TaskSpider implements PageProcessor {
     /**
      * 用于分析详情页Html，获取真正要下载的文件信息（主要处理了 1.页面展示缩略图/原图的情况，2.页面为图片/视频/flash文件的情况）
      */
-    private Target extractDownloadTargetInfoFromDetailPage(Html html) {
+    protected Target extractDownloadTargetInfoFromDetailPage(Html html) {
         Target target = new Target();
         List<String> maybe = html.$("#image-link", "href").all();
         if (maybe != null && maybe.size() > 0) {  //如果页面内容是个图片，则存在 #image-link
@@ -236,9 +221,4 @@ public class TaskSpider implements PageProcessor {
         }
         return target;
     }
-
-//    public boolean download(String url,String filename,Page page){
-//        boolean success = TimeLimitedHttpDownloader.downloadWithAutoRetry(url,filename,page.getUrl().toString(),task);
-//
-//    }
 }

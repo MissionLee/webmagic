@@ -1,6 +1,8 @@
 package pers.missionlee.webmagic.spider.newsankaku;
 
 import pers.missionlee.webmagic.spider.newsankaku.source.NewSourceManager;
+import pers.missionlee.webmagic.spider.newsankaku.spider.NumberSpider;
+import pers.missionlee.webmagic.spider.newsankaku.spider.ArtistSpider;
 import pers.missionlee.webmagic.spider.newsankaku.task.ArtistTaskController;
 import pers.missionlee.webmagic.spider.newsankaku.task.TaskController;
 import pers.missionlee.webmagic.spider.newsankaku.type.AimType;
@@ -46,8 +48,8 @@ public class SpecialSpiderManager {
             System.out.println(artistTask);
             // 2. 启动爬取爬虫
             String[] urls = artistTask.getStartUrls();
-            TaskSpider taskSpider = new TaskSpider(artistTask);
-            Spider.create(taskSpider).addUrl(urls).thread(3).run();
+            ArtistSpider artistSpider = new ArtistSpider(artistTask);
+            Spider.create(artistSpider).addUrl(urls).thread(3).run();
             // 更新作者 信息
             newSourceManager.touchArtist(name);
         } else if (workMode == WorkMode.UPDATE_ALL) { // 全部获取，遍历目标
@@ -56,8 +58,8 @@ public class SpecialSpiderManager {
             // 1. 获取启动url（爬虫会自动根据条件“翻页”）
             String[] urls = artistTask.getStartUrls();
             // 2. 启动爬虫
-            TaskSpider taskSpider = new TaskSpider(artistTask);
-            Spider.create(taskSpider).addUrl(urls).thread(3).run();
+            ArtistSpider artistSpider = new ArtistSpider(artistTask);
+            Spider.create(artistSpider).addUrl(urls).thread(3).run();
             // 3. 根据任务情况保存作者信息（计算下次更新时间）
             ((ArtistTaskController)artistTask).finishUpdate();
 
