@@ -47,4 +47,8 @@ public interface TaskController {
     public String getNumberCheckUrl();
 
     public Boolean existOnDisk(String filename);
+
+    public int getSaveNum();
+
+
 }

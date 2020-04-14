@@ -9,6 +9,8 @@ import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 
 import java.io.File;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @description:
@@ -103,13 +105,13 @@ public class NewSourceManager {
         return PathUtils.buildPath(baseRoot,"tmp");
     }
     /**
-     * 根据 ArtistTask 重置 作者信息
+     * touch 作者信息
      * */
-    public void touchArtist(ArtistTaskController artistTask){
-
-    }
     public void touchArtist(String name){
         sourceService.touchArtist(name);
+    }
+    public void touchArtist(String name,Long nextUpdateTime){
+        sourceService.updateArtist(name,nextUpdateTime);
     }
     /**
      * 写入作品信息
@@ -174,6 +176,26 @@ public class NewSourceManager {
             }
             return PathUtils.buildPath(PATH_SANKAKU_DEFAULT_PIC,aimFileName);
         }
+    }
+    /**
+     * 获取作者 Level
+     * */
+    static Pattern priorityPattern = Pattern.compile("-([0-9])-");
+    public int getArtistLevel(String artistName){
+        int priority = 10;
+        String parentPathPic = getArtworkDicOfAimArtist(AimType.ARTIST, ".jpg", artistName);
+        String parentPathVid = getArtworkDicOfAimArtist(AimType.ARTIST, ".mp4", artistName);
+        Matcher matcherPic = priorityPattern.matcher(parentPathPic);
+        Matcher matcherVid = priorityPattern.matcher(parentPathVid);
+        if (matcherPic.find()) {
+            int tmpPriority = Integer.valueOf(matcherPic.group(1));
+            priority = priority > tmpPriority ? tmpPriority : priority;
+        }
+        if (matcherVid.find()) {
+            int tmpPriority = Integer.valueOf(matcherVid.group(1));
+            priority = priority > tmpPriority ? tmpPriority : priority;
+        }
+        return priority;
     }
     public List<String> getArtistsByMaxLevel(boolean onlyNeedUpdate,int maxLevel){
         return sourceService.getArtists(onlyNeedUpdate,maxLevel);

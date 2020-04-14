@@ -147,6 +147,6 @@ public class SpiderManager extends SpiderUtils {
         spiderManager.runWithChromeDir(sourceManager, SourceManager.SourceType.SANKAKU, SpiderTask.TaskType.NEW, "san7", false);
         // 更新某个级别
 
-//         spiderManager.update(sourceManager, SourceManager.SourceType.SANKAKU,false,1,false);
+         spiderManager.update(sourceManager, SourceManager.SourceType.SANKAKU,false,1,false);
     }
 }

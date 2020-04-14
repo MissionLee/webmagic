@@ -6,6 +6,7 @@ import pers.missionlee.webmagic.spider.newsankaku.type.AimType;
 import pers.missionlee.webmagic.spider.newsankaku.type.WorkMode;
 import pers.missionlee.webmagic.spider.newsankaku.utlis.SpiderUtils;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
+import pers.missionlee.webmagic.spider.sankaku.manager.SourceManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -89,6 +90,7 @@ public class ArtistTaskController extends AbstractTaskController {
                 artworkInfo.relativePath = aimDic.substring(aimDic.indexOf(":")+1);
                 System.out.println("保存前artworkInfo： "+artworkInfo);
                 sourceManager.saveArtworkInfo(artworkInfo);
+                this.saveNum++;
                 return true;
 
             } catch (IOException e) {
@@ -107,7 +109,38 @@ public class ArtistTaskController extends AbstractTaskController {
         System.out.println(parentPath);
         return parentPath;
     }
-
+    public void finishUpdate(){
+        int level = sourceManager.getArtistLevel(artistName);
+        int times = 50 ; // 30 天
+        boolean doUpdate = false; // 最终是否更新的标志位
+        if (level == 5) {
+            doUpdate = false;
+//            times = 36000; // 5表示废弃 用不更新
+        } else if (level == 4) {
+            times = 360;
+        } else if (level == 3) {
+            times = 180;
+        } else if (level == 2) {
+            times = 90;
+        } else if (level == 1 && getSaveNum() > 0) {
+            times = 20; // 1级 有更新 20 天更新
+        } else if (level == 0) {
+            if (getSaveNum() == 0)
+                times = 30; // 0 级本次没更新下次 30天更新
+            else times = 15; // 0 级别 本次有个更新，下次 15天更新
+        }
+        if (doUpdate ) {
+            long aimUpdateTime = System.currentTimeMillis() + times * 7 * 24 * 60 * 60 * 1000L;
+            // 设定下次更新的时间
+            // sankakuUpdateInfo.put(artistName, aimUpdateTime);
+            // FileUtils.writeStringToFile(new File(sankakuDefaultInfoPath + UPDATE_INFO_FILE_NAME),
+            //         JSON.toJSONString(sankakuUpdateInfo), "utf8", false);
+            sourceManager.touchArtist(artistName, aimUpdateTime / 1000);
+//            logger.info("更新完毕：" + artistName + "\t下次更新：" + times + "天 不再更新文本记录，只更新数据库记录");
+        } else {
+//            logger.warn("未做更近记录 ##########");
+        }
+    }
     public static void main(String[] args) {
         ArtistTaskController task = new ArtistTaskController( new NewSourceManager("H:\\ROOT","G:\\ROOT"),"combos & doodles");
 //        task.getArtistPath("li chunfu","a.jpg");

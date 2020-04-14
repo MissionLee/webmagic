@@ -9,13 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractTaskController implements TaskController {
-    protected String[] aimKeys;
+    protected String[] aimKeys;//搜索关键词 例如作者名称
     protected AimType aimType;
     protected int aimNum;
     protected String[] startUrls;
     protected long sleepTime = 100;
     protected List<String> storedSanCode;
     protected List<String> aimSanCode = new ArrayList<>();
+    protected int saveNum = 0;// 本次下载成功保存数量
 
     protected NewSourceManager sourceManager;
 
@@ -128,5 +129,10 @@ public abstract class AbstractTaskController implements TaskController {
     @Override
     public String toString() {
         return JSON.toJSONString(this);
+    }
+
+    @Override
+    public int getSaveNum() {
+        return saveNum;
     }
 }

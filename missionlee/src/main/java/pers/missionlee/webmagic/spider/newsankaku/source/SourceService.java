@@ -340,7 +340,6 @@ public class SourceService {
         params.put("theName",artistName);
         params.put("time",aimUpdateTimeStampSeconds);
         int updated = sqlSession.update("san.refreshUpdateTime",params);
-        sqlSession.commit();
         return updated ==1;
     }
     synchronized  public  void updateArtistPathAndLevel(String name,int pic_level,String pic_path,int vid_level,String vid_path){
