@@ -1,15 +1,20 @@
 package pers.missionlee.webmagic.spider.newsankaku;
 
-import pers.missionlee.webmagic.spider.newsankaku.source.NewSourceManager;
+import pers.missionlee.webmagic.spider.newsankaku.source.ArtistSourceManager;
+import pers.missionlee.webmagic.spider.newsankaku.source.DOASourceManager;
+import pers.missionlee.webmagic.spider.newsankaku.source.SourceManager;
+import pers.missionlee.webmagic.spider.newsankaku.spider.DOASpider;
 import pers.missionlee.webmagic.spider.newsankaku.spider.NumberSpider;
 import pers.missionlee.webmagic.spider.newsankaku.spider.ArtistSpider;
 import pers.missionlee.webmagic.spider.newsankaku.task.ArtistTaskController;
+import pers.missionlee.webmagic.spider.newsankaku.task.DOATaskController;
 import pers.missionlee.webmagic.spider.newsankaku.task.TaskController;
 import pers.missionlee.webmagic.spider.newsankaku.type.AimType;
 import pers.missionlee.webmagic.spider.newsankaku.type.WorkMode;
 import pers.missionlee.webmagic.spider.newsankaku.utlis.SpiderUtils;
 import pers.missionlee.webmagic.utils.ChromeBookmarksReader;
 import us.codecraft.webmagic.Spider;
+import us.codecraft.webmagic.processor.PageProcessor;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,10 +27,10 @@ import java.util.Map;
  * @create: 2020-03-30 19:10
  */
 public class SpecialSpiderManager {
-    public NewSourceManager newSourceManager;
+    public SourceManager source;
 
-    public SpecialSpiderManager(NewSourceManager newSourceManager) {
-        this.newSourceManager = newSourceManager;
+    public SpecialSpiderManager(SourceManager source) {
+        this.source = source;
     }
 
     public void updateCopyRight(String name, boolean official) {
@@ -37,7 +42,7 @@ public class SpecialSpiderManager {
     }
 
     public void downloadArtist(String name, WorkMode workMode) {
-        TaskController artistTask = new ArtistTaskController(newSourceManager, name);
+        TaskController artistTask = new ArtistTaskController(source, name);
 
         artistTask.setWorkMode(workMode); // 更新或新建
         if (workMode == WorkMode.NEW) {
@@ -51,7 +56,7 @@ public class SpecialSpiderManager {
             ArtistSpider artistSpider = new ArtistSpider(artistTask);
             Spider.create(artistSpider).addUrl(urls).thread(3).run();
             // 更新作者 信息
-            newSourceManager.touchArtist(name);
+            ((ArtistSourceManager) source).touchArtist(name);
         } else if (workMode == WorkMode.UPDATE_ALL) { // 全部获取，遍历目标
 
         } else if (workMode == WorkMode.UPDATE) {
@@ -67,7 +72,18 @@ public class SpecialSpiderManager {
 
     }
 
-    public void updateDOA() {
+    public void updateDOA(WorkMode workMode) {
+//        SourceManager sourceManager = new DOASourceManager(baseRoot,addRoots);
+        TaskController doaTask = new DOATaskController(source);
+        doaTask.setWorkMode(workMode);
+        PageProcessor pageProcessor = new DOASpider(doaTask);
+        Spider.create(pageProcessor).addUrl(doaTask.getStartUrls()).thread(3).run();
+
+    }
+    public void updateDOACharacter(WorkMode workMode,String character){
+
+    }
+    public void updateDOACopyRight(WorkMode workMode,String copyRight){
 
     }
     // =======================  一下两个入库 为 作者模式 ============================
@@ -83,8 +99,8 @@ public class SpecialSpiderManager {
                 artistList) {
             System.out.println(bookmark.get("url"));
             String artistName = SpiderUtils.urlDeFormater(bookmark.get("url").toString().split("tags=")[1]);
-            if (newSourceManager.getArtworkNumOfArtistDirectly(artistName) == 0
-                    && newSourceManager.getArtworkNumOfArtist(AimType.ARTIST, artistName) == 0) {
+            if (((ArtistSourceManager) source).getArtworkNumOfArtistDirectly(artistName) == 0
+                    && ((ArtistSourceManager) source).getArtworkNumOfArtist(AimType.ARTIST, artistName) == 0) {
                 namelist.add(artistName);
                 System.out.println(artistName);
             } else {
@@ -112,7 +128,7 @@ public class SpecialSpiderManager {
          * 2.从数据库中搜索指定等级的作者列表
          * 3.启动更新
          * */
-        List<String> artists = newSourceManager.getArtistsByMaxLevel(!forceUpdate, maxLevel);
+        List<String> artists = ((ArtistSourceManager) source).getArtistsByMaxLevel(!forceUpdate, maxLevel);
         System.out.println("本次任务需要更新：" + artists.size());
         System.out.println(artists);
         boolean start = false;
@@ -132,19 +148,18 @@ public class SpecialSpiderManager {
         downLoadArtistByLevel(maxLevel, false, false);
     }
 
-    private TaskController startSpider(TaskController task) {
-        NewSpiderRunner runner = new NewSpiderRunner();
-        runner.runTask(task);
-        return task;
-    }
+
 
     public static void main(String[] args) throws IOException {
-        SpecialSpiderManager manager = new SpecialSpiderManager(new NewSourceManager("H:\\ROOT", "G:\\ROOT"));
+//        SpecialSpiderManager manager = new SpecialSpiderManager(new ArtistSourceManager("H:\\ROOT", "G:\\ROOT"));
 //        manager.updateArtist("combos & doodles",WorkMode.NEW);
         // combos &amp; doodles
 //        manager.downloadArtist("sakimichan",WorkMode.UPDATE);
 //        manager.downLoadArtistByLevel(0, false, true);
-        manager.downLoadChromeArtistDir("san8");
+//        manager.downLoadChromeArtistDir("san8");
+//        manager.downloadArtist("kirou (kiruyuu1210)",WorkMode.NEW);
 
+        SpecialSpiderManager manager1 = new SpecialSpiderManager(new DOASourceManager("H:\\ROOT", "G:\\ROOT"));
+        manager1.updateDOA(WorkMode.NEW);
     }
 }

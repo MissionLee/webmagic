@@ -23,6 +23,16 @@ public class ArtworkInfo {
     public String sanCode;
     public String relativePath;
 
+    // 目标作者名称 （作品可能是多作者，但是下载的时候，可能是为了下载某个单一作者的作品）
+    private String aimName;
+
+    public String getAimName() {
+        return aimName;
+    }
+
+    public void setAimName(String aimName) {
+        this.aimName = aimName;
+    }
 
     // 文件名
     private String name;

@@ -2,7 +2,7 @@ package pers.missionlee.webmagic.spider.newsankaku.source;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pers.missionlee.webmagic.spider.newsankaku.task.ArtistTaskController;
+import pers.missionlee.webmagic.spider.newsankaku.task.TaskController;
 import pers.missionlee.webmagic.spider.newsankaku.type.AimType;
 import pers.missionlee.webmagic.spider.newsankaku.utlis.PathUtils;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
@@ -17,18 +17,11 @@ import java.util.regex.Pattern;
  * @author: Mission Lee
  * @create: 2020-03-29 17:08
  */
-public class NewSourceManager {
-    static Logger logger = LoggerFactory.getLogger(NewSourceManager.class);
-    /**
-     *
-     * */
-    public SourceService sourceService = new SourceService();
-    /**
-     * baseRoot：基础目录（权限目标的作品存储默认位置）
-     * roots:分盘存储目录
-     */
-    private String baseRoot;
-    private String[] addRoots;
+public class ArtistSourceManager extends AbstractSourceManager {
+    static Logger logger = LoggerFactory.getLogger(ArtistSourceManager.class);
+
+
+
     /**
      * 约定的路径名称
      */
@@ -52,9 +45,8 @@ public class NewSourceManager {
     private Map<String, List<String>> PATH_SANKAKU_PICS;
     private Map<String, List<String>> PATH_SANKAKU_VIDS;
 
-    public NewSourceManager(String baseRoot, String... roots) {
-        this.baseRoot = PathUtils.formatPath(baseRoot);
-        this.addRoots = PathUtils.formatPaths(roots);
+    public ArtistSourceManager(String baseRoot, String... roots) {
+        super(baseRoot,roots);
         init();
     }
 
@@ -98,12 +90,7 @@ public class NewSourceManager {
         System.out.println(picMap);
         System.out.println(vidMap);
     }
-    /**
-     * 获取临时文件路径
-     * */
-    public String getTempPath(){
-        return PathUtils.buildPath(baseRoot,"tmp");
-    }
+
     /**
      * touch 作者信息
      * */
@@ -113,15 +100,30 @@ public class NewSourceManager {
     public void touchArtist(String name,Long nextUpdateTime){
         sourceService.updateArtist(name,nextUpdateTime);
     }
-    /**
-     * 写入作品信息
-     * */
-    public void saveArtworkInfo(ArtworkInfo info){
-        sourceService.addArtworkInfo(info);
-    }
+
     /**
      * 获取作者已经收录的作品数量
      * */
+    @Override
+    public int getStoredNum(TaskController controller) {
+        AimType aimType = controller.getAimType();
+        String artistName = controller.getAimKeys()[0];
+        return getArtworkNumOfArtist(aimType,artistName);
+    }
+
+    @Override
+    public Set<String> getStoredSanCode(TaskController controller) {
+        String artistName = controller.getAimKeys()[0];
+        if(sanCodes!=null){
+            return sanCodes;
+        }
+        else{
+            sanCodes =new HashSet<>(sourceService.getSanCodeByArtist(artistName)) ;
+            return sanCodes;
+        }
+    }
+
+
     public int getArtworkNumOfArtist(AimType aimType, String name){
         if(aimType == AimType.ARTIST){
             return sourceService.getArtistWorkNum(name);
@@ -144,19 +146,19 @@ public class NewSourceManager {
         int vid = new File(vidPath).exists()?new File(vidPath).listFiles().length:0;
         return pic+vid;
     }
-    /**
-     * 获取作者已经收录的 sanCode
-     * */
-    public List<String> getSanCodeOfArtist(String artistName){
-        return sourceService.getArtworkSanCodes(artistName);
-    }
 
+    @Override
+    public String getAimDic(TaskController controller, ArtworkInfo info) {
+        String aimName = controller.getAimKeys()[0];
+        String artworkName = info.getName();
+        return getArtworkDicOfAimArtist(AimType.ARTIST,artworkName,aimName);
+    }
 
     /**
      * 获取作品应该放在的路径
      * 1.已经存在，返回当前位置 2.返回默认路径
      * */
-    public String getArtworkDicOfAimArtist(AimType aimType, String artworkName, String aimName){
+    private String getArtworkDicOfAimArtist(AimType aimType, String artworkName, String aimName){
         String aimFileName = transformAimToFile(aimName);
         // 遍历已收录，看看是不是已经存在
         if(PathUtils.isVideo(artworkName)){

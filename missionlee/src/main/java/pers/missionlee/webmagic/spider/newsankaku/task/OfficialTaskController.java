@@ -1,6 +1,6 @@
 package pers.missionlee.webmagic.spider.newsankaku.task;
 
-import pers.missionlee.webmagic.spider.newsankaku.source.NewSourceManager;
+import pers.missionlee.webmagic.spider.newsankaku.source.ArtistSourceManager;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 
 import java.io.File;
@@ -11,8 +11,8 @@ import java.io.File;
  * @create: 2020-04-14 10:54
  */
 public class OfficialTaskController extends AbstractTaskController{
-    public OfficialTaskController(NewSourceManager newSourceManager) {
-        super(newSourceManager);
+    public OfficialTaskController(ArtistSourceManager artistSourceManager) {
+        super(artistSourceManager);
     }
 
     @Override
@@ -21,12 +21,24 @@ public class OfficialTaskController extends AbstractTaskController{
     }
 
     @Override
+    public boolean confirmRel(String fullUrl) {
+        return false;
+    }
+
+    @Override
     public boolean storeFile(File tempFile, String fileName, ArtworkInfo artworkInfo, boolean infoOnly) {
         return false;
     }
 
     @Override
-    public Boolean existOnDisk(String filename) {
+    public String getNumberCheckUrl() {
         return null;
     }
+
+    @Override
+    public Boolean existOnDisk(ArtworkInfo artworkInfo) {
+        return null;
+    }
+
+
 }

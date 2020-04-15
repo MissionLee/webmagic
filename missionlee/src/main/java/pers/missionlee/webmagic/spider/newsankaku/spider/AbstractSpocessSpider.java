@@ -36,22 +36,38 @@ public abstract class AbstractSpocessSpider implements PageProcessor {
     protected void getNextPage(Page page){
         String url = page.getUrl().toString();
         String thisPage = url.substring(url.length() - 1);
+        System.out.println("当前是第 "+thisPage+" 页");
         int thisPageNum = Integer.valueOf(thisPage);
         if (thisPageNum < 50) {
             String urlPrefix = url.substring(0, url.length() - 1);
+            System.out.println("添加下一页");
             page.addTargetRequest(urlPrefix + (++thisPageNum));
+        }
+    }
+    public class ListNum{
+        public int added;
+        public int all;
+        public ListNum(int all,int added) {
+            this.added = added;
+            this.all = all;
+        }
+
+        @Override
+        public String toString() {
+            return  "本页总数："+all + " | 添加总数："+added;
         }
     }
     /**
      * 从列表中提取详情页
      */
-    protected int processList(Page page) {
+    protected ListNum processList(Page page) {
         try {
             Thread.sleep(task.getSleepTime());
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         List<String> urlList = page.getHtml().$(".thumb").$("a", "href").all();
+
         if (urlList != null && urlList.size() > 0) {
             int added = 0;
             for (String url :
@@ -65,9 +81,11 @@ public abstract class AbstractSpocessSpider implements PageProcessor {
                 }
             }
             logger.info("新增："+added+" 页面:"+page.getUrl().toString());
-            return added;
+            ListNum l = new ListNum(urlList.size(),added);
+            System.out.println(l);
+            return l;
         }
-        return 0;
+        return new ListNum(0,0);
     }
 
     /**

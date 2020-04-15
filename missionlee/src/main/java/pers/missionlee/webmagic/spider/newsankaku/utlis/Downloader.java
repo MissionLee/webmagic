@@ -92,7 +92,7 @@ public class Downloader {
         String tmpPath = task.getTempPath();
         int retry = task.getRetryLimit();
         while (!(success && stored) && retry-- > 0) { // 如果下载和保存不成功，并且还没超过重试限制，级重试
-            if (task.existOnDisk(filename)) {
+            if (task.existOnDisk(artworkInfo)) {
                 // 已经下载了，但是没有对应的数据记录
                 System.out.println("已经存在该文件 " + filename);
                 task.storeFile(new File(""), filename, artworkInfo, true);

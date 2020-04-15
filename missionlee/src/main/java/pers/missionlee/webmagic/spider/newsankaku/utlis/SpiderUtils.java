@@ -56,16 +56,23 @@ public class SpiderUtils {
         System.out.println("SpiderUtil - getNumberCheckUrl "+url);
         return url;
     }
-    public static String getUpdateStartUrl(String... keys){
-        return SITE_ORDER_PREFIX.DATE.getPrefix(keys)+"1";
+    public static String getSearchUrlPageOne(OrderType orderType,String... keys){
+        return getSearchUrlPageEquals(orderType,keys)+"1";
     }
+    public static String getSearchUrlPageEquals(OrderType orderType,String... keys){
+        return orderType.getPrefix(keys);
+    }
+    public static String getUpdateStartUrl(String... keys){
+        return OrderType.DATE.getPrefix(keys)+"1";
+    }
+
     public static String[] getStartUrls(int artworkNum,String... keys){
         String urls[];
         if(artworkNum>2000){
-            String prefixDate = SITE_ORDER_PREFIX.DATE.getPrefix(keys);
-            String prefixPop = SITE_ORDER_PREFIX.POPULAR.getPrefix(keys);
-            String prefixTagAsc = SITE_ORDER_PREFIX.TAG_COUNT_ASC.getPrefix(keys);
-            String prefixTagDec = SITE_ORDER_PREFIX.TAG_COUNT_DEC.getPrefix(keys);
+            String prefixDate = OrderType.DATE.getPrefix(keys);
+            String prefixPop = OrderType.POPULAR.getPrefix(keys);
+            String prefixTagAsc = OrderType.TAG_COUNT_ASC.getPrefix(keys);
+            String prefixTagDec = OrderType.TAG_COUNT_DEC.getPrefix(keys);
             urls = new String[200];
             for (int i = 0; i < 50; i++) {
                 urls[i] = prefixDate+(i+1);
@@ -77,8 +84,8 @@ public class SpiderUtils {
         }else if(artworkNum>1000){
             int pageNum = ((Double) (Math.ceil((new Double(artworkNum)) / 20))).intValue();
             int loopNum =((Double) Math.ceil(new Double(pageNum)/2)).intValue();
-            String prefixAsc = SITE_ORDER_PREFIX.TAG_COUNT_ASC.getPrefix(keys);
-            String prefixDesc = SITE_ORDER_PREFIX.TAG_COUNT_DEC.getPrefix(keys);
+            String prefixAsc = OrderType.TAG_COUNT_ASC.getPrefix(keys);
+            String prefixDesc = OrderType.TAG_COUNT_DEC.getPrefix(keys);
             urls = new String[loopNum*2];
             for (int i = 0; i < loopNum; i++) {
                 urls[i] = prefixAsc+(i+1);
@@ -86,7 +93,7 @@ public class SpiderUtils {
             }
         }else{
             int pageNum = ((Double) (Math.ceil((new Double(artworkNum)) / 20))).intValue();
-            String prefix = SITE_ORDER_PREFIX.POPULAR.getPrefix(keys);
+            String prefix = OrderType.POPULAR.getPrefix(keys);
             urls = new String[pageNum];
             for (int i = 0; i < pageNum; i++) {
                 urls[i] = prefix +(i+1);
@@ -159,7 +166,7 @@ public class SpiderUtils {
             .addHeader("Upgrade-Insecure-Requests", "1")
             .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.119 Safari/537.36");
 
-    public enum SITE_ORDER_PREFIX {
+    public enum OrderType {
 
         DATE("date", "DATE"),
         TAG_COUNT_DEC("tagcount", "TAG_COUNT_DEC"),
@@ -192,7 +199,7 @@ public class SpiderUtils {
             return desc;
         }
 
-        SITE_ORDER_PREFIX(String key, String desc) {
+        OrderType(String key, String desc) {
             this.key = key;
             this.desc = desc;
         }

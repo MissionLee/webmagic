@@ -243,6 +243,7 @@ public class SourceService {
                 logger.info("添加角色关系" + ar.getTagCharacter());
                 // character 角色
                 for (String character : ar.getTagCharacter()) {
+                    System.out.println("添加角色："+character);
                     BigInteger cid;
                     if (characterMap.containsKey(character)) {
                         cid = characterMap.get(character);
@@ -251,8 +252,9 @@ public class SourceService {
                         cid = sqlSession.selectOne("san.getCharacterId", character);
                         if (cid == null) {
                             params.put("name", character);
-                            sqlSession.insert("san.insertCharacter", params);
-                            sqlSession.commit();
+                            sqlSession.insert("san.insertCharacter", params);// 拿到的就是 character_id 带着下划线的
+                            System.out.println("-==================================-");
+                            System.out.println();
                             characterMap.put(character, (BigInteger) params.get("character_id"));
                         } else {
                             params.put("character_id", cid);
@@ -263,8 +265,8 @@ public class SourceService {
 
                     }
                     try {
+
                         sqlSession.insert("san.addCharacterRel", params);
-                        sqlSession.commit();
                     } catch (Exception e) {
                         logger.info("角色关系已经存在 " + e.getMessage());
                     }
@@ -286,7 +288,6 @@ public class SourceService {
                             // System.out.println("CopyRight : " + copyright);
                             params.put("name", copyright);
                             sqlSession.insert("san.insertCopyright", params);
-                            sqlSession.commit();
                             copyrightMap.put(copyright, (BigInteger) params.get("copyright_id"));
                         } else {
                             params.put("copyright_id", cid);
@@ -297,7 +298,6 @@ public class SourceService {
                     }
                     try {
                         sqlSession.insert("san.addCopyrightRel", params);
-                        sqlSession.commit();
                     } catch (Exception e) {
                         logger.warn("角色关系已经存在 " + e.getMessage());
                     }
@@ -366,8 +366,16 @@ public class SourceService {
         }
         return updateInfo;
     }
-    public List<String> getArtworkSanCodes(String name){
-        return sqlSession.selectList("san.getArtworkSanCode",name);
+    public List<String> getSanCodeByArtist(String name){
+        // getSanCodesByArtist
+        return sqlSession.selectList("san.getSanCodesByArtist",name);
+    }
+    public List<String> getSanCodesByCopyRight(String copyRight){
+        return sqlSession.selectList("san.getSanCodesByCopyright",copyRight);
+
+    }
+    public List<String> getSanCodesByCharacter(String character){
+        return sqlSession.selectList("san.getSanCodesByCharacter",character);
     }
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
         SankakuDBSourceManager db = new SankakuDBSourceManager(null);

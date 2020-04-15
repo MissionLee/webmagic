@@ -46,7 +46,7 @@ public interface TaskController {
 
     public String getNumberCheckUrl();
 
-    public Boolean existOnDisk(String filename);
+    public Boolean existOnDisk(ArtworkInfo artworkInfo);
 
     public int getSaveNum();
 

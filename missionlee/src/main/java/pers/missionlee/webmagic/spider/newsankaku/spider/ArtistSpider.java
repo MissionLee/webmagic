@@ -28,7 +28,7 @@ public class ArtistSpider extends AbstractSpocessSpider {
     public void process(Page page) {
         String url = page.getUrl().toString();
         if (url.contains("tags")) {
-            int added = processList(page);
+            int added = processList(page).added;
             if (task.getWorkMode() == WorkMode.UPDATE
                     && added > 0
                     && url.contains("date")) {
@@ -47,30 +47,6 @@ public class ArtistSpider extends AbstractSpocessSpider {
     /**
      * 从列表中提取详情页
      */
-    @Override
-    protected int processList(Page page) {
-        try {
-            Thread.sleep(task.getSleepTime());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        List<String> urlList = page.getHtml().$(".thumb").$("a", "href").all();
-        if (urlList != null && urlList.size() > 0) {
-            int added = 0;
-            for (String url :
-                    urlList) {
-                // 此处获得 url形式为 /post/show/5287781
-                if (task.addTarget(url)) {
-                    page.addTargetRequest(url);
-                    added++;
-                } else {
-                    task.confirmRel(SpiderUtils.BASE_URL + url);
-                }
-            }
-            logger.info("新增："+added+" 页面:"+page.getUrl().toString());
-            return added;
-        }
-        return 0;
-    }
+
 
 }

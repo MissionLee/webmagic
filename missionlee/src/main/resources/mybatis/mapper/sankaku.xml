@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="san">
     <!-- ======================= 作品部分 ==================== -->
-	<!-- 通过sanCode 查询所有这个sanCode的正式作者列表 -->
-	<select id="getArtistListBySanCode" parameterType="String" resultType="map">
+    <!-- 通过sanCode 查询所有这个sanCode的正式作者列表 -->
+    <select id="getArtistListBySanCode" parameterType="String" resultType="map">
 		SELECT
 			SA.SAN_CODE as sanCode,
 			ST.`NAME` as name ,
@@ -59,16 +59,16 @@
 			`UPDATE_TIME` AS updateTime
 			FROM san_artwork WHERE SAN_CODE = #{SANCODE}
 	</select>
-	<!-- 给定文件名称，是否存在，有可能是存在被删除，也可能在不同作者名下 -->
-	<select id="fileExists" resultType="Integer" parameterType="String">
+    <!-- 给定文件名称，是否存在，有可能是存在被删除，也可能在不同作者名下 -->
+    <select id="fileExists" resultType="Integer" parameterType="String">
 		select count(*) from san_artwork where FILE_NAME = #{fileName}
 	</select>
     <!-- ===================  作者部分 =======================  -->
-	<!-- 给定作者，查询作品数量 -->
-	<select id="getArtistWorkNum" parameterType="String" resultType="Integer">
+    <!-- 给定作者，查询作品数量 -->
+    <select id="getArtistWorkNum" parameterType="String" resultType="Integer">
 		select count(*) from artwork_artist_rel AAR join san_artist SA  on AAR.artist_id = SA.artist_id where sa.name = #{name}
 	</select>
-	<update id="refreshUpdateTime" parameterType="map">
+    <update id="refreshUpdateTime" parameterType="map">
 		UPDATE SAN_ARTIST SET
 		`update_time` = CURRENT_TIMESTAMP ,
 		`aim_update_time` = FROM_UNIXTIME(#{time}),
@@ -113,7 +113,7 @@
 			`is_target` = 1
 			WHERE `name` = #{name}
 	</update>
-	<update id="updateArtistPathLevel" parameterType="map" >
+    <update id="updateArtistPathLevel" parameterType="map">
 			UPDATE san_artist SET
 			pic_level = #{pic_level} ,
 			pic_path = #{pic_path} ,
@@ -144,7 +144,7 @@
 		UNIX_TIMESTAMP(`AIM_UPDATE_TIME`) AS aimUpdateTime
 		FROM san_artist WHERE is_target = 1
 	</select>
-	<select id="getTargetArtistList" resultType="String">
+    <select id="getTargetArtistList" resultType="String">
 		SELECT
 		`name`
 		FROM san_artist WHERE is_target = 1
@@ -158,7 +158,6 @@
 		insert into san_character(`name`) values(#{name})
     </insert>
     <select id="getCharacterId" parameterType="String" resultType="BigInteger">
-		select character_id as characterId from san_character where `name` = #{name}
 		select character_id as characterId from san_character where `name` = #{name}
 	</select>
     <insert id="addCharacterRel" parameterType="map">
@@ -198,25 +197,43 @@
 		select artist_id as artistId from san_artist where name = #{name} and is_target = 1
 	</select>
     <!-- 查询用户在数据库中存储的作品数量 -->
-	<select id="getStoredArtworkNum" parameterType="BigInteger" resultType="Integer">
+    <select id="getStoredArtworkNum" parameterType="BigInteger" resultType="Integer">
 		select count(*) from artwork_artist_rel where artist_id = #{artistId}
 	</select>
-	<!-- 查询用户作品更新时间	-->
-	<select id="getUpdateInfo" resultType="map">
+    <!-- 查询用户作品更新时间	-->
+    <select id="getUpdateInfo" resultType="map">
 		select
 		name as name,
 		unix_timestamp(aim_update_time) * 1000 as aimUpdateTime
 		from san_artist where is_target = 1
 	</select>
-<!-- 获取作品地址列表-下载排重用	-->
-	<select id="getArtworkSanCode" parameterType="String" resultType="String">
+    <!-- 关联作者，查询作品	-->
+    <select id="getSanCodesByArtist" parameterType="String" resultType="String">
 		select
 			san_code as sanCode
 		from artwork_artist_rel join san_artist
 		on artwork_artist_rel.artist_id = san_artist.artist_id and san_artist.name = #{name}
 	</select>
-<!--	查询某个san code 是否在某个用户名下 -->
-	<select id="confirmArtworkOfSomeone" parameterType="map" resultType="map">
+    <!-- 关联版权（作品名称，例如 守望先锋），查询作品	-->
+    <select id="getSanCodesByCopyright" resultType="String" parameterType="String">
+SELECT
+	san_code AS sanCode
+FROM
+	artwork_copyright_rel
+JOIN san_copyright ON artwork_copyright_rel.copyright_id = san_copyright.copyright_id
+AND san_copyright. NAME = #{copyright}
+	</select>
+    <!--	关联角色（例如： 猎空），查询作品-->
+    <select id="getSanCodesByCharacter" resultType="String" parameterType="String">
+		SELECT
+	san_code AS sanCode
+FROM
+	artwork_character_rel
+JOIN san_character ON artwork_character_rel.character_id = san_character.character_id
+AND san_character. NAME = #{character}
+	</select>
+    <!--	查询某个san code 是否在某个用户名下 -->
+    <select id="confirmArtworkOfSomeone" parameterType="map" resultType="map">
 SELECT
 	artwork_artist_rel.san_code AS sanCode,
 	san_artist.artist_id AS artistId,
