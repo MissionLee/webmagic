@@ -80,13 +80,17 @@ public class DOASourceManager extends AbstractSourceManager {
         String typePath = PATH_PIC;
         if (PathUtils.isVideo(fileName))
             typePath = PATH_VID;
-        if (characters == null || characters.size() == 0) {
+
+        System.out.println("生成路径："+characters.size()+" | "+characters);
+        if (characters == null || characters.size() == 0) {// 没标记角色的情况
             return PathUtils.buildPath(baseRoot, PATH_DOA_SERIES, typePath, PATH_ZERO);
-        } else if (characters.size() > 3) {
+        } else if (characters.size() > 3){// 多余三人
+            return PathUtils.buildPath(baseRoot, PATH_DOA_SERIES, typePath, PATH_MULTIPLE);
+        }else if(characters.size() ==3) {// 等于三人
             return PathUtils.buildPath(baseRoot, PATH_DOA_SERIES, typePath, PATH_THREE);
-        } else if (characters.size() == 2) {
+        } else if (characters.size() == 2) {// 等于两人
             return PathUtils.buildPath(baseRoot, PATH_DOA_SERIES, typePath, PATH_TWO);
-        } else {
+        } else {// 等于一人
             return PathUtils.buildPath(baseRoot, PATH_DOA_SERIES, typePath, characters.get(0));
         }
 

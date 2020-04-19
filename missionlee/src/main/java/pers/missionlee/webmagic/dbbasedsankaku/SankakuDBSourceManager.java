@@ -121,6 +121,9 @@ public class SankakuDBSourceManager {
         }
         return simpleArtist;
     }
+    /**
+     * 获取所有目标作者的路径/等级信息
+     * */
     public List<Map<String,Object>> getArtistsOfArtworkSanCode(String sanCode){
         return sqlSession.selectList("san.getArtistListBySanCode",sanCode);
     }

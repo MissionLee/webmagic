@@ -77,7 +77,7 @@ public class SpecialSpiderManager {
         TaskController doaTask = new DOATaskController(source);
         doaTask.setWorkMode(workMode);
         PageProcessor pageProcessor = new DOASpider(doaTask);
-        Spider.create(pageProcessor).addUrl(doaTask.getStartUrls()).thread(3).run();
+        Spider.create(pageProcessor).addUrl(doaTask.getStartUrls()).thread(4).run();
 
     }
     public void updateDOACharacter(WorkMode workMode,String character){
@@ -156,10 +156,12 @@ public class SpecialSpiderManager {
         // combos &amp; doodles
 //        manager.downloadArtist("sakimichan",WorkMode.UPDATE);
 //        manager.downLoadArtistByLevel(0, false, true);
-//        manager.downLoadChromeArtistDir("san8");
+//        manager.downLoadChromeArtistDir("san7");
 //        manager.downloadArtist("kirou (kiruyuu1210)",WorkMode.NEW);
 
-        SpecialSpiderManager manager1 = new SpecialSpiderManager(new DOASourceManager("H:\\ROOT", "G:\\ROOT"));
+        SpecialSpiderManager manager1 = new SpecialSpiderManager(new DOASourceManager("G:\\ROOT"));
+        manager1.updateDOA(WorkMode.NEW);
+        manager1.updateDOA(WorkMode.NEW);
         manager1.updateDOA(WorkMode.NEW);
     }
 }

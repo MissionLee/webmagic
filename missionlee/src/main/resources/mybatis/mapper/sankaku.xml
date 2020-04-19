@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="san">
+	<resultMap id="levelInfo" type="pers.missionlee.webmagic.spider.newsankaku.dao.LevelInfo">
+		<result column="artist_id" property="artistId" javaType="Integer" jdbcType="INTEGER"></result>
+		<result column="name" property="name" javaType="String" jdbcType="VARCHAR"></result>
+		<result column="pic_level" property="picLevel" javaType="Integer" jdbcType="INTEGER"></result>
+		<result column="pic_path" property="picPath" javaType="String" jdbcType="VARCHAR"></result>
+		<result column="vid_level" property="vidLevel" javaType="Integer" jdbcType="INTEGER"></result>
+		<result column="vid_path" property="vidPath" javaType="String" jdbcType="VARCHAR"></result>
+	</resultMap>
+    <!--	查询作者 LevelInfo-->
+	<select id="getLevelInfos" resultMap="levelInfo">
+		select artist_id,`name`,pic_level,pic_path,vid_level,vid_path from san_artist where is_target = 1
+	</select>
+	<select id="getLevelInfo" resultMap="levelInfo" parameterType="String">
+		select artist_id,`name`,pic_level,pic_path,vid_level,vid_path from san_artist where is_target = 1 and `name`=#{name}
+	</select>
     <!-- ======================= 作品部分 ==================== -->
     <!-- 通过sanCode 查询所有这个sanCode的正式作者列表 -->
     <select id="getArtistListBySanCode" parameterType="String" resultType="map">
@@ -118,7 +133,8 @@
 			pic_level = #{pic_level} ,
 			pic_path = #{pic_path} ,
 			vid_level = #{vid_level} ,
-			vid_path = #{vid_path}
+			vid_path = #{vid_path},
+			is_target = 1
 			WHERE `name` = #{name}
 	</update>
     <insert id="insertArtistOnlyName" parameterType="map" useGeneratedKeys="true" keyProperty="artist_id">

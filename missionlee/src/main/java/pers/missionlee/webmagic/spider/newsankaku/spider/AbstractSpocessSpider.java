@@ -35,11 +35,11 @@ public abstract class AbstractSpocessSpider implements PageProcessor {
      * */
     protected void getNextPage(Page page){
         String url = page.getUrl().toString();
-        String thisPage = url.substring(url.length() - 1);
+        String thisPage = url.substring(url.lastIndexOf("=") + 1);
         System.out.println("当前是第 "+thisPage+" 页");
         int thisPageNum = Integer.valueOf(thisPage);
         if (thisPageNum < 50) {
-            String urlPrefix = url.substring(0, url.length() - 1);
+            String urlPrefix = url.substring(0, url.lastIndexOf("=")+1);
             System.out.println("添加下一页");
             page.addTargetRequest(urlPrefix + (++thisPageNum));
         }
@@ -238,5 +238,12 @@ public abstract class AbstractSpocessSpider implements PageProcessor {
             target.subFix = "/vid";
         }
         return target;
+    }
+
+    public static void main(String[] args) {
+        String x = "sadfasfasdfx=88";
+        String thisPage = x.substring(x.lastIndexOf("=") + 1);
+        System.out.println(thisPage);
+        System.out.println(x.substring(0,x.lastIndexOf("=")+1));
     }
 }

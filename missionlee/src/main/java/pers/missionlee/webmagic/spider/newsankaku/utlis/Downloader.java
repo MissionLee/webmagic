@@ -16,7 +16,7 @@ import java.util.concurrent.*;
 public class Downloader {
     private static ExecutorService executorService = Executors.newFixedThreadPool(10);
     private static Logger logger = LoggerFactory.getLogger(Downloader.class);
-    private static int downloadSpeedLimit = 5;
+    private static int downloadSpeedLimit = 1;
     private static DecimalFormat df = new DecimalFormat(".00");
     private static int mb = 1024 * 1024;
     private static long MAX_DOWNLOAD_LIMIT_SECONDS = 100 * 60L;
@@ -55,10 +55,10 @@ public class Downloader {
                     //再从bytes中写入文件
                     if (i % 128 == 0) {
                         if (size > mb) {
-                            logger.info("下载进程:[" + df.format(100 * totallen / size) + "%]-[" + (size / mb) + "M] | " + df.format(totallen * 1000 / 1024 / (System.currentTimeMillis() - start)) + "K/S " + filename);
+                            logger.info("【Callable】下载情况:[" + df.format(100 * totallen / size) + "%]-[" + (size / mb) + "M] | " + df.format(totallen * 1000 / 1024 / (System.currentTimeMillis() - start)) + "K/S " + filename);
 
                         } else {
-                            logger.info("下载进程:[" + df.format(100 * totallen / size) + "%]-[" + (size / 1024) + "K] | " + df.format(totallen * 1000 / 1024 / (System.currentTimeMillis() - start)) + "K/S " + filename);
+                            logger.info("【Callable】下载情况:[" + df.format(100 * totallen / size) + "%]-[" + (size / 1024) + "K] | " + df.format(totallen * 1000 / 1024 / (System.currentTimeMillis() - start)) + "K/S " + filename);
                         }
                     }
                     // 把read buffer 的0 ~ len 位置 写到 write buffer 的 writeBufferPointer 位置
@@ -72,12 +72,13 @@ public class Downloader {
                 }
                 if (writeBufferPointer > 0)
                     out.write(writeBuffer, 0, writeBufferPointer);
-                logger.info("下载进程:[100.0%]-[" + (size / 1024) + "K] | " + df.format((totallen * 1000 / 1024) / (System.currentTimeMillis() - start)) + "K/S " + filename);
+                logger.info("【Callable】下载情况:[100.0%]-[" + (size / 1024) + "K] | " + df.format((totallen * 1000 / 1024) / (System.currentTimeMillis() - start)) + "K/S " + filename);
                 returnStatus = true;
             } catch (Exception e) {
                 // TODO: 2019/4/10 call方法在下载线程中报错，在 downloadWithAutoRetry方法中无法捕捉，
                 //
-                logger.error("下载进程:失败 " + e.getMessage());
+                logger.error("【Callable】下载情况:失败 " + e.getMessage());
+                return false;
 
             }
 
@@ -112,15 +113,21 @@ public class Downloader {
                     int fileSize = connection.getContentLength();
                     int responseCode = connection.getResponseCode();
                     if (200 == responseCode) {
+                        // 获取连接文件内容的 输入流
                         in = connection.getInputStream();
                         long getInputStreamTime = System.currentTimeMillis();
                         randomName = java.util.UUID.randomUUID().toString();
+                        // 创建一个文件输出流
                         out = new FileOutputStream(tmpPath + randomName);
+                        // 创建一个限制时的下载任务
                         CallableStreamDownloader downloader = new CallableStreamDownloader(in, out, fileSize, filename);
+                        // 提交下载任务
                         Future<Object> future = executorService.submit(downloader);
-                        long timeout = fileSize / (downloadSpeedLimit * 1024);
-                        if (timeout > MAX_DOWNLOAD_LIMIT_SECONDS)
-                            timeout = MAX_DOWNLOAD_LIMIT_SECONDS;
+                        long timeout = fileSize*8 / (downloadSpeedLimit * 1024);
+
+//                        if (timeout > MAX_DOWNLOAD_LIMIT_SECONDS)
+//                            timeout = MAX_DOWNLOAD_LIMIT_SECONDS;
+                        // 设置超时时间，并且获取下载结果 成功与否
                         boolean downloaded = (Boolean) future.get(timeout, TimeUnit.SECONDS);
                         if (downloaded)
                             success = true;
@@ -162,6 +169,11 @@ public class Downloader {
                     } else {//如果下载失败 （超时等其他错误）  注意 stream 必须close之后，文件才能delete
                         new File(tmpPath + randomName).delete();
                     }
+                    try {
+                        Thread.sleep(1000*3);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     if (in != null)
                         in.close();
                     if (connection != null)
@@ -175,10 +187,12 @@ public class Downloader {
         return success && stored;
 
     }
+    public void printProcessBar(){
 
+    }
     private static void formatConnection(String referer, HttpURLConnection connection) throws ProtocolException {
-        connection.setConnectTimeout(30000);
-        connection.setReadTimeout(30000);
+        connection.setConnectTimeout(3000000);
+        connection.setReadTimeout(3000000);
         connection.setRequestMethod("GET");
 //        connection.setRequestProperty("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
 //        connection.setRequestProperty("accept-encoding", "gzip, deflate, br");

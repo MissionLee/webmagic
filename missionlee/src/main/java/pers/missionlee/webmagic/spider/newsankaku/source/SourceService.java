@@ -8,6 +8,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pers.missionlee.webmagic.dbbasedsankaku.SankakuDBSourceManager;
+import pers.missionlee.webmagic.spider.newsankaku.dao.LevelInfo;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 import pers.missionlee.webmagic.spider.sankaku.manager.SourceManager;
 
@@ -152,6 +153,9 @@ public class SourceService {
         return updated == 1;
 
     }
+    /**
+     * 添加作者：一般情况不需要单独条用这个方法，保存
+     * */
 
     public void confirmArtworkArtistRel(String fullUrl,String artistName){
         String sanCode = fullUrl.substring(fullUrl.lastIndexOf("/")+1);
@@ -342,7 +346,7 @@ public class SourceService {
         int updated = sqlSession.update("san.refreshUpdateTime",params);
         return updated ==1;
     }
-    synchronized  public  void updateArtistPathAndLevel(String name,int pic_level,String pic_path,int vid_level,String vid_path){
+    synchronized  public  int updateArtistPathAndLevel(String name,int pic_level,String pic_path,int vid_level,String vid_path){
         Map<String,Object> params = new HashMap<>();
         params.put("name",name);
         params.put("pic_level",pic_level);
@@ -350,9 +354,7 @@ public class SourceService {
         params.put("pic_path",pic_path);
         params.put("vid_path",vid_path);
         System.out.println(params);
-        Object x = sqlSession.update("san.updateArtistPathLevel",params);
-        sqlSession.commit();
-        System.out.println("----");
+        return sqlSession.update("san.updateArtistPathLevel",params);
     }
     public static Map<String,Long> updateInfo;
     public Map<String,Long> getUpdateInfo(){
@@ -376,6 +378,12 @@ public class SourceService {
     }
     public List<String> getSanCodesByCharacter(String character){
         return sqlSession.selectList("san.getSanCodesByCharacter",character);
+    }
+    /**
+     * 查询LevelInfo
+     * */
+    public List<LevelInfo> getLevelInfos(){
+        return sqlSession.selectList("san.getLevelInfos");
     }
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
         SankakuDBSourceManager db = new SankakuDBSourceManager(null);
