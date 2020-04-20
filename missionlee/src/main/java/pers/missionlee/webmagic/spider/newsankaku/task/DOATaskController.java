@@ -77,17 +77,17 @@ public class DOATaskController extends AbstractTaskController {
 //        DEFAULT_CHARACTERS.add("tina armstrong");// Tina Armstrong（ティナ・アームストロング，蒂娜），初次登场：DOA，配音：小山末美（1代），永岛由子（2代开始）。
 //        DEFAULT_CHARACTERS.add("lei fang");// Lei-Fang（レイ・ファン，雷芳/雷芳），初次登场：DOA，配音：冬马由美。
 //        // === DOA ++
-//        DEFAULT_CHARACTERS.add("ayane (dead or alive)");//[忍者龙剑传] Ayane（あやね，绫音），初次登场：DOA++，配音：山崎和佳奈。 忍龙主角
+        DEFAULT_CHARACTERS.add("ayane (dead or alive)");//[忍者龙剑传] Ayane（あやね，绫音），初次登场：DOA++，配音：山崎和佳奈。 忍龙主角
 //        // === DOA 2 Dead or Alive Ultimate(1/2的重置)
-//        DEFAULT_CHARACTERS.add("helena douglas");// Helena Douglas（エレナ，海莲娜），初次登场：DOA2，配音：小山裕香。
+        DEFAULT_CHARACTERS.add("helena douglas");// Helena Douglas（エレナ，海莲娜），初次登场：DOA2，配音：小山裕香。
 //        // === DOA 3
-        DEFAULT_CHARACTERS.add("hitomi (dead or alive)");//　Hitomi（ヒトミ，瞳），初次登场：DOA3，配音：堀江由衣。
-        DEFAULT_CHARACTERS.add("christie (dead or alive)");// Christie Allen（クリスティ，克丽丝蒂），初次登场：DOA3，配音：三石琴乃。
+//        DEFAULT_CHARACTERS.add("hitomi (dead or alive)");//　Hitomi（ヒトミ，瞳），初次登场：DOA3，配音：堀江由衣。
+//        DEFAULT_CHARACTERS.add("christie (dead or alive)");// Christie Allen（クリスティ，克丽丝蒂），初次登场：DOA3，配音：三石琴乃。
 //        // === DOA 4
-        DEFAULT_CHARACTERS.add("kokoro (dead or alive)");// Kokoro（こころ，心），初次登场：DOA4，配音：川澄绫子。
-        DEFAULT_CHARACTERS.add("la mariposa (dead or alive) ");//DOA XTREME中的Lisa // 　La-Mariposa（蝴蝶），初次登场：DOA4，配音：坂本真绫 。
-        DEFAULT_CHARACTERS.add("lisa hamilton");//莉莎·汉密尔顿
-        DEFAULT_CHARACTERS.add("alpha-152");// alpha-152 霞的克隆人 4代boss
+//        DEFAULT_CHARACTERS.add("kokoro (dead or alive)");// Kokoro（こころ，心），初次登场：DOA4，配音：川澄绫子。
+//        DEFAULT_CHARACTERS.add("la mariposa (dead or alive) ");//DOA XTREME中的Lisa // 　La-Mariposa（蝴蝶），初次登场：DOA4，配音：坂本真绫 。
+//        DEFAULT_CHARACTERS.add("lisa hamilton");//莉莎·汉密尔顿
+//        DEFAULT_CHARACTERS.add("alpha-152");// alpha-152 霞的克隆人 4代boss
 
 //        // === DOA 5 5U 5L
 //        DEFAULT_CHARACTERS.add("nyotengu");//女天狗
@@ -301,4 +301,6 @@ public class DOATaskController extends AbstractTaskController {
         System.out.println(codes);
         System.out.println(codes.size());
     }
+    // ff1
+    //
 }

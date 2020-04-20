@@ -396,7 +396,7 @@ public class SankakuDBSourceManager {
         return updateInfo;
     }
     public List<String> getArtworkSanCodes(String name){
-        return sqlSession.selectList("san.getArtworkSanCode",name);
+        return sqlSession.selectList("san.getSanCodesByArtist",name);
     }
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
         SankakuDBSourceManager db = new SankakuDBSourceManager(null);

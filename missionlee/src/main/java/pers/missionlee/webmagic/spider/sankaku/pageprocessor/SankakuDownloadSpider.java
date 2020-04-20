@@ -85,10 +85,12 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
          *          并且在外层processor里面有udpate数量不过尝试遍历作者的方法 所以added改为 > 15
          * */
         if (thisPageAdded > 1 && URL.contains("date") && spiderTask.getTaskType() == SpiderTask.TaskType.UPDATE) {
-            String thisPage = URL.substring(URL.length() - 1);
+            System.out.println(URL);
+            String thisPage = URL.substring(URL.lastIndexOf("=")+1);
+            System.out.println(thisPage);
             int thisPageNum = Integer.valueOf(thisPage);
             if (thisPageNum < 50) {
-                String urlPrefix = URL.substring(0, URL.length() - 1);
+                String urlPrefix = URL.substring(0,URL.lastIndexOf("=")+1);
                 page.addTargetRequest(urlPrefix + (++thisPageNum));
                 logger.info("⭐ add： " + urlPrefix + thisPageNum);
             }
