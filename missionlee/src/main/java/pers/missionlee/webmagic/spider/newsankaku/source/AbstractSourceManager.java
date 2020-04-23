@@ -17,12 +17,12 @@ public abstract class AbstractSourceManager  implements SourceManager{
      * baseRoot：基础目录（权限目标的作品存储默认位置）
      * roots:分盘存储目录
      */
-    String baseRoot;
-    String[] addRoots;
+    public String baseRoot;
+    public String[] addRoots;
     /**
      * 初始化时候已经存储的 sanCodes
      * */
-    Set<String> sanCodes;
+    public Set<String> sanCodes;
     /**
      * 数据库服务
      * */

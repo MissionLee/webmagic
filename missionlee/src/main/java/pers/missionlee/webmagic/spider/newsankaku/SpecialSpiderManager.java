@@ -1,14 +1,16 @@
 package pers.missionlee.webmagic.spider.newsankaku;
 
 import pers.missionlee.webmagic.spider.newsankaku.source.ArtistSourceManager;
-import pers.missionlee.webmagic.spider.newsankaku.source.DOASourceManager;
+import pers.missionlee.webmagic.spider.newsankaku.source.copyright.DOASourceManager;
 import pers.missionlee.webmagic.spider.newsankaku.source.SourceManager;
+import pers.missionlee.webmagic.spider.newsankaku.source.copyright.OverwatchSourceManager;
 import pers.missionlee.webmagic.spider.newsankaku.spider.DOASpider;
 import pers.missionlee.webmagic.spider.newsankaku.spider.NumberSpider;
 import pers.missionlee.webmagic.spider.newsankaku.spider.ArtistSpider;
 import pers.missionlee.webmagic.spider.newsankaku.task.ArtistTaskController;
-import pers.missionlee.webmagic.spider.newsankaku.task.DOATaskController;
+import pers.missionlee.webmagic.spider.newsankaku.task.copyright.DOATaskController;
 import pers.missionlee.webmagic.spider.newsankaku.task.TaskController;
+import pers.missionlee.webmagic.spider.newsankaku.task.copyright.OverwatchTaskController;
 import pers.missionlee.webmagic.spider.newsankaku.type.AimType;
 import pers.missionlee.webmagic.spider.newsankaku.type.WorkMode;
 import pers.missionlee.webmagic.spider.newsankaku.utlis.SpiderUtils;
@@ -71,7 +73,12 @@ public class SpecialSpiderManager {
         }
 
     }
-
+    public void updateOverwatch(WorkMode workMode){
+        TaskController taskController = new OverwatchTaskController(source);
+        taskController.setWorkMode(workMode);
+        PageProcessor pageProcessor = new DOASpider(taskController);
+        Spider.create(pageProcessor).addUrl(taskController.getStartUrls()).thread(4).run();
+    }
     public void updateDOA(WorkMode workMode) {
 //        SourceManager sourceManager = new DOASourceManager(baseRoot,addRoots);
         TaskController doaTask = new DOATaskController(source);
@@ -159,9 +166,12 @@ public class SpecialSpiderManager {
 //        manager.downLoadChromeArtistDir("san7");
 //        manager.downloadArtist("kirou (kiruyuu1210)",WorkMode.NEW);
 
-        SpecialSpiderManager manager1 = new SpecialSpiderManager(new DOASourceManager("G:\\ROOT"));
-        manager1.updateDOA(WorkMode.NEW);
-        manager1.updateDOA(WorkMode.NEW);
-        manager1.updateDOA(WorkMode.NEW);
+        SpecialSpiderManager manager1 = new SpecialSpiderManager(new OverwatchSourceManager("G:\\ROOT"));
+        manager1.updateOverwatch(WorkMode.NEW);
+        manager1.updateOverwatch(WorkMode.NEW);
+        manager1.updateOverwatch(WorkMode.NEW);
+//        manager1.updateDOA(WorkMode.NEW);
+//        manager1.updateDOA(WorkMode.NEW);
+//        manager1.updateDOA(WorkMode.NEW);
     }
 }

@@ -1,17 +1,12 @@
-package pers.missionlee.webmagic.spider.newsankaku.task;
+package pers.missionlee.webmagic.spider.newsankaku.task.copyright;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import pers.missionlee.webmagic.spider.newsankaku.source.ArtistSourceManager;
-import pers.missionlee.webmagic.spider.newsankaku.source.DOASourceManager;
+import pers.missionlee.webmagic.spider.newsankaku.source.copyright.DOASourceManager;
 import pers.missionlee.webmagic.spider.newsankaku.source.SourceManager;
 import pers.missionlee.webmagic.spider.newsankaku.type.WorkMode;
 import pers.missionlee.webmagic.spider.newsankaku.utlis.SpiderUtils;
-import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -63,23 +58,35 @@ import java.util.Set;
  * 阅读更多：死或生系列（https://zh.moegirl.org/%E6%AD%BB%E6%88%96%E7%94%9F%E7%B3%BB%E5%88%97）
  * 本文引自萌娘百科(https://zh.moegirl.org)，文字内容默认使用《知识共享 署名-非商业性使用-相同方式共享 3.0》协议。
  */
-public class DOATaskController extends AbstractTaskController {
-    public static List<String> DEFAULT_CHARACTERS = new ArrayList<>();
-    public static List<String> DEFAULT_COPYRIGHTS = new ArrayList<>();
-    public static List<String> DEFAULT_TAGS = new ArrayList<>();
-    private String copyRight;
-    private String character;
-    private String[] searchTags;
+public class DOATaskController extends AbstractCopyrightAndCharacterTaskController {
 
-    static {
-//        // === DOA 1
+    public DOATaskController(SourceManager sourceManager) {
+        super(sourceManager);
+        init();
+    }
+
+    public DOATaskController(SourceManager sourceManager, String copyRight, String character, String... tags) {
+        this(sourceManager);
+        this.copyRight = copyRight;
+        this.character = character;
+        this.searchTags = tags;
+    }
+
+    /**
+     * 初始化本地参数
+     * 1.初始话已经存储的所有sanCode
+     */
+    public void init() {
+
+
+        //        // === DOA 1
 //        DEFAULT_CHARACTERS.add("kasumi (dead or alive)");// Kasumi（かすみ，霞），初次登场：DOA，配音：丹下樱（2代之前），桑岛法子（3代开始）
 //        DEFAULT_CHARACTERS.add("tina armstrong");// Tina Armstrong（ティナ・アームストロング，蒂娜），初次登场：DOA，配音：小山末美（1代），永岛由子（2代开始）。
 //        DEFAULT_CHARACTERS.add("lei fang");// Lei-Fang（レイ・ファン，雷芳/雷芳），初次登场：DOA，配音：冬马由美。
 //        // === DOA ++
-        DEFAULT_CHARACTERS.add("ayane (dead or alive)");//[忍者龙剑传] Ayane（あやね，绫音），初次登场：DOA++，配音：山崎和佳奈。 忍龙主角
+//        DEFAULT_CHARACTERS.add("ayane (dead or alive)");//[忍者龙剑传] Ayane（あやね，绫音），初次登场：DOA++，配音：山崎和佳奈。 忍龙主角
 //        // === DOA 2 Dead or Alive Ultimate(1/2的重置)
-        DEFAULT_CHARACTERS.add("helena douglas");// Helena Douglas（エレナ，海莲娜），初次登场：DOA2，配音：小山裕香。
+//        DEFAULT_CHARACTERS.add("helena douglas");// Helena Douglas（エレナ，海莲娜），初次登场：DOA2，配音：小山裕香。
 //        // === DOA 3
 //        DEFAULT_CHARACTERS.add("hitomi (dead or alive)");//　Hitomi（ヒトミ，瞳），初次登场：DOA3，配音：堀江由衣。
 //        DEFAULT_CHARACTERS.add("christie (dead or alive)");// Christie Allen（クリスティ，克丽丝蒂），初次登场：DOA3，配音：三石琴乃。
@@ -117,17 +124,17 @@ public class DOATaskController extends AbstractTaskController {
 //        DEFAULT_CHARACTERS.add("shiranui mai"); //[街头霸王] 不知火舞 联动
 //        DEFAULT_CHARACTERS.add("kula diamond");// [街头霸王] 库拉·戴雅萌多（库拉·戴尔蒙多）联动
         // ==========================================
-//        DEFAULT_COPYRIGHTS.add("dead or alive");
-//        DEFAULT_COPYRIGHTS.add("dead or alive xtreme venus vacation");
-//        DEFAULT_COPYRIGHTS.add("dead or alive xtreme");
+        DEFAULT_COPYRIGHTS.add("dead or alive");
+        DEFAULT_COPYRIGHTS.add("dead or alive xtreme venus vacation");
+        DEFAULT_COPYRIGHTS.add("dead or alive xtreme");
 
-//        coryRights.add("dead or alive 4");
-//        coryRights.add("dead or alive 5");
-//        coryRights.add("dead or alive 5 last round");
-//        coryRights.add("dead or alive 6");
-//        coryRights.add("dead or alive xtreme beach volleyball");
-//        coryRights.add("dead or alive xtreme 2");
-//        coryRights.add("dead or alive xtreme 3 fortune");
+        DEFAULT_COPYRIGHTS.add("dead or alive 4");
+        DEFAULT_COPYRIGHTS.add("dead or alive 5");
+        DEFAULT_COPYRIGHTS.add("dead or alive 5 last round");
+        DEFAULT_COPYRIGHTS.add("dead or alive 6");
+        DEFAULT_COPYRIGHTS.add("dead or alive xtreme beach volleyball");
+        DEFAULT_COPYRIGHTS.add("dead or alive xtreme 2");
+        DEFAULT_COPYRIGHTS.add("dead or alive xtreme 3 fortune");
 //        coryRights.add("ninja gaiden");//忍者龙剑传
 //        coryRights.add("ninja gaiden sigma");//忍者龙剑传Σ
 //        coryRights.add("ninja gaiden sigma 2 ");//忍者龙剑传Σ 2
@@ -156,26 +163,11 @@ public class DOATaskController extends AbstractTaskController {
 //        searchTag.add("vertical video");
 //        searchTag.add("no audio");
 //        searchTag.add("realistic");
-    }
 
-    public DOATaskController(SourceManager sourceManager) {
-        super(sourceManager);
-        init();
-    }
-
-    public DOATaskController(SourceManager sourceManager, String copyRight, String character, String... tags) {
-        this(sourceManager);
-        this.copyRight = copyRight;
-        this.character = character;
-        this.searchTags = tags;
-    }
-    /**
-     * 初始化本地参数
-     * 1.初始话已经存储的所有sanCode
-     * */
-    public void init(){
         storedSanCode = sourceManager.getStoredSanCode(this);
+
     }
+
     /**
      * 1.
      */
@@ -186,65 +178,16 @@ public class DOATaskController extends AbstractTaskController {
         } else {
             startUrls = new String[0];
             if (StringUtils.isEmpty(character) && StringUtils.isEmpty(copyRight)) { // 如果没有给定特定的 作品和人物，就遍历默认内容
-                if (workMode == WorkMode.UPDATE) {
-                    for (String copyRight : DEFAULT_COPYRIGHTS
-                    ) {
-                        ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.DATE, copyRight, "3d"));
-                        ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.DATE, copyRight, "video"));
-                    }
-                    for (String character : DEFAULT_CHARACTERS) {
-                        ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.DATE, character, "3d"));
-                        ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.DATE, character, "video"));
-                    }
-                } else if (workMode == WorkMode.UPDATE_ALL || workMode == WorkMode.NEW) {
-                    // 主要作品标签+3d 起始页
-                    for (String copyRight1 :
-                            DEFAULT_COPYRIGHTS) {
-                        startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.DATE, copyRight1, "3d"));
-                        startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.POPULAR, copyRight1, "3d"));
-                        startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.QUALITY, copyRight1, "3d"));
-                        startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.TAG_COUNT_ASC, copyRight1, "3d"));
-                        startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.TAG_COUNT_DEC, copyRight1, "3d"));
-//                        startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.FILESIZE_DEC, copyRight1, "3d"));
-//                        startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.FILESIZE_ASC, copyRight1, "3d"));
-
-//                        startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.DATE, copyRight1, "video"));
-//                        startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.POPULAR, copyRight1, "video"));
-//                        startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.QUALITY, copyRight1, "video"));
-//                        startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.TAG_COUNT_ASC, copyRight1, "video"));
-//                        startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.TAG_COUNT_DEC, copyRight1, "video"));
-//                        startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.TAG_COUNT_DEC, copyRight1, "video"));
-//                        startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.FILESIZE_DEC, copyRight1, "video"));
-//                        startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.FILESIZE_ASC, copyRight1, "video"));
-                    }
-                    // 主要人物标签+3d 起始页
-                    // 多数非热门标签页面很少，所以下面代码应该不会引起数据爆炸
-                    for (String character1 : DEFAULT_CHARACTERS) {
-                        startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.DATE, character1, "3d"));
-                        startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.POPULAR, character1, "3d"));
-                        startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.QUALITY, character1, "3d"));
-                        startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.TAG_COUNT_ASC, character1, "3d"));
-                        startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.TAG_COUNT_DEC, character1, "3d"));
-//                        startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.FILESIZE_DEC, character1, "3d"));
-//                        startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.FILESIZE_ASC, character1, "3d"));
-//
-//                        startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.DATE, character1, "video"));
-//                        startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.POPULAR, character1, "video"));
-//                        startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.QUALITY, character1, "video"));
-//                        startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.TAG_COUNT_ASC, character1, "video"));
-//                        startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.TAG_COUNT_DEC, character1, "video"));
-//                        startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.FILESIZE_DEC, character1, "video"));
-//                        startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.FILESIZE_ASC, character1, "video"));
-                    }
-                }
+                startUrls =  ArrayUtils.addAll(startUrls,getDefaultNone3DStartUrls());
+                startUrls =  ArrayUtils.addAll(startUrls,getDefaultVideoStartUrls());
             } else {
                 String[] keys = new String[0];
-                if(!StringUtils.isEmpty(character))keys = ArrayUtils.add(keys,character);
-                if(!StringUtils.isEmpty(copyRight))keys = ArrayUtils.add(keys,copyRight);
-                keys = ArrayUtils.add(keys,"3d");
-                if(workMode == WorkMode.UPDATE){
+                if (!StringUtils.isEmpty(character)) keys = ArrayUtils.add(keys, character);
+                if (!StringUtils.isEmpty(copyRight)) keys = ArrayUtils.add(keys, copyRight);
+                keys = ArrayUtils.add(keys, "3d");
+                if (workMode == WorkMode.UPDATE) {
                     ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.DATE, keys));
-                }else if(workMode == WorkMode.UPDATE_ALL || workMode == WorkMode.NEW){
+                } else if (workMode == WorkMode.UPDATE_ALL || workMode == WorkMode.NEW) {
                     startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.DATE, keys));
                     startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.POPULAR, keys));
                     startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.QUALITY, keys));
@@ -254,10 +197,10 @@ public class DOATaskController extends AbstractTaskController {
                     startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.FILESIZE_DEC, keys));
                     startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.FILESIZE_ASC, keys));
                 }
-                keys[keys.length-1] = "video";
-                if(workMode == WorkMode.UPDATE){
+                keys[keys.length - 1] = "video";
+                if (workMode == WorkMode.UPDATE) {
                     ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.DATE, keys));
-                }else if(workMode == WorkMode.UPDATE_ALL || workMode == WorkMode.NEW){
+                } else if (workMode == WorkMode.UPDATE_ALL || workMode == WorkMode.NEW) {
                     startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.DATE, keys));
                     startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.POPULAR, keys));
                     startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.QUALITY, keys));
@@ -277,29 +220,20 @@ public class DOATaskController extends AbstractTaskController {
         return startUrls;
     }
 
-    @Override
-    public boolean confirmRel(String fullUrl) {
-        return false;
-    }
-
-
-    @Override
-    public String getNumberCheckUrl() {
-        return null;
-    }
-
     public static void main(String[] args) {
         DOASourceManager sourceManager = new DOASourceManager("H:\\ROOT", "G:\\ROOT");
         DOATaskController doaTaskController = new DOATaskController(sourceManager);
         doaTaskController.setWorkMode(WorkMode.NEW);
         System.out.println("=========================================");
-//        String[] urls = doaTaskController.getStartUrls();
-//        for (int i = 0; i < urls.length; i++) {
-//            System.out.println(urls[i]);
-//        }
-        Set<String> codes = doaTaskController.storedSanCode;
-        System.out.println(codes);
-        System.out.println(codes.size());
+        String[] urls = doaTaskController.getStartUrls();
+        for (int i = 0; i < urls.length; i++) {
+            System.out.println(urls[i]);
+        }
+//        Set<String> codes = doaTaskController.storedSanCode;
+//        System.out.println(codes);
+//        System.out.println(codes.size());
+//        String[] x = new String[0];
+//        System.out.println(x.length);
     }
     // ff1
     //
