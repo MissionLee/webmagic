@@ -164,6 +164,9 @@ public class FinalFantasyTaskController extends AbstractCopyrightAndCharacterTas
         // red mage
         // white mage (final fantasy xiv)
 
+        // 最终幻想15
+        //cindy aurum 修车妹
+        // lunafreya nox fleuret  露娜
     }
 
     @Override
