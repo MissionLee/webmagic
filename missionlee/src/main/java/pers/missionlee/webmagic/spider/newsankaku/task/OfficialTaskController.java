@@ -26,7 +26,7 @@ public class OfficialTaskController extends AbstractTaskController{
     }
 
     @Override
-    public boolean storeFile(File tempFile, String fileName, ArtworkInfo artworkInfo, boolean infoOnly) {
+    public boolean storeFile(File tempFile, String fileName, ArtworkInfo artworkInfo, boolean infoOnly,boolean storeOnly) {
         return false;
     }
 

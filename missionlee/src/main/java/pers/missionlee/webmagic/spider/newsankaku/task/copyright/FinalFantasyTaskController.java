@@ -53,7 +53,7 @@ public class FinalFantasyTaskController extends AbstractCopyrightAndCharacterTas
         // marlene wallace 玛琳 玛莲·华莱士（マリン ウォーレス/Marlene Wallace） 说明：巴雷特收养的义女，生父是Barret的好友戴恩。从小寄养在蒂法的第七天堂。聪明伶俐，性格中继承了一些巴雷特和蒂法的大胆、果断。
         // elena (ff7) 伊丽娜（イリーナ/Elena） 说明：Turks队员之一，喜欢Tseng。因为年纪和入队较晚的关系喜欢叫其他队员“前辈”。
         // jenova  杰诺瓦（Jenova） 在古代随着陨石而降临星球的外星生物。
-
+        // jessie (ff7)
         // 最终幻想8
         // rinoa heartilly 莉诺雅·哈蒂莉（リノア ・ハーティリー、Rinoa Heartilly）
         //  quistis trepe奇丝迪丝·萃普（キスティス・トゥリープ、Quistis Trepe）

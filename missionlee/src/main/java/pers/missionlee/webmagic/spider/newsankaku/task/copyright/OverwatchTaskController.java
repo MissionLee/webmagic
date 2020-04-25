@@ -23,12 +23,12 @@ public class OverwatchTaskController extends AbstractCopyrightAndCharacterTaskCo
     }
 
     public void init(){
-//        DEFAULT_CHARACTERS.add("d.va (overwatch)");//dva
-//        DEFAULT_CHARACTERS.add("mercy (overwatch) ");// 天使
-//        DEFAULT_CHARACTERS.add("widowmaker (overwatch)");//黑百合
-//        DEFAULT_CHARACTERS.add("tracer (overwatch)");//莉娜 澳克斯顿 裂空
-//        DEFAULT_CHARACTERS.add("mei (overwatch)");//美
-//        DEFAULT_CHARACTERS.add("pharah (overwatch)");//法瑞尔 法老之鹰
+        DEFAULT_CHARACTERS.add("d.va (overwatch)");//dva
+        DEFAULT_CHARACTERS.add("mercy (overwatch) ");// 天使
+        DEFAULT_CHARACTERS.add("widowmaker (overwatch)");//黑百合
+        DEFAULT_CHARACTERS.add("tracer (overwatch)");//莉娜 澳克斯顿 裂空
+        DEFAULT_CHARACTERS.add("mei (overwatch)");//美
+        DEFAULT_CHARACTERS.add("pharah (overwatch)");//法瑞尔 法老之鹰
         DEFAULT_CHARACTERS.add("sombra (overwatch)");// sombra
 //        cyberspace sombra /   sombra
         DEFAULT_CHARACTERS.add("symmetra (overwatch)");// 秩序之光

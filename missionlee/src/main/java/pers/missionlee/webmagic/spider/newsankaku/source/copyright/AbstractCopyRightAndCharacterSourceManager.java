@@ -1,6 +1,7 @@
 package pers.missionlee.webmagic.spider.newsankaku.source.copyright;
 
 import pers.missionlee.webmagic.spider.newsankaku.source.AbstractSourceManager;
+import pers.missionlee.webmagic.spider.newsankaku.source.ArtistSourceManager;
 import pers.missionlee.webmagic.spider.newsankaku.task.copyright.AbstractCopyrightAndCharacterTaskController;
 import pers.missionlee.webmagic.spider.newsankaku.task.TaskController;
 import pers.missionlee.webmagic.spider.newsankaku.utlis.PathUtils;
@@ -98,6 +99,17 @@ public abstract class AbstractCopyRightAndCharacterSourceManager extends Abstrac
         }
 
     }
+
+    public  void moveDownloadedFromArtist(ArtistSourceManager artistSourceManager){
+        /**
+         *
+         * */
+        // 1. 根据关键词，从数据库搜索目标文件
+        // 2. 解析目标文件后，遍历作者信息，查找文件真是目录
+        // 3. 移动文件，在关系表中标记，文件已经被移动
+
+
+    };
 //    public String getAimDicOfCopyRightAndSubVersion(TaskController controller,ArtworkInfo info,String PATH_COPYRIGHT){
 //
 //    }

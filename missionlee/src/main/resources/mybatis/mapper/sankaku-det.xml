@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="san.det">
+<!--	根据角色，查询作品详情-->
+	<select id="selectArtworkDetailByCharacter" parameterType="String" resultType="map">
+		SELECT
+			sa.file_name as file_name,
+			sa.san_code as san_code,
+			sa.information as information
+		FROM
+			san_artwork sa
+		JOIN (
+			SELECT
+				acr.san_code AS san_code
+			FROM
+				san_character sc
+			JOIN artwork_character_rel acr ON sc.character_id = acr.character_id and acr.store_type = 1
+			WHERE
+				sc.`name` = #{characterName}
+		) sco ON sa.san_code = sco.san_code
+	</select>
+</mapper>

@@ -40,7 +40,7 @@ public interface TaskController {
     public void setRetryLimit(int limit);
     public int getRetryLimit();
 
-    public boolean storeFile(File tempFile, String fileName, ArtworkInfo artworkInfo,boolean infoOnly);
+    public boolean storeFile(File tempFile, String fileName, ArtworkInfo artworkInfo,boolean infoOnly,boolean storeOnly);
 
 
 

@@ -158,11 +158,12 @@ public class ArtistSourceManager extends AbstractSourceManager {
         return getArtworkDicOfAimArtist(AimType.ARTIST, artworkName, aimName);
     }
 
+
     /**
      * 获取作品应该放在的路径
      * 1.已经存在，返回当前位置 2.返回默认路径
      */
-    private String getArtworkDicOfAimArtist(AimType aimType, String artworkName, String aimName) {
+    public String getArtworkDicOfAimArtist(AimType aimType, String artworkName, String aimName) {
         String aimFileName = transformAimToFile(aimName);
         // 遍历已收录，看看是不是已经存在
         if (PathUtils.isVideo(artworkName)) {

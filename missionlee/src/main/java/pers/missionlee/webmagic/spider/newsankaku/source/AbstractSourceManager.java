@@ -1,5 +1,6 @@
 package pers.missionlee.webmagic.spider.newsankaku.source;
 
+import org.apache.ibatis.session.SqlSession;
 import pers.missionlee.webmagic.spider.newsankaku.task.TaskController;
 import pers.missionlee.webmagic.spider.newsankaku.utlis.PathUtils;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
@@ -53,5 +54,10 @@ public abstract class AbstractSourceManager  implements SourceManager{
     @Override
     public void postProcess(TaskController controller) {
 
+    }
+
+    @Override
+    public SqlSession getSqlSession() {
+        return sourceService.sqlSession;
     }
 }

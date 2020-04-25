@@ -96,7 +96,7 @@ public class Downloader {
             if (task.existOnDisk(artworkInfo)) {
                 // 已经下载了，但是没有对应的数据记录
                 System.out.println("已经存在该文件 " + filename);
-                task.storeFile(new File(""), filename, artworkInfo, true);
+                task.storeFile(new File(""), filename, artworkInfo, true,false);
                 success = true;
                 stored = true;
             } else {
@@ -159,7 +159,7 @@ public class Downloader {
 
                     if (success) {// 如果下载成功 临时名称，改为真正名称
                         File tmpFile = new File(tmpPath + randomName);
-                        stored = task.storeFile(tmpFile, filename, artworkInfo, false);
+                        stored = task.storeFile(tmpFile, filename, artworkInfo, false,false);
                         if (stored)
                             logger.info("临时文件转存成功 " + filename);
                         else {

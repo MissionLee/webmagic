@@ -146,7 +146,7 @@ public abstract class AbstractTaskController implements TaskController {
     }
 
     @Override
-    public boolean storeFile(File tempFile, String fileName, ArtworkInfo artworkInfo, boolean infoOnly) {
+    public boolean storeFile(File tempFile, String fileName, ArtworkInfo artworkInfo, boolean infoOnly,boolean storeOnly) {
         if(StringUtils.isEmpty(artworkInfo.getName())){
             System.out.println("XXXXXXXXXXXXXXXXXXXX");
             artworkInfo.setName(fileName);
@@ -155,6 +155,7 @@ public abstract class AbstractTaskController implements TaskController {
             System.out.println("info file name:"+artworkInfo.getName());
         }
         if(infoOnly){
+            if(!storeOnly)
             sourceManager.saveArtworkInfo(artworkInfo);
             return true;
         }else{
@@ -165,6 +166,7 @@ public abstract class AbstractTaskController implements TaskController {
                 System.out.println("文件存储成功 "+ aimDic+"/"+fileName);
                 artworkInfo.relativePath = aimDic.substring(aimDic.indexOf(":")+1);
                 System.out.println("保存前artworkInfo： "+artworkInfo);
+                if(!storeOnly)
                 sourceManager.saveArtworkInfo(artworkInfo);
                 this.saveNum++;
                 return true;

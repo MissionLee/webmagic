@@ -1,5 +1,6 @@
 package pers.missionlee.webmagic.spider.newsankaku.source.copyright;
 
+import pers.missionlee.webmagic.spider.newsankaku.source.ArtistSourceManager;
 import pers.missionlee.webmagic.spider.newsankaku.source.copyright.AbstractCopyRightAndCharacterSourceManager;
 import pers.missionlee.webmagic.spider.newsankaku.task.TaskController;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
@@ -12,6 +13,11 @@ import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 public class DOASourceManager extends AbstractCopyRightAndCharacterSourceManager {
     public DOASourceManager(String baseRoot, String... roots) {
         super(baseRoot, roots);
+    }
+
+    @Override
+    public void moveDownloadedFromArtist(ArtistSourceManager artistSourceManager) {
+
     }
 
     /**

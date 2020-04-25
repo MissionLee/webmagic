@@ -158,18 +158,18 @@ public class SpecialSpiderManager {
 
 
     public static void main(String[] args) throws IOException {
-//        SpecialSpiderManager manager = new SpecialSpiderManager(new ArtistSourceManager("H:\\ROOT", "G:\\ROOT"));
+        SpecialSpiderManager manager = new SpecialSpiderManager(new ArtistSourceManager("H:\\ROOT", "G:\\ROOT"));
 //        manager.updateArtist("combos & doodles",WorkMode.NEW);
         // combos &amp; doodles
 //        manager.downloadArtist("sakimichan",WorkMode.UPDATE);
 //        manager.downLoadArtistByLevel(0, false, true);
-//        manager.downLoadChromeArtistDir("san7");
+        manager.downLoadChromeArtistDir("san8");
 //        manager.downloadArtist("kirou (kiruyuu1210)",WorkMode.NEW);
 
-        SpecialSpiderManager manager1 = new SpecialSpiderManager(new OverwatchSourceManager("G:\\ROOT"));
-        manager1.updateOverwatch(WorkMode.NEW);
-        manager1.updateOverwatch(WorkMode.NEW);
-        manager1.updateOverwatch(WorkMode.NEW);
+//        SpecialSpiderManager manager1 = new SpecialSpiderManager(new OverwatchSourceManager("G:\\ROOT"));
+//        manager1.updateOverwatch(WorkMode.NEW);
+//        manager1.updateOverwatch(WorkMode.NEW);
+//        manager1.updateOverwatch(WorkMode.NEW);
 //        manager1.updateDOA(WorkMode.NEW);
 //        manager1.updateDOA(WorkMode.NEW);
 //        manager1.updateDOA(WorkMode.NEW);

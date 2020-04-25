@@ -1,5 +1,6 @@
 package pers.missionlee.webmagic.spider.newsankaku.source.copyright;
 
+import pers.missionlee.webmagic.spider.newsankaku.source.ArtistSourceManager;
 import pers.missionlee.webmagic.spider.newsankaku.source.copyright.AbstractCopyRightAndCharacterSourceManager;
 import pers.missionlee.webmagic.spider.newsankaku.task.TaskController;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
@@ -13,6 +14,12 @@ public class OverwatchSourceManager extends AbstractCopyRightAndCharacterSourceM
     public OverwatchSourceManager(String baseRoot, String... roots) {
         super(baseRoot, roots);
     }
+
+    @Override
+    public void moveDownloadedFromArtist(ArtistSourceManager artistSourceManager) {
+
+    }
+
     public static final String PATH_OVERWATCH_SERIES = "sankaku_overwatch_series";
 
     @Override

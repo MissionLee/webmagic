@@ -1,5 +1,6 @@
 package pers.missionlee.webmagic.spider.newsankaku.source;
 
+import org.apache.ibatis.session.SqlSession;
 import pers.missionlee.webmagic.spider.newsankaku.task.TaskController;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 
@@ -25,5 +26,5 @@ public interface SourceManager {
     // 获取缓存的文件，应该放置到的位置
     public String getAimDic(TaskController controller,ArtworkInfo info);
 
-
+    public SqlSession getSqlSession();
 }

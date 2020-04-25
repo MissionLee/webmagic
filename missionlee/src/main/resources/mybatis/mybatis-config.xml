@@ -93,6 +93,7 @@
     <!-- sql映射文件注册 -->
     <mappers>
         <mapper resource="mybatis/mapper/sankaku.xml"></mapper>
+        <mapper resource="mybatis/mapper/sankaku-det.xml"></mapper>
     </mappers>
 
 </configuration>

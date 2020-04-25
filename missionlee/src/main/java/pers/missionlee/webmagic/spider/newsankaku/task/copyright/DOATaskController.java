@@ -1,12 +1,19 @@
 package pers.missionlee.webmagic.spider.newsankaku.task.copyright;
 
+import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import pers.missionlee.webmagic.spider.newsankaku.source.ArtistSourceManager;
 import pers.missionlee.webmagic.spider.newsankaku.source.copyright.DOASourceManager;
 import pers.missionlee.webmagic.spider.newsankaku.source.SourceManager;
+import pers.missionlee.webmagic.spider.newsankaku.type.AimType;
 import pers.missionlee.webmagic.spider.newsankaku.type.WorkMode;
 import pers.missionlee.webmagic.spider.newsankaku.utlis.SpiderUtils;
+import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 
+import java.io.File;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -79,50 +86,50 @@ public class DOATaskController extends AbstractCopyrightAndCharacterTaskControll
     public void init() {
 
 
-        //        // === DOA 1
-//        DEFAULT_CHARACTERS.add("kasumi (dead or alive)");// Kasumi（かすみ，霞），初次登场：DOA，配音：丹下樱（2代之前），桑岛法子（3代开始）
-//        DEFAULT_CHARACTERS.add("tina armstrong");// Tina Armstrong（ティナ・アームストロング，蒂娜），初次登场：DOA，配音：小山末美（1代），永岛由子（2代开始）。
-//        DEFAULT_CHARACTERS.add("lei fang");// Lei-Fang（レイ・ファン，雷芳/雷芳），初次登场：DOA，配音：冬马由美。
-//        // === DOA ++
-//        DEFAULT_CHARACTERS.add("ayane (dead or alive)");//[忍者龙剑传] Ayane（あやね，绫音），初次登场：DOA++，配音：山崎和佳奈。 忍龙主角
-//        // === DOA 2 Dead or Alive Ultimate(1/2的重置)
-//        DEFAULT_CHARACTERS.add("helena douglas");// Helena Douglas（エレナ，海莲娜），初次登场：DOA2，配音：小山裕香。
-//        // === DOA 3
-//        DEFAULT_CHARACTERS.add("hitomi (dead or alive)");//　Hitomi（ヒトミ，瞳），初次登场：DOA3，配音：堀江由衣。
-//        DEFAULT_CHARACTERS.add("christie (dead or alive)");// Christie Allen（クリスティ，克丽丝蒂），初次登场：DOA3，配音：三石琴乃。
-//        // === DOA 4
-//        DEFAULT_CHARACTERS.add("kokoro (dead or alive)");// Kokoro（こころ，心），初次登场：DOA4，配音：川澄绫子。
-//        DEFAULT_CHARACTERS.add("la mariposa (dead or alive) ");//DOA XTREME中的Lisa // 　La-Mariposa（蝴蝶），初次登场：DOA4，配音：坂本真绫 。
-//        DEFAULT_CHARACTERS.add("lisa hamilton");//莉莎·汉密尔顿
-//        DEFAULT_CHARACTERS.add("alpha-152");// alpha-152 霞的克隆人 4代boss
+                // === DOA 1
+        DEFAULT_CHARACTERS.add("kasumi (dead or alive)");// Kasumi（かすみ，霞），初次登场：DOA，配音：丹下樱（2代之前），桑岛法子（3代开始）
+        DEFAULT_CHARACTERS.add("tina armstrong");// Tina Armstrong（ティナ・アームストロング，蒂娜），初次登场：DOA，配音：小山末美（1代），永岛由子（2代开始）。
+        DEFAULT_CHARACTERS.add("lei fang");// Lei-Fang（レイ・ファン，雷芳/雷芳），初次登场：DOA，配音：冬马由美。
+        // === DOA ++
+        DEFAULT_CHARACTERS.add("ayane (dead or alive)");//[忍者龙剑传] Ayane（あやね，绫音），初次登场：DOA++，配音：山崎和佳奈。 忍龙主角
+        // === DOA 2 Dead or Alive Ultimate(1/2的重置)
+        DEFAULT_CHARACTERS.add("helena douglas");// Helena Douglas（エレナ，海莲娜），初次登场：DOA2，配音：小山裕香。
+        // === DOA 3
+        DEFAULT_CHARACTERS.add("hitomi (dead or alive)");//　Hitomi（ヒトミ，瞳），初次登场：DOA3，配音：堀江由衣。
+        DEFAULT_CHARACTERS.add("christie (dead or alive)");// Christie Allen（クリスティ，克丽丝蒂），初次登场：DOA3，配音：三石琴乃。
+        // === DOA 4
+        DEFAULT_CHARACTERS.add("kokoro (dead or alive)");// Kokoro（こころ，心），初次登场：DOA4，配音：川澄绫子。
+        DEFAULT_CHARACTERS.add("la mariposa (dead or alive) ");//DOA XTREME中的Lisa // 　La-Mariposa（蝴蝶），初次登场：DOA4，配音：坂本真绫 。
+        DEFAULT_CHARACTERS.add("lisa hamilton");//莉莎·汉密尔顿
+        DEFAULT_CHARACTERS.add("alpha-152");// alpha-152 霞的克隆人 4代boss
 
-//        // === DOA 5 5U 5L
-//        DEFAULT_CHARACTERS.add("nyotengu");//女天狗
-//        DEFAULT_CHARACTERS.add("honoka (dead or alive)"); // 穗乃果(ほのか) 声优:野中蓝
-//        DEFAULT_CHARACTERS.add("marie rose");//Marie Rose（マリー・ローズ，玛莉・萝丝），初次登场：DOA5U Arcade，配音：相泽舞 。
-//        DEFAULT_CHARACTERS.add("mila (dead or alive)");// Mila（米拉），初次登场：DOA5，配音：白石凉子 。
-//        DEFAULT_CHARACTERS.add("phase-4");//完成 PHASE-4（フェーズ4） 声优：桑岛法子 霞的克隆人 Kasumi Alpha Phase 4
-//        // === DOA 6
-//        DEFAULT_CHARACTERS.add("nico (dead or alive)");//完成 NICO 死或生6
-        // === 沙滩排球/女神假期
-//        DEFAULT_CHARACTERS.add("tamaki (dead or alive)");//完成 环 游戏《死或生沙滩排球：女神假期》 《死或生：沙滩排球3 》系列中登场的女角色；游戏《死或生6》中登场的女角色。
-//        DEFAULT_CHARACTERS.add("tamaki (doa)");//完成 环 游戏《死或生沙滩排球：女神假期》 《死或生：沙滩排球3 》系列中登场的女角色；游戏《死或生6》中登场的女角色。
-//        DEFAULT_CHARACTERS.add("misaki (dead or alive)");//完成海咲（Misaki）
-//        DEFAULT_CHARACTERS.add("fiona (dead or alive)");//完成菲奥娜 游戏《死或生：沙滩排球》系列中女角色
-//        DEFAULT_CHARACTERS.add("luna (dead or alive)");//完成 Luna  死或生：沙滩排球 女神假期
-//        DEFAULT_CHARACTERS.add("sayuri (dead or alive)");//完成 小百合（Sayuri） 死或生：沙滩排球 女神假期
-//        DEFAULT_CHARACTERS.add("kanna (dead or alive)");//完成 死或生：沙滩排球 女神假期
-//        DEFAULT_CHARACTERS.add("nagisa (dead or alive)");//完成渚(Nagisa)。她是美咲的姐姐
-//        DEFAULT_CHARACTERS.add("miyako (dead or alive)");//完成Kokoro的老媽 美夜子(Miyako)是TECMO所创作的游戏《死或生》及其衍生作品的登场角色。对战不可操作人物
-        // ====== DOA 5联动
-//        DEFAULT_CHARACTERS.add("pai chan");//[VR战士] Pai Chan（パイ・チェン，陈佩），初次登场：DOA5，配音：高山みなみ
-//        DEFAULT_CHARACTERS.add("sarah bryant");//[VR战士]　Sarah Bryant（サラ・ブライアント，莎菈・布莱恩），初次登场：DOA5，配音：Lisle Wilkerson 。
-//        DEFAULT_CHARACTERS.add("rachel (ninja gaiden)"); //[忍者龙剑传] Rachel（瑞秋），初次登场：DOA5U，配音：富沢美智恵 。
-//        DEFAULT_CHARACTERS.add("momiji (ninja gaiden)"); //[忍者龙剑传] Momiji（红叶），初次登场：DOA5U，配音：皆口裕子 。
-//        DEFAULT_CHARACTERS.add("ii naotora (sengoku musou)");//完成  [战国无双] 井伊直虎
-        // ======DOA 6 联动
-//        DEFAULT_CHARACTERS.add("shiranui mai"); //[街头霸王] 不知火舞 联动
-//        DEFAULT_CHARACTERS.add("kula diamond");// [街头霸王] 库拉·戴雅萌多（库拉·戴尔蒙多）联动
+        // === DOA 5 5U 5L
+        DEFAULT_CHARACTERS.add("nyotengu");//女天狗
+        DEFAULT_CHARACTERS.add("honoka (dead or alive)"); // 穗乃果(ほのか) 声优:野中蓝
+        DEFAULT_CHARACTERS.add("marie rose");//Marie Rose（マリー・ローズ，玛莉・萝丝），初次登场：DOA5U Arcade，配音：相泽舞 。
+        DEFAULT_CHARACTERS.add("mila (dead or alive)");// Mila（米拉），初次登场：DOA5，配音：白石凉子 。
+        DEFAULT_CHARACTERS.add("phase-4");//完成 PHASE-4（フェーズ4） 声优：桑岛法子 霞的克隆人 Kasumi Alpha Phase 4
+        // === DOA 6
+        DEFAULT_CHARACTERS.add("nico (dead or alive)");//完成 NICO 死或生6
+//         === 沙滩排球/女神假期
+        DEFAULT_CHARACTERS.add("tamaki (dead or alive)");//完成 环 游戏《死或生沙滩排球：女神假期》 《死或生：沙滩排球3 》系列中登场的女角色；游戏《死或生6》中登场的女角色。
+        DEFAULT_CHARACTERS.add("tamaki (doa)");//完成 环 游戏《死或生沙滩排球：女神假期》 《死或生：沙滩排球3 》系列中登场的女角色；游戏《死或生6》中登场的女角色。
+        DEFAULT_CHARACTERS.add("misaki (dead or alive)");//完成海咲（Misaki）
+        DEFAULT_CHARACTERS.add("fiona (dead or alive)");//完成菲奥娜 游戏《死或生：沙滩排球》系列中女角色
+        DEFAULT_CHARACTERS.add("luna (dead or alive)");//完成 Luna  死或生：沙滩排球 女神假期
+        DEFAULT_CHARACTERS.add("sayuri (dead or alive)");//完成 小百合（Sayuri） 死或生：沙滩排球 女神假期
+        DEFAULT_CHARACTERS.add("kanna (dead or alive)");//完成 死或生：沙滩排球 女神假期
+        DEFAULT_CHARACTERS.add("nagisa (dead or alive)");//完成渚(Nagisa)。她是美咲的姐姐
+        DEFAULT_CHARACTERS.add("miyako (dead or alive)");//完成Kokoro的老媽 美夜子(Miyako)是TECMO所创作的游戏《死或生》及其衍生作品的登场角色。对战不可操作人物
+//         ====== DOA 5联动
+        DEFAULT_CHARACTERS.add("pai chan");//[VR战士] Pai Chan（パイ・チェン，陈佩），初次登场：DOA5，配音：高山みなみ
+        DEFAULT_CHARACTERS.add("sarah bryant");//[VR战士]　Sarah Bryant（サラ・ブライアント，莎菈・布莱恩），初次登场：DOA5，配音：Lisle Wilkerson 。
+        DEFAULT_CHARACTERS.add("rachel (ninja gaiden)"); //[忍者龙剑传] Rachel（瑞秋），初次登场：DOA5U，配音：富沢美智恵 。
+        DEFAULT_CHARACTERS.add("momiji (ninja gaiden)"); //[忍者龙剑传] Momiji（红叶），初次登场：DOA5U，配音：皆口裕子 。
+        DEFAULT_CHARACTERS.add("ii naotora (sengoku musou)");//完成  [战国无双] 井伊直虎
+//         ======DOA 6 联动
+        DEFAULT_CHARACTERS.add("shiranui mai"); //[街头霸王] 不知火舞 联动
+        DEFAULT_CHARACTERS.add("kula diamond");// [街头霸王] 库拉·戴雅萌多（库拉·戴尔蒙多）联动
         // ==========================================
         DEFAULT_COPYRIGHTS.add("dead or alive");
         DEFAULT_COPYRIGHTS.add("dead or alive xtreme venus vacation");
@@ -219,16 +226,52 @@ public class DOATaskController extends AbstractCopyrightAndCharacterTaskControll
         }
         return startUrls;
     }
-
+    public void extractAimFromArtistPath(ArtistSourceManager artistSourceManager){
+        if(true)
+            throw new RuntimeException("移动文件的操作感觉不是非常合适");
+        // 1. 根据关键词，从数据库搜索目标文件
+        // 2. 解析目标文件后，遍历作者信息，查找文件真是目录
+        // 3. 移动文件，在关系表中标记，文件已经被移动
+        System.out.println("ddddddddddddddddddddddddddd");
+        for (String character :
+                DEFAULT_CHARACTERS) {
+            List<Map<String,Object>> artworks = sourceManager.getSqlSession().selectList("san.det.selectArtworkDetailByCharacter", character);
+            for (Map<String,Object> artwork:artworks
+                 ) {
+                System.out.println("=============================");
+                String information = artwork.get("information").toString();
+                ArtworkInfo artworkInfo = JSON.parseObject(information,ArtworkInfo.class);
+                List<String> artists = artworkInfo.getTagArtist();
+                boolean exists = false;
+                for (String artist :
+                        artists) {
+                    // 检验 文件在这个作者的名下嘛
+                    String path = artistSourceManager.getArtworkDicOfAimArtist(AimType.ARTIST,artworkInfo.getName(),artist);
+                    System.out.println(path);
+                    File aimFile = new File(path+artworkInfo.getName());
+                    if(aimFile.exists()){
+                        exists = true;
+                        // 文件存在,转移文件
+                        this.storeFile(aimFile,artworkInfo.getName(),artworkInfo,false,true);
+                    }
+                }
+                break;// 测试的时候，移动一次看看是否可行即刻，所以立刻 break了
+            }
+            break;
+        }
+    }
+    
     public static void main(String[] args) {
         DOASourceManager sourceManager = new DOASourceManager("H:\\ROOT", "G:\\ROOT");
+        ArtistSourceManager artistSourceManager = new ArtistSourceManager("H:\\ROOT", "G:\\ROOT");
         DOATaskController doaTaskController = new DOATaskController(sourceManager);
-        doaTaskController.setWorkMode(WorkMode.NEW);
-        System.out.println("=========================================");
-        String[] urls = doaTaskController.getStartUrls();
-        for (int i = 0; i < urls.length; i++) {
-            System.out.println(urls[i]);
-        }
+        doaTaskController.extractAimFromArtistPath(artistSourceManager);
+//        doaTaskController.setWorkMode(WorkMode.NEW);
+//        System.out.println("=========================================");
+//        String[] urls = doaTaskController.getStartUrls();
+//        for (int i = 0; i < urls.length; i++) {
+//            System.out.println(urls[i]);
+//        }
 //        Set<String> codes = doaTaskController.storedSanCode;
 //        System.out.println(codes);
 //        System.out.println(codes.size());
