@@ -122,6 +122,7 @@ public class ArtistSourceManager extends AbstractSourceManager {
             return sanCodes;
         } else {
             sanCodes = new HashSet<>(sourceService.getSanCodeByArtist(artistName));
+            System.out.println(artistName+" 现有作品CODE: "+sanCodes);
             return sanCodes;
         }
     }
@@ -245,10 +246,10 @@ public class ArtistSourceManager extends AbstractSourceManager {
 
 
     public void updateArtistPathAndLevel() throws IOException {
-        if(true)
-        throw new RuntimeException("还没处理，从这边获取的路径信息，和爬虫保存的路径信息不一样的问题，这里报错的是全前缀，不带作者名字，爬虫保存的是相对路径带名字");
+//        if(true)
+//        throw new RuntimeException("还没处理，从这边获取的路径信息，和爬虫保存的路径信息不一样的问题，这里报错的是全前缀，不带作者名字，爬虫保存的是相对路径带名字");
         Collection<String> speicals = specialName.values();
-        // 1. 从 作者名称列表中 获取或者名称
+        // 1. 谷歌的书签中：从 作者名称列表中 获取或者名称
         ChromeBookmarksReader reader = new ChromeBookmarksReader(ChromeBookmarksReader.defaultBookmarkpath);
         List<String> chromeNames = new ArrayList<>();
         for (String dir :
@@ -260,9 +261,10 @@ public class ArtistSourceManager extends AbstractSourceManager {
                 chromeNames.add(artistName);
             }
         }
+
         System.out.println(chromeNames);
         System.out.println("======================");
-        // 2. 从本地硬盘获取最新的 登记信息
+        // 2. 从本地硬盘获取最新的 等级信息
         Map<String, LevelInfo> diskLevelInfo = new HashMap<>();
         for (Map.Entry<String, List<String>> e :
                 PATH_SANKAKU_PICS.entrySet()) {

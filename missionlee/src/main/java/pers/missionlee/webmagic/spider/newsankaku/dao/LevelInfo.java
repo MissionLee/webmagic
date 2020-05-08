@@ -42,9 +42,9 @@ public class LevelInfo {
         public boolean equals(Object obj) {
             return this.name.equals(((LevelInfo) obj).name)
                     && this.picLevel == ((LevelInfo) obj).picLevel
-                    && this.vidLevel == ((LevelInfo) obj).vidLevel;
-//                    && this.picPath.equals(((LevelInfo) obj).picPath)
-//                    &&  this.vidPath.equals(((LevelInfo) obj).vidPath);
+                    && this.vidLevel == ((LevelInfo) obj).vidLevel
+                    && this.picPath.equals(((LevelInfo) obj).picPath)
+                    &&  this.vidPath.equals(((LevelInfo) obj).vidPath);
         }
 
 }

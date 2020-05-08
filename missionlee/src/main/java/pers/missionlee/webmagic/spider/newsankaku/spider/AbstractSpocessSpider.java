@@ -23,6 +23,7 @@ public abstract class AbstractSpocessSpider implements PageProcessor {
     protected TaskController task;
 
     public AbstractSpocessSpider(TaskController task) {
+
         this.task = task;
     }
 

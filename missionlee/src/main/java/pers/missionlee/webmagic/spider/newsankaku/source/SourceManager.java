@@ -27,4 +27,6 @@ public interface SourceManager {
     public String getAimDic(TaskController controller,ArtworkInfo info);
 
     public SqlSession getSqlSession();
+
+    public void clearSanCodes();
 }

@@ -70,6 +70,7 @@ public class SpecialSpiderManager {
             // 3. 根据任务情况保存作者信息（计算下次更新时间）
             ((ArtistTaskController)artistTask).finishUpdate();
 
+
         }
 
     }
@@ -130,6 +131,13 @@ public class SpecialSpiderManager {
      * forceUpdate: 没到更新时间的作者是否更新（有时候我需要强制更新 0 / 1 这种收藏级别）
      */
     public void downLoadArtistByLevel(int maxLevel, boolean updateLevel, boolean forceUpdate) {
+        if(updateLevel){
+            try {
+                ((ArtistSourceManager)source).updateArtistPathAndLevel();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         /**
          * 1.更新数据库中的作者等级
          * 2.从数据库中搜索指定等级的作者列表
@@ -162,8 +170,9 @@ public class SpecialSpiderManager {
 //        manager.updateArtist("combos & doodles",WorkMode.NEW);
         // combos &amp; doodles
 //        manager.downloadArtist("sakimichan",WorkMode.UPDATE);
+//        manager.downLoadChromeArtistDir("san8");
+        manager.downLoadArtistByLevel(1, false, false);
 //        manager.downLoadArtistByLevel(0, false, true);
-        manager.downLoadChromeArtistDir("san8");
 //        manager.downloadArtist("kirou (kiruyuu1210)",WorkMode.NEW);
 
 //        SpecialSpiderManager manager1 = new SpecialSpiderManager(new OverwatchSourceManager("G:\\ROOT"));
@@ -173,5 +182,7 @@ public class SpecialSpiderManager {
 //        manager1.updateDOA(WorkMode.NEW);
 //        manager1.updateDOA(WorkMode.NEW);
 //        manager1.updateDOA(WorkMode.NEW);
+
+        // kagamine-ikka
     }
 }

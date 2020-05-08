@@ -60,4 +60,9 @@ public abstract class AbstractSourceManager  implements SourceManager{
     public SqlSession getSqlSession() {
         return sourceService.sqlSession;
     }
+
+    @Override
+    public void clearSanCodes() {
+        this.sanCodes = null;
+    }
 }
