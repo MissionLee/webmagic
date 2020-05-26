@@ -166,12 +166,12 @@ public class SpecialSpiderManager {
 
 
     public static void main(String[] args) throws IOException {
-        SpecialSpiderManager manager = new SpecialSpiderManager(new ArtistSourceManager("H:\\ROOT", "G:\\ROOT"));
+        SpecialSpiderManager manager = new SpecialSpiderManager(new ArtistSourceManager("G:\\ROOT", "H:\\ROOT"));
 //        manager.updateArtist("combos & doodles",WorkMode.NEW);
         // combos &amp; doodles
 //        manager.downloadArtist("sakimichan",WorkMode.UPDATE);
 //        manager.downLoadChromeArtistDir("san8");
-        manager.downLoadArtistByLevel(1, false, false);
+        manager.downLoadArtistByLevel(0, true, false);
 //        manager.downLoadArtistByLevel(0, false, true);
 //        manager.downloadArtist("kirou (kiruyuu1210)",WorkMode.NEW);
 
