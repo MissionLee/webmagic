@@ -1,9 +1,7 @@
 package pers.missionlee.webmagic.spider.newsankaku;
 
 import pers.missionlee.webmagic.spider.newsankaku.source.ArtistSourceManager;
-import pers.missionlee.webmagic.spider.newsankaku.source.copyright.DOASourceManager;
 import pers.missionlee.webmagic.spider.newsankaku.source.SourceManager;
-import pers.missionlee.webmagic.spider.newsankaku.source.copyright.OverwatchSourceManager;
 import pers.missionlee.webmagic.spider.newsankaku.spider.DOASpider;
 import pers.missionlee.webmagic.spider.newsankaku.spider.NumberSpider;
 import pers.missionlee.webmagic.spider.newsankaku.spider.ArtistSpider;
@@ -59,9 +57,9 @@ public class SpecialSpiderManager {
             Spider.create(artistSpider).addUrl(urls).thread(3).run();
             // 更新作者 信息
             ((ArtistSourceManager) source).touchArtist(name);
-        } else if (workMode == WorkMode.UPDATE_ALL) { // 全部获取，遍历目标
-
-        } else if (workMode == WorkMode.UPDATE) {
+        }  else if (workMode == WorkMode.UPDATE
+        || workMode == WorkMode.UPDATE_20_DATE_PAGE
+        || workMode == WorkMode.UPDATE_10_DATE_PAGE) {
             // 1. 获取启动url（爬虫会自动根据条件“翻页”）
             String[] urls = artistTask.getStartUrls();
             // 2. 启动爬虫
@@ -129,8 +127,9 @@ public class SpecialSpiderManager {
      * maxLevel : 要更新的作者的最高等级（等级越低，优先级越高）
      * updateLevel : 是否需要刷新当前用户在数据库里面的等级（例如我重排等级，挪动文件夹位置）
      * forceUpdate: 没到更新时间的作者是否更新（有时候我需要强制更新 0 / 1 这种收藏级别）
+     * WorkMode : 可选 UPDATE 普通更新  UPDATE_10_PAGE , UPDATE_20_PAGE 强制更新最近 10/20 页面 （有时网络问题导致系统不能按照要求运行，强制一定页面可以补充）
      */
-    public void downLoadArtistByLevel(int maxLevel, boolean updateLevel, boolean forceUpdate) {
+    public void downLoadArtistByLevel(int maxLevel, boolean updateLevel, boolean forceUpdate,WorkMode workMode) {
         if(updateLevel){
             try {
                 ((ArtistSourceManager)source).updateArtistPathAndLevel();
@@ -148,19 +147,22 @@ public class SpecialSpiderManager {
         System.out.println(artists);
         boolean start = false;
         int x = 0;
+
         for (String artist :
                 artists) {
+            // hage2013
             System.out.println(++x+"/"+artists.size() +" | "+artist );
-//            if (artist.equals("ponta (velmar)")||artist.equals("pnt (ddnu4555)")) {
-//                start = true;
-//            }
-//            if (start)
-                downloadArtist(artist, WorkMode.UPDATE);
+            if (artist.equals("alexanderdinh")) {
+                start = true;
+            }
+            if (start)
+                downloadArtist(artist, workMode);
+
         }
     }
 
     public void downLoadArtistByLevel(int maxLevel) {
-        downLoadArtistByLevel(maxLevel, false, false);
+        downLoadArtistByLevel(maxLevel, false, false,WorkMode.UPDATE);
     }
 
 
@@ -171,7 +173,7 @@ public class SpecialSpiderManager {
         // combos &amp; doodles
 //        manager.downloadArtist("sakimichan",WorkMode.UPDATE);
 //        manager.downLoadChromeArtistDir("san8");
-        manager.downLoadArtistByLevel(0, true, false);
+        manager.downLoadArtistByLevel(0, false, true,WorkMode.UPDATE_10_DATE_PAGE);
 //        manager.downLoadArtistByLevel(0, false, true);
 //        manager.downloadArtist("kirou (kiruyuu1210)",WorkMode.NEW);
 

@@ -2,10 +2,7 @@ package pers.missionlee.webmagic.spider.newsankaku.spider;
 
 import pers.missionlee.webmagic.spider.newsankaku.task.TaskController;
 import pers.missionlee.webmagic.spider.newsankaku.type.WorkMode;
-import pers.missionlee.webmagic.spider.newsankaku.utlis.SpiderUtils;
 import us.codecraft.webmagic.Page;
-import us.codecraft.webmagic.Site;
-import us.codecraft.webmagic.processor.PageProcessor;
 
 public class DOASpider extends AbstractSpocessSpider {
     public DOASpider(TaskController task) {
@@ -24,7 +21,7 @@ public class DOASpider extends AbstractSpocessSpider {
             ListNum listNum = processList(page);
             int added = listNum.added;
             int all = listNum.all;
-            if (all == 20 && (task.getWorkMode() == WorkMode.NEW || task.getWorkMode() == WorkMode.UPDATE_ALL)) {
+            if (all == 20 && (task.getWorkMode() == WorkMode.NEW || task.getWorkMode() == WorkMode.UPDATE_10_DATE_PAGE)) {
                 // 新建和完全更新模式下，指导当前页面有 20个作品，那么说明还有下一页
                 getNextPage(page);
             } else if (task.getWorkMode() == WorkMode.UPDATE && added > 0 && all==20) {

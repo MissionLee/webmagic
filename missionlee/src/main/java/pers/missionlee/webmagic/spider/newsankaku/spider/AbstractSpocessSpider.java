@@ -3,6 +3,7 @@ package pers.missionlee.webmagic.spider.newsankaku.spider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pers.missionlee.webmagic.spider.newsankaku.task.TaskController;
+import pers.missionlee.webmagic.spider.newsankaku.type.WorkMode;
 import pers.missionlee.webmagic.spider.newsankaku.utlis.Downloader;
 import pers.missionlee.webmagic.spider.newsankaku.utlis.SpiderUtils;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
@@ -31,33 +32,39 @@ public abstract class AbstractSpocessSpider implements PageProcessor {
     public Site getSite() {
         return SpiderUtils.site;
     }
+
     /**
      * 将当前分页下一页加入爬虫任务
-     * */
-    protected void getNextPage(Page page){
+     */
+    protected void getNextPage(Page page) {
         String url = page.getUrl().toString();
         String thisPage = url.substring(url.lastIndexOf("=") + 1);
-        System.out.println("当前是第 "+thisPage+" 页");
+        System.out.println("当前是第 " + thisPage + " 页");
         int thisPageNum = Integer.valueOf(thisPage);
-        if (thisPageNum < 50) {
-            String urlPrefix = url.substring(0, url.lastIndexOf("=")+1);
+        if ((task.getWorkMode() == WorkMode.UPDATE && thisPageNum < 50)
+                || (task.getWorkMode() == WorkMode.UPDATE_20_DATE_PAGE && thisPageNum < 20)
+                || (task.getWorkMode() == WorkMode.UPDATE_10_DATE_PAGE && thisPageNum < 10)) {
+            String urlPrefix = url.substring(0, url.lastIndexOf("=") + 1);
             System.out.println("添加下一页");
             page.addTargetRequest(urlPrefix + (++thisPageNum));
         }
     }
-    public class ListNum{
+
+    public class ListNum {
         public int added;
         public int all;
-        public ListNum(int all,int added) {
+
+        public ListNum(int all, int added) {
             this.added = added;
             this.all = all;
         }
 
         @Override
         public String toString() {
-            return  "本页总数："+all + " | 添加总数："+added;
+            return "本页总数：" + all + " | 添加总数：" + added;
         }
     }
+
     /**
      * 从列表中提取详情页
      */
@@ -81,12 +88,12 @@ public abstract class AbstractSpocessSpider implements PageProcessor {
                     task.confirmRel(SpiderUtils.BASE_URL + url);
                 }
             }
-            logger.info("新增："+added+" 页面:"+page.getUrl().toString());
-            ListNum l = new ListNum(urlList.size(),added);
+            logger.info("新增：" + added + " 页面:" + page.getUrl().toString());
+            ListNum l = new ListNum(urlList.size(), added);
             System.out.println(l);
             return l;
         }
-        return new ListNum(0,0);
+        return new ListNum(0, 0);
     }
 
     /**
@@ -100,16 +107,17 @@ public abstract class AbstractSpocessSpider implements PageProcessor {
         }
         Html html = page.getHtml();
         ArtistSpider.Target target = extractDownloadTargetInfoFromDetailPage(html);
-        ArtworkInfo artworkInfo = extractArtworkInfoFromDetailPage(page,target);
+        ArtworkInfo artworkInfo = extractArtworkInfoFromDetailPage(page, target);
         System.out.println(artworkInfo);
         try {
 
-            Downloader.download(target.targetUrl,target.targetName,page.getUrl().toString(),task,artworkInfo);
+            Downloader.download(target.targetUrl, target.targetName, page.getUrl().toString(), task, artworkInfo);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
     }
+
     /**
      * 1. 解析作品信息
      * 2. 解析下载目标信息 URL 文件名
@@ -201,16 +209,17 @@ public abstract class AbstractSpocessSpider implements PageProcessor {
         artworkInfo.setTagMeta(metaList);
         artworkInfo.setTakeTime(System.currentTimeMillis());
 
-        artworkInfo.sanCode = page.getUrl().toString().substring(page.getUrl().toString().lastIndexOf("/")+1);
+        artworkInfo.sanCode = page.getUrl().toString().substring(page.getUrl().toString().lastIndexOf("/") + 1);
 
         return artworkInfo;
     }
 
-    public class Target{
+    public class Target {
         String targetUrl;
         String targetName;
         String subFix;
     }
+
     /**
      * 用于分析详情页Html，获取真正要下载的文件信息（主要处理了 1.页面展示缩略图/原图的情况，2.页面为图片/视频/flash文件的情况）
      */
@@ -245,6 +254,6 @@ public abstract class AbstractSpocessSpider implements PageProcessor {
         String x = "sadfasfasdfx=88";
         String thisPage = x.substring(x.lastIndexOf("=") + 1);
         System.out.println(thisPage);
-        System.out.println(x.substring(0,x.lastIndexOf("=")+1));
+        System.out.println(x.substring(0, x.lastIndexOf("=") + 1));
     }
 }

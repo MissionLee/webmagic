@@ -8,8 +8,6 @@ import pers.missionlee.webmagic.spider.newsankaku.utlis.SpiderUtils;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 
-import java.util.List;
-
 /**
  * @description:
  * @author: Mission Lee
@@ -28,10 +26,19 @@ public class ArtistSpider extends AbstractSpocessSpider {
     public void process(Page page) {
         String url = page.getUrl().toString();
         if (url.contains("tags")) {
-            int added = processList(page).added;
-            if (task.getWorkMode() == WorkMode.UPDATE
-                    && added > 0
+            ListNum num= processList(page);
+            int added = num.added;
+            int all = num.all;
+            if (
+                    task.getWorkMode() == WorkMode.UPDATE //更新模式
+                    && added > 0 //当前页面有更新
                     && url.contains("date")) {
+                getNextPage(page);
+            } else if (
+                    (task.getWorkMode() == WorkMode.UPDATE_20_DATE_PAGE || task.getWorkMode() == WorkMode.UPDATE_10_DATE_PAGE)  //定量更新模式
+                    && url.contains("date")
+                    && all==20 // 有下一页
+            ) {
                 getNextPage(page);
             }
         } else if (url.startsWith("https://chan.sankakucomplex.com/post/show/")) {

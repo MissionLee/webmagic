@@ -1,16 +1,11 @@
 package pers.missionlee.webmagic.spider.newsankaku.task;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import pers.missionlee.webmagic.spider.newsankaku.source.ArtistSourceManager;
 import pers.missionlee.webmagic.spider.newsankaku.source.SourceManager;
 import pers.missionlee.webmagic.spider.newsankaku.type.AimType;
 import pers.missionlee.webmagic.spider.newsankaku.type.WorkMode;
 import pers.missionlee.webmagic.spider.newsankaku.utlis.SpiderUtils;
-import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Set;
 
 /**
@@ -56,9 +51,7 @@ public class ArtistTaskController extends AbstractTaskController {
         }
         if(workMode == WorkMode.NEW){
             startUrls = SpiderUtils.getStartUrls(aimNum,aimKeys);
-        }else if(workMode == WorkMode.UPDATE_ALL){
-            startUrls = SpiderUtils.getStartUrls(aimNum,aimKeys);
-        }else if(workMode == WorkMode.UPDATE){
+        }else if(workMode == WorkMode.UPDATE || workMode == WorkMode.UPDATE_10_DATE_PAGE || workMode==WorkMode.UPDATE_20_DATE_PAGE){
             startUrls = new String[1];
             startUrls[0] = SpiderUtils.getUpdateStartUrl(getAimKeys());
         }

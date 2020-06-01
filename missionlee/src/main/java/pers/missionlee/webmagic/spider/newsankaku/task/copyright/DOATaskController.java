@@ -14,7 +14,6 @@ import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @description:
@@ -194,7 +193,7 @@ public class DOATaskController extends AbstractCopyrightAndCharacterTaskControll
                 keys = ArrayUtils.add(keys, "3d");
                 if (workMode == WorkMode.UPDATE) {
                     ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.DATE, keys));
-                } else if (workMode == WorkMode.UPDATE_ALL || workMode == WorkMode.NEW) {
+                } else if (workMode == WorkMode.UPDATE_10_DATE_PAGE || workMode == WorkMode.NEW) {
                     startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.DATE, keys));
                     startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.POPULAR, keys));
                     startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.QUALITY, keys));
@@ -207,7 +206,7 @@ public class DOATaskController extends AbstractCopyrightAndCharacterTaskControll
                 keys[keys.length - 1] = "video";
                 if (workMode == WorkMode.UPDATE) {
                     ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.DATE, keys));
-                } else if (workMode == WorkMode.UPDATE_ALL || workMode == WorkMode.NEW) {
+                } else if (workMode == WorkMode.UPDATE_10_DATE_PAGE || workMode == WorkMode.NEW) {
                     startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.DATE, keys));
                     startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.POPULAR, keys));
                     startUrls = ArrayUtils.add(startUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.QUALITY, keys));

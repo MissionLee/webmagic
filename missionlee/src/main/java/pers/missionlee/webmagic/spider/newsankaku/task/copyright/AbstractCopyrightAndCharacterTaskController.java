@@ -2,7 +2,6 @@ package pers.missionlee.webmagic.spider.newsankaku.task.copyright;
 
 import com.sun.istack.internal.Nullable;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import pers.missionlee.webmagic.spider.newsankaku.source.SourceManager;
 import pers.missionlee.webmagic.spider.newsankaku.task.AbstractTaskController;
 import pers.missionlee.webmagic.spider.newsankaku.type.WorkMode;
@@ -96,7 +95,7 @@ public abstract class AbstractCopyrightAndCharacterTaskController extends Abstra
                 generatedUrls = ArrayUtils.add(generatedUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.DATE, generatedKeys));
             }
 
-        } else if (workMode == WorkMode.UPDATE_ALL || workMode == WorkMode.NEW) {
+        } else if (workMode == WorkMode.UPDATE_10_DATE_PAGE || workMode == WorkMode.NEW) {
             for (String character : aimList) {
                 generatedKeys[generatedKeys.length-1] = character;
                 generatedUrls = ArrayUtils.add(generatedUrls, SpiderUtils.getSearchUrlPageOne(SpiderUtils.OrderType.DATE, generatedKeys));
