@@ -16,16 +16,50 @@ import us.codecraft.webmagic.selector.Selectable;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public abstract class AbstractSpocessSpider implements PageProcessor {
+    public boolean processCode429Page(Page page)  {
+        if(page.getStatusCode() == 429){
+            try {
+                Thread.sleep(300000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            page.addTargetRequest(page.getUrl().toString());
+        return false;
+        }
+        return  true;
+    }
     Logger logger = LoggerFactory.getLogger(ArtistSpider.class);
-
+    public static Map<Integer,String> tagType = new HashMap<>();
+    static {
+        // meta 蓝青色  例如 第三方编辑
+        tagType.put(0,"general");//橙色
+        tagType.put(1,"artist");//深红 jp06
+        tagType.put(2,"studio"); // 粉红色  idolmaster
+        tagType.put(3,"copyright");//紫色 fate/grand_order
+        tagType.put(4,"character");//绿色  jougasaki_mika
+        tagType.put(5,"genre");// 土黄色  例如强奸
+        tagType.put(6,"");
+        tagType.put(7,"");//
+        tagType.put(8,"medium");//蓝色 uncensored doujinshi
+        tagType.put(9,"meta");//蓝青色 tagme
+    }
     protected TaskController task;
 
     public AbstractSpocessSpider(TaskController task) {
 
         this.task = task;
+    }
+    public abstract void doProcess(Page page);
+    @Override
+    public void process(Page page) {
+        if(processCode429Page(page)){
+            doProcess(page);
+        }
     }
 
     @Override
@@ -69,11 +103,11 @@ public abstract class AbstractSpocessSpider implements PageProcessor {
      * 从列表中提取详情页
      */
     protected ListNum processList(Page page) {
-        try {
-            Thread.sleep(task.getSleepTime());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Thread.sleep(task.getSleepTime());
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
         List<String> urlList = page.getHtml().$(".thumb").$("a", "href").all();
 
         if (urlList != null && urlList.size() > 0) {
@@ -109,10 +143,11 @@ public abstract class AbstractSpocessSpider implements PageProcessor {
         ArtistSpider.Target target = extractDownloadTargetInfoFromDetailPage(html);
         ArtworkInfo artworkInfo = extractArtworkInfoFromDetailPage(page, target);
         System.out.println(artworkInfo);
+
         try {
 
             Downloader.download(target.targetUrl, target.targetName, page.getUrl().toString(), task, artworkInfo);
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
 
@@ -192,7 +227,7 @@ public abstract class AbstractSpocessSpider implements PageProcessor {
         }
         ArtworkInfo artworkInfo = new ArtworkInfo();
         artworkInfo.setAddress(page.getUrl().toString());
-        artworkInfo.setName(target.targetName);
+        artworkInfo.setFileName(target.targetName);
         artworkInfo.setFileSize(fileSize);
         artworkInfo.setResolutionRatio(fileSizeInfo);
         artworkInfo.setRating(rating);
@@ -256,4 +291,6 @@ public abstract class AbstractSpocessSpider implements PageProcessor {
         System.out.println(thisPage);
         System.out.println(x.substring(0, x.lastIndexOf("=") + 1));
     }
+
+
 }

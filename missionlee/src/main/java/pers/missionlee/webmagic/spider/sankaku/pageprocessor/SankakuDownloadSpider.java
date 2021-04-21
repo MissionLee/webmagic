@@ -225,7 +225,7 @@ public class SankakuDownloadSpider extends AbstractSankakuSpider {
         }
         ArtworkInfo artworkInfo = new ArtworkInfo();
         artworkInfo.setAddress(page.getUrl().toString());
-        artworkInfo.setName(target.targetName);
+        artworkInfo.setFileName(target.targetName);
         artworkInfo.setFileSize(fileSize);
         artworkInfo.setResolutionRatio(fileSizeInfo);
         artworkInfo.setRating(rating);

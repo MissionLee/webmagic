@@ -3,6 +3,7 @@ package pers.missionlee.webmagic.spider.newsankaku.task;
 import pers.missionlee.webmagic.spider.newsankaku.type.AimType;
 import pers.missionlee.webmagic.spider.newsankaku.type.WorkMode;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
+import pers.missionlee.webmagic.spider.sankaku.info.BookParentInfo;
 
 import java.io.File;
 
@@ -47,8 +48,9 @@ public interface TaskController {
     public String getNumberCheckUrl();
 
     public Boolean existOnDisk(ArtworkInfo artworkInfo);
-
+    public Boolean fileNameExistsInDB(ArtworkInfo artworkInfo);
     public int getSaveNum();
 
+    public void saveBookInfo(BookParentInfo bookParentInfo);
 
 }

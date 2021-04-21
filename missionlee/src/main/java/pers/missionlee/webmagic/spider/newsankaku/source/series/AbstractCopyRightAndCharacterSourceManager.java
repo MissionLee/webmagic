@@ -1,7 +1,7 @@
-package pers.missionlee.webmagic.spider.newsankaku.source.copyright;
+package pers.missionlee.webmagic.spider.newsankaku.source.series;
 
 import pers.missionlee.webmagic.spider.newsankaku.source.AbstractSourceManager;
-import pers.missionlee.webmagic.spider.newsankaku.source.ArtistSourceManager;
+import pers.missionlee.webmagic.spider.newsankaku.source.artist.ArtistSourceManager;
 import pers.missionlee.webmagic.spider.newsankaku.task.copyright.AbstractCopyrightAndCharacterTaskController;
 import pers.missionlee.webmagic.spider.newsankaku.task.TaskController;
 import pers.missionlee.webmagic.spider.newsankaku.utlis.PathUtils;
@@ -27,7 +27,10 @@ public abstract class AbstractCopyRightAndCharacterSourceManager extends Abstrac
 
     public AbstractCopyRightAndCharacterSourceManager(String baseRoot, String... roots) {
         super(baseRoot, roots);
+        resetBaseRoot();
+
     }
+    public abstract void  resetBaseRoot();
 
     @Override
     public int getStoredNum(TaskController controller) {
@@ -49,7 +52,7 @@ public abstract class AbstractCopyRightAndCharacterSourceManager extends Abstrac
         Set<String> sanCodes = new HashSet<>();
         for (String copyRight :
                 copyRights) {
-            List<String> c = sourceService.getSanCodesByCopyRight(copyRight);
+            List<String> c = sourceService.getSanCodesByCopyRightOfficial(copyRight);
             if (c != null) {
                 System.out.println(copyRight + " : " + c.size());
 
@@ -78,7 +81,7 @@ public abstract class AbstractCopyRightAndCharacterSourceManager extends Abstrac
      * */
     public String getAimDicOfCopyRight(TaskController controller, ArtworkInfo info,String PATH_COPYRIGHT) {
         List<String> characters = info.getTagCharacter();
-        String fileName = info.getName();
+        String fileName = info.getFileName();
         String typePath = PATH_PIC;
         if (PathUtils.isVideo(fileName))
             typePath = PATH_VID;
@@ -110,7 +113,6 @@ public abstract class AbstractCopyRightAndCharacterSourceManager extends Abstrac
 
 
     };
-//    public String getAimDicOfCopyRightAndSubVersion(TaskController controller,ArtworkInfo info,String PATH_COPYRIGHT){
-//
-//    }
+
+
 }

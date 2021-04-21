@@ -3,8 +3,8 @@ package pers.missionlee.webmagic.spider.newsankaku.task.copyright;
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import pers.missionlee.webmagic.spider.newsankaku.source.ArtistSourceManager;
-import pers.missionlee.webmagic.spider.newsankaku.source.copyright.DOASourceManager;
+import pers.missionlee.webmagic.spider.newsankaku.source.artist.ArtistSourceManager;
+import pers.missionlee.webmagic.spider.newsankaku.source.series.DOASourceManager;
 import pers.missionlee.webmagic.spider.newsankaku.source.SourceManager;
 import pers.missionlee.webmagic.spider.newsankaku.type.AimType;
 import pers.missionlee.webmagic.spider.newsankaku.type.WorkMode;
@@ -245,13 +245,13 @@ public class DOATaskController extends AbstractCopyrightAndCharacterTaskControll
                 for (String artist :
                         artists) {
                     // 检验 文件在这个作者的名下嘛
-                    String path = artistSourceManager.getArtworkDicOfAimArtist(AimType.ARTIST,artworkInfo.getName(),artist);
+                    String path = artistSourceManager.getArtworkDicOfAimArtist(AimType.ARTIST,artworkInfo.getFileName(),artist);
                     System.out.println(path);
-                    File aimFile = new File(path+artworkInfo.getName());
+                    File aimFile = new File(path+artworkInfo.getFileName());
                     if(aimFile.exists()){
                         exists = true;
                         // 文件存在,转移文件
-                        this.storeFile(aimFile,artworkInfo.getName(),artworkInfo,false,true);
+                        this.storeFile(aimFile,artworkInfo.getFileName(),artworkInfo,false,true);
                     }
                 }
                 break;// 测试的时候，移动一次看看是否可行即刻，所以立刻 break了

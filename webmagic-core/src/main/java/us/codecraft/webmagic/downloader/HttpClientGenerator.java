@@ -104,8 +104,9 @@ public class HttpClientGenerator {
 			}
 
 		};
-
-		SSLContext sc = SSLContext.getInstance("SSLv3");
+        System.out.println("改动：  HttpClientGenerator # 108");
+        SSLContext sc = SSLContext.getInstance("TLS");//将SSLv3改为TLS,主要是修改这个地方
+//		SSLContext sc = SSLContext.getInstance("SSLv3");
 		sc.init(null, new TrustManager[] { trustManager }, null);
 		return sc;
 	}

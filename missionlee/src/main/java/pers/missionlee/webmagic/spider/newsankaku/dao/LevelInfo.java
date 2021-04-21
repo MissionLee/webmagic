@@ -40,6 +40,11 @@ public class LevelInfo {
 
         @Override
         public boolean equals(Object obj) {
+//                if(this.picPath.contains("krokobyaka")){
+//                        System.out.println("xxyyzz");
+//                        System.out.println(JSON.toJSONString(this));
+//                        System.out.println(JSON.toJSONString(obj));
+//                }
             return this.name.equals(((LevelInfo) obj).name)
                     && this.picLevel == ((LevelInfo) obj).picLevel
                     && this.vidLevel == ((LevelInfo) obj).vidLevel

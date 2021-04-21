@@ -286,5 +286,4 @@ public class SpiderUtils {
             return artistName.endsWith(".") ? artistName.substring(0, artistName.length() - 1) : artistName;
         }
     }
-
 }

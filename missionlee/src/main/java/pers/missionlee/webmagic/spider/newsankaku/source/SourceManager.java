@@ -3,8 +3,8 @@ package pers.missionlee.webmagic.spider.newsankaku.source;
 import org.apache.ibatis.session.SqlSession;
 import pers.missionlee.webmagic.spider.newsankaku.task.TaskController;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
+import pers.missionlee.webmagic.spider.sankaku.info.BookParentInfo;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -29,4 +29,13 @@ public interface SourceManager {
     public SqlSession getSqlSession();
 
     public void clearSanCodes();
+    // 将所有物理文件的名称，写入指定的 Set中
+    public void extractAllFileNames(Set<String> names);
+
+    public boolean fileNameExist(String file_name);
+
+    // 保存
+    public int saveBookInfo(BookParentInfo bookParentInfo);
+
+    public int sanCodeExist(String sanCodee);
 }

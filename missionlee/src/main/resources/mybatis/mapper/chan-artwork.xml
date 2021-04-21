@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="chan.artwork">
+    <select id="save" parameterType="map">
+INSERT INTO san_artwork(
+			`FILE_NAME`,
+			`SAN_CODE`,
+			`FILE_SIZE`,
+			`FILE_FORMAT`,
+			`POST_DATE`,
+			`RATING`,
+			`RESOLUTION_RATIO`,
+			`STATUS`,
+			`RELATIVE_PATH`,
+			`CREATE_TIME`,
+			`UPDATE_TIME`,
+			`INFORMATION`,
+			`OFFICIAL`,
+			`BOOK_ID`,
+			`PARENT_ID`,
+			`IS_SINGLE`,
+			`STORE_PLACE`
+			) VALUES (
+			#{fileName},
+			#{sanCode},
+			#{fileSize},
+			#{fileFormat},
+			#{postDate},
+			#{rating},
+			#{resolutionRatio},
+			#{status},
+			#{relativePath},
+			now(),
+			now(),
+			#{information},
+			#{official},
+			#{bookId},
+			#{parentId},
+			#{isSingle},
+			#{storePlace}
+			)
+		</select>
+</mapper>

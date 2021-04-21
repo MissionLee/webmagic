@@ -19,13 +19,54 @@ import java.util.List;
 public class ArtworkInfo {
     private static String FILE_PATH = "info/artworkInfo.jsonline";
     private static final String[] emptyStringArray = new String[0];
-
+    // =================== 以下参数 是数据库用的 =================
+    // 文件名  数据库 file_name
+    public String fileName;
+    //
     public String sanCode;
+    // 文件大小
+    public String fileSize;
+    public String format;
+    public String postDate;
+    // 评级
+    public String rating;
+    // 分辨率
+    public String resolutionRatio;
+    // status 通过默认值存储
+    // 相对路径  现在没啥用了 这个
     public String relativePath;
+    // create_time 自动生成
+    // update_time 自动生成
+    // information 通过 JSON.toString 整个类生成
+    // 格式  show_type    img video object/embed 等等
+    // official
+    public boolean official=false;
+    public int bookId=-1;
+    public int parentId=-1;
 
+    public boolean isSingle = false;
+    // 存储位置
+    public int storePlace;
+    // ==================== 以下参数 是  程序用的
     // 目标作者名称 （作品可能是多作者，但是下载的时候，可能是为了下载某个单一作者的作品）
-    private String aimName;
+    public String aimName;
+    public int artistType;
+    public String bookName;
+    public String fileSaveName;
+    public String PBPrefix;
+    public String getBookName() {
+        return bookName;
+    }
 
+    public void setBookName(String bookName) {
+        this.bookName = bookName;
+    }
+
+    // 格式
+    // sankaku 地址 : 展示页地址而非图片地址，因为sankaku加密原因，存储图片地址没有意义
+    private String address;
+    // 收录时间
+    private Long takeTime;
     public String getAimName() {
         return aimName;
     }
@@ -33,16 +74,36 @@ public class ArtworkInfo {
     public void setAimName(String aimName) {
         this.aimName = aimName;
     }
+    public enum ARTIST_TYPE{
+        // '1 普通作者 2 copyright 3 studio 4 组合条件'
+        ARTIST(1),
+        COPYRIGHT(2),
+        STUDIO(3),
+        COMBINED(4),
+        UNKNOWN(9)
+        ;
 
-    // 文件名
-    private String name;
-    // 格式
-    private String format;
-    // sankaku 地址 : 展示页地址而非图片地址，因为sankaku加密原因，存储图片地址没有意义
-    private String address;
-    // 收录时间
-    private Long takeTime;
+        ARTIST_TYPE(int artistType) {
+            this.artistType = artistType;
+        }
+        public int artistType;
+    }
+    public static enum  STORE_PLACE{
+        //0 未确认 1 艺术家名下， 2 copyright 名下 3 studio 名下 4 single名下 5 ARTIST-parent/book 名下 6 single-book/parent名下 99 其他
+        NOT_KNOWN(0),
+        ARTIST(1),
+        COPYRIGHT(2),
+        STUDIO(3),
+        SINGLE(4),
+        ARTIST_PARENT_BOOK(5),
+        SINGLE_PARENT_BOOK(6);
 
+
+        STORE_PLACE(int storePlace) {
+            this.storePlace = storePlace;
+        }
+        public int storePlace;
+    }
     // 以下来自标签栏
     private List<String> tagArtist;
     private List<String> tagCharacter;
@@ -70,27 +131,18 @@ public class ArtworkInfo {
         this.tagGenre = tagGenre;
     }
 
-    // 以下来自标签栏下方的信息栏
-    // 上传到sankaku日志
-    private String postDate;
-    // 分辨率
-    private String resolutionRatio;
-    // 文件大小
-    private String fileSize;
-    // 评级
-    private String rating;
 
     @Override
     public String toString() {
         return JSON.toJSONString(this);
     }
 
-    public String getName() {
-        return name;
+    public String getFileName() {
+        return fileName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     public String getFormat() {
@@ -199,7 +251,7 @@ public class ArtworkInfo {
 
     @Override
     public boolean equals(Object artworkInfo) {
-        return this.getName().equals(((ArtworkInfo) artworkInfo).getName());
+        return this.getFileName().equals(((ArtworkInfo) artworkInfo).getFileName());
     }
     @Deprecated
     private static FileFilter isPicOrVid = new FileFilter() {
@@ -303,7 +355,7 @@ public class ArtworkInfo {
                 }
                 Iterator iterator = fileInfoJsonList.iterator();
                 while (iterator.hasNext()) {
-                    if (!allWeHave.contains(((ArtworkInfo) iterator.next()).getName())) {
+                    if (!allWeHave.contains(((ArtworkInfo) iterator.next()).getFileName())) {
                         iterator.remove();
                         remove++;
                     }

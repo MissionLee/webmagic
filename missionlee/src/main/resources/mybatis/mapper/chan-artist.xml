@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="chan.artist">
+	<select id="getTargetCommonArtist" resultType="map">
+		SELECT
+		`ARTIST_ID` AS artistId,
+		`NAME` AS name,
+		`DEL_NUMS` AS delNums,
+		`PIC_LEVEL` AS picLevel,
+		`VID_LEVEL` AS vidLevel,
+		`ARTWORK_UPDATE_TIME` AS artworkUpdateTime,
+		`SAVED_PIC_NUM` AS savedPicNum,
+		`SAVED_VID_NUM` AS savedVidNum,
+		`INFOED_NUM` AS infoedNum,
+		`CREATE_TIME` AS createTime,
+		`UPDATE_TIME` AS updateTime,
+		`IS_TARGET` AS isTarget,
+		UNIX_TIMESTAMP(`AIM_UPDATE_TIME`) AS aimUpdateTime
+		FROM san_artist WHERE is_target = 1 and artist_type = 1
+	</select>
+	<update id="makeArtistLost" parameterType="String">
+		UPDATE san_artist SET
+		is_target= 0,
+		artist_type = 9
+		WHERE `name` = #{name}
+	</update>
+</mapper>

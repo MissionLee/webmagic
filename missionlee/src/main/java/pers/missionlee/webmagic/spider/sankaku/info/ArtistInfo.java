@@ -151,19 +151,19 @@ public class ArtistInfo {
             if (picFormats.contains(info.getFormat())) {
 
                 if (info.getRating().equals("Questionable")) {
-                    artistInfo.getQuestionablePics().add(info.getName());
+                    artistInfo.getQuestionablePics().add(info.getFileName());
                 } else if (info.getRating().equals("Explicit")) {
-                    artistInfo.getExplicitPics().add(info.getName());
+                    artistInfo.getExplicitPics().add(info.getFileName());
                 } else {
-                    artistInfo.getSafePics().add(info.getName());
+                    artistInfo.getSafePics().add(info.getFileName());
                 }
             } else {
                 if (info.getRating().equals("Questionable")) {
-                    artistInfo.getQuestionableVids().add(info.getName());
+                    artistInfo.getQuestionableVids().add(info.getFileName());
                 } else if (info.getRating().equals("Explicit")) {
-                    artistInfo.getExplicitVids().add(info.getName());
+                    artistInfo.getExplicitVids().add(info.getFileName());
                 } else {
-                    artistInfo.getSafeVids().add(info.getName());
+                    artistInfo.getSafeVids().add(info.getFileName());
                 }
             }
         }

@@ -137,10 +137,10 @@ public class SpiderManager extends SpiderUtils {
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
-        SourceManager sourceManager = new SourceManager("H:\\ROOT", "G:\\ROOT");
-        SpiderManager spiderManager = new SpiderManager();
+//        SourceManager sourceManager = new SourceManager("H:\\ROOT", "G:\\ROOT");
+//        SpiderManager spiderManager = new SpiderManager();
         // 更新特定作者
-        spiderManager.update(sourceManager,"yan'yo (yan'yan'yo)",false,false);
+//        spiderManager.update(sourceManager,"yan'yo (yan'yan'yo)",false,false);
 //         解析下载 Chrome 的某个文件目录
 //        spiderManager.runWithChromeDir(sourceManager, SourceManager.SourceType.SANKAKU, SpiderTask.TaskType.NEW, "san6", false);
 //        spiderManager.popular(sourceManager,"ez6",10,false);

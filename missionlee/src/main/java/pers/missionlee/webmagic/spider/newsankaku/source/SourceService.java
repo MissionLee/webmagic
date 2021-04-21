@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import pers.missionlee.webmagic.dbbasedsankaku.SankakuDBSourceManager;
 import pers.missionlee.webmagic.spider.newsankaku.dao.LevelInfo;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
-import pers.missionlee.webmagic.spider.sankaku.manager.SourceManager;
+import pers.missionlee.webmagic.spider.sankaku.info.BookParentInfo;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -153,6 +153,10 @@ public class SourceService {
         return updated == 1;
 
     }
+    public int sanCodeExist(String sanCode){
+        return sqlSession.selectOne("san.sanCodeExist",sanCode);
+    }
+
     /**
      * 添加作者：一般情况不需要单独条用这个方法，保存
      * */
@@ -188,7 +192,7 @@ public class SourceService {
             Map<String, Object> artworkInfoMap = new HashMap<>();
             artworkInfoMap.put("sanCode", ar.sanCode);
             artworkInfoMap.put("relativePath", ar.relativePath);
-            artworkInfoMap.put("fileName", ar.getName());
+            artworkInfoMap.put("fileName", ar.getFileName());
             artworkInfoMap.put("fileSize", ar.getFileSize());
             artworkInfoMap.put("postDate", ar.getPostDate());
             artworkInfoMap.put("rating", ar.getRating());
@@ -357,23 +361,29 @@ public class SourceService {
         return sqlSession.update("san.updateArtistPathLevel",params);
     }
     public static Map<String,Long> updateInfo;
-    public Map<String,Long> getUpdateInfo(){
-        if(updateInfo == null){
-            updateInfo = new HashMap<>();
-            List<Map<String,Object>> infos = sqlSession.selectList("san.getUpdateInfo");
-            for (Map<String, Object> m :
-                    infos) {
-                updateInfo.put(m.get("name").toString(),(long)m.get("aimUpdateTime"));
-            }
-        }
-        return updateInfo;
-    }
+//    public Map<String,Long> getUpdateInfo(){
+//        if(updateInfo == null){
+//            updateInfo = new HashMap<>();
+//            List<Map<String,Object>> infos = sqlSession.selectList("san.getUpdateInfo");
+//            for (Map<String, Object> m :
+//                    infos) {
+//                updateInfo.put(m.get("name").toString(),(long)m.get("aimUpdateTime"));
+//            }
+//        }
+//        return updateInfo;
+//    }
     public List<String> getSanCodeByArtist(String name){
         // getSanCodesByArtist
         return sqlSession.selectList("san.getSanCodesByArtist",name);
     }
-    public List<String> getSanCodesByCopyRight(String copyRight){
-        return sqlSession.selectList("san.getSanCodesByCopyright",copyRight);
+    public List<String> getSanCodeByArtistOfStoreType(String name,int storeType){
+        Map<String,Object> params = new HashMap<>();
+        params.put("name",name);
+        params.put("storeType",storeType);
+        return sqlSession.selectList("san.getSanCodeByArtistOfStoreType",params);
+    }
+    public List<String> getSanCodesByCopyRightOfficial(String copyRight){
+        return sqlSession.selectList("san.getSanCodesByCopyrightOfficial",copyRight);
 
     }
     public List<String> getSanCodesByCharacter(String character){
@@ -386,11 +396,61 @@ public class SourceService {
         return sqlSession.selectList("san.getLevelInfos");
     }
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
-        SankakuDBSourceManager db = new SankakuDBSourceManager(null);
+//        SankakuDBSourceManager db = new SankakuDBSourceManager(null);
 ////        boolean x =db.exists("0b2fd737759f76ed15e00c4fd7ba3865.jpg");
 //        boolean y = db.updateArtist("suzuki (artist)",System.currentTimeMillis()+1999999);
 //        System.out.println(y);
 //        System.out.println(db.getUpdateInfo());
-        System.out.println(db.getArtworkSanCodes("futs"));
+//        System.out.println(db.getArtworkSanCodes("futs"));
+
+    }
+    public int getStoredNumOfCopyRight(String copyrightName){
+        return sqlSession.selectOne("san.getStoredNumOfCopyRight",copyrightName);
+    }
+
+
+    /**
+     * 查询数据库中所有作品的 名字
+     * */
+    public Set<String> getFileNames(){
+        List<String> names = sqlSession.selectList("san.getFileNames");
+        Set<String> namesSet = new HashSet<>();
+        namesSet.addAll(names);
+        return namesSet;
+    }
+    /**
+     * 根据情况，更新作品的存在状态 store_type
+     * */
+    public void updateLostFile(String fileName,boolean exists){
+        // 1. 硬盘在，不论当前什么状态 => 1 正常保存
+        //     (因为以数据库为基准，所以不考虑数据库没有某条数据的情况)
+        // 2. 硬盘不在
+        //       2.1 如果数据库当前为 1正常保存 => 3 丢失
+        //       2.2 如果数据库当前为 2主动删除 => 2 主动删除
+        //       2.3 如果数据库当前为 3丢失 => 3 丢失
+        if(exists){
+            // 不处理 存在的情况，减轻负担  ⭐ 这个字段的默认值为 1，也就是创建数据的时候直接写着1
+        }else{
+//            update san_artwork set store_type = (
+//            case store_type
+//                when 1 then  3
+//                when 2 then 2
+//                when 3 then 3
+//		       else 2                   -- 当前状态为 空 或者 其他标记为丢失
+//                       end
+//		       )where file_name = #{fileName}
+            sqlSession.selectOne("san.dealLostFile",fileName);
+        }
+    }
+
+    public boolean fileNameExist(String fileName){
+        int num = sqlSession.selectOne("san.fileNameExist",fileName);
+        return num>0;
+    }
+    /**
+     * 保存 BookInfo
+     * */
+    public int saveBookInfo(BookParentInfo bookParentInfo){
+        return sqlSession.insert("san.saveBookInfo", bookParentInfo);
     }
 }

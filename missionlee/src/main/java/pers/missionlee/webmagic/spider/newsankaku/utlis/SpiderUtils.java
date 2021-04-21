@@ -37,70 +37,81 @@ public class SpiderUtils {
 
                 Matcher matcher = htmlTextPattern.matcher(str);
                 if (matcher.find())
-                    copyRight.add(matcher.group(1));
+                    copyRight.add(matcher.group(1).replaceAll("_"," "));
             }
             flag++;
 
         }
     }
-    public static String getNumberCheckUrl(String... keys){
+
+    public static String extractTag(String html) {
+        Matcher matcher = htmlTextPattern.matcher(html);
+        if (matcher.find()) return matcher.group(1);
+        else return null;
+    }
+
+    public static String getNumberCheckUrl(String... keys) {
         StringBuffer buffer = new StringBuffer();
         buffer.append(BASE_SEARCH_URL);
 
         for (int i = 0; i < keys.length; i++) {
             buffer.append(urlFormater(keys[i]));
-            if(i != keys.length-1)
-            buffer.append("%20");
+            if (i != keys.length - 1)
+                buffer.append("%20");
         }
-        String url = buffer.toString()+"&commit=Search";
-        System.out.println("SpiderUtil - getNumberCheckUrl "+url);
+        String url = buffer.toString() + "&commit=Search";
+        System.out.println("SpiderUtil - getNumberCheckUrl " + url);
         return url;
     }
-    public static String getSearchUrlPageOne(OrderType orderType,String... keys){
-        return getSearchUrlPageEquals(orderType,keys)+"1";
-    }
-    public static String getSearchUrlPageEquals(OrderType orderType,String... keys){
-        return orderType.getPrefix(keys);
-    }
-    public static String getUpdateStartUrl(String... keys){
-        return OrderType.DATE.getPrefix(keys)+"1";
+
+    public static String getSearchUrlPageOne(OrderType orderType, String... keys) {
+        return getSearchUrlPageEquals(orderType, keys) + "1";
     }
 
-    public static String[] getStartUrls(int artworkNum,String... keys){
+    public static String getSearchUrlPageEquals(OrderType orderType, String... keys) {
+        return orderType.getPrefix(keys);
+    }
+
+    public static String getUpdateStartUrl(String... keys) {
+        return OrderType.DATE.getPrefix(keys) + "1";
+    }
+
+    public static String[] getStartUrls(int artworkNum, String... keys) {
         String urls[];
-        if(artworkNum>2000){
+        if (artworkNum > 2000) {
             String prefixDate = OrderType.DATE.getPrefix(keys);
             String prefixPop = OrderType.POPULAR.getPrefix(keys);
             String prefixTagAsc = OrderType.TAG_COUNT_ASC.getPrefix(keys);
             String prefixTagDec = OrderType.TAG_COUNT_DEC.getPrefix(keys);
             urls = new String[200];
             for (int i = 0; i < 50; i++) {
-                urls[i] = prefixDate+(i+1);
-                urls[i+50] = prefixPop + (i+1);
-                urls[i+100] = prefixTagAsc + (i+1);
-                urls[i+150] = prefixTagDec+(i+1);
+                urls[i] = prefixDate + (i + 1);
+                urls[i + 50] = prefixPop + (i + 1);
+                urls[i + 100] = prefixTagAsc + (i + 1);
+                urls[i + 150] = prefixTagDec + (i + 1);
             }
 
-        }else if(artworkNum>1000){
+        } else if (artworkNum > 1000) {
             int pageNum = ((Double) (Math.ceil((new Double(artworkNum)) / 20))).intValue();
-            int loopNum =((Double) Math.ceil(new Double(pageNum)/2)).intValue();
+            int loopNum = ((Double) Math.ceil(new Double(pageNum) / 2)).intValue();
             String prefixAsc = OrderType.TAG_COUNT_ASC.getPrefix(keys);
             String prefixDesc = OrderType.TAG_COUNT_DEC.getPrefix(keys);
-            urls = new String[loopNum*2];
+            urls = new String[loopNum * 2];
             for (int i = 0; i < loopNum; i++) {
-                urls[i] = prefixAsc+(i+1);
-                urls[i+loopNum] = prefixDesc + (i+1);
+                urls[i] = prefixAsc + (i + 1);
+                urls[i + loopNum] = prefixDesc + (i + 1);
             }
-        }else{
+        } else {
             int pageNum = ((Double) (Math.ceil((new Double(artworkNum)) / 20))).intValue();
             String prefix = OrderType.POPULAR.getPrefix(keys);
             urls = new String[pageNum];
             for (int i = 0; i < pageNum; i++) {
-                urls[i] = prefix +(i+1);
+                urls[i] = prefix + (i + 1);
             }
         }
         return urls;
     }
+
     public static String urlFormater(String artistName) {
         // 空格 () ’
         String artistFormat = artistName.trim()
@@ -132,39 +143,50 @@ public class SpiderUtils {
                 .replaceAll("\\|", "%7C");
         return artistFormat;
     }
-    public  static Site site = Site.me()
+
+    public static Site site = Site.me()
             .setRetryTimes(3)
             .setTimeOut(100000)
+            // beta.sankaku 增加了下面三条
+//            .addCookie("track_view_24540324", "1")
+//            .addCookie("_sankakucomplex_session","BAh7BzoMdXNlcl9pZGkD5lgGOg9zZXNzaW9uX2lkIiVlZThmNzE0NWE1YzY5N2M4Mjc4Y2VkZThhMTA0N2Q5NQ%3D%3D--87ff44ddccdb93eb6958bb61b61bb3856b8632ba")
+//            .addCookie("_pk_id.8.be6c", "%5B%22%22%2C%22%22%2C1606524802%2C%22https%3A%2F%2Fchan.sankakucomplex.com%2F%22%5D")
+//            .addCookie("_pk_id.8.be6c", "b412a086f317b99d.1617467043.0.1618496716..")
+//
+            .addCookie("PHPSESSID", "ec1t2o5dpfc9esmq8psl6hrpoj")
             .addCookie("__atuvc", "1%7C13")
-            .addCookie("__atuvs", "5e1c553c1930ff14000")
-            .addCookie("_pk_id.1.eee1", "660572c708fea8cf.1577603237.2.1577610247.1577610215.")
-            .addCookie("_pk_id.2.42fa", "6dde919d87bd0a25.1552866104.85.1578915132.1578913654.")
-            .addCookie("_pk_ref.1.eee1", "%5B%22%22%2C%22%22%2C1577610215%2C%22https%3A%2F%2Fchan.sankakucomplex.com%2F%3Fnext%3D2.35934045118749%2B19090001%26tags%3Ddate%3A2019-12-21..2019-12-28%20order%3Aquality%26page%3D74%22%5D")
+            .addCookie("__atuvs", "607a2604c2db6a9f000")
+            .addCookie("_pk_id.1.eee1", "bf81d87657cab680.1618060321.2.1618558468.1618060321.")
+            .addCookie("_pk_id.2.42fa", "b377c991952da662.1586822823.901.1618617861.1618610591.")
+            .addCookie("_pk_ref.1.eee1", "%5B%22%22%2C%22%22%2C1618558468%2C%22https%3A%2F%2Fchan.sankakucomplex.com%2F%22%5D")
             .addCookie("_pk_ses.2.42fa", "1")
-            .addCookie("_pk_testcookie.2.42fa", "1")
-            .addCookie("_sankakucomplex_session", "BAh7BzoMdXNlcl9pZGkD5lgGOg9zZXNzaW9uX2lkIiVlMzI1YjQ5MDg1ZTRiNTcyMzA2ZGMyMGJlZTM0OGRjNQ%3D%3D--93955adb171cc48de8ee353139d97ead3a364311")
+            .addCookie("_sankakucomplex_session", "BAh7BzoMdXNlcl9pZGkD5lgGOg9zZXNzaW9uX2lkIiUzMGE2MzUwYjQwZjI2YzIwM2I5ZTljMTRlMzMzOWZjNw%3D%3D--4a0543378d4e7229153a3a4b9564f691fb9eeab9")
             .addCookie("auto_page", "0")
             .addCookie("blacklisted_tags", "")
-            .addCookie("loc", "MDAwMDBBU0NOSlMyMTQzMjk4NDA3NjAwMDBDSA==")
+            .addCookie("hmn_cp_visitor", "180.104.215.103")
             .addCookie("locale", "en")
             .addCookie("login", "zuixue3000")
             .addCookie("mode", "view")
-            .addCookie("na_id", "2019013108302142389291160478")
-            .addCookie("na_tc", "Y")
             .addCookie("ouid", "5c52b21d0001851467bf69b6fdc7c24e116c87aa31768b505e9b")
             .addCookie("pass_hash", "b1f471dcd8cc8df0ed2b84f033ba2baae5de013b")
+            .addCookie("loc", "MDAwMDBBU0NOU0gyMTEyMzAxNTA3MzAwMDBDSA==")
+            .addCookie("theme", "0")
+            .addCookie("na_id", "2019013108302142389291160478")
+            .addCookie("v", "0")
+            .addCookie("na_tc", "Y")
+            .addCookie("uvc", "1474%7C11%2C1361%7C12%2C1162%7C13%2C739%7C14%2C332%7C15")
             .addCookie("uid", "5c52b21d9f7161d1")
-            .addCookie("uvc", "0%7C1%2C13%7C52%2C466%7C1%2C780%7C2%2C643%7C3")
-            .addCookie("PHPSESSID", "rrb6lkmc07f4b0fapkcln52eht")
             .addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
             .addHeader("Accept-Encoding", "gzip, deflate, br")
-            .addHeader("Accept-Language", "zh-CN,zh;q=0.9")
+            .addHeader("Accept-Language", "en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7")
             .addHeader("Cache-Control", "no-cache")
             .addHeader("Connection", "keep-alive")
             .addHeader("Host", "chan.sankakucomplex.com")
             .addHeader("Pragma", "no-cach")
             .addHeader("Upgrade-Insecure-Requests", "1")
             .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.119 Safari/537.36");
+    // TODO: 4/17/2021 这一条很重要，添加了 cookie 会提示权限问题 
+//            .addHeader("cookie","_sankakucomplex_session=BAh7BzoMdXNlcl9pZGkD5lgGOg9zZXNzaW9uX2lkIiUzMGE2MzUwYjQwZjI2YzIwM2I5ZTljMTRlMzMzOWZjNw==--4a0543378d4e7229153a3a4b9564f691fb9eeab9");
 
     public enum OrderType {
 
@@ -204,6 +226,7 @@ public class SpiderUtils {
             this.desc = desc;
         }
     }
+
     public static String urlDeFormater(String codedName) throws UnsupportedEncodingException {
         String originName = URLDecoder.decode(codedName.trim(), "UTF8").replaceAll("_", " ");
 //        String originName =codedName

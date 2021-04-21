@@ -323,9 +323,10 @@ public class Spider implements Runnable, Task {
                 threadPool.execute(new Runnable() {
                     @Override
                     public void run() {
+                        System.out.println("Spider # 326 在此处引入了 sleep  随机0-10s");
                         try {
                             try {
-                                Thread.sleep(new Random().nextInt(30000));
+                                Thread.sleep(new Random().nextInt(3000));
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
@@ -432,6 +433,12 @@ public class Spider implements Runnable, Task {
             }
         } else {
             logger.info("page status code error, page {} , code: {}", request.getUrl(), page.getStatusCode());
+            System.out.println("LMS 改变源码：Spider#onDownloadSuccess 436 ~440 行,如果下载时候 status code 为 429 访问过多，那么重新把页面放回下载队列");
+            if(page.getStatusCode() == 429){
+//                sleep(30000);
+                pageProcessor.process(page);
+            }
+//            page.addTargetRequest(request);
         }
         sleep(site.getSleepTime());
         return;

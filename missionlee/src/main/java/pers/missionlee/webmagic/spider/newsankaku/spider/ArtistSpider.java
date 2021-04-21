@@ -21,12 +21,18 @@ public class ArtistSpider extends AbstractSpocessSpider {
     public ArtistSpider(TaskController task) {
         super(task);
     }
-
     @Override
-    public void process(Page page) {
+    public void doProcess(Page page) {
         String url = page.getUrl().toString();
         if (url.contains("tags")) {
+            try {
+                System.out.println("查询页面列表的时候，额外Sleep 10秒 ： ArtistSpider#process 30 行");
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             ListNum num= processList(page);
+            // 说明 WorkMode.NEW 的时候，所有的url 都是初始化好的，不用考虑下一页，下面的逻辑是 如果是更新，需要自行判断是否有下一页
             int added = num.added;
             int all = num.all;
             if (

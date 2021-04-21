@@ -4,8 +4,8 @@ import org.apache.ibatis.session.SqlSession;
 import pers.missionlee.webmagic.spider.newsankaku.task.TaskController;
 import pers.missionlee.webmagic.spider.newsankaku.utlis.PathUtils;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
+import pers.missionlee.webmagic.spider.sankaku.info.BookParentInfo;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -64,5 +64,20 @@ public abstract class AbstractSourceManager  implements SourceManager{
     @Override
     public void clearSanCodes() {
         this.sanCodes = null;
+    }
+
+    @Override
+    public boolean fileNameExist(String file_name) {
+        return sourceService.fileNameExist(file_name);
+    }
+
+    @Override
+    public int saveBookInfo(BookParentInfo bookParentInfo) {
+        return sourceService.saveBookInfo(bookParentInfo);
+    }
+
+    @Override
+    public int sanCodeExist(String sanCodee) {
+        return sourceService.sanCodeExist(sanCodee);
     }
 }

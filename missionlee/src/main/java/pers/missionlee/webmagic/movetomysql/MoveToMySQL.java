@@ -104,8 +104,8 @@ public class MoveToMySQL {
         public Object call() throws Exception {
             try {
                 String sanCode = ar.getAddress().substring(ar.getAddress().lastIndexOf("/") + 1);
-                String relativePath = sourceManager.getArtistPath(SourceManager.SourceType.SANKAKU, ar.getName(), artist).replace("E:/ROOT", "");
-                String fileName = ar.getName();
+                String relativePath = sourceManager.getArtistPath(SourceManager.SourceType.SANKAKU, ar.getFileName(), artist).replace("E:/ROOT", "");
+                String fileName = ar.getFileName();
                 String fileSize = ar.getFileSize();
                 String postDate = ar.getPostDate();
                 String rating = ar.getRating();
@@ -150,7 +150,7 @@ public class MoveToMySQL {
                     } else {
                         // 如果 当前路径和库里面的路径不一样，表示 真的重复了，删除后面出现的
                         logger.warn("这是个重复的作品-多个作者 删除当前这个");
-                        String depFullPath = sourceManager.getArtistPath(SourceManager.SourceType.SANKAKU, ar.getName(), artist) + ar.getName();
+                        String depFullPath = sourceManager.getArtistPath(SourceManager.SourceType.SANKAKU, ar.getFileName(), artist) + ar.getFileName();
                         System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
                         System.out.println("重复/删除" + depFullPath);
 //                    FileUtils.writeStringToFile(depFile, depFullPath + "\n", "utf8", true);

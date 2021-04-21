@@ -1,11 +1,12 @@
 package pers.missionlee.webmagic.spider.newsankaku.task;
 
-import pers.missionlee.webmagic.spider.newsankaku.source.ArtistSourceManager;
+import pers.missionlee.webmagic.spider.newsankaku.source.artist.ArtistSourceManager;
 import pers.missionlee.webmagic.spider.newsankaku.source.SourceManager;
 import pers.missionlee.webmagic.spider.newsankaku.type.AimType;
 import pers.missionlee.webmagic.spider.newsankaku.type.WorkMode;
 import pers.missionlee.webmagic.spider.newsankaku.utlis.SpiderUtils;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -27,6 +28,17 @@ public class ArtistTaskController extends AbstractTaskController {
         setAimKeys(keys);
         saveNum = 0;
         this.artistName = artistName;
+        // artistName 有可能是从本地磁盘翻译获取的，对于这种情况，需要将其变回原本名称
+        if(((ArtistSourceManager)artistSourceManager).specialName.containsValue(artistName)){
+          Set<Map.Entry<String,String>> entry = ((ArtistSourceManager)artistSourceManager).specialName.entrySet();
+            for (Map.Entry<String,String> e:entry
+                 ) {
+                if(e.getValue().equals(artistName)){
+                    System.out.println("ArtistTaskController 38 从磁盘获取的特殊名称变更："+artistName+" => "+e.getKey());
+                    artistName = e.getKey();
+                }
+            }
+        }
         init();
     }
     /**
@@ -38,6 +50,8 @@ public class ArtistTaskController extends AbstractTaskController {
         System.out.println(codes);
         storedSanCode = codes;
         System.out.println(storedSanCode);
+        // ⭐ 因为遇到过作者作品文件消失的情况，所以这里验证一下，那些san_code 对应的文件，还在磁盘上，哪些已经不在了
+        // ⭐ 这个功能，提取成特别功能，数据库开销挺大的
     }
     @Override
     public AimType getAimType(){
@@ -70,6 +84,8 @@ public class ArtistTaskController extends AbstractTaskController {
     }
 
 
+
+
     public void finishUpdate(){
         int level = ((ArtistSourceManager)sourceManager).getArtistLevel(artistName);
         int times = 50 ; // 30 天
@@ -84,7 +100,7 @@ public class ArtistTaskController extends AbstractTaskController {
         } else if (level == 2) {
             times = 90;
         } else if (level == 1 && getSaveNum() > 0) {
-            times = 30; // 1级 有更新 20 天更新
+            times = 30; // 1级 有更新 20 天更
         } else if (level == 0) {
             if (getSaveNum() == 0)
                 times = 30; // 0 级本次没更新下次 30天更新

@@ -26,8 +26,7 @@ public class NumberSpider implements PageProcessor {
 
     @Override
     public void process(Page page) {
-        List<String> list = new ArrayList<>();
-        list = page.getHtml().$(".tag-type-none").$("a").all();
+        List<String> list  = page.getHtml().$(".tag-type-none").$("a").all();
         if(list == null || list.size() == 0)
             list = page.getHtml().$(".tag-count").all();
 

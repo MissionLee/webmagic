@@ -1,0 +1,25 @@
+几大种类说明
+Artist 下载：下载内容，分类为 作者，对应标签为 作者名称
+Copyright_Official 下载： 对应标签为作者名称 并且爬取的时候，添加 official 标签
+系列下载： 包括 DOA FinalFantasy Overwatch 对应标签是特地整理好的，下载到的内容根据 系列作品的角色分类
+注意：没有单纯搜集某个 copyright ,这种搜索的质量太差，数量太多 ⭐ 现有的copyright，都是当时被错误的当成 artist_name下载的，后来手动整理的
+
+SpiderStarter 是主入口
+
+创建SpiderStarter ，需要传入一个 SourceManager
+
+SourceManager 用于管理硬盘文件
+          - ArtistSourceManager 管理目录为 ROOT/sankaku 目录下的文件
+          - OfficialSourceManager 管理目录为 ROOT/sankaku_copyright_official 目录下的文件
+              - ⭐⭐ 注意： 某个copyright 的official 内容，也有可能是 某个artist 已经下载了
+              - ⭐⭐ 所以，official 的更新，没法通过 official总量，和已经下载的数量进行下载/更新判断
+          - AbstractCopyrightAndCharacterSourceManager
+              - 这个是Series通用的SourceManager，下面三个是实现类，其中只有一个参数不同
+              - DOASourceManager
+              - FinalFantasySourceManager
+              - OverwatchSourceManager
+
+调用SpecialSpiderManager 的具体某个方法，进行对应的爬虫操作
+1.  需要先创建 TaskController （实际上，上面那一步创建的SourceManager 就是给 TaskController用到的）
+
+2.  创建具体 Spider（PageProcessor），交给Spider 类，启动城需

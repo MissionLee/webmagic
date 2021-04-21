@@ -101,7 +101,7 @@ public class ChromeBookmarksReader {
                         }
                     }
                 }
-                System.out.println("key:"+theKey);
+//                System.out.println("key:"+theKey);
                 dirs.put(theKey,thisNode);
             }
         }

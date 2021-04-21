@@ -54,6 +54,9 @@ public class FinalFantasyTaskController extends AbstractCopyrightAndCharacterTas
         // elena (ff7) 伊丽娜（イリーナ/Elena） 说明：Turks队员之一，喜欢Tseng。因为年纪和入队较晚的关系喜欢叫其他队员“前辈”。
         // jenova  杰诺瓦（Jenova） 在古代随着陨石而降临星球的外星生物。
         // jessie (ff7)
+        // FF7 Remake
+        // kyrie canaan
+
         // 最终幻想8
         // rinoa heartilly 莉诺雅·哈蒂莉（リノア ・ハーティリー、Rinoa Heartilly）
         //  quistis trepe奇丝迪丝·萃普（キスティス・トゥリープ、Quistis Trepe）
@@ -167,6 +170,7 @@ public class FinalFantasyTaskController extends AbstractCopyrightAndCharacterTas
         // 最终幻想15
         //cindy aurum 修车妹
         // lunafreya nox fleuret  露娜
+        // gentiana
     }
 
     @Override

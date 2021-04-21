@@ -1,8 +1,12 @@
-package pers.missionlee.webmagic.spider.newsankaku.source;
+package pers.missionlee.webmagic.spider.newsankaku.source.artist;
 
+import com.alibaba.fastjson.JSON;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pers.missionlee.webmagic.spider.newsankaku.SpecialSpiderManager;
 import pers.missionlee.webmagic.spider.newsankaku.dao.LevelInfo;
+import pers.missionlee.webmagic.spider.newsankaku.source.AbstractSourceManager;
 import pers.missionlee.webmagic.spider.newsankaku.task.TaskController;
 import pers.missionlee.webmagic.spider.newsankaku.type.AimType;
 import pers.missionlee.webmagic.spider.newsankaku.utlis.PathUtils;
@@ -12,6 +16,7 @@ import pers.missionlee.webmagic.utils.ChromeBookmarksReader;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -68,6 +73,7 @@ public class ArtistSourceManager extends AbstractSourceManager {
         for (int i = 0; i < addRoots.length; i++) {
             String addPoot = PathUtils.buildPath(addRoots[i], DIR_SANKAKU);
             File[] addRootChildrenFiles = new File(addPoot).listFiles(PathUtils.aimFileFilter());
+            System.out.println("下面是："+addPoot+"n欸不文件提取");
             extractPathInfo(addRootChildrenFiles, pics, vids);
         }
         PATH_SANKAKU_PICS = pics;
@@ -122,12 +128,19 @@ public class ArtistSourceManager extends AbstractSourceManager {
             return sanCodes;
         } else {
             sanCodes = new HashSet<>(sourceService.getSanCodeByArtist(artistName));
-            System.out.println(artistName+" 现有作品CODE: "+sanCodes);
+            System.out.println(artistName + " 现有作品CODE: " + sanCodes);
             return sanCodes;
         }
     }
 
-
+//    public Set<String> getStoredSanCodeOfStoreType(TaskController controller,int storeType){
+//        String artistName = controller.getAimKeys()[0];
+//        if(sanCodes != null){
+//            return sanCodes;
+//        }else{
+//            sanCodes
+//        }
+//    }
     public int getArtworkNumOfArtist(AimType aimType, String name) {
         if (aimType == AimType.ARTIST) {
             return sourceService.getArtistWorkNum(name);
@@ -154,11 +167,16 @@ public class ArtistSourceManager extends AbstractSourceManager {
 
     @Override
     public String getAimDic(TaskController controller, ArtworkInfo info) {
+        System.out.println("获取目标路径 "+controller.getClass());
         String aimName = controller.getAimKeys()[0];
-        String artworkName = info.getName();
+        System.out.println("作者："+aimName);
+        String artworkName = info.getFileName();
+        System.out.println("作品："+info.getFileName());
         return getArtworkDicOfAimArtist(AimType.ARTIST, artworkName, aimName);
     }
-
+//    public String getAimDic(String artworkName,String aimName){
+//        return  getArtworkDicOfAimArtist(AimType.ARTIST,artworkName,aimName);
+//    }
 
     /**
      * 获取作品应该放在的路径
@@ -171,7 +189,8 @@ public class ArtistSourceManager extends AbstractSourceManager {
             Iterator<Map.Entry<String, List<String>>> iterator = PATH_SANKAKU_VIDS.entrySet().iterator();
             while (iterator.hasNext()) {
                 Map.Entry<String, List<String>> entry = iterator.next();
-                if (entry.getValue().contains(aimFileName))
+                // 如果这个文件夹下有这个作者名字 ， 作者名字+"."  ,
+                if (entry.getValue().contains(aimFileName)||entry.getValue().contains(aimFileName+"."))
                     return PathUtils.buildPath(entry.getKey(), aimFileName);
             }
             return PathUtils.buildPath(PATH_SANKAKU_DEFAULT_VID, aimFileName);
@@ -179,7 +198,7 @@ public class ArtistSourceManager extends AbstractSourceManager {
             Iterator<Map.Entry<String, List<String>>> iterator = PATH_SANKAKU_PICS.entrySet().iterator();
             while (iterator.hasNext()) {
                 Map.Entry<String, List<String>> entry = iterator.next();
-                if (entry.getValue().contains(aimFileName))
+                if (entry.getValue().contains(aimFileName)||entry.getValue().contains(aimFileName+"."))
                     return PathUtils.buildPath(entry.getKey(), aimFileName);
             }
             return PathUtils.buildPath(PATH_SANKAKU_DEFAULT_PIC, aimFileName);
@@ -194,7 +213,9 @@ public class ArtistSourceManager extends AbstractSourceManager {
     public int getArtistLevel(String artistName) {
         int priority = 10;
         String parentPathPic = getArtworkDicOfAimArtist(AimType.ARTIST, ".jpg", artistName);
+        System.out.println(parentPathPic);
         String parentPathVid = getArtworkDicOfAimArtist(AimType.ARTIST, ".mp4", artistName);
+        System.out.println(parentPathVid);
         Matcher matcherPic = priorityPattern.matcher(parentPathPic);
         Matcher matcherVid = priorityPattern.matcher(parentPathVid);
         if (matcherPic.find()) {
@@ -205,6 +226,7 @@ public class ArtistSourceManager extends AbstractSourceManager {
             int tmpPriority = Integer.valueOf(matcherVid.group(1));
             priority = priority > tmpPriority ? tmpPriority : priority;
         }
+        System.out.println(artistName+" 等级："+priority);
         return priority;
     }
 
@@ -217,14 +239,30 @@ public class ArtistSourceManager extends AbstractSourceManager {
     public static Map<String, String> specialName = new HashMap<>();
 
     static {
-        specialName.put("xiao shei..", "xiao shei__");
+        System.out.println("读取特殊作者名称===============ArtistSourceManager 220 行 来自 resource/name-changes.txt");
+        String filePath = "name-change.txt";
+        try {
+            String namePairs =IOUtils.toString(ArtistSourceManager.class.getClassLoader().getResourceAsStream(filePath), Charset.forName("utf8"));
+            System.out.println(namePairs);
+            String[] pairs = namePairs.split("\\r\\n");
+            for (int i = 0; i < pairs.length; i++) {
+                System.out.println("未拆分："+pairs[i]);
+                if(!pairs[i].startsWith("#")){
+                    specialName.put(pairs[i].split("~")[0],pairs[i].split("~")[1]);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println(specialName);
     }
 
     /**
      * 将目标名称 转换为 文件名，其中需要处理一些特殊名字，例如作者的名字存在不能在文件夹中出现的字符
      */
     public String transformAimToFile(String aim) {
-        return specialName.containsKey(aim) ? specialName.get(aim) : aim;
+        aim = specialName.containsKey(aim) ? specialName.get(aim) : aim;
+        return aim.endsWith(".")?aim.substring(0,aim.length()-1):aim;
     }
 
     /***
@@ -244,13 +282,12 @@ public class ArtistSourceManager extends AbstractSourceManager {
     }
 
 
-
     public void updateArtistPathAndLevel() throws IOException {
 //        if(true)
 //        throw new RuntimeException("还没处理，从这边获取的路径信息，和爬虫保存的路径信息不一样的问题，这里报错的是全前缀，不带作者名字，爬虫保存的是相对路径带名字");
         Collection<String> speicals = specialName.values();
         // 1. 谷歌的书签中：从 作者名称列表中 获取或者名称
-        ChromeBookmarksReader reader = new ChromeBookmarksReader(ChromeBookmarksReader.defaultBookmarkpath);
+        ChromeBookmarksReader reader = new ChromeBookmarksReader(SpecialSpiderManager.settings.get("chromePath"));
         List<String> chromeNames = new ArrayList<>();
         for (String dir :
                 chromeDirs) {
@@ -262,8 +299,8 @@ public class ArtistSourceManager extends AbstractSourceManager {
             }
         }
 
-        System.out.println(chromeNames);
-        System.out.println("======================");
+//        System.out.println(chromeNames);
+//        System.out.println("======================");
         // 2. 从本地硬盘获取最新的 等级信息
         Map<String, LevelInfo> diskLevelInfo = new HashMap<>();
         for (Map.Entry<String, List<String>> e :
@@ -277,7 +314,7 @@ public class ArtistSourceManager extends AbstractSourceManager {
                     e.getValue()) {
                 LevelInfo levels = new LevelInfo(name);
                 levels.picLevel = level;
-                levels.picPath = path;
+                levels.picPath = PathUtils.buildPath(path,transformAimToFile(name));
                 diskLevelInfo.put(name, levels);
             }
         }
@@ -291,23 +328,25 @@ public class ArtistSourceManager extends AbstractSourceManager {
                     e.getValue()) {
                 if (diskLevelInfo.containsKey(name)) {
                     LevelInfo levels = diskLevelInfo.get(name);
-                    levels.vidPath = path;
+                    levels.vidPath = PathUtils.buildPath(path,transformAimToFile(name));
                     levels.vidLevel = level;
                 } else {
                     LevelInfo levels = new LevelInfo(name);
                     levels.vidLevel = level;
-                    levels.vidPath = path;
+                    levels.vidPath = PathUtils.buildPath(path,transformAimToFile(name));
                     diskLevelInfo.put(name, levels);
                 }
 
             }
+
         }
+//
         // 从数据库获取现有的等级信息
         List<LevelInfo> dbLevelInfos = sourceService.getLevelInfos();
-        Map<String,LevelInfo> dbLevelInfoMap = new HashMap<>();
+        Map<String, LevelInfo> dbLevelInfoMap = new HashMap<>();
         for (LevelInfo info :
                 dbLevelInfos) {
-            dbLevelInfoMap.put(info.name,info);
+            dbLevelInfoMap.put(info.name, info);
         }
         int same = 0;
         List<String> sameList = new ArrayList<>();
@@ -316,63 +355,172 @@ public class ArtistSourceManager extends AbstractSourceManager {
         List<String> difList = new ArrayList<>();
         int need = 0;
         List<String> targetList = new ArrayList<>();
-        List<String> something = new ArrayList<>();
-        something.add("doumou");
-        something.add("london delly & burry");
+//        List<String> something = new ArrayList<>();
+//        something.add("doumou");
+//        something.add("london delly & burry");
         for (Map.Entry<String, LevelInfo> diskInfoEntry : diskLevelInfo.entrySet()
         ) {
-            String dbName = diskInfoEntry.getKey();
-            String realName = dbName;
+            String diskName = diskInfoEntry.getKey();
+            String realName = diskName;
 
             // 1. 根据特殊名称表 修正特殊名称
-           if(speicals.contains(dbName)){
-               for(Map.Entry<String,String> e : specialName.entrySet()){
-                    if(e.getValue().equals(dbName)) realName = e.getKey();
-               }
-           }
-            LevelInfo dicLevelInfo = diskInfoEntry.getValue();
-            // 2.根据书签记录 修正 带. 的名称
-            if(chromeNames.contains(realName)){
-            }else{
-                if(chromeNames.contains(realName+".")){
-                    realName = realName+".";
+            if (speicals.contains(diskName)) {
+                for (Map.Entry<String, String> e : specialName.entrySet()) {
+                    //
+                    if (e.getValue().equals(diskName)) realName = e.getKey();
                 }
+//                realName = specialName.get(diskName);
+                System.out.println("特殊名字要变换的： 【磁盘】"+diskName+"=>【数据库/真实】"+realName);
             }
-            dicLevelInfo.name = realName;
+            LevelInfo diskInfo = diskInfoEntry.getValue();
+            // 2.根据书签记录 修正 带. 的名称
+            if (chromeNames.contains(realName + ".")) {
+                realName = realName + ".";
+                System.out.println("需要添加一个点的： "+realName);
+            }
+            // 2.根据数据库记录，修正带 . 的名称
+            if (dbLevelInfoMap.containsKey(realName + ".")) {
+                realName = realName + ".";
+                System.out.println("需要添加一个点的： "+realName);
+            }
+            diskInfo.name = realName;
             // 3. 如果当前路径信息 与 数据库记录不一样，就更新
-            if(dbLevelInfoMap.containsKey(realName)){
+            if (dbLevelInfoMap.containsKey(realName)) {
                 // 对比信息，需要更新的更新
-                if(dbLevelInfoMap.get(realName).equals(dicLevelInfo)) {
+                if (dbLevelInfoMap.get(realName).equals(diskInfo)) {
                     same++;
                     sameList.add(realName);
-                }
-                else {
-                    sourceService.updateArtistPathAndLevel(dicLevelInfo.name,dicLevelInfo.picLevel,dicLevelInfo.picPath,dicLevelInfo.vidLevel,dicLevelInfo.vidPath);
+                } else {
+                    System.out.println("发现一个不同：\n"+diskInfo.name+"磁盘信息 "+ JSON.toJSONString(diskInfo)+"\n"+"数据记录 "+JSON.toJSONString(dbLevelInfoMap.get(realName)));
+                    sourceService.updateArtistPathAndLevel(diskInfo.name, diskInfo.picLevel, diskInfo.picPath, diskInfo.vidLevel, diskInfo.vidPath);
                     dif++;
                     difList.add(realName);
                 }
-            }else{// is_target !=1 的情况（根据爬虫逻辑，必定有这个 作者）
+            } else {// is_target !=1 的情况（根据爬虫逻辑，必定有这个 作者）
+                System.out.println("XXXXXX 注意 如果数据库中某个作者不存在（或is_target）不再将其等级信息更新，因为可能是原本错误记录的copyright:"+realName+" 全路径："+JSON.toJSONString(diskInfoEntry));
                 need++;
-                if(sourceService.updateArtistPathAndLevel(dicLevelInfo.name,dicLevelInfo.picLevel,dicLevelInfo.picPath,dicLevelInfo.vidLevel,dicLevelInfo.vidPath) == 0){
-                    System.out.println(realName);
-                }
+//                if(sourceService.updateArtistPathAndLevel(dicLevelInfo.name,dicLevelInfo.picLevel,dicLevelInfo.picPath,dicLevelInfo.vidLevel,dicLevelInfo.vidPath) == 0){
+//                    System.out.println(realName);
+//                }
                 targetList.add(realName);
 
             }
+//            for(Map.Entry<String,LevelInfo> e:dbLevelInfoMap.entrySet()){
+//                if(!diskLevelInfo.containsKey(e.getKey())){
+//                    System.out.println("磁盘上缺少数据库中的："+e.getKey());
+//                }
+//            }
+
         }
-        System.out.println("没变："+same+" 变了："+dif+" 缺失："+need);
-        System.out.println(sameList);
-        System.out.println(difList);
-        System.out.println(targetList);
+        System.out.println("没变：" + same + " 变了：" + dif + " 缺失：" + need);
+//        System.out.println(sameList);
+//        System.out.println(difList);
+//        System.out.println(targetList);
     }
 
+    // 查询作者有没有倍放到两个文件夹里面
+    public void findTwo() {
+        System.out.println("开始筛查重复作品");
+        Map<String, String> piccc = new HashMap<>();
+        for (Map.Entry<String, List<String>> entry : PATH_SANKAKU_PICS.entrySet()) {
+            for (String artistName : entry.getValue()) {
+                if (!piccc.containsKey(artistName)){
+                    piccc.put(artistName,entry.getKey());
+                }else{
+                    System.out.println("xxxxx: "+artistName+" | "+piccc.get(artistName)+" | "+entry.getKey());
+
+                }
+
+            }
+        }
+        Map<String,String> viddd = new HashMap<>();
+        for (Map.Entry<String, List<String>> entry : PATH_SANKAKU_VIDS.entrySet()) {
+            for (String artistName : entry.getValue()) {
+                if (!viddd.containsKey(artistName)){
+                    viddd.put(artistName,entry.getKey());
+                }else{
+                    System.out.println("xxxxx: "+artistName+" | "+viddd.get(artistName)+" | "+entry.getKey());
+
+                }
+
+            }
+        }
+    }
+    @Override
+    public void extractAllFileNames(Set<String> names) {
+        System.out.println("ArtistSourceManager 提取作品名称----");
+        Long timestart = System.currentTimeMillis();
+        PATH_SANKAKU_VIDS.forEach((path,nameList)->{
+
+                nameList.forEach(artistName->{
+                    String fullPath = path+artistName;
+                    String[] artworkNames = new File(fullPath).list();
+                    System.out.println(JSON.toJSONString(artworkNames));
+                    for (int i = 0; i < artworkNames.length; i++) {
+                        names.add(artworkNames[i]);
+                    }
+
+                });
+
+        });
+        PATH_SANKAKU_PICS.forEach((path,nameList)->{
+
+                nameList.forEach(artistName->{
+                    String fullPath = path+artistName;
+                    String[] artworkNames = new File(fullPath).list();
+                    System.out.println(JSON.toJSONString(artworkNames));
+                    for (int i = 0; i < artworkNames.length; i++) {
+                        names.add(artworkNames[i]);
+                    }
+
+                });
+
+        });
+        System.out.println(names.size());
+        System.out.println("10秒");
+        System.out.println("用时："+(System.currentTimeMillis()-timestart)/1000+"秒");
+        try {
+            Thread.sleep(1000*10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+    /**
+     * 通过文件目录，判断一个artist是否存在
+     * */
+    public boolean pathNameExists(String artistName){
+        String pathName = transformAimToFile(artistName);
+        for (String levelPath :
+                PATH_SANKAKU_PICS.keySet()) {
+            List<String> names = PATH_SANKAKU_PICS.get(levelPath);
+            if(names.contains(pathName)) return true;
+        }
+        for (String levelPath :
+                PATH_SANKAKU_VIDS.keySet()) {
+            List<String> names = PATH_SANKAKU_VIDS.get(levelPath);
+            if(names.contains(pathName)) return true;
+        }
+        return false;
+    }
     public static void main(String[] args) throws IOException {
 //        LevelInfo l1 = new LevelInfo("hello");
 //        LevelInfo l2 = new LevelInfo("hello");
 //        System.out.println(l1.equals(l2) );
-        ArtistSourceManager sourceManager = new ArtistSourceManager("H:\\ROOT", "G:\\ROOT");
-        sourceManager.updateArtistPathAndLevel();
+//        ArtistSourceManager sourceManager = new ArtistSourceManager("H:\\ROOT", "G:\\ROOT");
+//        sourceManager.findTwo();
+//        sourceManager.updateArtistPathAndLevel();
 //        sourceManager.lll();
+//        SpecialSpiderManager manager = new SpecialSpiderManager(new ArtistSourceManager("G:\\ROOT", "H:\\ROOT"));
+//        manager.downloadArtist("aestheticc-meme", WorkMode.NEW);
+//        manager.downLoadArtistByLevel(20,true,false,WorkMode.UPDATE);
+//        manager.downLoadChromeArtistDir("san1");
+//        manager.downLoadChromeArtistDir("san2");
+//        manager.downLoadChromeArtistDir("san3");
+//        manager.downLoadChromeArtistDir("san4");
+//        manager.downLoadChromeArtistDir("san5");
+//        manager.downLoadChromeArtistDir("san6");
+//        manager.downLoadChromeArtistDir("san7");
+//        manager.downLoadChromeArtistDir("san8");
     }
 
 }
