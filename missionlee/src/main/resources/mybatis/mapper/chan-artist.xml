@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="chan.artist">
-	<select id="getTargetCommonArtist" resultType="map">
+    <select id="getTargetCommonArtist" resultType="map">
 		SELECT
 		`ARTIST_ID` AS artistId,
 		`NAME` AS name,
@@ -18,10 +18,37 @@
 		UNIX_TIMESTAMP(`AIM_UPDATE_TIME`) AS aimUpdateTime
 		FROM san_artist WHERE is_target = 1 and artist_type = 1
 	</select>
-	<update id="makeArtistLost" parameterType="String">
+    <select id="getRandomArtistNeedUpdate" parameterType="int" resultType="String">
+		SELECT
+		`name` as nnn
+		FROM
+		san_artist
+		WHERE
+		is_target = 1
+		AND artist_type = 1
+		AND (pic_level = #{level} OR vid_level = #{level})
+		AND TO_DAYS(aim_update_time) &lt; TO_DAYS(now())
+		LIMIT 1;
+		</select>
+    <update id="makeArtistLost" parameterType="String">
 		UPDATE san_artist SET
 		is_target= 0,
 		artist_type = 9
 		WHERE `name` = #{name}
 	</update>
+    <select id="needBook" parameterType="String" resultType="BigInteger">
+		select book_done from san_artist where `name` = #{name} ;
+	</select>
+    <select id="needParent" parameterType="String" resultType="BigInteger">
+		select parent_done from san_artist where `name` = #{name};
+	</select>
+    <update id="bookDone" parameterType="String">
+		update san_artist set book_done = CURRENT_TIMESTAMP where `name` = #{name};
+	</update>
+    <update id="parentDone" parameterType="String">
+		update san_artist set parent_done = CURRENT_TIMESTAMP  where `name` = #{name};
+	</update>
+    <select id="isTarget" parameterType="String" resultType="Integer">
+		select count(*) from san_artist where `name` = #{name} and is_target = true
+	</select>
 </mapper>

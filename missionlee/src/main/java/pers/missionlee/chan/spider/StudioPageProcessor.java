@@ -6,6 +6,7 @@ import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 import us.codecraft.webmagic.Page;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -20,6 +21,11 @@ public class StudioPageProcessor extends AbstractTagPageProcessor {
 
     @Override
     public Set<String> initStoredSanCodes() {
+        return null;
+    }
+
+    @Override
+    public Map<String, String> initStoredFilesMd5() {
         return null;
     }
 

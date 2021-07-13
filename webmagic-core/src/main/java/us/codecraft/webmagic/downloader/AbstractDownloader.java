@@ -39,6 +39,7 @@ public abstract class AbstractDownloader implements Downloader {
     }
 
     protected void onError(Request request) {
+
     }
 
 }

@@ -132,6 +132,20 @@ public class ArtworkInfo {
     }
 
 
+
+    public static ArtworkInfo getArtistPicPathInfo(String artistName){
+        ArtworkInfo artworkInfo = new ArtworkInfo();
+        artworkInfo.storePlace = ArtworkInfo.STORE_PLACE.ARTIST.storePlace;
+        artworkInfo.aimName = artistName;
+        artworkInfo.fileName = "1.jpg";
+        return  artworkInfo;
+    }
+    public static ArtworkInfo getArtistVidPathInfo(String artistName){
+        ArtworkInfo artworkInfo = getArtistPicPathInfo(artistName);
+        artworkInfo.fileName = "1.mp4";
+        return artworkInfo;
+    }
+
     @Override
     public String toString() {
         return JSON.toJSONString(this);

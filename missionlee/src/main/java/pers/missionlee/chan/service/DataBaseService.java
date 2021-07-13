@@ -1,5 +1,6 @@
 package pers.missionlee.chan.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
@@ -49,7 +50,7 @@ public class DataBaseService {
     static SqlSession sqlSession;
     static String resource = "mybatis/mybatis-config.xml";
 
-    static {
+    public DataBaseService() {
         try {
             // 解析MyBatis配置文件
             InputStream inputStream = Resources.getResourceAsStream(resource);
@@ -77,7 +78,103 @@ public class DataBaseService {
             e.printStackTrace();
         }
     }
-    public DataBaseService() {
+    public void makeSanCodeDeleted(String sanCode){
+        sqlSession.update("chan.artwork.markDeleted",sanCode);
+    }
+    public void makeSanCodeVip(String sanCode,String artist){
+            sqlSession.update("chan.artwork.markAsVip",sanCode);
+//        if(sanCodeExist(sanCode)){
+//        }else{
+//            logger.info("注意：！！！ 原本设计 如果一个作品是vip 或者被删除，如果这个作品不存在，那么创建一个空作品，思考之后感觉没必要会造成其他麻烦");
+//             ArtworkInfo artworkInfo = new ArtworkInfo();
+//             List<String> artists = new ArrayList<>();
+//             artists.add(artist);
+//             artworkInfo.sanCode = sanCode;
+//             artworkInfo.setTagArtist(artists);
+//             saveArtworkInfo(artworkInfo);
+//            sqlSession.update("chan.artwork.markAsVip",sanCode);
+//
+//        }
+    }
+    public void makeSanCodeSkip(String sanCode,String parentId){
+        Map<String,String> map = new HashMap<>();
+        map.put("sanCode",sanCode);
+        map.put("parentId",parentId);
+        sqlSession.update("chan.artwork.markAsSkip",map);
+    }
+    public boolean bookIdExists(int bookId){
+        Object num = sqlSession.selectOne("chan.book.bookIdExists",bookId);
+        if(null == num){
+            return false;
+        }else{
+            Integer theNum = (Integer)num;
+            return theNum>0;
+        }
+    }
+    public List<String> getDelMarkFiles(String artistName){
+        return sqlSession.selectList("chan.artwork.getMarkDel",artistName);
+    }
+    public boolean checkArtistIsTarget(String artistName){
+        return 1==(Integer) (sqlSession.selectOne("chan.artist.isTarget",artistName));
+    }
+    public boolean needBook(String artistName){
+        BigInteger x = sqlSession.selectOne("chan.artist.needBook",artistName);
+        System.out.println(x.toString());
+        System.out.println(x.getClass());
+        return x.longValue()< (System.currentTimeMillis()/1000-30*24*60*60);
+//        System.out.println(333);
+//        try {
+//            Thread.sleep(3000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        return  ()
+//                >(System.currentTimeMillis()*1.0/1000+30*24*60*60);
+    }
+    public boolean needParent(String artistName){
+        BigInteger y = sqlSession.selectOne("chan.artist.needParent",artistName);
+        return  y.longValue() <(System.currentTimeMillis()/1000-30*24*60*60);
+//        return ()>(System.currentTimeMillis()*1.0/1000+30*24*60*60);
+    }
+    public List<String> getArtistByFileName(String fileName){
+        return sqlSession.selectList("chan.artwork.getArtistNameByFileName",fileName);
+    }
+    public void updateBookDone(String artistName){
+        sqlSession.update("chan.artist.bookDone",artistName);
+    }
+    public void updateParentDone(String artistName){
+        sqlSession.update("chan.artist.parentDone",artistName);
+    }
+    public void updateBookId(String sanCode,String bookId){
+        int book = Integer.valueOf(bookId);
+        Map<String,Object> params = new HashMap<>();
+        params.put("sanCode",sanCode);
+        params.put("bookId",book);
+        sqlSession.update("chan.artwork.updateBookId",params);
+    }
+    public void updateParentId(String sanCode,int parentId){
+        Map<String,Object> params = new HashMap<>();
+        params.put("sanCode",sanCode);
+        params.put("parentId",parentId);
+        sqlSession.update("chan.artwork.updateParentId",params);
+    }
+    public List<String> getArtistParentIdStoredPart(String artistName){
+        return sqlSession.selectList("chan.book.getArtistParentIdStoredPart",artistName);
+    }
+    public List<String> getArtistParentSanCodeToCheck(String artistName){
+        return sqlSession.selectList("chan.artwork.getArtistParentSanCodeToCheck",artistName);
+    }
+    public void updateBookArtist(String bookId,String artistName){
+        Map<String,String> params = new HashMap<>();
+        params.put("bookId",bookId);
+        params.put("artistName",artistName);
+        sqlSession.update("chan.book.updateBookArtist",params);
+    }
+    public String getBookStoredArtistById(int bookId){
+        return sqlSession.selectOne("chan.book.getStoreArtistById",bookId);
+    }
+    public List<String> getArtistBySanCode(String sanCode){
+        return sqlSession.selectList("chan.artwork.getArtistNameBySanCode");
     }
     public List<LevelInfo> getLevelInfos(){
         return sqlSession.selectList("san.getLevelInfos");
@@ -114,6 +211,9 @@ public class DataBaseService {
             }
         });
         return artistList;
+    }
+    public String getArtistNeedUpdateByLevelRandom(int level){
+        return sqlSession.selectOne("chan.artist.getRandomArtistNeedUpdate",level);
     }
     public void saveBookInfo(BookInfo bookInfo){
         sqlSession.insert("chan.book.saveBookInfo",bookInfo);

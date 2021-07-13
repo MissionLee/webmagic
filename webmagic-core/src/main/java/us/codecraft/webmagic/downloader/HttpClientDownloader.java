@@ -38,7 +38,7 @@ public class HttpClientDownloader extends AbstractDownloader {
     private HttpClientGenerator httpClientGenerator = new HttpClientGenerator();
 
     private HttpUriRequestConverter httpUriRequestConverter = new HttpUriRequestConverter();
-    
+
     private ProxyProvider proxyProvider;
 
     private boolean responseHeader = true;
@@ -71,6 +71,8 @@ public class HttpClientDownloader extends AbstractDownloader {
 
     @Override
     public Page download(Request request, Task task) {
+        // TODO: 7/10/2021 LMS 我来在这里添加一个错误重试机制，重试10次
+        int retryTime = 0;
         if (task == null || task.getSite() == null) {
             throw new NullPointerException("task or site can not be null");
         }
@@ -89,8 +91,15 @@ public class HttpClientDownloader extends AbstractDownloader {
             return page;
         } catch (IOException e) {
             logger.warn("utils page {} error", request.getUrl(), e);
+            // TODO: 7/10/2021 onError 里面并没有什么代码
             onError(request);
-            return page;
+            // TODO: 7/10/2021 下面是自己的重试机制
+//            logger.warn("LMS 我在HTTPClientDownloader 97行 源码里面添加了重试机制，遇到错误重试");
+//            retryTime++;
+//            if (retryTime < 11) {
+//                this.download(request, task);
+//            }
+                return page;
         } finally {
             if (httpResponse != null) {
                 //ensure the connection is released back to pool
@@ -112,7 +121,7 @@ public class HttpClientDownloader extends AbstractDownloader {
         String contentType = httpResponse.getEntity().getContentType() == null ? "" : httpResponse.getEntity().getContentType().getValue();
         Page page = new Page();
         page.setBytes(bytes);
-        if (!request.isBinaryContent()){
+        if (!request.isBinaryContent()) {
             if (charset == null) {
                 charset = getHtmlCharset(contentType, bytes);
             }

@@ -24,6 +24,15 @@ public class BookInfo {
     public List<String> copyrights;
     public List<String> characters;
     public List<String> artistTags;
+    public String storedArtistName;
+
+    public String getStoredArtistName() {
+        return storedArtistName;
+    }
+
+    public void setStoredArtistName(String storedArtistName) {
+        this.storedArtistName = storedArtistName;
+    }
 
     public int getId() {
         return id;

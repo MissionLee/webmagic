@@ -33,7 +33,7 @@ public class BookPageProcessor extends AbstractPageProcessor {
     String BOOK_DETAIL_RESTFUL_PREFIX = "https://capi-v2.sankakucomplex.com/posts/keyset";
     String SHOW_PAGE_PREFIX = "https://chan.sankakucomplex.com/post/show/";
     String bookId = "-1";
-    String aimArtistName;
+    String saveArtistName;
     boolean single;
     public Map<String, String> sanCodeSequence = new HashMap<>();
     public Map<String, String> filenameSequence = new HashMap<>();
@@ -45,49 +45,24 @@ public class BookPageProcessor extends AbstractPageProcessor {
     public Map<String, String> filePath;
     String artistPicPath;
     String artistVidPath;
-    String artistBookedPath;
     String thisBookPath;
     public int downloaded = 0;
+    public boolean skipBookLostPage;
+    public SpiderSetting spiderSetting;
     public void initFileStoreSituation() {
-        this.filePath = new HashMap<>();
-        File picbase = new File(artistPicPath);
-        File[] picFiles = picbase.listFiles();
-        if (null != picFiles)
-            for (int i = 0; i < picFiles.length; i++) {
-                if (picFiles[i].isDirectory()) {// 如果是目录
-                    String[] artworks = picFiles[i].list();
-                    for (int j = 0; j < artworks.length; j++) {
-                        String fullPath = artistPicPath + picFiles[i].getName() + "/" + artworks[j];
-                        String fileName = artworks[j].substring(5);
-                        this.filePath.put(fileName, fullPath);
-                    }
-                } else {
-                    this.filePath.put(picFiles[i].getName(), artistPicPath + picFiles[i].getName());
-                }
-            }
-        File vidbase = new File(artistVidPath);
-        File[] vidFiles = vidbase.listFiles();
-        if (null != vidFiles)
-            for (int i = 0; i < vidFiles.length; i++) {
-                if (vidFiles[i].isFile()) {
-                    this.filePath.put(vidFiles[i].getName(), artistVidPath + vidFiles[i].getName());
-                }
-            }
-        System.out.println(this.filePath);
+        this.filePath = spiderSetting.initAllRelatedStoredFiles(diskService,saveArtistName);
     }
 
-    public BookPageProcessor(String aimArtistName, boolean single, DataBaseService dataBaseService, DiskService diskService) {
+    public BookPageProcessor(String saveArtistName, boolean single, DataBaseService dataBaseService, DiskService diskService, boolean skipBookLostPage, SpiderSetting spiderSetting) {
         super(dataBaseService, diskService);
+        this.skipBookLostPage = skipBookLostPage;
         this.single = single;
-        this.aimArtistName = aimArtistName;
-        ArtworkInfo artworkInfo = new ArtworkInfo();
-        artworkInfo.storePlace = ArtworkInfo.STORE_PLACE.ARTIST.storePlace;
-        artworkInfo.aimName = aimArtistName;
-        artworkInfo.fileName = "1.jpg";
+        this.saveArtistName = saveArtistName;
+        this.spiderSetting = spiderSetting;
+        ArtworkInfo artworkInfo = ArtworkInfo.getArtistPicPathInfo(saveArtistName);
         this.artistPicPath = diskService.getParentPath(artworkInfo, "", ArtworkInfo.STORE_PLACE.ARTIST.storePlace);
         artworkInfo.fileName = "1.mp4";
         this.artistVidPath = diskService.getParentPath(artworkInfo, "", ArtworkInfo.STORE_PLACE.ARTIST.storePlace);
-        this.artistBookedPath = this.artistPicPath + "booked/";
         initFileStoreSituation();
         // 这里没有初始化 BookInfo 是因为 getThisBookPath 方法必须有bookInfo，而“正确的”bookInfo必须才能使用
         logger.info("重要提示：一个book作品里面，有可能 两个不同排序的作品，实际上是同一个文件，所以BookPageProcessor有这方面的考虑");
@@ -95,7 +70,6 @@ public class BookPageProcessor extends AbstractPageProcessor {
         logger.warn("XXXXXXX  连续调用前 需要使用 reset 以免之前Book的列表信息 影响当前内容  XXXXXX");
         logger.info("图片路径：" + this.artistPicPath);
         logger.info("视频路径：" + this.artistVidPath);
-        logger.info("Booked路径：" + this.artistBookedPath);
     }
 
 
@@ -103,13 +77,12 @@ public class BookPageProcessor extends AbstractPageProcessor {
         this.single = single;
         this.fileSubfix = new HashMap<>();
         this.bookInfo = null;
-        this.aimArtistName = artistName;
+        this.saveArtistName = artistName;
         this.bookId = "-1";
         this.sanCodeSequence = new HashMap<>();
         this.filenameSequence = new HashMap<>();
         this.artistPicPath = null;
         this.artistVidPath = null;
-        this.artistBookedPath = null;
         this.thisBookPath = null;
 
     }
@@ -120,7 +93,7 @@ public class BookPageProcessor extends AbstractPageProcessor {
         } else {
             ArtworkInfo info = new ArtworkInfo();
             info.fileName = "1.jpg";
-            info.aimName = aimArtistName;
+            info.aimName = saveArtistName;
             formatArtworkInfoForSave(info);
             this.thisBookPath = diskService.getParentPath(info, "B", info.storePlace);
             return this.thisBookPath;
@@ -164,7 +137,7 @@ public class BookPageProcessor extends AbstractPageProcessor {
 
     public void processShowPage(Page page) {
         try {
-            Thread.sleep(8000);
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -178,6 +151,7 @@ public class BookPageProcessor extends AbstractPageProcessor {
         boolean download = downloadAndSaveFileFromShowPage(target, artworkInfo, page);
         artworkInfo.artistType = ArtworkInfo.ARTIST_TYPE.ARTIST.artistType;
         artworkInfo.isSingle = false;
+        artworkInfo.bookId = Integer.valueOf(bookId);
         if (download) {
             dataBaseService.saveArtworkInfo(artworkInfo);
             this.filePath.put(artworkInfo.fileName, diskService.getParentPath(artworkInfo, "B", artworkInfo.storePlace));
@@ -260,14 +234,25 @@ public class BookPageProcessor extends AbstractPageProcessor {
     }
 
     protected void processPoolPageRestful(Page page) {
-        String html = page.getHtml().$("body").all().get(0).replaceAll("\n", "").replaceAll(" ", "");
-        String data = SpiderUtils.extractTag(html);
-        Map<String, Object> bookInfoMap = (Map<String, Object>) JSON.parse(data);
+//        System.out.println("pool page 看看size:"+page.getJson().toString());
+//        ObjectMapper mapper = new ObjectMapper();
+
+//        String html = page.getHtml().$("body").all().get(0).replaceAll("\n", "").replaceAll(" ", "");
+//        String data = SpiderUtils.extractTag(html);
+//        try {
+//            System.out.println("xxxxxxxxxxxxxxxx  objectMapper");
+//            Map<String,Object> bookInfoMap2 = objectMapper.readValue(data,Map.class);
+//            System.out.println(bookInfoMap2);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+        Map<String, Object> bookInfoMap = getJsonStringFromRestPage (page);
         bookInfo = new BookInfo();
         if (!this.single) {
-            bookInfo.aimArtist = this.aimArtistName;
+            bookInfo.aimArtist = this.saveArtistName;
         }
         bookInfo.id = (Integer) bookInfoMap.get("id");
+        this.bookId = "" + bookInfo.id;
         bookInfo.name = (String) bookInfoMap.get("name");
         bookInfo.createdAt = (String) bookInfoMap.get("created_at");
         bookInfo.updatedAt = bookInfo.createdAt;
@@ -277,6 +262,7 @@ public class BookPageProcessor extends AbstractPageProcessor {
         bookInfo.rating = (String) bookInfoMap.get("rating");
         bookInfo.copyrights = new ArrayList<>();
         bookInfo.artistTags = new ArrayList<>();
+        bookInfo.storedArtistName = saveArtistName;
         List<Map<String, Object>> tags = (List<Map<String, Object>>) bookInfoMap.get("tags");
         for (Map<String, Object> tag : tags
         ) { // 类型为 3 的tag 是 copyright
@@ -308,8 +294,13 @@ public class BookPageProcessor extends AbstractPageProcessor {
         }
         bookInfoMap.put("posts", simplePosts);
         bookInfo.information = JSON.toJSONString(bookInfoMap);
-        dataBaseService.saveBookInfo(bookInfo);
-        logger.info("保存Book基础信息：" + bookInfo.information);
+        try {
+
+            dataBaseService.saveBookInfo(bookInfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        logger.info("保存Book基础信息" );
     }
 
     public static class FileSubfix {
@@ -327,15 +318,17 @@ public class BookPageProcessor extends AbstractPageProcessor {
 
         if (this.filePath.containsKey(filename)) {
             String nowPath = this.filePath.get(filename);
-            String nowName = nowPath.substring(nowPath.lastIndexOf("/")+1);
-            if (nowName.contains("_")) {
+            String nowName = nowPath.substring(nowPath.lastIndexOf("/") + 1);
+            if ( nowName.contains("_")) {
                 FileUtils.copyFile(new File(nowPath), new File(bookPath + fileSaveName));
+            logger.info("当前目标在其他作品（或pic/vid）中出现，已经 复制 完成 "+ bookPath+"    " + filename);
             } else {
                 FileUtils.moveFile(new File(nowPath), new File(bookPath + fileSaveName));
                 // 移动过的文件，需要改变 path值
-                this.filePath.put(filename,bookPath+fileSaveName);
+                this.filePath.put(filename, bookPath + fileSaveName);
+                logger.info("当前目标在其他作品（或pic/vid）中出现，已经 剪切 完成 " + bookPath+"    "+ filename);
+
             }
-            logger.info("当前目标在其他作品（或pic/vid）中出现，已经复制完成 "+filename);
             return true;
         } else {
             return false;
@@ -403,8 +396,8 @@ public class BookPageProcessor extends AbstractPageProcessor {
             // x-1 或者这个 book的母文件夹，然后遍历里面的文件，然后 获取已有的序号
             ArtworkInfo artworkInfo = new ArtworkInfo();
             for (int i = 0; i < sanCodeSequence.size(); i++) {
-                if(sanCodeSequence.containsKey(""+i)){
-                    artworkInfo.fileName = sanCodeSequence.get(""+1);
+                if (sanCodeSequence.containsKey("" + i)) {
+                    artworkInfo.fileName = sanCodeSequence.get("" + 1);
                 }
             }
             formatArtworkInfoForSave(artworkInfo);
@@ -466,6 +459,7 @@ public class BookPageProcessor extends AbstractPageProcessor {
                         // 如果通过现有文件保存成功，那么当前文件的等下载
                         // 调用这个方法只是因为这个方法能够协助删除数据，并不是需要
                         String sanCode = this.sanCodeSequence.get(seq.get());
+                        dataBaseService.updateBookId(sanCode, bookId);
                         getSequencePrefixBySanCodeAndRemoveFromSeq(sanCode);
                         logger.info("文件处理完成：" + filename);
                     } else {
@@ -477,19 +471,26 @@ public class BookPageProcessor extends AbstractPageProcessor {
             }
             // TODO: 4/17/2021  两个站点
             //  创建爬虫，下载文件=======================================================================================
-            BookPageProcessor bookPageProcessor = new BookPageProcessor(aimArtistName, single, dataBaseService, diskService);
-            bookPageProcessor.flexSite = SpiderUtils.site;
-            bookPageProcessor.sanCodeSequence = this.sanCodeSequence;
-            bookPageProcessor.filenameSequence = this.filenameSequence;
-            bookPageProcessor.bookId = this.bookId;
-            bookPageProcessor.bookInfo = this.bookInfo;
-            bookPageProcessor.aimArtistName = this.aimArtistName;
-            String[] urls = new String[this.sanCodeSequence.size()];
-            Object[] collections = this.sanCodeSequence.values().toArray();
-            for (int i = 0; i < urls.length; i++) {
-                urls[i] = "https://chan.sankakucomplex.com/post/show/" + collections[i].toString();
+            if(skipBookLostPage){
+
+            }else{
+                BookPageProcessor bookPageProcessor = new BookPageProcessor(saveArtistName, single, dataBaseService, diskService,false,spiderSetting);
+                bookPageProcessor.flexSite = SpiderUtils.site;
+                bookPageProcessor.sanCodeSequence = this.sanCodeSequence;
+                bookPageProcessor.filenameSequence = this.filenameSequence;
+                bookPageProcessor.bookId = this.bookId;
+                bookPageProcessor.bookInfo = this.bookInfo;
+                bookPageProcessor.saveArtistName = this.saveArtistName;
+                String[] urls = new String[this.sanCodeSequence.size()];
+                Object[] collections = this.sanCodeSequence.values().toArray();
+                for (int i = 0; i < urls.length; i++) {
+                    urls[i] = "https://chan.sankakucomplex.com/post/show/" + collections[i].toString();
+                }
+                Spider.create(bookPageProcessor).addUrl(urls).thread(3).run();
             }
-            Spider.create(bookPageProcessor).addUrl(urls).thread(4).run();
+
+
+
         }
     }
 
@@ -500,7 +501,7 @@ public class BookPageProcessor extends AbstractPageProcessor {
         artworkInfo.setTagCopyright(bookInfo.copyrights);
         artworkInfo.setTagArtist(bookInfo.artistTags);
         // 2. 写入 aimName
-        artworkInfo.aimName = aimArtistName;
+        artworkInfo.aimName = saveArtistName;
         // 3. 前缀 B  book
         artworkInfo.PBPrefix = "B";
         // 4. 文件保存名为  序号前缀_文件原名
@@ -529,7 +530,7 @@ public class BookPageProcessor extends AbstractPageProcessor {
         artworkInfo.setTagCopyright(bookInfo.copyrights);
         artworkInfo.setTagArtist(bookInfo.artistTags);
         // 2. 写入 aimName
-        artworkInfo.aimName = aimArtistName;
+        artworkInfo.aimName = saveArtistName;
         // 3. 前缀 B  book
         artworkInfo.PBPrefix = "B";
         // 4. 文件保存名为  序号前缀_文件原名
@@ -583,7 +584,7 @@ public class BookPageProcessor extends AbstractPageProcessor {
     public static void main(String[] args) {
 
 
-        BookPageProcessor bookPageProcessor = new BookPageProcessor("xxoom", false, new DataBaseService(), new DiskService(SpiderSetting.buildSetting()));
+//        BookPageProcessor bookPageProcessor = new BookPageProcessor("xxoom", false, new DataBaseService(), new DiskService(SpiderSetting.buildSetting()));
 //        bookPageProcessor.flexSite = BookPageProcessor.site;
 //        Spider.create(bookPageProcessor).addUrl("https://beta.sankakucomplex.com/books/13012?tags=order%3Apopularity%20yang-do").thread(1).run();
 //        Spider.create(bookPageProcessor).addUrl("https://beta.sankakucomplex.com/books/371810?tags=order%3Apopularity%20roke").thread(3).run();

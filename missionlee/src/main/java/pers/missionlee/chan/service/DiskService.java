@@ -1,24 +1,19 @@
 package pers.missionlee.chan.service;
 
-import com.google.common.collect.Lists;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.regexp.RE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pers.missionlee.chan.starter.SpiderSetting;
 import pers.missionlee.webmagic.spider.newsankaku.dao.LevelInfo;
-import pers.missionlee.webmagic.spider.newsankaku.source.artist.ArtistSourceManager;
-import pers.missionlee.webmagic.spider.newsankaku.type.AimType;
 import pers.missionlee.webmagic.spider.newsankaku.utlis.PathUtils;
-import pers.missionlee.webmagic.spider.newsankaku.utlis.SpiderUtils;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -67,7 +62,7 @@ public class DiskService {
             }
         }
 
-        logger.info("初始化特殊作者名称完成");
+        logger.info("初始化特殊作者名称完成  key 是真是名字， value 是路径名字");
     }
 
     private void initArtistInfo() {
@@ -93,12 +88,430 @@ public class DiskService {
         this.CHAN_ARTIST_VIDS = vids;
         logger.info("初始化作者信息完成");
     }
+    public void touchArtist(String name){
+        String path = getCommonArtistParentPath(name,"1.jpg");
+        new File(path).setLastModified(System.currentTimeMillis());
+    }
+    public void findArtistUnTargeted(DataBaseService dataBaseService) {
+        logger.info("检查磁盘上的作者，在数据库中没有标记为 is_target 的  和关联作品数量为0的");
+        CHAN_ARTIST_VIDS.forEach((String path, List<String> pathNames) -> {
+            pathNames.forEach((String pathName) -> {
+                String realName = pathName;
+                if (namePairs.containsValue(pathName)) {
+                    realName = getKey(namePairs, pathName);
+                }
+                boolean isTarget = dataBaseService.checkArtistIsTarget(realName);
+                if (isTarget) {
+
+                } else {
+                    logger.info("作者" + realName + "  没有被标记为目标：" + path + pathName);
+                    dataBaseService.touchArtist(realName, System.currentTimeMillis());
+                }
+            });
+        });
+        CHAN_ARTIST_PICS.forEach((String path, List<String> pathNames) -> {
+            pathNames.forEach((String pathName) -> {
+                String realName = pathName;
+                if (namePairs.containsValue(pathName)) {
+                    realName = getKey(namePairs, pathName);
+                }
+                boolean isTarget = dataBaseService.checkArtistIsTarget(realName);
+                if (isTarget) {
+
+                } else {
+                    logger.info("作者" + realName + "  没有被标记为目标：" + path + pathName);
+                    dataBaseService.touchArtist(realName, System.currentTimeMillis());
+                }
+            });
+        });
+    }
+
+    public static String getKey(Map<String, String> map, Object value) {
+        String key = "";
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            if (value.equals(entry.getValue())) {
+                key = entry.getKey();
+                continue;
+            }
+        }
+        return key;
+    }
+
+    /**
+     * srcDirPath:
+     * destDirPath:
+     */
+    public void moveAllSubFiles(String srcDirPath, String destDirPath) throws IOException {
+        File src = new File(srcDirPath);
+        File dest = new File(destDirPath);
+        File[] files = src.listFiles();
+        if (null != files)
+            for (int i = 0; i < files.length; i++) {
+                try {
+                    if (files[i].isFile()) {
+                        FileUtils.moveFileToDirectory(files[i], dest, true);
+                    } else if (files[i].isDirectory()) {
+                        FileUtils.moveDirectoryToDirectory(files[i], dest, false);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        src.delete();
+    }
+
+    public void findPathError() {
+        logger.info("此功能用于查找有多个 作品路径的作者");
+        logger.info("检查 Vid 大系列 和  Pic 大系列 有没有重复的情况");
+        CHAN_ARTIST_VIDS.forEach((String iParentVidPath, List<String> iVidNames) -> {
+            iVidNames.forEach((String iVidName) -> {
+                Iterator<Map.Entry<String, List<String>>> iterator = CHAN_ARTIST_PICS.entrySet().iterator();
+                while (iterator.hasNext()) {
+
+                    Map.Entry<String, List<String>> entry = iterator.next();
+                    String iParentPicPath = entry.getKey();
+                    if (entry.getValue().contains(iVidName)) {
+                        System.out.println("路径：" + iParentVidPath + iVidName + "_____路径：" + iParentPicPath + iVidName);
+                    }
+                }
+            });
+        });
+        logger.info("检查 Pic 大系列内部有没有重复的情况");
+        CHAN_ARTIST_PICS.forEach((String iParentVidPath, List<String> iVidNames) -> {
+            iVidNames.forEach((String iVidName) -> {
+                Iterator<Map.Entry<String, List<String>>> iterator = CHAN_ARTIST_PICS.entrySet().iterator();
+                while (iterator.hasNext()) {
+                    Map.Entry<String, List<String>> entry = iterator.next();
+                    String iParentPicPath = entry.getKey();
+                    if (entry.getValue().contains(iVidName) && !iParentPicPath.equals(iParentVidPath)) {
+                        System.out.println("视频路径：" + iParentVidPath + iVidName + "_____图片路径：" + iParentPicPath + iVidName);
+                    }
+                }
+            });
+        });
+        logger.info("检查 VID 大系列内部有没有重复的情况");
+        CHAN_ARTIST_VIDS.forEach((String iParentVidPath, List<String> iVidNames) -> {
+            iVidNames.forEach((String iVidName) -> {
+                Iterator<Map.Entry<String, List<String>>> iterator = CHAN_ARTIST_VIDS.entrySet().iterator();
+                while (iterator.hasNext()) {
+
+                    Map.Entry<String, List<String>> entry = iterator.next();
+                    String iParentPicPath = entry.getKey();
+                    if (entry.getValue().contains(iVidName) && !iParentPicPath.equals(iParentVidPath)) {
+                        System.out.println("视频路径：" + iParentVidPath + iVidName + "_____图片路径：" + iParentPicPath + iVidName);
+                    }
+                }
+            });
+        });
+    }
+
+    public List<String> getBookArtistByLevel(int lv, boolean onlyDaiDing) {
+        List<String> artistNames = new ArrayList<>();
+        Map<String, List<String>> bookArtistPaths = new HashMap<>();
+        File[] artistBookParentFiles = new File(spiderSetting.getBookParentArtistBase()).listFiles(PathUtils.aimFileFilter());
+
+        extractPathInfo(artistBookParentFiles, bookArtistPaths, bookArtistPaths);
+        bookArtistPaths.forEach((String parentPath, List<String> artists) -> {
+            boolean skip = false;
+            if (onlyDaiDing && !parentPath.contains("待定")) {
+                skip = true;
+            }
+            if (skip) {
+
+            } else {
+                Matcher matcher = priorityPattern.matcher(parentPath);
+                if (matcher.find()) {
+                    int level = Integer.valueOf(matcher.group(1));
+                    if (level == lv) {
+                        artists.forEach((String name) -> {
+                            artistNames.add(transformPathToArtistName(name));
+                        });
+                    }
+                }
+            }
+
+        });
+        logger.info("获得等级为 " + lv + " 的book作者 = onlyDaiDing"+onlyDaiDing);
+        logger.info(artistNames.toString());
+        return artistNames;
+    }
+
+    public boolean fileExistsUnderArtist(String fileName, String artistName) {
+        Map<String, String> files = getArtistFilePath(artistName);
+        return files.containsKey(fileName);
+    }
+
+    public void mergePicVid() {
+        System.out.println(" 开始  merge ");
+        //  Map<String, List<String>>  CHAN_ARTIST_PICS  CHAN_ARTIST_VIDS
+        // 1. 如果  图片和视频都在 3D 目录下面  把图片挪到 vid下面
+        // 2. 如果 图片在 非3d 视频在 3d 挪到 非3d
+        AtomicBoolean doooo = new AtomicBoolean(false);
+        CHAN_ARTIST_VIDS.forEach((String iParentVidPath, List<String> iVidNames) -> {
+            iVidNames.forEach((String iVidName) -> {
+                Iterator<Map.Entry<String, List<String>>> iterator = CHAN_ARTIST_PICS.entrySet().iterator();
+                while (iterator.hasNext()) {
+
+                    Map.Entry<String, List<String>> entry = iterator.next();
+                    String iParentPicPath = entry.getKey();
+                    if (entry.getValue().contains(iVidName)) {
+                        if (iParentVidPath.contains("/CHAN-ARTIST-3D/V-3-留档3d") || iParentVidPath.contains("/CHAN-ARTIST-BP/V-0-BP")) {
+                            System.out.println("视频路径：" + iParentVidPath + iVidName + "_____图片路径：" + entry.getKey() + iVidName);
+                            try {
+                                moveAllSubFiles(iParentVidPath + iVidName, iParentPicPath + iVidName);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        } else if (iParentVidPath.contains("/CHAN-ARTIST-3D/V-0-升级")) {
+                            System.out.println("视频路径：" + iParentVidPath + iVidName + "_____图片路径：" + entry.getKey() + iVidName);
+
+                            try {
+                                moveAllSubFiles(iParentPicPath + iVidName, iParentVidPath + iVidName);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+//                        else if (iParentVidPath.contains("CHAN-ARTIST-3DVID/") && iParentPicPath.contains("CHAN-ARTIST-3DPIC/")) {
+//                            int picLevel = extractLevelFromPathString(iParentPicPath);
+//                            int vidLevel = extractLevelFromPathString(iParentVidPath);
+//                            if(picLevel<vidLevel){
+//                                try {
+//                                    moveAllSubFiles(iParentVidPath + iVidName, iParentPicPath + iVidName);
+//                                } catch (IOException e) {
+//                                    e.printStackTrace();
+//                                }
+//
+//                            }else{
+//                                try {
+//                                    moveAllSubFiles(iParentPicPath + iVidName, iParentVidPath + iVidName);
+//                                } catch (IOException e) {
+//                                    e.printStackTrace();
+//                                }
+//
+//                            }
+//                        }
+                        else {
+                            System.out.println("仅仅展示还剩什么： 视频路径：" + iParentVidPath + iVidName + "_____图片路径：" + entry.getKey() + iVidName);
+
+                        }
+//                        boolean moved = false;
+//                        if (!moved &&
+//                                iParentPicPath.contains("废弃") &&
+//                                !iParentVidPath.contains("废弃")) {
+//
+//                            moved = true;
+//                        }
+//                        if (!moved &&
+//                                !iParentPicPath.contains("废弃") &&
+//                                iParentVidPath.contains("废弃")) {
+//                            moved = true;
+//
+//                        }
+//                        if (!moved &&
+//                                iParentPicPath.contains("废弃") &&
+//                                iParentVidPath.contains("废弃")) {
+//                            moved = true;
+//
+//                        }
+//                        if (!moved
+//                                && iParentVidPath.contains("2D")) {
+//                            moved = true;
+//
+//                        }
+//                        if (!moved   // 视频在整理后的 视频中 ，图片是 3D内容
+//                                && iParentVidPath.contains("CHAN-ARTIST-3DVID")
+//                                && iParentPicPath.contains("3D")
+//                        ) {
+//                            System.out.println("视频路径：" + iParentVidPath + iVidName + "_____图片路径：" + entry.getKey() + iVidName + "____移动到   XXXX 视频");
+//                            moved = true;
+//                        }
+//
+//                        if (!moved // 视频在 3D 中  图片在整理后的 图片中， 那么移动到图片中
+//                                && iParentVidPath.contains("CHAN-ARTIST-3D")
+//                                && (iParentPicPath.contains("整理") || iParentPicPath.contains("特别"))
+//                        ) {
+//                            System.out.println("视频路径：" + iParentVidPath + iVidName + "_____图片路径：" + entry.getKey() + iVidName + "____移动到 YYYY 图片");
+//                            moved = true;
+//
+//                        }
+//                        if (!moved // 图片没有真理过  视频整理过了 放到视频厘米那
+//                                && iParentPicPath.contains("/pic/") && !iParentVidPath.contains("/vid/")
+//                        ) {
+//                            moved = true;
+//
+//                        }
+//                        if (!moved // 图片整理过，视频没有整理过  放在图片里面
+//                                && !iParentPicPath.contains("/pic/")
+//                                && iParentVidPath.contains("/vid/")) {
+//                            moved = true;
+//
+//                        }
+//                        if (!moved  // 都在 临时路径，放到 pic里面去
+//                                && iParentPicPath.contains("/pic/")
+//                                && iParentVidPath.contains("/vid/")) {
+//                            moved = true;
+//
+//                        }
+////                        if()
+                    }
+
+                }
+            });
+
+        });
+        System.out.println(" 000000000000000000000 end  000000000000000000");
+        System.out.println(" 000000000000000000000 end  000000000000000000");
+        try {
+            Thread.sleep(600000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean copyFileFromRelatedArtist(ArtworkInfo artworkInfo) {
+        List<String> names = artworkInfo.getTagArtist();
+        if (null != names && names.size() > 0) {
+            for (int i = 0; i < names.size(); i++) {
+                String iName = names.get(i);
+                if (!artworkInfo.aimName.equals(iName)) {
+                    logger.info("发现不同的TagName =>  AimName：" + artworkInfo.aimName + "_tagName: " + iName);
+                    Map<String, String> tagNameFileNames = getArtistFilePath(iName);
+                    if (tagNameFileNames.containsKey(artworkInfo.fileName)) {
+                        String nowPath = tagNameFileNames.get(artworkInfo.fileName);
+                        logger.info("在:" + nowPath + "  找到文件");
+//                        logger.info("找到了对应文件，下面进行复制或剪切：" + nowPath);
+                        String tempPath = nowPath + ".tmp";
+                        File nowFile = new File(nowPath);
+                        if (nowPath.substring(nowPath.lastIndexOf("/")).contains("_")
+                                || artworkInfo.storePlace == ArtworkInfo.STORE_PLACE.COPYRIGHT.storePlace
+                                || artworkInfo.storePlace == ArtworkInfo.STORE_PLACE.STUDIO.storePlace) {
+                            logger.info("当前作品在其他作者特殊目录下，所以执行--复制");
+                            File tempFile = new File(tempPath);
+                            try {
+                                FileUtils.copyFile(nowFile, tempFile);
+                                saveFile(tempFile, artworkInfo, artworkInfo.PBPrefix, artworkInfo.fileSaveName);
+                                return true;
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            logger.info("当前作品在其他作者普通目录下，所以执行--剪切");
+                            saveFile(nowFile, artworkInfo, artworkInfo.PBPrefix, artworkInfo.fileSaveName);
+                            return true;
+
+                        }
+
+
+                    } else {
+                        logger.info("关联作者：" + iName + " 名下没有这个文件");
+                    }
+                }
+            }
+
+        }
+        return false;
+    }
+
+    public String getCopyrightParentPath(String copyright) {
+        return PathUtils.buildPath(spiderSetting.copyrightBase, copyright);
+    }
+
+    public Map<String, String> getCopyRightFileMd5(String copyright) {
+        Map<String, String> filePath = getCopyRightFilePath(copyright);
+        Map<String, String> md5 = new HashMap<>();
+        filePath.forEach((String fileName, String path) -> {
+            md5.put(fileName.substring(0, fileName.indexOf(".")), path);
+        });
+        return md5;
+    }
+
+    public Map<String, String> getCopyRightFilePath(String copyright) {
+        String copyrightPath = getCopyrightParentPath(copyright);
+        File copyParentFile = new File(copyrightPath);
+        Map<String, String> filePathMap = new HashMap<>();
+        if (copyParentFile.exists()) {
+            File[] files = copyParentFile.listFiles();
+            if (null != files) {
+                for (int i = 0; i < files.length; i++) {
+                    if (files[i].isDirectory()) {// 如果是目录
+                        String[] artworks = files[i].list();
+                        for (int j = 0; j < artworks.length; j++) {
+                            String fullPath = copyrightPath + files[i].getName() + "/" + artworks[j];
+                            String fileName = artworks[j].substring(5);
+                            if (files[i].getName().contains("low"))
+                                fileName = artworks[j];
+
+                            filePathMap.put(fileName, fullPath);
+                        }
+                    } else {
+                        filePathMap.put(files[i].getName(), copyrightPath + files[i].getName());
+                    }
+                }
+            }
+        }
+        return filePathMap;
+    }
+
+    public Map<String, String> getArtistFilePath(String artistName) {
+        String picBasePath = getCommonArtistParentPath(artistName, "1.jpg");
+        String vidBasePath = getCommonArtistParentPath(artistName, "1.mp4");
+        Map<String, String> filePath = new HashMap<>();
+        // pic 部分
+        File picbase = new File(picBasePath);
+        File[] picFiles = picbase.listFiles();
+        if (null != picFiles) {
+            for (int i = 0; i < picFiles.length; i++) {
+                if (picFiles[i].isDirectory()) {// 如果是目录
+                    String[] artworks = picFiles[i].list();
+                    for (int j = 0; j < artworks.length; j++) {
+                        String fullPath = picBasePath + picFiles[i].getName() + "/" + artworks[j];
+                        String fileName = artworks[j].substring(5);
+                        if (picFiles[i].getName().contains("low"))
+                            fileName = artworks[j];
+
+                        filePath.put(fileName, fullPath);
+                    }
+                } else {
+                    filePath.put(picFiles[i].getName(), picBasePath + picFiles[i].getName());
+                }
+            }
+        }
+
+        // vid 部分
+        File vidbase = new File(vidBasePath);
+        File[] vidFiles = vidbase.listFiles();
+        if (null != vidFiles) {
+            for (int i = 0; i < vidFiles.length; i++) {
+                if (vidFiles[i].isFile()) {
+                    filePath.put(vidFiles[i].getName(), vidBasePath + vidFiles[i].getName());
+                }
+            }
+        }
+        return filePath;
+    }
+
+    public Map<String, String> getArtistFileMd5Path(String artistName) {
+        Map<String, String> fileNamePaht = getArtistFilePath(artistName);
+        Map<String, String> md5 = new HashMap<>();
+        fileNamePaht.forEach((String fileName, String path) -> {
+            md5.put(fileName.substring(0, fileName.indexOf(".")), path);
+        });
+        return md5;
+    }
 
     Map<String, Integer> artistPicLevel; // key 为 path name
     Map<String, Integer> artistVidLevel;// key 为 path name
     Map<String, String> artistPicPath;// key 为 path name
     Map<String, String> artistVidPath;// key 为 path name
     static Pattern priorityPattern = Pattern.compile("-([0-9])-");
+
+    public int extractLevelFromPathString(String path) {
+        Matcher matcher = priorityPattern.matcher(path);
+        if (matcher.find()) return Integer.valueOf(matcher.group(1));
+        return 100;
+    }
 
     public void initArtistPathLevel() {
         if (null == artistPicLevel) {
@@ -131,12 +544,49 @@ public class DiskService {
                 });
             });
         }
-        System.out.println(this.artistPicLevel);
-        System.out.println(this.artistPicPath);
     }
-    public void cleanArtistBookParentBases(){
 
+    public void cleanArtistBookParentBases(String name) {
+        String picBasePath = getCommonArtistParentPath(name, "1.jpg");
+        String vidBasePath = getCommonArtistParentPath(name, "1.mp4");
+        List<String> bookOrParentedFiles = new ArrayList<>();
+        File[] picSubFiles = new File(picBasePath).listFiles();
+        if (null != picSubFiles) {
+            for (int i = 0; i < picSubFiles.length; i++) {
+                if (picSubFiles[i].isDirectory()) {
+                    String[] artworks = picSubFiles[i].list();
+                    for (int j = 0; j < artworks.length; j++) {
+                        String filename = artworks[j].substring(5);
+                        bookOrParentedFiles.add(filename);
+                    }
+                }
+            }
+        }
+        if (null != picSubFiles) {
+            for (int i = 0; i < picSubFiles.length; i++) {
+                if (picSubFiles[i].isFile()) {
+                    String fileName = picSubFiles[i].getName();
+                    if (bookOrParentedFiles.contains(fileName)) {
+                        System.out.println("发现重复" + fileName);
+                        picSubFiles[i].delete();
+                    }
+                }
+            }
+        }
+        File[] vidSubFiles = new File(vidBasePath).listFiles();
+        if (null != vidSubFiles) {
+            for (int i = 0; i < vidSubFiles.length; i++) {
+                if (vidSubFiles[i].isFile()) {
+                    String fileName = vidSubFiles[i].getName();
+                    if (bookOrParentedFiles.contains(fileName)) {
+                        System.out.println("发现重复" + fileName);
+                        vidSubFiles[i].delete();
+                    }
+                }
+            }
+        }
     }
+
     public void updateArtistLevel(DataBaseService dataBaseService) {
         initArtistPathLevel();
         List<LevelInfo> dbLevelInfos = dataBaseService.getLevelInfos();
@@ -145,7 +595,7 @@ public class DiskService {
             String pathName = transformArtistNameToPath(artistName);
             if (!artistVidLevel.containsKey(pathName) && !artistPicLevel.containsKey(pathName)) {
                 // 如果硬盘上没有这个作者了，标记为 is_target = 0
-                logger.info("作者丢失（）："+artistName);
+                logger.info("作者丢失（）：" + artistName);
                 dataBaseService.makeArtistLost(artistName);
             } else {
                 LevelInfo diskLevelInfo = new LevelInfo(artistName);
@@ -169,6 +619,8 @@ public class DiskService {
                 if (info.equals(diskLevelInfo)) {
 
                 } else {
+                    logger.info("发生变化：" + info.toString());
+                    logger.info("发生变化：" + diskLevelInfo.toString());
                     dataBaseService.updateArtistPathLevel(diskLevelInfo);
                 }
             }
@@ -207,7 +659,7 @@ public class DiskService {
         String parentPath = getParentPath(artworkInfo, PBPrefix, storePlace);
         try {
             FileUtils.moveFile(tempFile, new File(parentPath + fileSaveName));
-            logger.info("文件成功保存到["+fileSaveName+"]： "+parentPath);
+            logger.info("文件成功保存到[" + fileSaveName + "]： " + parentPath);
             return true;
         } catch (IOException e) {
             e.printStackTrace();
@@ -226,7 +678,7 @@ public class DiskService {
         if (storePlace == ArtworkInfo.STORE_PLACE.ARTIST.storePlace) {
             parentPath = getCommonArtistParentPath(artworkInfo.aimName, artworkInfo.fileName);
         } else if (storePlace == ArtworkInfo.STORE_PLACE.COPYRIGHT.storePlace) {
-            parentPath = getCommonArtistParentPath(artworkInfo.aimName, artworkInfo.fileName);
+            parentPath = getCopyrightParentPath(artworkInfo.aimName);
         } else if (storePlace == ArtworkInfo.STORE_PLACE.STUDIO.storePlace) {
             parentPath = getStudioParentPath(artworkInfo.aimName);
         } else if (storePlace == ArtworkInfo.STORE_PLACE.SINGLE.storePlace) {
@@ -236,7 +688,7 @@ public class DiskService {
         } else if (storePlace == ArtworkInfo.STORE_PLACE.SINGLE_PARENT_BOOK.storePlace) {
             parentPath = getSingleParentBookPathParentPath(artworkInfo, PBPrefix);
         } else {
-            throw new RuntimeException("位置的Store Place");
+            throw new RuntimeException("未知的Store Place");
         }
         return parentPath;
     }
@@ -289,8 +741,8 @@ public class DiskService {
     }
 
     private String getArtistParentBookPathParentPath(ArtworkInfo artworkInfo, String PBPrefix) {
-        //base/levelpath/#{artistname}+ _BP/
-        String commonArtistParentPath = getCommonArtistParentPath(artworkInfo.aimName, artworkInfo.fileName);
+//        logger.info("为了统一管理，不管 视频book 还是 图片book 都放在作者图片文件夹里面 DiskService:334 行");
+        String commonArtistParentPath = getCommonArtistParentPath(artworkInfo.aimName, "1.jpg");
         if (PBPrefix.equals("B")) {
             String bookPath = transformBookNameToPath(artworkInfo.bookName);
             return PathUtils.buildPath(commonArtistParentPath, (PBPrefix + "[" + artworkInfo.aimName + "][" + artworkInfo.bookId + "]" + bookPath));
@@ -315,7 +767,8 @@ public class DiskService {
                 .replaceAll("<", "_")
                 .replaceAll(">", "_")
                 .replaceAll("\\.", "_")
-                .replaceAll("\\|", "~");
+                .replaceAll("\\|", "~")
+                .trim();
 
     }
 
@@ -326,8 +779,13 @@ public class DiskService {
         if (PathUtils.isVideo(artworkInfo.fileName)) {
             picvid_2 = VID;
         }
-        String copyright_3 = getCopyrightStringForPath(artworkInfo);
-        String character_4 = getCharacterStringForPath(artworkInfo);
+        String copyright_3 = transformBookNameToPath(getCopyrightStringForPath(artworkInfo));
+        String character_4 = transformBookNameToPath(getCharacterStringForPath(artworkInfo));
+        System.out.println("xxxxxxxxxxxxxxxxxxxxxx");
+        System.out.println(basePath_1);
+        System.out.println(picvid_2);
+        System.out.println(copyright_3);
+        System.out.println(character_4);
         return PathUtils.buildPath(basePath_1, picvid_2, copyright_3, character_4);
     }
 
@@ -442,34 +900,70 @@ public class DiskService {
         return PathUtils.buildPath(spiderSetting.getStudioBase(), studioPathName);
     }
 
-    private String getCommonArtistParentPath(String artistName, String artworkName) {
+    public String getCommonArtistParentPath(String artistName, String artworkName) {
         String artistPathName = transformArtistNameToPath(artistName);
-        if (PathUtils.isVideo(artworkName)) {
-            Iterator<Map.Entry<String, List<String>>> iterator = CHAN_ARTIST_VIDS.entrySet().iterator();
-            while (iterator.hasNext()) {
-                Map.Entry<String, List<String>> entry = iterator.next();
-                // 如果这个文件夹下有这个作者名字 ， 作者名字+"."  ,
-                if (entry.getValue().contains(artistPathName) || entry.getValue().contains(artistPathName + "."))
-                    return PathUtils.buildPath(entry.getKey(), artistPathName);
-            }
-            return PathUtils.buildPath(CHAN_ARTIST_DEFAULT_VID, artistPathName);
-        } else {
-            Iterator<Map.Entry<String, List<String>>> iterator = CHAN_ARTIST_PICS.entrySet().iterator();
-            while (iterator.hasNext()) {
-                Map.Entry<String, List<String>> entry = iterator.next();
-                if (entry.getValue().contains(artistPathName) || entry.getValue().contains(artistPathName + "."))
-                    return PathUtils.buildPath(entry.getKey(), artistPathName);
-            }
-            return PathUtils.buildPath(CHAN_ARTIST_DEFAULT_PIC, artistPathName);
+//        if (PathUtils.isVideo(artworkName)) {
+//            Iterator<Map.Entry<String, List<String>>> iterator = CHAN_ARTIST_VIDS.entrySet().iterator();
+//            while (iterator.hasNext()) {
+//                Map.Entry<String, List<String>> entry = iterator.next();
+//                // 如果这个文件夹下有这个作者名字 ， 作者名字+"."  ,
+//                if (entry.getValue().contains(artistPathName) || entry.getValue().contains(artistPathName + "."))
+//                    return PathUtils.buildPath(entry.getKey(), artistPathName);
+//            }
+//            return PathUtils.buildPath(CHAN_ARTIST_DEFAULT_VID, artistPathName);
+//        } else {
+//            Iterator<Map.Entry<String, List<String>>> iterator = CHAN_ARTIST_PICS.entrySet().iterator();
+//            while (iterator.hasNext()) {
+//                Map.Entry<String, List<String>> entry = iterator.next();
+//                if (entry.getValue().contains(artistPathName) || entry.getValue().contains(artistPathName + "."))
+//                    return PathUtils.buildPath(entry.getKey(), artistPathName);
+//            }
+//            return PathUtils.buildPath(CHAN_ARTIST_DEFAULT_PIC, artistPathName);
+//        }
+
+        /**
+         * 原本是 vid pic 分开放，现在一起放了，但是不想改变所有代码，所以 Artist 部分 找一个文件的 parentPath
+         * 的时候，不再判断 文件类型， 而是 如果 pic有 返回 pic 如果 vid 有 就返回 vid
+         * 如果都没有 返回默认 pic
+         * */
+
+        Iterator<Map.Entry<String, List<String>>> iterator = CHAN_ARTIST_VIDS.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, List<String>> entry = iterator.next();
+            // 如果这个文件夹下有这个作者名字 ， 作者名字+"."  ,
+            if (entry.getValue().contains(artistPathName) || entry.getValue().contains(artistPathName + "."))
+                return PathUtils.buildPath(entry.getKey(), artistPathName);
         }
+        Iterator<Map.Entry<String, List<String>>> iterator2 = CHAN_ARTIST_PICS.entrySet().iterator();
+        while (iterator2.hasNext()) {
+            Map.Entry<String, List<String>> entry = iterator2.next();
+            if (entry.getValue().contains(artistPathName) || entry.getValue().contains(artistPathName + "."))
+                return PathUtils.buildPath(entry.getKey(), artistPathName);
+        }
+        return PathUtils.buildPath(CHAN_ARTIST_DEFAULT_PIC, artistPathName);
+//            return PathUtils.buildPath(CHAN_ARTIST_DEFAULT_PIC, artistPathName);
     }
 
     public String transformArtistNameToPath(String name) {
         if (null != namePairs) {
-
             name = namePairs.containsKey(name) ? namePairs.get(name) : name;
         }
         return name.endsWith(".") ? name.substring(0, name.length() - 1) : name;
+    }
+
+    public String transformPathToArtistName(String pathName) {
+        AtomicReference<String> name = new AtomicReference<>();
+        name.set(pathName);
+        if (null != namePairs) {
+            if (namePairs.values().contains(pathName)) {
+                namePairs.forEach((String realName, String path) -> {
+                    if (pathName.equals(path)) {
+                        name.set(realName);
+                    }
+                });
+            }
+        }
+        return name.get();
     }
 
     public boolean artworkExistOnDisk(ArtworkInfo artworkInfo, String PBPrefix) {
@@ -482,17 +976,17 @@ public class DiskService {
             AtomicBoolean exists = new AtomicBoolean(false);
             for (String name : possibleArtist) {
                 String parentPath = getCommonArtistParentPath(name, artworkInfo.fileName);
-                if (new File(parentPath + artworkInfo.fileName).exists()) {
-                    logger.info("文件已发现：" + parentPath + artworkInfo.fileName);
+                if (new File(parentPath + artworkInfo.fileSaveName).exists()) {
+                    logger.info("文件已发现：" + parentPath + artworkInfo.fileSaveName);
                     exists.set(true);
                 }
             }
             return exists.get();
         } else {
             String parentPath = getParentPath(artworkInfo, PBPrefix, artworkInfo.storePlace);
-            boolean exists = new File(parentPath + artworkInfo.fileName).exists();
+            boolean exists = new File(parentPath + artworkInfo.fileSaveName).exists();
             if (exists) {
-                logger.info("文件已发现：" + parentPath + artworkInfo.fileName);
+                logger.info("文件已发现：" + parentPath + artworkInfo.fileSaveName);
             }
             return exists;
         }
@@ -539,12 +1033,68 @@ public class DiskService {
 //        }
     }
 
+    public String getRealNameFromPathName(String pathName) {
+        AtomicReference<String> realName = new AtomicReference<>(pathName);
+        if (namePairs.values().contains(pathName)) {
+            namePairs.forEach((String iRealName, String iPathName) -> {
+                if (iPathName.equals(pathName)) {
+                    realName.set(iRealName);
+                }
+            });
+            return realName.get();
+        } else {
+            return pathName;
+        }
+    }
+
+    public void checkBookArtistPath(DataBaseService dataBaseService) {
+        Pattern idPattern = Pattern.compile("\\[(\\d+)\\]");
+        // 遍历 BP 下面 作者的 下面的 book文件夹 然后找到 B 开头的，然后 分辨出来
+        Set<String> artistsBase = CHAN_ARTIST_PICS.keySet();
+        artistsBase.forEach((String iArtistBase) -> {
+            if (iArtistBase.contains("BP")) {
+                System.out.println(iArtistBase);
+                File bookArtistBase = new File(iArtistBase);
+                String[] artists = bookArtistBase.list();
+                for (int i = 0; i < artists.length; i++) {
+                    File artist = new File(PathUtils.buildPath(iArtistBase, artists[i]));
+                    String realName = getRealNameFromPathName(artists[i]);
+                    System.out.println(realName);
+                    File[] files = artist.listFiles();
+                    for (int j = 0; j < files.length; j++) {
+                        File thisFile = files[j];
+                        if (thisFile.isDirectory()) {
+                            String fullName = thisFile.getName();
+                            Matcher m = idPattern.matcher(fullName);
+                            if (m.find()) {
+                                String bookId = m.group(1);
+                                dataBaseService.updateBookArtist(bookId, realName);
+                            }
+
+                        }
+                    }
+                }
+            }
+        });
+
+    }
+
     public static void main(String[] args) {
-        DiskService diskService = new DiskService(SpiderSetting.buildSetting());
+//        DiskService diskService = new DiskService(SpiderSetting.buildSetting());
+//        diskService.checkBookArtistPath(new DataBaseService());
 //        diskService.moveAllFileInBookBackToPic();
 //        diskService.initArtistPathLevel();
-        diskService.updateArtistLevel(new DataBaseService());
-
+//        diskService.updateArtistLevel(new DataBaseService());
+        String fullName = "I:/CHAN-ARTIST-特别/T-1-特别-对魔忍风/butcha-u/525048537a0b72107bc722dc9ad13ac1.jpg";
+        System.out.println(fullName.substring(fullName.lastIndexOf("/")).contains("_"));
+//        Pattern idPattern = Pattern.compile("\\[(\\d+)\\]");
+//        Matcher matcher = idPattern.matcher(fullName);
+//        if (matcher.find()) {
+//
+//            System.out.println(matcher.group(1));
+//        }
+//        String bookId = fullName.substring(fullName.lastIndexOf("[")+1,fullName.lastIndexOf("]"));
+//        System.out.println(bookId);
     }
 
 }

@@ -444,7 +444,6 @@ public class Downloader {
     private static void formatConnection(String referer, HttpURLConnection connection) throws ProtocolException {
         connection.setConnectTimeout(3000000);
         connection.setReadTimeout(3000000);
-        connection.setRequestMethod("GET");
 
 //        connection.setRequestProperty("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
 //        connection.setRequestProperty("accept-encoding", "gzip, deflate, br");
@@ -454,9 +453,12 @@ public class Downloader {
         System.out.println(referer);
         connection.setRequestProperty("Referer", referer);
 //        connection.setRequestProperty("upgrade-insecure-requests", "1");
-        connection.setRequestProperty("User-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.119 Safari/537.36");
+        connection.setRequestProperty("User-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.85 Safari/537.36");
+        connection.setRequestProperty("cookie","__cfduid=dbf7e7773e9cff987a17a97a7985956eb1619305796; cf_chl_2=d75f3598eff7b80; cf_chl_prog=a9; cf_clearance=38dc314abf4c8bb334a48a8e34a898fb19612a26-1619314705-0-250; _sankakucomplex_session=BAh7CDoMdXNlcl9pZGkD5lgGIgpmbGFzaElDOidBY3Rpb25Db250cm9sbGVyOjpGbGFzaDo6Rmxhc2hIYXNoewAGOgpAdXNlZHsAOg9zZXNzaW9uX2lkIiU4ODJhNmQxOThlZTUxN2I3MjI0Y2Y5N2VjYTdlYTZlNw==--9c7b73bee2ac4e9e47ca127737b669aa22cc34f5");
+        connection.setRequestMethod("GET");
 
     }
+    // https://accounts.hcaptcha.com/verify_email/63fecc64-8ccc-4636-b541-2effd53027e8
 
     private static void formatHttpGet(String urlStr, String referer, HttpGet get) {
 //        get.setProtocolVersion(new HttpVersion(2,0));

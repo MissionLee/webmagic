@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pers.missionlee.chan.service.DataBaseService;
 import pers.missionlee.chan.service.DiskService;
+import pers.missionlee.chan.starter.SpiderSetting;
 import pers.missionlee.webmagic.spider.newsankaku.utlis.Downloader;
 
 import java.io.BufferedInputStream;
@@ -22,6 +23,8 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -35,72 +38,109 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @create: 2021-04-11 10:23
  */
 public class FileDownloader {
+    public static boolean smartShutDown = true;
     public static Logger logger = LoggerFactory.getLogger(FileDownloader.class);
-    public static final int retryLimit = 3;
+    public static  int retryLimit = 3;
     public static DecimalFormat df = new DecimalFormat("0.00");
     private static int blockSize = 32 * 1024 * 1024; // 每个连接做多下载 256mb大小内容
     public static CloseableHttpClient closeableHttpClient = HttpClients.custom().build();
     private static ExecutorService executorService = Executors.newFixedThreadPool(10);
+    private static int error403 = 0;
 
-    public static File download(String aimUrl, String referer,String tempPath) {
-        logger.info("下载："+aimUrl);
+    public static File download(String aimUrl, String referer, String tempPath) {
+        logger.info("注意，下载器提供了 403 连续错误 50次，如果时间在1：00 ~ 9：30 之间 自动关机的功能");
+        logger.info("下载：" + aimUrl);
+        logger.info("retryLimit" + retryLimit);
         boolean downloadSuccess = false; // 下载成功
-        String fileName = aimUrl.substring(aimUrl.lastIndexOf("/")+1,aimUrl.indexOf("?"));
+        String fileName = aimUrl.substring(aimUrl.lastIndexOf("/") + 1, aimUrl.indexOf("?"));
         int retry = retryLimit;
 
 
         while ((!downloadSuccess) && (retry-- > 0)) {
+            long startTime = System.currentTimeMillis();
             try {
-                    logger.info("开始下载[" + (retryLimit - retry) + "]：" + aimUrl);
-                    URL url = new URL(aimUrl);
-                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                    formatConnection(referer, connection, "HEAD");
-                    int responseCode = connection.getResponseCode();
-                    if (responseCode >= 400) {
-                        logger.warn("文件大小[" + fileName + "]:请求失败 RESPONSE_STATUS " + responseCode);
-                    } else {
-                        int fileSize = connection.getContentLength();
-                        // A : 根据文件大小 Sleep 从而降低触发 429 的概率
-                        logger.info("根据文件大小 Sleep");
-                        String fsize = df.format(fileSize * 1.0 / (1024 * 1024));
-                        logger.info("文件大小[" + fileName + "]:" + fsize + "MB[" + fileSize + "bytes]");
-                        sleep(fileSize);
-                        String tempName = java.util.UUID.randomUUID().toString();
-                        File tempFile = new File(tempPath + tempName);
-
-                        RandomAccessFile tempFileAccess = new RandomAccessFile(tempFile, "rw");
-                        tempFileAccess.setLength(fileSize);
-                        int countDownNumber = new Double(Math.ceil(fileSize * 1.0 / blockSize)).intValue();
-                        CountDownLatch latch = new CountDownLatch(countDownNumber);
-                        Map<String, Boolean> rangeDownload = new HashMap<>();
-                        for (int i = 0; i < countDownNumber; i++) {
-                            int start = blockSize * i;
-                            int end = blockSize * (i + 1) - 1;
-                            if (end >= fileSize) end = fileSize - 1;
-                            String range = "bytes=" + start + "-" + end;
-                            rangeDownload.put(range, false);
-                            Downloader.CallableHttpRangeDownloader downloader = new Downloader.CallableHttpRangeDownloader(aimUrl, referer, tempFileAccess, start, range, latch, rangeDownload);
-                            executorService.submit(downloader);
+                logger.info("开始下载[" + (retryLimit - retry) + "]：" + aimUrl);
+//                    URL url = new URL(aimUrl);
+//                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                HttpURLConnection connection = HCaptchaConnectionFormat.format(aimUrl, referer, "GET");
+                int responseCode = connection.getResponseCode();
+                if (responseCode >= 400) {
+                    logger.warn("文件大小[" + fileName + "]:请求失败 RESPONSE_STATUS " + responseCode);
+                    if (responseCode == 403) {
+                        error403++;
+                        logger.info("遇到403错误，检查cookieString刷新情况，此处Sleep 3分钟");
+                        boolean updated = HCaptchaConnectionFormat.refreshCookieString();
+                        if (updated) {
+                            error403 = 0;
+                        }
+//                        Thread.sleep(180000);
+                    }
+                    if (error403 > 5) {
+                        synchronized ("abc"){
+                            logger.info("系统403 权限问题出现 50次了，智能关机");
+                            if (smartShutDown && FileDownloader.shutDownTime()) {
+                                Runtime rt = Runtime.getRuntime();
+                                rt.exec("shutdown.exe -s -t 40");
+                            }
+                            Thread.sleep(20000);
+                            System.exit(0);
                         }
 
-                        latch.await();
 
-                        System.out.println("CountDownLatch 全部完成");
-                        // 如果分块下载成功了，会给对应 range 改成 true
-                        AtomicBoolean countDownSuccess = new AtomicBoolean(true);
-                        rangeDownload.forEach((String range, Boolean success) -> {
-                            if (success) {
-                                System.out.println("段落下载成功：" + range);
-                            } else {
-                                System.out.println("段落下载失败：" + range);
-                                countDownSuccess.set(false);
+                    }
+                } else {
+                    int fileSize = connection.getContentLength();
+                    // A : 根据文件大小 Sleep 从而降低触发 429 的概率
+                    String fsize = df.format(fileSize * 1.0 / (1024 * 1024));
+                    logger.info("文件大小[" + fileName + "]:" + fsize + "MB[" + fileSize + "bytes]");
+                    sleep(fileSize);
+                    String tempName = java.util.UUID.randomUUID().toString();
+                    File tempFile = new File(tempPath + tempName);
 
-                            }
-                        });
-                        if (countDownSuccess.get()) { // 每一部分都下载成功
-                            tempFileAccess.close(); // 关闭access\
-                            downloadSuccess = true;
-                            return tempFile;
+                    RandomAccessFile tempFileAccess = new RandomAccessFile(tempFile, "rw");
+                    tempFileAccess.setLength(fileSize);
+                    int countDownNumber = new Double(Math.ceil(fileSize * 1.0 / blockSize)).intValue();
+                    CountDownLatch latch = new CountDownLatch(countDownNumber);
+                    Map<String, Boolean> rangeDownload = new HashMap<>();
+                    for (int i = 0; i < countDownNumber; i++) {
+                        int start = blockSize * i;
+                        int end = blockSize * (i + 1) - 1;
+                        if (end >= fileSize) end = fileSize - 1;
+                        String range = "bytes=" + start + "-" + end;
+                        rangeDownload.put(range, false);
+                        CallableHttpRangeDownloader downloader = new CallableHttpRangeDownloader(aimUrl, referer, tempFileAccess, range, latch, rangeDownload, start);
+//                            Downloader.CallableHttpRangeDownloader downloader = new Downloader.CallableHttpRangeDownloader(aimUrl, referer, tempFileAccess, start, range, latch, rangeDownload);
+                        executorService.submit(downloader);
+                    }
+
+                    latch.await();
+
+                    System.out.println("CountDownLatch 全部完成");
+                    // 如果分块下载成功了，会给对应 range 改成 true
+                    AtomicBoolean countDownSuccess = new AtomicBoolean(true);
+                    rangeDownload.forEach((String range, Boolean success) -> {
+                        if (success) {
+                            System.out.println("段落下载成功：" + range);
+                        } else {
+                            System.out.println("段落下载失败：" + range);
+                            countDownSuccess.set(false);
+
+                        }
+                    });
+                    if (countDownSuccess.get()) { // 每一部分都下载成功
+                        logger.info("所有段落下载成功，返回临时文件供后续程序使用");
+                        tempFileAccess.close(); // 关闭access\
+                        downloadSuccess = true;
+                        long endTime = System.currentTimeMillis();
+                        logger.info("文件大小："+fsize+"MB 耗时"+df.format((startTime-endTime)*1.0/1000)+"秒");
+                        if((startTime-endTime)*1.0/1000 < 5.1){
+                            logger.info("因为下载时间低于5秒，此处Sleep5秒");
+                            Thread.sleep(5000);
+                        }else if((startTime-endTime)*1.0/1000 < 10.1 ){
+                            logger.info("因为下载时间低于5秒，此处Sleep5秒");
+                            Thread.sleep(3000);
+                        }
+                        return tempFile;
 
                     }
                 }
@@ -118,9 +158,18 @@ public class FileDownloader {
 
         }
 
-        return  null;
+        return null;
     }
-
+    public static boolean shutDownTime(){
+        SimpleDateFormat dateFormater = new SimpleDateFormat("HHmm");
+        String date = dateFormater.format(new Date());
+        int time = Integer.parseInt(date);
+        if (time > 200 && time < 930) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     public static void sleep(int fileSize) throws InterruptedException {
         long sleepTime = 1000;
         if (fileSize > 48 * 1024 * 1024) {
@@ -140,13 +189,13 @@ public class FileDownloader {
         } else {
             sleepTime *= 5;
         }
+        logger.info("根据文件大小 Sleep："+sleepTime/1000+"秒");
         Thread.sleep(sleepTime);
     }
 
     private static void formatConnection(String referer, HttpURLConnection connection, String method) throws ProtocolException {
         connection.setConnectTimeout(30000);
         connection.setReadTimeout(30000);
-        connection.setRequestMethod(method);
 
 //        connection.setRequestProperty("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
 //        connection.setRequestProperty("accept-encoding", "gzip, deflate, br");
@@ -154,15 +203,13 @@ public class FileDownloader {
 //        connection.setRequestProperty("cache-control", "no-cache");
 //        connection.setRequestProperty("pragma", "no-cache");
         System.out.println(referer);
-        connection.setRequestProperty("Referer", referer);
+        connection.setRequestProperty("referer", referer);
 //        connection.setRequestProperty("upgrade-insecure-requests", "1");
-        connection.setRequestProperty("User-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.119 Safari/537.36");
+        connection.setRequestProperty("User-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.85 Safari/537.36");
+        connection.setRequestProperty("cookie", "__cfduid=dbf7e7773e9cff987a17a97a7985956eb1619305796; cf_chl_2=d75f3598eff7b80; cf_chl_prog=a9; cf_clearance=38dc314abf4c8bb334a48a8e34a898fb19612a26-1619314705-0-250; _sankakucomplex_session=BAh7CDoMdXNlcl9pZGkD5lgGIgpmbGFzaElDOidBY3Rpb25Db250cm9sbGVyOjpGbGFzaDo6Rmxhc2hIYXNoewAGOgpAdXNlZHsAOg9zZXNzaW9uX2lkIiU4ODJhNmQxOThlZTUxN2I3MjI0Y2Y5N2VjYTdlYTZlNw==--9c7b73bee2ac4e9e47ca127737b669aa22cc34f5");
+        connection.setRequestMethod(method);
 
     }
 
-    public static void main(String[] args) {
-        String str = "https://s.sankakucomplex.com/data/c3/d0/c3d03e6a9625b813f5650c7a395eba56.jpg?e=1618408898&m=82yta2lBjcUXVTQhv7jBmw";
-        String name = str.substring(str.lastIndexOf("/")+1,str.indexOf("?"));
-        System.out.println(name);
-    }
+
 }

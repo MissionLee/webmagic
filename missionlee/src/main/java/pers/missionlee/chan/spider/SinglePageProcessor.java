@@ -7,6 +7,8 @@ import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Spider;
 
+import java.util.List;
+
 /**
  * @description:
  * @author: Mission Lee
@@ -32,12 +34,25 @@ public class SinglePageProcessor extends AbstractPageProcessor {
         AbstractPageProcessor.Target target = extractDownloadTargetInfoFromDetailPage(page.getHtml());
         ArtworkInfo artworkInfo = extractArtworkInfoFromDetailPage(page, target);
         artworkInfo.storePlace = ArtworkInfo.STORE_PLACE.SINGLE.storePlace;
-        boolean download = downloadAndSaveFileFromShowPage(target, artworkInfo, page);
-        artworkInfo.artistType = ArtworkInfo.ARTIST_TYPE.UNKNOWN.artistType;
-        artworkInfo.isSingle = true;
-        if (download) {
-            dataBaseService.saveArtworkInfo(artworkInfo);
+        List<String> artists = artworkInfo.getTagArtist();
+        boolean needdownload = true;
+        for (int i = 0; i < artists.size(); i++) {
+            // 如果
+            if(dataBaseService.checkArtistIsTarget(artists.get(i))){
+                needdownload = false;
+            }
         }
+        if(needdownload){
+            boolean download = downloadAndSaveFileFromShowPage(target, artworkInfo, page);
+            artworkInfo.artistType = ArtworkInfo.ARTIST_TYPE.UNKNOWN.artistType;
+            artworkInfo.isSingle = true;
+            if (download) {
+                dataBaseService.saveArtworkInfo(artworkInfo);
+            }
+        }else{
+            logger.info("这个作品属于某个已经收藏的作者，所以跳过");
+        }
+
     }
 
     public static void main(String[] args) {

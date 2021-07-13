@@ -96,7 +96,7 @@
         <mapper resource="mybatis/mapper/sankaku-det.xml"></mapper>
         <mapper resource="mybatis/mapper/chan-artist.xml"></mapper>
         <mapper resource="mybatis/mapper/chan-artwork.xml"></mapper>
-        <mapper resource="mybatis/mapper/chan-book.xml"></mapper>
+        <mapper resource="mybatis/mapper/chan-bookparent.xml"></mapper>
         <mapper resource="mybatis/mapper/chan-common.xml"></mapper>
     </mappers>
 

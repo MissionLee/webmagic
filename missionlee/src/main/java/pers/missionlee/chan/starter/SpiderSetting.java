@@ -1,5 +1,10 @@
 package pers.missionlee.chan.starter;
 
+import pers.missionlee.chan.service.DiskService;
+
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
+
 /**
  * @description:
  * @author: Mission Lee
@@ -39,6 +44,14 @@ package pers.missionlee.chan.starter;
  * }
  */
 public class SpiderSetting {
+    public boolean onlyTryTen;
+    public boolean smartShutDown;
+    public String __cfduid;
+    public String cf_chl_2;
+    public String cf_chl_prog;
+    public String cf_clearance;
+    public String userAgent;
+    public String[] cookieString;
     public String artistBase; // 基础文件目录 （会放置临时文件，作为默认存放位置）
     public String[] normalAddArtistBases; //
     public String bookParentArtistBase;
@@ -51,6 +64,7 @@ public class SpiderSetting {
     public int downloadLimit; // 如果指定下载 ，多个这个数量限制会不进行下载
     public String[] works;
     public int threadNum;
+    public int retryTime;
     public String[] removedTagForPath; // 用于single下载的时候，有一些特殊的 的tag ，不用于 创建路径 例如 2b 是个没有正常识别的简称
     public String[] tips;
     public boolean onlyArtist; // 只下载作者部分
@@ -63,6 +77,210 @@ public class SpiderSetting {
     //
     public boolean forceUpdate =false;// 按等级更新的时候，忽略更新时间，强制更新
     public boolean forceNew =false;// 按等级更新的时候，以新作的模式更新
+
+    public String[] voiceActor;
+    public String[] audioDesign;
+//    public String[] animation;
+    public boolean skipBookLostPage;
+    public boolean downloadAllTryBest;
+    public boolean bookOnlyDaiDing;
+    public Map<String,String> siteCookie;
+    public Map<String, List<String>> artistRelation;
+    public List<String> skipParentPoolId;
+    public Map<String, String> getSiteCookie() {
+        return siteCookie;
+    }
+
+    public List<String> getSkipParentPoolId() {
+        return skipParentPoolId;
+    }
+
+    public void setSkipParentPoolId(List<String> skipParentPoolId) {
+        this.skipParentPoolId = skipParentPoolId;
+    }
+
+    public void setSiteCookie(Map<String, String> siteCookie) {
+        this.siteCookie = siteCookie;
+    }
+
+    public boolean isBookOnlyDaiDing() {
+        return bookOnlyDaiDing;
+    }
+
+    public void setBookOnlyDaiDing(boolean bookOnlyDaiDing) {
+        this.bookOnlyDaiDing = bookOnlyDaiDing;
+    }
+
+    public String getRelationName(String name){
+        if(artistRelation.containsKey(name)){
+            return name;
+        }else{
+            AtomicReference<String> relName =new AtomicReference<>();
+            relName.set(name);
+            artistRelation.forEach((reName,namelist)->{
+                if(namelist.contains(name)){
+                    relName.set(reName);
+                }
+            });
+            return relName.get();
+        }
+    }
+    public Map<String,String> initAllRelatedStoredFilesMd5(DiskService diskService,String name){
+        System.out.println("目标名称："+name);
+        Set<String> names = new HashSet<>();
+        String realName = getRelationName(name); // 真名
+        names.add(realName);
+        if(artistRelation.containsKey(realName)){
+            List<String> nameList = artistRelation.get(realName);
+            if(nameList != null ){
+                names.addAll(nameList);
+            }
+        }
+        Map<String,String> md5s = new HashMap<>();
+       names.forEach( (theName)->{
+           System.out.println("MD5访问名称："+theName);
+           md5s.putAll(diskService.getArtistFileMd5Path(name));
+       });
+        return md5s;
+    } //         this.filePath = diskService.getArtistFilePath(saveArtistName);
+    public Map<String,String> initAllRelatedStoredFiles(DiskService diskService,String name){
+        System.out.println("目标名称："+name);
+        Set<String> names = new HashSet<>();
+        String realName = getRelationName(name); // 真名
+        names.add(realName);
+        if(artistRelation.containsKey(realName)){
+            List<String> nameList = artistRelation.get(realName);
+            if(nameList != null ){
+                names.addAll(nameList);
+            }
+        }
+        Map<String,String> md5s = new HashMap<>();
+        names.forEach( (theName)->{
+            System.out.println("MD5访问名称："+theName);
+            md5s.putAll(diskService.getArtistFilePath(theName));
+        });
+        return md5s;
+    } //         this.filePath = ;
+    public int getRetryTime() {
+        return retryTime;
+    }
+
+    public void setRetryTime(int retryTime) {
+        this.retryTime = retryTime;
+    }
+
+    public String getUserAgent() {
+        return userAgent;
+    }
+
+    public void setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
+    }
+
+    public Map<String, List<String>> getArtistRelation() {
+        return artistRelation;
+    }
+
+    public void setArtistRelation(Map<String, List<String>> artistRelation) {
+        this.artistRelation = artistRelation;
+    }
+
+    public boolean isDownloadAllTryBest() {
+        return downloadAllTryBest;
+    }
+
+    public void setDownloadAllTryBest(boolean downloadAllTryBest) {
+        this.downloadAllTryBest = downloadAllTryBest;
+    }
+
+    public boolean isSkipBookLostPage() {
+        return skipBookLostPage;
+    }
+
+    public void setSkipBookLostPage(boolean skipBookLostPage) {
+        this.skipBookLostPage = skipBookLostPage;
+    }
+
+    public double getBookSkipPercent() {
+        return bookSkipPercent;
+    }
+
+    public void setBookSkipPercent(double bookSkipPercent) {
+        this.bookSkipPercent = bookSkipPercent;
+    }
+
+    public String[] getVoiceActor() {
+        return voiceActor;
+    }
+
+    public void setVoiceActor(String[] voiceActor) {
+        this.voiceActor = voiceActor;
+    }
+
+    public String[] getAudioDesign() {
+        return audioDesign;
+    }
+
+    public void setAudioDesign(String[] audioDesign) {
+        this.audioDesign = audioDesign;
+    }
+
+    public boolean isOnlyTryTen() {
+        return onlyTryTen;
+    }
+
+    public void setOnlyTryTen(boolean onlyTryTen) {
+        this.onlyTryTen = onlyTryTen;
+    }
+
+    public boolean isSmartShutDown() {
+        return smartShutDown;
+    }
+
+    public void setSmartShutDown(boolean smartShutDown) {
+        this.smartShutDown = smartShutDown;
+    }
+
+    public String[] getCookieString() {
+        return cookieString;
+    }
+
+    public void setCookieString(String[] cookieString) {
+        this.cookieString = cookieString;
+    }
+
+    public String get__cfduid() {
+        return __cfduid;
+    }
+
+    public void set__cfduid(String __cfduid) {
+        this.__cfduid = __cfduid;
+    }
+
+    public String getCf_chl_2() {
+        return cf_chl_2;
+    }
+
+    public void setCf_chl_2(String cf_chl_2) {
+        this.cf_chl_2 = cf_chl_2;
+    }
+
+    public String getCf_chl_prog() {
+        return cf_chl_prog;
+    }
+
+    public void setCf_chl_prog(String cf_chl_prog) {
+        this.cf_chl_prog = cf_chl_prog;
+    }
+
+    public String getCf_clearance() {
+        return cf_clearance;
+    }
+
+    public void setCf_clearance(String cf_clearance) {
+        this.cf_clearance = cf_clearance;
+    }
+
     public double getAutoBookSkipPercent() {
         return autoBookSkipPercent;
     }

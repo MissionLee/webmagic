@@ -1,14 +1,15 @@
 package pers.missionlee.chan.spider;
 
 import com.alibaba.fastjson.JSON;
-import org.apache.commons.io.FileUtils;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pers.missionlee.chan.downloader.FileDownloader;
 import pers.missionlee.chan.service.DataBaseService;
 import pers.missionlee.chan.service.DiskService;
-import pers.missionlee.chan.spider.book.BookPageProcessor;
 import pers.missionlee.webmagic.spider.newsankaku.utlis.SpiderUtils;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 import pers.missionlee.webmagic.spider.sankaku.manager.SourceManager;
@@ -23,6 +24,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @description:
@@ -30,6 +33,14 @@ import java.util.Map;
  * @create: 2021-04-10 20:48
  */
 public abstract class AbstractPageProcessor implements PageProcessor {
+    public void sleep(int second) {
+        try {
+            Thread.sleep(second * 1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     Logger logger = LoggerFactory.getLogger(AbstractPageProcessor.class);
     public DiskService diskService;
     public DataBaseService dataBaseService;
@@ -47,6 +58,8 @@ public abstract class AbstractPageProcessor implements PageProcessor {
 
     @Override
     public void process(Page page) {
+//        logger.info("AbstractPageProcessor#process 里面添加了Sleep，因为用文件验证存在性 是否需要下载之后，会出现访问不少show页面，但是实际上每个都不下载的情况");
+
         if (processCode429Page(page)) {
             doProcess(page);
         }
@@ -60,8 +73,8 @@ public abstract class AbstractPageProcessor implements PageProcessor {
     public boolean processCode429Page(Page page) {
         if (page.getStatusCode() == 429) {
             try {
-                logger.info("触发429等待机制：100s");
-                Thread.sleep(100000);
+                logger.info("触发429等待机制：180s");
+                Thread.sleep(180000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -70,27 +83,51 @@ public abstract class AbstractPageProcessor implements PageProcessor {
         }
         return true;
     }
-
-    public Map<String,Object> getJsonStringFromRestPage(Page page){
-        String html = page.getHtml().$("body").all().get(0).replaceAll("\n", "").replaceAll(" ", "");
-        String data = SpiderUtils.extractTag(html);
-        return (Map<String, Object>) JSON.parse(data);
+    public static String unicodeToString(String str) {
+        Pattern pattern = Pattern.compile("(\\\\u(\\p{XDigit}{4}))");
+        Matcher matcher = pattern.matcher(str);
+        char ch;
+        while (matcher.find()) {
+            ch = (char) Integer.parseInt(matcher.group(2), 16);
+            str = str.replace(matcher.group(1), "_");
+        }
+        return str;
     }
-    public boolean downloadAndSaveFileFromShowPage(AbstractPageProcessor.Target target,ArtworkInfo artworkInfo, Page page) {
-        if(!diskService.artworkExistOnDisk(artworkInfo,artworkInfo.PBPrefix)){
+    public Map<String, Object> getJsonStringFromRestPage(Page page) {
+//        String html = page.getHtml().$("body").all().get(0).replaceAll("\n", "").replaceAll(" ", "");
+//        String data = SpiderUtils.extractTag(html);
+//        System.out.println("处理前："+data.length());
+//        int start =0;
+//        while ((start = data.indexOf("\"source\""))>0){
+//            int end = data.indexOf(",",start);
+//            System.out.println(data.substring(start,end));
+//            data = data.substring(0,start)+data.substring(end+1);
+//        }
+//        try {
+//            objectMapper.readValue(data,Map.class);
+//        } catch (IOException e) {
+////            System.out.println(data);
+//            System.out.println(data.length());
+//            e.printStackTrace();
+//        }
+//        return (Map<String, Object>) JSON.parse(data);
+        return (Map<String, Object>)JSON.parse(page.getJson().toString());
+    }
+
+    public boolean downloadAndSaveFileFromShowPage(AbstractPageProcessor.Target target, ArtworkInfo artworkInfo, Page page) {
+        String med = artworkInfo.getFileName().substring(0,artworkInfo.getFileName().indexOf("."));
+
+        if (diskService.copyFileFromRelatedArtist(artworkInfo)) {
+            //  因为 book 或者 parent之类的，为了保证完整性，不能因为
+            //  别的地方有就不下载了，所以从不妙目录复制文件
+            logger.info("YYYYYYYYYYYYYYYYY 从其他作者名下复制了这个文件");
+            return true;
+        }
+        if (!diskService.artworkExistOnDisk(artworkInfo, artworkInfo.PBPrefix)) {
             logger.info("存在判断：文件不存在，可以开始下载");
             File tempFile = FileDownloader.download(target.targetUrl, page.getUrl().toString(), diskService.getTempPath());
             if (null != tempFile && tempFile.exists() && tempFile.isFile() && tempFile.length() > 10) {
-//                if(this instanceof BookPageProcessor){
-//                    try {
-//                        logger.info("当前模式为book下载，另存一份到 booked目录中");
-//                        diskService.copyFileToArtistBookPath(tempFile,artworkInfo);
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-                if (diskService.saveFile(tempFile, artworkInfo,artworkInfo.PBPrefix,artworkInfo.fileSaveName)) {
-
+                if (diskService.saveFile(tempFile, artworkInfo, artworkInfo.PBPrefix, artworkInfo.fileSaveName)) {
                     onDownloadSuccess(page, artworkInfo);
                     return true;
                 } else {
@@ -101,11 +138,16 @@ public abstract class AbstractPageProcessor implements PageProcessor {
                 onDownloadFail(page, artworkInfo);
                 return false;
             }
-        }else{
+        } else {
             logger.info("存在判断：已经存在");
             return true;
         }
     }
+
+    public boolean saveFileFromRelatedArtist(ArtworkInfo artworkInfo) {
+        return diskService.copyFileFromRelatedArtist(artworkInfo);
+    }
+
     /**
      * 用于分析详情页Html，获取真正要下载的文件信息（主要处理了 1.页面展示缩略图/原图的情况，2.页面为图片/视频/flash文件的情况）
      */
@@ -117,14 +159,14 @@ public abstract class AbstractPageProcessor implements PageProcessor {
         if (maybe != null && maybe.size() > 0) {  //如果页面内容是个图片，则存在 #image-link
             if (!maybe.get(0).equals("")) { // 有非缩略地址
                 target.targetUrl = "https:" + maybe.get(0);
-            } 
+            }
 //            else { // 自身就是原图
 //                target.targetUrl = "https:" + html.$("#post-content").$("img", "src").all().get(0).replace("&amp;", "&");
 //            }
 
         }
-        if(null == target.targetUrl || StringUtils.isEmpty(target.targetUrl)){
-            if(html.$("#post-content").$("img", "src").all().size()>0){
+        if (null == target.targetUrl || StringUtils.isEmpty(target.targetUrl)) {
+            if (html.$("#post-content").$("img", "src").all().size() > 0) {
                 target.targetUrl = "https:" + html.$("#post-content").$("img", "src").all().get(0).replace("&amp;", "&");
             } else if (html.$("#post-content").$("video").all().size() > 0) { // 如果页面是个video 则存在直接找video
                 target.targetUrl = "https:" + html.$("#post-content").$("video", "src").all().get(0).replace("&amp;", "&");
@@ -151,7 +193,8 @@ public abstract class AbstractPageProcessor implements PageProcessor {
         String subFix;
     }
 
-    public  ArtworkInfo extractArtworkInfoFromDetailPage(Page page, AbstractPageProcessor.Target target) {
+    public ArtworkInfo extractArtworkInfoFromDetailPage(Page page, AbstractPageProcessor.Target target) {
+        logger.info("提醒：从show页面提取的ArtworkInfo parent_id book_id = -2 表示属于某个BP, -3表示 不属于某个BP");
         Html html = page.getHtml();
         // 提取标签信息
         Selectable tagSideBar = html.$("#tag-sidebar");
@@ -233,12 +276,28 @@ public abstract class AbstractPageProcessor implements PageProcessor {
         artworkInfo.setTagGenre(genreList);
         artworkInfo.setTagMeta(metaList);
         artworkInfo.setTakeTime(System.currentTimeMillis());
-
         artworkInfo.sanCode = page.getUrl().toString().substring(page.getUrl().toString().lastIndexOf("/") + 1);
-
+        String pageString = page.getHtml().toString();
+        if (pageString.contains("This post has")
+                || pageString.contains("child post")
+                || pageString.contains("This post belongs to")
+                || pageString.contains("a parent post")
+        ) {
+            artworkInfo.parentId = -2;
+        } else {
+            artworkInfo.parentId = -3;
+        }
+        if (pageString.contains("Books") && pageString.contains("legacy")) {
+            artworkInfo.bookId = -2;
+        } else {
+            artworkInfo.bookId = -3;
+        }
         return artworkInfo;
     }
 
-
+    public static void main(String[] args) {
+        String x = "1qwerq.sadfa";
+        System.out.println(x.substring(0,x.indexOf(".")));
+    }
 
 }

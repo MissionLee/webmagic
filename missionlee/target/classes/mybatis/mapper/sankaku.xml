@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="san">
+	<resultMap id="levelInfo" type="pers.missionlee.webmagic.spider.newsankaku.dao.LevelInfo">
+		<result column="artist_id" property="artistId" javaType="Integer" jdbcType="INTEGER"></result>
+		<result column="name" property="name" javaType="String" jdbcType="VARCHAR"></result>
+		<result column="pic_level" property="picLevel" javaType="Integer" jdbcType="INTEGER"></result>
+		<result column="pic_path" property="picPath" javaType="String" jdbcType="VARCHAR"></result>
+		<result column="vid_level" property="vidLevel" javaType="Integer" jdbcType="INTEGER"></result>
+		<result column="vid_path" property="vidPath" javaType="String" jdbcType="VARCHAR"></result>
+	</resultMap>
+    <!--	查询作者 LevelInfo-->
+	<select id="getLevelInfos" resultMap="levelInfo">
+		select artist_id,`name`,pic_level,pic_path,vid_level,vid_path from san_artist where is_target = 1
+	</select>
+	<select id="getLevelInfo" resultMap="levelInfo" parameterType="String">
+		select artist_id,`name`,pic_level,pic_path,vid_level,vid_path from san_artist where is_target = 1 and `name`=#{name}
+	</select>
+    <!-- ======================= 作品部分 ==================== -->
+    <!-- 通过sanCode 查询所有这个sanCode的正式作者列表 -->
+    <select id="getArtistListBySanCode" parameterType="String" resultType="map">
+		SELECT
+			SA.SAN_CODE as sanCode,
+			ST.`NAME` as name ,
+			ST.IS_TARGET as isTarget
+		FROM
+			SAN_ARTWORK SA
+		LEFT JOIN ARTWORK_ARTIST_REL AAR ON SA.SAN_CODE = AAR.SAN_CODE
+		LEFT JOIN SAN_ARTIST ST ON AAR.ARTIST_ID = ST.ARTIST_ID
+		WHERE
+			SA.SAN_CODE = #{sanCode}
+	</select>
+    <insert id="addArtwork" parameterType="map">
+		INSERT INTO san_artwork(
+			`FILE_NAME`,
+			`SAN_CODE`,
+			`FILE_SIZE`,
+			`FILE_FORMAT`,
+			`POST_DATE`,
+			`RATING`,
+			`RESOLUTION_RATIO`,
+			`STATUS`,
+			`RELATIVE_PATH`,
+			`CREATE_TIME`,
+			`UPDATE_TIME`,
+			`INFORMATION`
+			) VALUES (
+			#{fileName},
+			#{sanCode},
+			#{fileSize},
+			#{fileFormat},
+			#{postDate},
+			#{rating},
+			#{resolutionRatio},
+			#{status},
+			#{relativePath},
+			now(),
+			now(),
+			#{information}
+			)
+	</insert>
+    <select id="findArtworkWithSanCode" resultType="map" parameterType="String">
+		SELECT
+			`FILE_NAME` AS fileName,
+			`SAN_CODE` AS sanCode,
+			`FILE_SIZE` AS fileSize,
+			`FILE_FORMAT` AS fileFormat,
+			`POST_DATE` AS postDate,
+			`RATING` AS rating,
+			`RESOLUTION_RATIO` AS resolutionRatio,
+			`STATUS` AS status,
+			`RELATIVE_PATH` AS relativePath,
+			`CREATE_TIME` AS createTime,
+			`UPDATE_TIME` AS updateTime
+			FROM san_artwork WHERE SAN_CODE = #{SANCODE}
+	</select>
+    <!-- 给定文件名称，是否存在，有可能是存在被删除，也可能在不同作者名下 -->
+    <select id="fileExists" resultType="Integer" parameterType="String">
+		select count(*) from san_artwork where FILE_NAME = #{fileName}
+	</select>
+    <!-- ===================  作者部分 =======================  -->
+    <!-- 给定作者，查询作品数量 -->
+    <select id="getArtistWorkNum" parameterType="String" resultType="Integer">
+		select count(*) from artwork_artist_rel AAR join san_artist SA  on AAR.artist_id = SA.artist_id where SA.name = #{name} and SA.is_target = 1
+	</select>
+    <update id="refreshUpdateTime" parameterType="map">
+		UPDATE SAN_ARTIST SET
+		`update_time` = CURRENT_TIMESTAMP ,
+		`aim_update_time` = FROM_UNIXTIME(#{time}),
+		`is_target` = 1
+		where `name` = #{theName}
+	</update>
+    <insert id="insertArtist" parameterType="map" useGeneratedKeys="true" keyProperty="artist_id">
+		INSERT INTO san_artist(
+			`NAME`,
+			`DEL_NUMS`,
+			`PIC_LEVEL`,
+			`VID_LEVEL`,
+			`ARTWORK_UPDATE_TIME`,
+			`SAVED_PIC_NUM`,
+			`SAVED_VID_NUM`,
+			`INFOED_NUM`,
+			`create_time`,
+			`update_time`,
+			`is_target`
+			) VALUES (
+			#{name},
+			0,
+			#{pic_level},
+			#{vid_level},
+			null,
+			#{saved_pic_num},
+			#{saved_vid_num},
+			#{infoed_num},
+			now(),
+			now(),
+			1
+			)
+	</insert>
+    <update id="updateArtist" parameterType="map">
+		UPDATE san_artist SET
+			`PIC_LEVEL` = #{pic_level},
+			`VID_LEVEL` = #{vid_level},
+			`SAVED_PIC_NUM` = #{saved_pic_num},
+			`SAVED_VID_NUM` = #{saved_vid_num},
+			`INFOED_NUM` = #{infoed_num},
+			`update_time` = now(),
+			`is_target` = 1
+			WHERE `name` = #{name}
+	</update>
+    <update id="updateArtistPathLevel" parameterType="map">
+			UPDATE san_artist SET
+			pic_level = #{pic_level} ,
+			pic_path = #{pic_path} ,
+			vid_level = #{vid_level} ,
+			vid_path = #{vid_path},
+			is_target = 1
+			WHERE `name` = #{name}
+	</update>
+    <insert id="insertArtistOnlyName" parameterType="map" useGeneratedKeys="true" keyProperty="artist_id">
+		insert into san_artist(`name`,`create_time`,`update_time`,`is_target`) values (#{name},now(),now(),0)
+	</insert>
+    <select id="getArtistId" parameterType="String" resultType="BigInteger">
+		select artist_id as artistId from san_artist where `name` = #{name}
+	</select>
+    <select id="getAllTargetArtist" resultType="map">
+		SELECT
+		`ARTIST_ID` AS artistId,
+		`NAME` AS name,
+		`DEL_NUMS` AS delNums,
+		`PIC_LEVEL` AS picLevel,
+		`VID_LEVEL` AS vidLevel,
+		`ARTWORK_UPDATE_TIME` AS artworkUpdateTime,
+		`SAVED_PIC_NUM` AS savedPicNum,
+		`SAVED_VID_NUM` AS savedVidNum,
+		`INFOED_NUM` AS infoedNum,
+		`CREATE_TIME` AS createTime,
+		`UPDATE_TIME` AS updateTime,
+		`IS_TARGET` AS isTarget,
+		UNIX_TIMESTAMP(`AIM_UPDATE_TIME`) AS aimUpdateTime
+		FROM san_artist WHERE is_target = 1
+	</select>
+    <select id="getTargetArtistList" resultType="String">
+		SELECT
+		`name`
+		FROM san_artist WHERE is_target = 1
+	</select>
+    <!-- 根据作品名称 和 作者名称，添加 作者 作品 关系表 -->
+    <insert id="addArtistRel" parameterType="map">
+		insert into artwork_artist_rel(san_code,artist_id) values(#{sanCode},#{artist_id})
+	</insert>
+    <!--  =============== 角色 character 部分 ===========-->
+    <insert id="insertCharacter" parameterType="map" useGeneratedKeys="true" keyProperty="character_id">
+		insert into san_character(`name`) values(#{name})
+    </insert>
+    <select id="getCharacterId" parameterType="String" resultType="BigInteger">
+		select character_id as characterId from san_character where `name` = #{name}
+	</select>
+    <insert id="addCharacterRel" parameterType="map">
+		insert into artwork_character_rel(san_code,character_id) values(#{sanCode},#{character_id})
+	</insert>
+    <!--==================  Copyright 部分 ================== -->
+    <insert id="insertCopyright" parameterType="String" useGeneratedKeys="true" keyProperty="copyright_id">
+		insert into san_copyright(`name`) values(#{name})
+	</insert>
+    <select id="getCopyrightId" parameterType="String" resultType="BigInteger">
+		select copyright_id as copyrightId from san_copyright where `name` = #{name}
+	</select>
+    <insert id="addCopyrightRel" parameterType="map">
+		insert into artwork_copyright_rel(san_code,copyright_id) values(#{sanCode},#{copyright_id})
+	</insert>
+    <!-- ================= Tag 部分 ==========================-->
+    <insert id="insertTag" parameterType="map" useGeneratedKeys="true" keyProperty="tag_id">
+		insert into san_tag(`name`,`type`)values(#{name},#{type})
+	</insert>
+    <select id="getTagId" parameterType="map" resultType="BigInteger">
+		select tag_id as tagId from san_tag where `name` = #{name} and `type` = #{type}
+	</select>
+    <insert id="addTagRel" parameterType="map">
+		insert into artwork_tag_rel(san_code,tag_id)values(#{sanCode},#{tag_id})
+	</insert>
+
+    <!-- 以下 综合查询业务 -->
+    <select id="getArtworkInfoByArtistName" parameterType="String" resultType="map">
+		SELECT
+			SA.file_name as information
+		FROM san_artwork SA
+		join artwork_artist_rel AAR on SA.SAN_CODE = AAR.SAN_CODE
+		JOIN SAN_ARTIST SAT ON AAR.ARTIST_ID = SAT.ARTIST_ID WHERE SAT.NAME = #{name}
+	</select>
+    <!-- 验证是否有 这个 target 用户-->
+    <select id="getTargetArtist" parameterType="String" resultType="BigInteger">
+		select artist_id as artistId from san_artist where name = #{name} and is_target = 1
+	</select>
+    <!-- 查询用户在数据库中存储的作品数量 -->
+    <select id="getStoredArtworkNum" parameterType="BigInteger" resultType="Integer">
+		select count(*) from artwork_artist_rel where artist_id = #{artistId}
+	</select>
+    <!-- 查询用户作品更新时间	-->
+    <select id="getUpdateInfo" resultType="map">
+		select
+		name as name,
+		unix_timestamp(aim_update_time) * 1000 as aimUpdateTime
+		from san_artist where is_target = 1
+	</select>
+    <!-- 关联作者，查询作品	-->
+    <select id="getSanCodesByArtist" parameterType="String" resultType="String">
+		select
+			aar.san_code as sanCode
+		from artwork_artist_rel aar
+		join san_artist on aar.artist_id = san_artist.artist_id and san_artist.name = #{name}
+		join san_artwork on aar.san_code = san_artwork.san_code and san_artwork.store_type &lt;&gt; 3
+	</select>
+	<!-- 关联作者，查询作品 指定存储状态	-->
+	<select id="getSanCodesByArtistOfStoreType" parameterType="map" resultType="map">
+		select
+			aar.san_code as sanCode,
+			aar.file_name as fileName
+		from artwork_artist_rel aar
+		join san_artist on aar.artist_id = san_artist.artist_id and san_artist.name = #{name}
+		join san_artwork on aar.san_code = san_artwork.san_code and san_artwork.store_type = #{storeType}
+
+	</select>
+    <!-- 关联版权（作品名称，例如 守望先锋），查询作品	-->
+    <select id="getSanCodesByCopyright" resultType="String" parameterType="String">
+SELECT
+	san_code AS sanCode
+FROM
+	artwork_copyright_rel
+JOIN san_copyright ON artwork_copyright_rel.copyright_id = san_copyright.copyright_id
+AND san_copyright. NAME = #{copyright}
+JOIN san_artwork ON san_artwork.san_code = artwork_copyright_rel.
+	</select>
+    <!--	关联角色（例如： 猎空），查询作品-->
+    <select id="getSanCodesByCharacter" resultType="String" parameterType="String">
+		SELECT
+	san_code AS sanCode
+FROM
+	artwork_character_rel
+JOIN san_character ON artwork_character_rel.character_id = san_character.character_id
+AND san_character. NAME = #{character}
+	</select>
+    <!--	查询某个san code 是否在某个用户名下 -->
+    <select id="confirmArtworkOfSomeone" parameterType="map" resultType="map">
+SELECT
+	artwork_artist_rel.san_code AS sanCode,
+	san_artist.artist_id AS artistId,
+	san_artist.`name` AS `name`
+FROM
+	artwork_artist_rel
+RIGHT JOIN san_artist ON artwork_artist_rel.san_code = #{sanCode}
+AND artwork_artist_rel.artist_id = san_artist.artist_id
+WHERE
+	san_artist.`name` = #{name}
+	</select>
+
+	<select id="getSanCodesByCopyrightOfficial" parameterType="String" resultType="String">
+		SELECT ACR.san_code from
+		san_copyright SC
+		join artwork_copyright_rel ACR on SC.copyright_id = ACR.copyright_id and SC.name = #{name}
+		join san_artwork on san_artwork.san_code = ACR.san_code
+		where san_artwork.store_type &lt;&gt; 3
+	</select>
+
+	<select id="getFileNames"  resultType="String">
+		SELECT file_name as fileName from san_artwork;
+	</select>
+	<select id="dealLostFile" parameterType="String">
+		update san_artwork set store_type = (
+		case store_type
+		when 1 then  3
+		when 2 then 2
+		when 3 then 3
+		else 2
+		end
+		)where file_name = #{fileName}
+	</select>
+
+	<select id="fileNameExist" parameterType="String" resultType="int">
+		select count(*) from san_artwork where file_name = #{fileName} and store_type &lt;&gt; 3
+	</select>
+
+<!-- 根据 sanCode 确认一个作品是否存在 目前用于	-->
+	<select id="sanCodeExist" parameterType="String" resultType="int">
+		select count(*) from san_artwork where san_code = #{sanCode} and store_type = 1
+	</select>
+	<insert id="saveBookInfo" parameterType="pers.missionlee.webmagic.spider.sankaku.info.BookParentInfo">
+		insert into san_book(
+			id,
+			`name`,
+			created_at,
+			updated_at,
+			artist_id,
+			post_count,
+			visible_post_count,
+			rating,
+			information
+		)values(
+			#{id},
+			#{name},
+			#{createdAt},
+			#{updatedAt},
+			#{artistId},
+			#{postCount},
+			#{visiblePostCount},
+			#{rating},
+			#{information}
+		)
+	</insert>
+</mapper>

@@ -301,7 +301,6 @@ public class Spider implements Runnable, Task {
 
     @Override
     public void run() {
-
         checkRunningStat(); // 检查爬虫的运行状态，已经运行这里会报错
         initComponent();// 检查downloader之类的组件，没有的话就设置默认的，外面传递的线程数就是 downloader的线程数
 
@@ -323,7 +322,7 @@ public class Spider implements Runnable, Task {
                 threadPool.execute(new Runnable() {
                     @Override
                     public void run() {
-                        System.out.println("Spider # 326 在此处引入了 sleep  随机0-10s");
+                        System.out.println("Spider # 325 引入所有Spider Sleep 3s");
                         try {
                             try {
                                 Thread.sleep(new Random().nextInt(3000));
@@ -454,6 +453,7 @@ public class Spider implements Runnable, Task {
     }
 
     private void doCycleRetry(Request request) {
+        System.out.println("xxxxxxxxx 报错出发了 Spider 重试机制 xxxxxxxxxx");
         Object cycleTriedTimesObject = request.getExtra(Request.CYCLE_TRIED_TIMES);
         if (cycleTriedTimesObject == null) {
             addRequest(SerializationUtils.clone(request).setPriority(0).putExtra(Request.CYCLE_TRIED_TIMES, 1));
