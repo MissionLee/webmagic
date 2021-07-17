@@ -86,6 +86,7 @@ public class ArtistBookListProcessor extends AbstractPageProcessor {
                 Map<String, Object> bookInfo = bookList.get(i);
                 String bookName = (String) bookInfo.get("name");
                 boolean stored = false;
+                boolean markSkip = false;
                 int storedNum = 0;
                 int bookId = (int) bookInfo.get("id");
                 int postCount = (int) bookInfo.get("visible_post_count");
@@ -104,6 +105,18 @@ public class ArtistBookListProcessor extends AbstractPageProcessor {
                 // 2-连接作者，两个作者实际是同一个，当前用其中一个作者明，从网站搜索到的这个作品，看看这个作者名有没有
                 // 3-book的作者tag里面的作者，book tag里面可能有更多的作者，看看有没有存在更多的作者那里
                 // ==== 1.是否在存储作者
+                if(skipWhileBookIdExits && dataBaseService.bookIdExists(bookId)){
+                    logger.info("数据库已经记录这个book id，非全部更新的模式下，直接跳过这个book");
+
+                    stored = true;
+                    markSkip = true;
+
+                }
+                if(bookId == 1857){
+                    logger.info("现在特定标记跳过 1857 是个copyright的book，由很多作者，但是判断的时候找不到作者");
+                    stored = true;
+                    markSkip = true;
+                }
                 storedNum = diskService.getBookStoredNum(artworkInfo);
                 if (storedNum > 0) {
                     stored = true;
@@ -172,6 +185,11 @@ public class ArtistBookListProcessor extends AbstractPageProcessor {
                 if(stored){
                     // 已经保存了，根据保存数据和配置要求 判断是否下载
                     boolean skip = false;
+                    if(markSkip){
+                        skip = true;
+                        logger.info("作品=特定标记/或非完整模式=为跳过：" + bookId + "_" + bookName);
+
+                    }
                     if(storedNum == postCount){ // 保存完整，跳过下载
                         skip = true;
                         logger.info("作品完整度满[100%]跳过下载：" + bookId + "_" + bookName);

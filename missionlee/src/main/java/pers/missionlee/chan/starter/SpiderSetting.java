@@ -87,6 +87,25 @@ public class SpiderSetting {
     public Map<String,String> siteCookie;
     public Map<String, List<String>> artistRelation;
     public List<String> skipParentPoolId;
+    public boolean skipExistDBBook;
+            public boolean skipNoneArtistBook = false;
+
+    public boolean isSkipExistDBBook() {
+        return skipExistDBBook;
+    }
+
+    public void setSkipExistDBBook(boolean skipExistDBBook) {
+        this.skipExistDBBook = skipExistDBBook;
+    }
+
+    public boolean isSkipNoneArtistBook() {
+        return skipNoneArtistBook;
+    }
+
+    public void setSkipNoneArtistBook(boolean skipNoneArtistBook) {
+        this.skipNoneArtistBook = skipNoneArtistBook;
+    }
+
     public Map<String, String> getSiteCookie() {
         return siteCookie;
     }

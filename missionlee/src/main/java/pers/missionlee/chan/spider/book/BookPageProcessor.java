@@ -294,6 +294,11 @@ public class BookPageProcessor extends AbstractPageProcessor {
         }
         bookInfoMap.put("posts", simplePosts);
         bookInfo.information = JSON.toJSONString(bookInfoMap);
+        if(bookInfo.information.length()>65534){
+            Map<String,String> info = new HashMap<>();
+            info.put("tip","字段长度超过65534");
+            bookInfo.information = JSON.toJSONString(info);
+        }
         try {
 
             dataBaseService.saveBookInfo(bookInfo);

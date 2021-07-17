@@ -7,666 +7,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bffc4871-1ae7-44a5-babd-8de4910d3ca3" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/missionlee_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/missionlee_jar2_nnn.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/startere_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/webmagic_parent_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__cglib_cglib_nodep_2_1_3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_alibaba_fastjson_1_2_28.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_alibaba_fastjson_1_2_56.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_alibaba_fastjson_1_2_76.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_annotations_2_7_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_annotations_2_9_5.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_core_2_7_4.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_core_2_9_5.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_databind_2_7_4.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_databind_2_9_5.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_github_detro_phantomjsdriver_1_2_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_github_dreamhead_moco_core_0_11_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_github_jnr_jffi_1_2_7.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_github_jnr_jffi_native_1_2_7.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_github_jnr_jnr_constants_0_8_5.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_github_jnr_jnr_enxio_0_4.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_github_jnr_jnr_ffi_1_0_7.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_github_jnr_jnr_netdb_1_1_2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_github_jnr_jnr_posix_3_0_1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_github_jnr_jnr_unixsocket_0_3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_github_jnr_jnr_x86asm_1_0_2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_guava_guava_15_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_protobuf_protobuf_java_3_6_1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_headius_invokebinder_1_2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_jayway_jsonpath_json_path_2_4_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_jcraft_jzlib_1_1_2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_martiansoftware_nailgun_server_0_9_1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_cli_commons_cli_1_2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_codec_commons_codec_1_11.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_codec_commons_codec_1_9.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_collections_commons_collections_3_2_2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_io_commons_io_1_3_2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_io_commons_io_2_6.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_logging_commons_logging_1_2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__io_netty_netty_3_5_2_Final.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__io_netty_netty_buffer_4_0_36_Final.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__io_netty_netty_codec_4_0_36_Final.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__io_netty_netty_codec_http_4_0_36_Final.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__io_netty_netty_common_4_0_36_Final.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__io_netty_netty_handler_4_0_36_Final.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__io_netty_netty_transport_4_0_36_Final.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__joda_time_joda_time_2_3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__junit_junit_4_11.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__log4j_log4j_1_2_17.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__mysql_mysql_connector_java_8_0_15.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__net_coobird_thumbnailator_0_4_8.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_dev_jna_jna_3_4_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_dev_jna_platform_3_4_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__net_minidev_accessors_smart_1_2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__net_minidev_json_smart_2_3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__net_sf_saxon_Saxon_HE_9_5_1_1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__net_sourceforge_cssparser_cssparser_0_9_11.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__net_sourceforge_htmlcleaner_htmlcleaner_2_5.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__net_sourceforge_htmlunit_htmlunit_2_13.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__net_sourceforge_htmlunit_htmlunit_core_js_2_13.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__net_sourceforge_nekohtml_nekohtml_1_9_19.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_commons_commons_exec_1_1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_commons_commons_lang3_3_1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_commons_commons_pool2_2_4_2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_httpcomponents_httpclient_4_5_2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_httpcomponents_httpclient_4_5_8.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_httpcomponents_httpcore_4_4_4.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_httpcomponents_httpmime_4_3_1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_logging_log4j_log4j_api_2_10_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_logging_log4j_log4j_core_2_10_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_logging_log4j_log4j_slf4j_impl_2_10_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_assertj_assertj_core_1_5_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_codehaus_groovy_groovy_all_2_1_6.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_eclipse_jetty_jetty_http_8_1_12_v20130726.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_eclipse_jetty_jetty_io_8_1_12_v20130726.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_eclipse_jetty_jetty_util_8_1_12_v20130726.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_eclipse_jetty_jetty_websocket_8_1_12_v20130726.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_freemarker_freemarker_2_3_23.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_hamcrest_hamcrest_core_1_3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jdom_jdom2_2_0_4.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jetbrains_annotations_13_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jetbrains_kotlin_kotlin_stdlib_1_1_2_2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jruby_extras_bytelist_1_0_10.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jruby_jcodings_jcodings_1_0_10.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jruby_joni_joni_2_0_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jruby_jruby_1_7_6.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jruby_jruby_core_1_7_6.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jruby_jruby_stdlib_1_7_6.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jruby_yecht_1_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_json_json_20080701.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jsoup_jsoup_1_10_3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_mockito_mockito_all_1_10_19.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_mybatis_mybatis_3_4_6.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_ow2_asm_asm_4_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_ow2_asm_asm_5_0_4.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_ow2_asm_asm_analysis_4_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_ow2_asm_asm_commons_4_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_ow2_asm_asm_tree_4_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_ow2_asm_asm_util_4_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_python_jython_2_5_3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_api_2_41_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_chrome_driver_2_41_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_firefox_driver_2_41_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_htmlunit_driver_2_41_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_ie_driver_2_41_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_java_2_41_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_remote_driver_2_41_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_safari_driver_2_41_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_support_2_41_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_slf4j_api_1_7_6.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_slf4j_log4j12_1_7_6.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_w3c_css_sac_1_3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_webbitserver_webbit_0_4_14.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_yaml_snakeyaml_1_13.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__redis_clients_jedis_2_9_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__us_codecraft_xsoup_0_3_1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__xalan_serializer_2_7_1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__xalan_xalan_2_7_1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__xerces_xercesImpl_2_11_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__xml_apis_xml_apis_1_4_01.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/classes/artifacts/missionlee_jar2_nnn/missionlee.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/classes/artifacts/startere_jar/missionlee.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/missionlee.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/downloader/CallableHttpRangeDownloader.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/downloader/HCaptchaConnectionFormat.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/pojo/ParentInfo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/parent/ParentListPageProcessor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/src/main/resources/mybatis/mapper/chan-bookparent.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/META-INF/missionlee.kotlin_module" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/log4j2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/mybatis/mapper/chan-artist.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/mybatis/mapper/chan-artwork.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/mybatis/mapper/chan-bookparent.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/mybatis/mapper/chan-common.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/mybatis/mapper/sankaku-det.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/mybatis/mapper/sankaku.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/mybatis/mybatis-config.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/name-change.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/downloader/CallableHttpRangeDownloader.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/downloader/FileDownloader.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/downloader/HCaptchaConnectionFormat.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/pojo/BookInfo.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/pojo/ParentInfo.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/service/DataBaseService$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/service/DataBaseService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/service/DiskService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/spider/AbstractPageProcessor$Target.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/spider/AbstractPageProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/spider/AbstractTagPageProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/spider/ArtistPageProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/spider/ArtworkNumberPageProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/spider/CopyrightPageProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/spider/SinglePageClassifyPageProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/spider/SinglePageProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/spider/StudioPageProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/spider/book/ArtistBookListProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/spider/book/BookFileFormatPageProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/spider/book/BookPageProcessor$FileSubfix.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/spider/book/BookPageProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/spider/parent/ParentListPageProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/starter/SpiderSetting.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/starter/SpiderStarter.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/comprehensive/ComprehensiveDBService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/comprehensive/ComprehensiveDiskService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/comprehensive/ComprehensivePageProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/comprehensive/DownloadType.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/dbbasedsankaku/SankakuDBSourceManager$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/dbbasedsankaku/SankakuDBSourceManager.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/demo/HuaBanMeiNv.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/demo/HuaBanMeiNv2.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/demo/SmartisanCom.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/movetomysql/MoveToMySQL$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/movetomysql/MoveToMySQL$ArtistDown.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/movetomysql/MoveToMySQL$Extractor$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/movetomysql/MoveToMySQL$Extractor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/movetomysql/MoveToMySQL.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/mybatis/MyBatisConfiguration.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/SpecialSpiderManager.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/dao/LevelInfo.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/dir/MkDir$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/dir/MkDir.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/source/AbstractSourceManager.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/source/FakeSourceManager.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/source/SourceManager.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/source/SourceService$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/source/SourceService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/source/artist/ArtistSourceManager.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/source/bookparentsingle/BookParentSingleSourceManager.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/source/official/CopyrightOfficialSourceManager.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/source/series/AbstractCopyRightAndCharacterSourceManager.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/source/series/DOASourceManager.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/source/series/FinalFantasySourceManager.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/source/series/OverwatchSourceManager.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/spider/AbstractSpocessSpider$ListNum.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/spider/AbstractSpocessSpider$Target.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/spider/AbstractSpocessSpider.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/spider/ArtistSpider.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/spider/NumberSpider.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/spider/SeriesSpider.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/spider/book/BookSpider.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/spider/book/ParentSpider.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/spider/book/SingleSpider.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/spider/singlepageclassify/SinglePageClassifySpider.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/task/AbstractTaskController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/task/ArtistTaskController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/task/BookTaskController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/task/FakeTaskController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/task/OfficialTaskController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/task/ParentTaskController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/task/SingleArtworkTaskController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/task/SingleTaskController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/task/TaskController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/task/copyright/AbstractCopyrightAndCharacterTaskController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/task/copyright/DOATaskController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/task/copyright/FinalFantasyTaskController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/task/copyright/OverwatchTaskController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/type/AimType.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/type/WorkMode.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/utlis/Downloader$CallableHttpRangeDownloader.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/utlis/Downloader$CallableStreamDownloader.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/utlis/Downloader.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/utlis/PathUtils$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/utlis/PathUtils.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/utlis/SpiderUtils$OrderType.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/utlis/SpiderUtils.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/pixiv/PixivSpiderManager.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/pixiv/common/Constants.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/pixiv/processor/PixivSpider.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/sankaku/SpiderUtils$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/sankaku/SpiderUtils$RunType.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/sankaku/SpiderUtils$SITE_ORDER_PREFIX.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/sankaku/SpiderUtils.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/sankaku/info/ArtistInfo$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/sankaku/info/ArtistInfo.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/sankaku/info/ArtworkInfo$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/sankaku/info/ArtworkInfo$ARTIST_TYPE.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/sankaku/info/ArtworkInfo$STORE_PLACE.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/sankaku/info/ArtworkInfo.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/sankaku/info/AutoDeduplicatedArrayList.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/sankaku/info/BookParentInfo.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/sankaku/info/SankakuFileUtils$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/sankaku/info/SankakuFileUtils$2.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/sankaku/info/SankakuFileUtils.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/sankaku/info/UpdateInfo.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/sankaku/manager/SourceManager$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/sankaku/manager/SourceManager$2.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/sankaku/manager/SourceManager$3.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/sankaku/manager/SourceManager$4.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/sankaku/manager/SourceManager$5.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/sankaku/manager/SourceManager$6.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/sankaku/manager/SourceManager$7.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/sankaku/manager/SourceManager$PathList.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/sankaku/manager/SourceManager$SourceType.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/sankaku/manager/SourceManager.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/sankaku/manager/SourceSpiderRunner.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/sankaku/manager/SpiderManager.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/sankaku/manager/SpiderTask$TaskType.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/sankaku/manager/SpiderTask.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/sankaku/manager/SpiderTaskFactory.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/sankaku/pageprocessor/AbstractSankakuSpider.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/sankaku/pageprocessor/SankakuDownloadSpider$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/sankaku/pageprocessor/SankakuDownloadSpider$Target.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/sankaku/pageprocessor/SankakuDownloadSpider.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/sankaku/pageprocessor/SankakuNumberSpider.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/statgov/ProvinceCityCounty.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/utils/ChromeBookmarksReader$BookmarkDir.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/utils/ChromeBookmarksReader$BookmarkNode.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/utils/ChromeBookmarksReader$BookmarkRoot.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/utils/ChromeBookmarksReader.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/utils/HttpClientResult.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/utils/HttpClientTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/utils/JsonHttpDownloader.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/utils/TimeLimitedHttpDownloader$CallableInputStreamDownloader.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/utils/TimeLimitedHttpDownloader.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/utils/URLUtils.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/src/META-INF/MANIFEST.MF" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/META-INF/MANIFEST.MF" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/log4j.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/Page.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/Request.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/ResultItems.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/Site$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/Site.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/Spider$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/Spider$Status.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/Spider.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/SpiderListener.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/Task.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/downloader/AbstractDownloader.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/downloader/CustomRedirectStrategy.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/downloader/Downloader.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/downloader/HttpClientDownloader.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/downloader/HttpClientGenerator$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/downloader/HttpClientGenerator$2.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/downloader/HttpClientGenerator.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/downloader/HttpClientRequestContext.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/downloader/HttpUriRequestConverter.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/model/HttpRequestBody$ContentType.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/model/HttpRequestBody.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/pipeline/CollectorPipeline.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/pipeline/ConsolePipeline.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/pipeline/FilePipeline.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/pipeline/Pipeline.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/pipeline/ResultItemsCollectorPipeline.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/processor/PageProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/processor/SimplePageProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/processor/example/BaiduBaikePageProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/processor/example/GithubRepoPageProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/processor/example/ZhihuPageProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/proxy/Proxy.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/proxy/ProxyProvider.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/proxy/SimpleProxyProvider.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/scheduler/DuplicateRemovedScheduler.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/scheduler/MonitorableScheduler.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/scheduler/PriorityScheduler$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/scheduler/PriorityScheduler$2.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/scheduler/PriorityScheduler.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/scheduler/QueueScheduler.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/scheduler/Scheduler.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/scheduler/component/DuplicateRemover.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/scheduler/component/HashSetDuplicateRemover.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/selector/AbstractSelectable.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/selector/AndSelector.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/selector/BaseElementSelector.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/selector/CssSelector.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/selector/ElementSelector.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/selector/Html.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/selector/HtmlNode.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/selector/Json.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/selector/JsonPathSelector.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/selector/LinksSelector.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/selector/OrSelector.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/selector/PlainText.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/selector/RegexResult.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/selector/RegexSelector.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/selector/ReplaceSelector.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/selector/Selectable.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/selector/Selector.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/selector/Selectors.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/selector/SmartContentSelector.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/selector/XpathSelector.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/thread/CountableThreadPool$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/thread/CountableThreadPool.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/utils/CharsetUtils.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/utils/Experimental.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/utils/FilePersistentBase.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/utils/HttpClientUtils.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/utils/HttpConstant$Header.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/utils/HttpConstant$Method.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/utils/HttpConstant$StatusCode.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/utils/HttpConstant.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/utils/NumberUtils.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/utils/ProxyUtils.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/utils/UrlUtils.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/utils/WMCollections.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/html/mock-github.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/log4j.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/HtmlTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/RequestTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/ResultItemsTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/SpiderTest$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/SpiderTest$2.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/SpiderTest$3.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/SpiderTest$4.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/SpiderTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/downloader/HttpClientDownloaderTest$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/downloader/HttpClientDownloaderTest$10.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/downloader/HttpClientDownloaderTest$11.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/downloader/HttpClientDownloaderTest$12.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/downloader/HttpClientDownloaderTest$2.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/downloader/HttpClientDownloaderTest$3.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/downloader/HttpClientDownloaderTest$4.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/downloader/HttpClientDownloaderTest$5.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/downloader/HttpClientDownloaderTest$6.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/downloader/HttpClientDownloaderTest$7.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/downloader/HttpClientDownloaderTest$8.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/downloader/HttpClientDownloaderTest$9.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/downloader/HttpClientDownloaderTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/downloader/HttpUriRequestConverterTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/downloader/MockGithubDownloader.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/downloader/SSLCompatibilityTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/example/GithubRepoPageProcessorTest$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/example/GithubRepoPageProcessorTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/pipeline/FilePipelineTest$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/pipeline/FilePipelineTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/proxy/ProxyTest$Fetch.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/proxy/ProxyTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/proxy/SimpleProxyProviderTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/scheduler/DuplicateRemovedSchedulerTest$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/scheduler/DuplicateRemovedSchedulerTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/scheduler/PrioritySchedulerTest$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/scheduler/PrioritySchedulerTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/selector/ExtractorsTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/selector/JsonPathSelectorTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/selector/JsonTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/selector/LinksSelectorTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/selector/RegexSelectorTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/selector/SelectorTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/target/test-classes/us/codecraft/webmagic/utils/UrlUtilsTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-core/webmagic-core.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/crawl.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/log4j.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/spider-config-draft.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/MultiPageModel.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/SimpleHttpClient.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/configurable/ConfigurablePageProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/configurable/ExpressionType.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/configurable/ExtractRule$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/configurable/ExtractRule.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/downloader/PhantomJSDownloader.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/example/AppStore.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/example/BaiduBaike.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/example/GithubRepo.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/example/GithubRepoApi.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/example/GithubRepoPageMapper.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/example/MonitorExample.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/example/OschinaBlog.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/example/PatternProcessorExample$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/example/PatternProcessorExample$2.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/example/PatternProcessorExample.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/handler/CompositePageProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/handler/CompositePipeline.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/handler/PatternProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/handler/PatternRequestMatcher.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/handler/RequestMatcher$MatchOther.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/handler/RequestMatcher.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/handler/SubPageProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/handler/SubPipeline.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/AfterExtractor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/ConsolePageModelPipeline.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/Extractor$Source.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/Extractor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/FieldExtractor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/HasKey.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/ModelPageProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/ModelPipeline.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/OOSpider.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/PageMapper.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/PageModelCollectorPipeline.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/PageModelExtractor$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/PageModelExtractor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/annotation/ComboExtract$Op.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/annotation/ComboExtract$Source.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/annotation/ComboExtract.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/annotation/ExtractBy$Source.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/annotation/ExtractBy$Type.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/annotation/ExtractBy.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/annotation/ExtractByUrl.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/annotation/Formatter.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/annotation/HelpUrl.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/annotation/TargetUrl.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/BasicTypeFormatter$BooleanFormatter.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/BasicTypeFormatter$ByteFormatter.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/BasicTypeFormatter$CharactorFormatter.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/BasicTypeFormatter$DoubleFormatter.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/BasicTypeFormatter$FloatFormatter.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/BasicTypeFormatter$IntegerFormatter.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/BasicTypeFormatter$LongFormatter.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/BasicTypeFormatter$ShortFormatter.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/BasicTypeFormatter.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/DateFormatter.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/ObjectFormatter.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/ObjectFormatterBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/ObjectFormatters.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/monitor/SpiderMonitor$MonitorSpiderListener.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/monitor/SpiderMonitor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/monitor/SpiderStatus.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/monitor/SpiderStatusMXBean.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/pipeline/CollectorPageModelPipeline.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/pipeline/FilePageModelPipeline.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/pipeline/JsonFilePageModelPipeline.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/pipeline/JsonFilePipeline.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/pipeline/MultiPagePipeline$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/pipeline/MultiPagePipeline.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/pipeline/PageModelPipeline.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/scheduler/BloomFilterDuplicateRemover.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/scheduler/FileCacheQueueScheduler$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/scheduler/FileCacheQueueScheduler$2.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/scheduler/FileCacheQueueScheduler.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/scheduler/RedisPriorityScheduler.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/scheduler/RedisScheduler.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/utils/ClassUtils.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/utils/DoubleKeyMap.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/utils/ExtractorUtils$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/utils/ExtractorUtils.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/utils/IPUtils.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/utils/MultiKeyMapBase.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/utils/RequestUtils.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/html/mock-github.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/html/mock-webmagic.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/json/mock-githubrepo.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/log4j.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/MockPageModelPipeline.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/MockPipeline.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/SimpleHttpClientTest$Weather.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/SimpleHttpClientTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/configurable/ConfigurablePageProcessorTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/downloader/MockGithubDownloader.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/formatter/DateFormatterTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/BaseRepo.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/GithubRepo.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/GithubRepoApi.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/GithubRepoTest$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/GithubRepoTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/ModelPageProcessorTest$MockModel.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/ModelPageProcessorTest$ModelBar.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/ModelPageProcessorTest$ModelFoo.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/ModelPageProcessorTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/PageMapperTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/PageMocker.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/PageModelExtractorTest$ModelCustomList.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/PageModelExtractorTest$ModelDate.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/PageModelExtractorTest$ModelDateList.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/PageModelExtractorTest$ModelDateStr.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/PageModelExtractorTest$ModelInt.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/PageModelExtractorTest$ModelIntList.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/PageModelExtractorTest$ModelJsonStr.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/PageModelExtractorTest$ModelStringList.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/PageModelExtractorTest$ModelUrl.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/PageModelExtractorTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/monitor/CustomSpiderStatus.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/monitor/CustomSpiderStatusMXBean.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/monitor/SeedUrlWithPortTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/monitor/SpiderMonitorTest$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/monitor/SpiderMonitorTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/monitor/TempProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/processor/GithubRepoProcessor$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/processor/GithubRepoProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/scheduler/BloomFilterDuplicateRemoverTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/scheduler/RedisPrioritySchedulerTest$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/scheduler/RedisPrioritySchedulerTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/scheduler/RedisSchedulerTest$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/scheduler/RedisSchedulerTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/utils/IPUtilsTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/utils/RequestUtilsTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-extension/webmagic-extension.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-parent.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/config.ini" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/crawl.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/log4j.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/main/QuickStarter.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/BaiduNews.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/Blog.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/DianpingFtlDataScanner.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/GithubRepo.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/IteyeBlog.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/JokejiModel.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/Kr36NewsModel$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/Kr36NewsModel.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/News163.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/OschinaAnswer.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/OschinaBlog$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/OschinaBlog.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/QQMeishi.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/AlexanderMcqueenGoodsProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/AmanzonPageProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/AngularJSProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/DiandianBlogProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/DiaoyuwengProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/F58PageProcesser.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/GithubRepo.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/GithubRepoPageProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/HuxiuProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/InfoQMiniBookProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/IteyeBlogProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/KaichibaProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/MamacnPageProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/MeicanProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/NjuBBSProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/PhantomJSPageProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/QzoneBlogProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/SinaBlogProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/TianyaPageProcesser.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/ZhihuPageProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/formatter/StringTemplateFormatter.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/pipeline/OneFilePipeline.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/pipeline/ReplacePipeline.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/scheduler/DelayQueueScheduler$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/scheduler/DelayQueueScheduler$RequestWrapper.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/scheduler/DelayQueueScheduler.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/scheduler/LevelLimitScheduler.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/scheduler/ZipCodePageProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/test-classes/us/codecraft/webmagic/SpiderTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/test-classes/us/codecraft/webmagic/model/ProcessorBenchmark.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/test-classes/us/codecraft/webmagic/processor/SinablogProcessorTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/target/test-classes/us/codecraft/webmagic/samples/scheduler/DelayQueueSchedulerTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-samples/webmagic-samples.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-saxon/target/classes/us/codecraft/webmagic/selector/Xpath2Selector$XPath2NamespaceContext.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-saxon/target/classes/us/codecraft/webmagic/selector/Xpath2Selector.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-saxon/target/test-classes/us/codecraft/webmagic/selector/XpathSelectorTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-saxon/webmagic-saxon.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-scripts/target/classes/GithubRepoPageProcessor$Companion.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-scripts/target/classes/GithubRepoPageProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-scripts/target/classes/META-INF/webmagic-scripts.kotlin_module" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-scripts/target/classes/js/defines.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-scripts/target/classes/js/github.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-scripts/target/classes/js/oschina.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-scripts/target/classes/log4j.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-scripts/target/classes/python/defines.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-scripts/target/classes/python/oschina.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-scripts/target/classes/ruby/defines.rb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-scripts/target/classes/ruby/github.rb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-scripts/target/classes/ruby/oschina.rb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-scripts/target/classes/us/codecraft/webmagic/scripts/Language.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-scripts/target/classes/us/codecraft/webmagic/scripts/ScriptConsole$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-scripts/target/classes/us/codecraft/webmagic/scripts/ScriptConsole$Params.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-scripts/target/classes/us/codecraft/webmagic/scripts/ScriptConsole.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-scripts/target/classes/us/codecraft/webmagic/scripts/ScriptEnginePool.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-scripts/target/classes/us/codecraft/webmagic/scripts/ScriptProcessor$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-scripts/target/classes/us/codecraft/webmagic/scripts/ScriptProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-scripts/target/classes/us/codecraft/webmagic/scripts/ScriptProcessorBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-scripts/target/test-classes/us/codecraft/webmagic/scripts/ScriptProcessorTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-scripts/webmagic-scripts.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-selenium/target/classes/us/codecraft/webmagic/downloader/selenium/SeleniumDownloader.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-selenium/target/classes/us/codecraft/webmagic/downloader/selenium/WebDriverPool.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-selenium/target/test-classes/config.ini" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-selenium/target/test-classes/us/codecraft/webmagic/downloader/SeleniumTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-selenium/target/test-classes/us/codecraft/webmagic/downloader/selenium/SeleniumDownloaderTest$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-selenium/target/test-classes/us/codecraft/webmagic/downloader/selenium/SeleniumDownloaderTest$2.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-selenium/target/test-classes/us/codecraft/webmagic/downloader/selenium/SeleniumDownloaderTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-selenium/target/test-classes/us/codecraft/webmagic/downloader/selenium/WebDriverPoolTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-selenium/target/test-classes/us/codecraft/webmagic/samples/GooglePlayProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-selenium/target/test-classes/us/codecraft/webmagic/samples/HuabanProcessor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webmagic-selenium/webmagic-selenium.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/downloader/FileDownloader.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/downloader/FileDownloader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/pojo/BookInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/pojo/BookInfo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/service/DataBaseService.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/service/DataBaseService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/service/DiskService.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/service/DiskService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/AbstractPageProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/AbstractPageProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/AbstractTagPageProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/AbstractTagPageProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/ArtistPageProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/ArtistPageProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/CopyrightPageProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/CopyrightPageProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/SinglePageClassifyPageProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/SinglePageClassifyPageProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/SinglePageProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/SinglePageProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/StudioPageProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/StudioPageProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/artifacts/missionlee_jar2_nnn/missionlee.jar" beforeDir="false" afterPath="$PROJECT_DIR$/classes/artifacts/missionlee_jar2_nnn/missionlee.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/book/ArtistBookListProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/book/ArtistBookListProcessor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/book/BookPageProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/book/BookPageProcessor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/starter/SpiderSetting.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/starter/SpiderSetting.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/starter/SpiderStarter.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/starter/SpiderStarter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/webmagic/spider/newsankaku/utlis/Downloader.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/webmagic/spider/newsankaku/utlis/Downloader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/webmagic/spider/newsankaku/utlis/SpiderUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/webmagic/spider/newsankaku/utlis/SpiderUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/webmagic/spider/sankaku/SpiderUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/webmagic/spider/sankaku/SpiderUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/webmagic/spider/sankaku/info/ArtworkInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/webmagic/spider/sankaku/info/ArtworkInfo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/resources/mybatis/mapper/chan-artist.xml" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/resources/mybatis/mapper/chan-artist.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/resources/mybatis/mapper/chan-artwork.xml" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/resources/mybatis/mapper/chan-artwork.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/resources/mybatis/mapper/chan-book.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/resources/mybatis/mybatis-config.xml" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/resources/mybatis/mybatis-config.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webmagic-core/src/main/java/us/codecraft/webmagic/Site.java" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-core/src/main/java/us/codecraft/webmagic/Site.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webmagic-core/src/main/java/us/codecraft/webmagic/Spider.java" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-core/src/main/java/us/codecraft/webmagic/Spider.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webmagic-core/src/main/java/us/codecraft/webmagic/downloader/AbstractDownloader.java" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-core/src/main/java/us/codecraft/webmagic/downloader/AbstractDownloader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webmagic-core/src/main/java/us/codecraft/webmagic/downloader/HttpClientDownloader.java" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-core/src/main/java/us/codecraft/webmagic/downloader/HttpClientDownloader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/spider/book/ArtistBookListProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/spider/book/ArtistBookListProcessor.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -1107,7 +454,9 @@
       <workItem from="1625744552372" duration="3020000" />
       <workItem from="1625910891662" duration="6931000" />
       <workItem from="1626000086547" duration="3172000" />
-      <workItem from="1626183582627" duration="692000" />
+      <workItem from="1626183582627" duration="2475000" />
+      <workItem from="1626437522518" duration="2378000" />
+      <workItem from="1626492033617" duration="1176000" />
     </task>
     <task id="LOCAL-00001" summary="SpiderConfig">
       <created>1555292406689</created>
@@ -1263,7 +612,14 @@
       <option name="project" value="LOCAL" />
       <updated>1619003125306</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="2021 07 13 集体上传">
+      <created>1626185065351</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1626185065351</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1283,13 +639,14 @@
     <MESSAGE value="Merge branch 'managed' of https://github.com/MissionLee/webmagic into managed&#10;&#10;# Conflicts:&#10;#&#9;missionlee/src/main/java/pers/missionlee/webmagic/spider/sankaku/manager/SpiderManager.java" />
     <MESSAGE value="Merge branch 'managed' of https://github.com/MissionLee/webmagic into managed&#10;&#10;# Conflicts:&#10;#&#9;missionlee/src/main/java/pers/missionlee/webmagic/spider/sankaku/manager/SpiderManager.java&#10;#&#9;missionlee/src/main/resources/mybatis/mybatis-config.xml" />
     <MESSAGE value="新版本 基本完成，留档一次" />
-    <option name="LAST_COMMIT_MESSAGE" value="新版本 基本完成，留档一次" />
+    <MESSAGE value="2021 07 13 集体上传" />
+    <option name="LAST_COMMIT_MESSAGE" value="2021 07 13 集体上传" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="758" y="483" key="#com.intellij.ide.util.MemberChooser" timestamp="1626001025109">
+    <state x="758" y="483" key="#com.intellij.ide.util.MemberChooser" timestamp="1626492245203">
       <screen x="0" y="0" width="2048" height="1112" />
     </state>
-    <state x="758" y="483" key="#com.intellij.ide.util.MemberChooser/0.0.2048.1112@0.0.2048.1112" timestamp="1626001025109" />
+    <state x="758" y="483" key="#com.intellij.ide.util.MemberChooser/0.0.2048.1112@0.0.2048.1112" timestamp="1626492245203" />
     <state x="947" y="770" key="#com.intellij.ide.util.MemberChooser/0.0.2560.1400@0.0.2560.1400" timestamp="1623626415614" />
     <state x="579" y="459" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1620184497221">
       <screen x="0" y="0" width="2560" height="1400" />
@@ -1300,10 +657,10 @@
     </state>
     <state x="0" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.2048.1112@0.0.2048.1112" timestamp="1624101122668" />
     <state x="0" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1618719037790" />
-    <state x="451" y="185" key="CommitChangelistDialog2" timestamp="1626184921920">
+    <state x="451" y="185" key="CommitChangelistDialog2" timestamp="1626185044279">
       <screen x="0" y="0" width="2048" height="1112" />
     </state>
-    <state x="451" y="185" key="CommitChangelistDialog2/0.0.2048.1112@0.0.2048.1112" timestamp="1626184921920" />
+    <state x="451" y="185" key="CommitChangelistDialog2/0.0.2048.1112@0.0.2048.1112" timestamp="1626185044279" />
     <state x="564" y="233" key="CommitChangelistDialog2/0.0.2560.1400@0.0.2560.1400" timestamp="1619003114230" />
     <state x="1442" y="450" width="440" height="487" key="FileChooserDialogImpl" timestamp="1618843939037">
       <screen x="0" y="0" width="2560" height="1400" />
@@ -1345,14 +702,15 @@
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="329" y="252" width="1386" height="849" key="SettingsEditor/0.0.2560.1400@0.0.2560.1400" timestamp="1620184517224" />
-    <state x="872" y="434" key="Vcs.Push.Dialog.v2" timestamp="1619003132296">
-      <screen x="0" y="0" width="2560" height="1400" />
-    </state>
-    <state x="872" y="434" key="Vcs.Push.Dialog.v2/0.0.2560.1400@0.0.2560.1400" timestamp="1619003132296" />
-    <state x="688" y="368" key="com.intellij.ide.util.TipDialog" timestamp="1626183583161">
+    <state x="698" y="345" key="Vcs.Push.Dialog.v2" timestamp="1626520213248">
       <screen x="0" y="0" width="2048" height="1112" />
     </state>
-    <state x="688" y="368" key="com.intellij.ide.util.TipDialog/0.0.2048.1112@0.0.2048.1112" timestamp="1626183583161" />
+    <state x="698" y="345" key="Vcs.Push.Dialog.v2/0.0.2048.1112@0.0.2048.1112" timestamp="1626520213248" />
+    <state x="872" y="434" key="Vcs.Push.Dialog.v2/0.0.2560.1400@0.0.2560.1400" timestamp="1619003132296" />
+    <state x="688" y="368" key="com.intellij.ide.util.TipDialog" timestamp="1626520203754">
+      <screen x="0" y="0" width="2048" height="1112" />
+    </state>
+    <state x="688" y="368" key="com.intellij.ide.util.TipDialog/0.0.2048.1112@0.0.2048.1112" timestamp="1626520203754" />
     <state x="860" y="463" key="com.intellij.ide.util.TipDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1623626353568" />
     <state x="1010" y="470" key="extract.method.dialog" timestamp="1618490711492">
       <screen x="0" y="0" width="2560" height="1400" />

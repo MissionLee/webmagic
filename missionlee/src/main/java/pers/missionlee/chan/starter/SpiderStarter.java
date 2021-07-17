@@ -681,7 +681,7 @@ public class SpiderStarter {
         List<String> bookUrl = new ArrayList<>();
         ArtistBookListProcessor processor = new ArtistBookListProcessor(
                 bookUrl, false, dataBaseService, diskService,
-                spiderSetting.bookSkipPercent, true,
+                spiderSetting.bookSkipPercent, spiderSetting.skipExistDBBook,
                 spiderSetting.skipBookLostPage,relName
         );
         Spider.create(processor).addUrl(searchUrl).run();
