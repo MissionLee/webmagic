@@ -10,10 +10,12 @@ import pers.missionlee.chan.downloader.FileDownloader;
 import pers.missionlee.chan.downloader.HCaptchaConnectionFormat;
 import pers.missionlee.chan.service.DataBaseService;
 import pers.missionlee.chan.service.DiskService;
+import pers.missionlee.chan.service.KeepDiskAlive;
 import pers.missionlee.chan.spider.*;
 import pers.missionlee.chan.spider.book.ArtistBookListProcessor;
 import pers.missionlee.chan.spider.book.BookPageProcessor;
 import pers.missionlee.chan.spider.parent.ParentListPageProcessor;
+import pers.missionlee.webmagic.spider.newsankaku.utlis.PathUtils;
 import pers.missionlee.webmagic.spider.newsankaku.utlis.SpiderUtils;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 import pers.missionlee.webmagic.utils.ChromeBookmarksReader;
@@ -71,7 +73,7 @@ public class SpiderStarter {
 
     }
 
-    public void parentBookByLevel(String level) {
+    public void parentByLevel(String level) {
         voiceList.addAll(Arrays.asList(spiderSetting.voiceActor));
         voiceList.addAll(Arrays.asList(spiderSetting.audioDesign));
         // TODO: 4/27/2021  下载文件 403 没想出来怎么办 先让代码跑下面的
@@ -140,6 +142,7 @@ public class SpiderStarter {
     }
 
     public void downloadSingleFromChromePath(String pathName) {
+        System.out.println("处理single页面： "+pathName);
         // 1------获取想要下载的 url 例如  san10
         List<Map> urls = reader.getBookMarkListByDirName(pathName);
 
@@ -257,7 +260,7 @@ public class SpiderStarter {
             String srcPath = diskService.getCommonArtistParentPath(name, "1.jpg");
             if (!srcPath.contains("V-8-VOICE")) {
                 try {
-                    diskService.moveAllSubFiles(srcPath, "H://CHAN-ARTIST-3D/V-8-VOICE/" + pathName);
+                    diskService.moveAllSubFiles(srcPath, PathUtils.buildPath(spiderSetting.voiceActorPath,pathName));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -325,6 +328,19 @@ public class SpiderStarter {
     }
 
     public void start() throws UnsupportedEncodingException {
+//        downloadBookForceArtist("azto dio","https://beta.sankakucomplex.com/books/393904");
+        if(this.spiderSetting.needKeepDiskAlive){
+            KeepDiskAlive.keepAlive(this.spiderSetting.keepAlivePath,logger);
+        }
+        int sleep = spiderSetting.sleep;
+        try {
+            System.out.println("sleep:10分钟 * "+spiderSetting.sleep);
+            Thread.sleep(1000 * 60 *20 *sleep);
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        FileDownloader.blockSize = spiderSetting.blockSize;
         String[] works = this.spiderSetting.works;
         for (int i = 0; i < works.length; i++) {
             if (works[i].contains("-") && !works[i].endsWith("-")) {
@@ -392,22 +408,51 @@ public class SpiderStarter {
                             diskService.findArtistUnTargeted(dataBaseService);
                             logger.info("完毕");
                             sleep();
+                        } else if(8 == mode){
+
                         }
                     }
                     break;
                     case "a": {
                         logger.info("更改了几个地方，取消了AbstractProcessor 下载 bookProcessor下载 parnent下载");
-                        parentBookByLevel(workParam);
+                        parentByLevel(workParam);
                     }
+                    break;
                     case "b": {
                         downloadSingleFromChromePath(workParam);
                     }
+                    break;
                     case "c": {
                         dealDel(workParam);
                     }
+                    break;
                     case "d":{
                         updateBookByLevel(workParam);
                     }
+                    break;
+                    case "e":{
+                        updateChosenFolder(workParam);
+                        onlyUpdateChosenFolder = false;
+                    }
+                    break;
+                    case "f":{
+                        autoUpdateCopyright();
+                    }
+                    break;
+//                    case "g":{
+//                        downloadStudio(workParam);
+//                    }
+//                    break;
+//                    case "h":{
+//                        autoUpdateStudio();
+//                    }
+//                    break;
+//                    case "i":{
+//                        downloadTag(workParam);
+//                    };
+//                    case "j":{
+//                        autoUpdateTag();
+//                    }
                     case "auto": {
                         autoRun();
                     }
@@ -426,13 +471,18 @@ public class SpiderStarter {
 
     public void initSpecialNames() throws IOException {
         File nameFile = new File(this.spiderSetting.namePairs);
-        String nameString = FileUtils.readFileToString(nameFile, "UTF8");
-        String[] pairs = nameString.split("\\r\\n");
-        for (int i = 0; i < pairs.length; i++) {
-            if (!pairs[i].startsWith("#")) {
-                specialName.put(pairs[i].split("~")[0], pairs[i].split("~")[1]);
+        if(nameFile.exists()){
+            String nameString = FileUtils.readFileToString(nameFile, "UTF8");
+            String[] pairs = nameString.split("\\r\\n");
+            for (int i = 0; i < pairs.length; i++) {
+                if (!pairs[i].startsWith("#")) {
+                    specialName.put(pairs[i].split("~")[0], pairs[i].split("~")[1]);
+                }
             }
+        }else{
+
         }
+
     }
 
     public ChromeBookmarksReader reader;
@@ -488,15 +538,15 @@ public class SpiderStarter {
             String picPath = diskService.getParentPath(artworkInfo, "", artworkInfo.storePlace);
             artworkInfo.fileName = "1.mp4";
             String vidPath = diskService.getParentPath(artworkInfo, "", artworkInfo.storePlace);
-            if (new File(picPath).exists() || new File(vidPath).exists()) {
+            if (dataBaseService.checkArtistIsTarget(artistName)||
+                    new File(picPath).exists() || new File(vidPath).exists()) {
                 logger.info("作者：" + artistName + " 已经下载过了");
-                dataBaseService.touchArtist(artistName, System.currentTimeMillis());
             } else {
                 logger.info("启动下载[Artist]：" + artistName);
                 // 遍历现有文件目录，如果没有这个作者，那么下载这个作者
                 downloadArtist(artistName, false);
-                dataBaseService.touchArtist(artistName, System.currentTimeMillis());
             }
+                dataBaseService.touchArtist(artistName, System.currentTimeMillis());
         }
 
 //        SinglePageClassifyPageProcessor singlePageClassifyPageProcessor =
@@ -615,7 +665,9 @@ public class SpiderStarter {
                     String[] urls ;
                     if (spiderSetting.downloadAllTryBest) {
                         urls = SpiderUtils.getStartUrlsTryBest(number, keys);
-                    } else {
+                    } else if(spiderSetting.updateByDateBest){
+                        urls = SpiderUtils.getStartUrlsDateBest(number,keys);
+                    }else{
                         urls = SpiderUtils.getStartUrls(number, keys);
                     }
                     ArtistPageProcessor pageProcessor =
@@ -630,40 +682,83 @@ public class SpiderStarter {
             }
         }
     }
+    boolean onlyUpdateChosenFolder = false;
+    public void updateChosenFolder(String level){
+        onlyUpdateChosenFolder = true;
+        updateArtistByLevel(level);
 
-
+    }
     // 根据等级更新作者
     public void updateArtistByLevel(String level) {
         int lv = Integer.valueOf(level);
+        String[] chosenFolder = spiderSetting.updateChosenFolder;
+        for (int i = 0; i < chosenFolder.length ; i++) {
+            System.out.println(chosenFolder[i]);
+        }
+
         List<String> artists = dataBaseService.getArtistListByLevel(lv, !spiderSetting.forceUpdate);
         artists.forEach((String name) -> {
-            int downloaded = downloadArtist(name, true);
-            int times = 50;
-            boolean doUpdate = true;
-            if (lv >= 5) {
-                doUpdate = false;
-            } else if (lv == 4) {
-                times = 360;
-            } else if (lv == 3) {
-                times = 180;
-            } else if (lv == 2) {
-                times = 90;
-            } else if (lv == 1 && downloaded > 0) {
-                times = 30; // 1级 有更新 20 天更
-            } else if (lv == 0) {
-                if (downloaded == 0)
-                    times = 30; // 0 级本次没更新下次 30天更新
-                else times = 15; // 0 级别 本次有个更新，下次 15天更新
+            boolean update = true;
+            if(onlyUpdateChosenFolder){
+                update =false;
+                String parentPath = diskService.getCommonArtistParentPath(name,"1.jpg");
+                System.out.println(parentPath);
+                for (int i = 0; i < chosenFolder.length; i++) {
+                    if(parentPath.contains(chosenFolder[i])){
+                        update = true;
+                    }
+                }
             }
-            if (doUpdate) {
-                long nextUpdateTime = System.currentTimeMillis() + times * 24 * 60 * 60 * 1000L;
-                dataBaseService.touchArtist(name, nextUpdateTime);
+            if(update){
+                int downloaded = downloadArtist(name, true);
+                if(spiderSetting.autoParentWhileUpdate && downloaded>0 ){
+                    boolean sblp = spiderSetting.skipBookLostPage;
+                    boolean skedbb = spiderSetting.skipExistDBBook;
+                    spiderSetting.skipBookLostPage = true;
+                    if(lv<=1){
+                        spiderSetting.skipBookLostPage = false;
+                    }
+                    spiderSetting.skipExistDBBook = true;
+                    downloadArtistBook(name);
+                    downloadArtistParent(name);
+                    diskService.cleanArtistBookParentBases(name);
+                    spiderSetting.skipBookLostPage = sblp;
+                    spiderSetting.skipExistDBBook = skedbb;
+                }
+                int times = 50;
+                boolean doUpdate = true;
+                if (lv >= 5) {
+                    doUpdate = false;
+                } else if (lv == 4) {
+                    times = 360;
+                } else if (lv == 3) {
+                    times = 180;
+                } else if (lv == 2) {
+                    times = 90;
+                } else if (lv == 1 && downloaded > 0) {
+                    times = 30; // 1级 有更新 20 天更
+                } else if (lv == 0) {
+                    if (downloaded == 0)
+                        times = 30; // 0 级本次没更新下次 30天更新
+                    else times = 15; // 0 级别 本次有个更新，下次 15天更新
+                }
+                if (doUpdate) {
+                    long nextUpdateTime = System.currentTimeMillis() + times * 24 * 60 * 60 * 1000L;
+                    dataBaseService.touchArtist(name, nextUpdateTime);
 
+                }
+                diskService.touchArtist(name);
             }
-            diskService.touchArtist(name);
+
 
 
         });
+        logger.info("等级"+level+"更新完成");
+        try {
+            Thread.sleep(30000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
     public void updateBookByLevel(String level){
         int lv = Integer.valueOf(level);
@@ -731,6 +826,7 @@ public class SpiderStarter {
     public void downloadArtistParent(String name) {
         ParentListPageProcessor parentListPageProcessor = new ParentListPageProcessor(spiderSetting.skipParentPoolId,false, name, dataBaseService, diskService,spiderSetting);
         parentListPageProcessor.start();
+        diskService.cleanArtistBookParentBases(name);
     }
 
     // Single 部分 ========================================
@@ -755,7 +851,12 @@ public class SpiderStarter {
     public void downloadBookByBookChildPageUrl(String url) {
 
     }
-
+    public void downloadBookForceArtist(String name,String url){
+        // TODO: 2021/8/29  强制把某个 book 下载到某个作者名下
+        BookPageProcessor bookPageProcessor = new BookPageProcessor(name,false,dataBaseService,diskService,false,spiderSetting);
+        bookPageProcessor.flexSite = BookPageProcessor.site;
+        Spider.create(bookPageProcessor).addUrl(url).thread(1).run();
+    }
     public void downloadCopyrightOfficial(String copyrightName) {
         String[] keys = new String[2];
         keys[0] = copyrightName;
@@ -783,9 +884,23 @@ public class SpiderStarter {
         String startUrl = SpiderUtils.getUpdateStartUrl(copyright,"official art");
         Spider.create(pageProcessor).thread(spiderSetting.threadNum).addUrl(startUrl).run();
     }
+    public void autoUpdateCopyright(){
+        File copyrightBase = new File(spiderSetting.copyrightBase);
+        String[] copyrights = copyrightBase.list();
+        for (int i = 0; i < copyrights.length; i++) {
+            updateCopyrightOfficial(copyrights[i]);
+        }
+    }
+    public void aaa(){
+        downloadBookByBookChildPageUrl("https://beta.sankakucomplex.com/books/393651");
 
-    public static void main(String[] args) {
+    }
+    public static void main(String[] args) throws InterruptedException {
+
+        args = new String[1];
+        args[0] = "F:/new-setting.json";
         try {
+//            Thread.sleep(1000*60*30*3);
             if (args.length == 1) {
                 SpiderStarter starter = new SpiderStarter(args[0]);
                 starter.start();
@@ -800,4 +915,6 @@ public class SpiderStarter {
             }
         }
     }
+
+
 }

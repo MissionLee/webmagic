@@ -84,11 +84,14 @@ public class ArtistPageProcessor extends AbstractTagPageProcessor {
                 sleep(2);
             } else {
                 // 没开启auto next page 可能是 强制下载全部文件，
-                sleep(5);
+                sleep(8);
             }
 //            int added = extractUrlFromListPage(page);
             int added = extractUrlFromListPageWithFileNameFilter(page);
             if (added > 0 && autoNextPage) {
+                if(spiderSetting.forceNew){
+                    sleep(5);
+                }
                 if (onlyTryTen) {
                     logger.info("作品试下载功能启动（每个作者尝试下载10个作品）");
                     if (toBeDownloadSanCodes.size() < 5)
@@ -118,6 +121,7 @@ public class ArtistPageProcessor extends AbstractTagPageProcessor {
                 if (download) {
                     dataBaseService.saveArtworkInfo(artworkInfo);
                     downloaded++;
+                    logger.info("["+downloaded+"/"+toBeDownloadSanCodes.size()+"]");
                 }
             }
 

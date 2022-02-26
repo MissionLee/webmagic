@@ -50,8 +50,9 @@ public class HCaptchaConnectionFormat {
         connection.setRequestProperty("sec-fetch-site","same-site");
 //        connection.setRequestProperty("sec-fetch-user","?1");
 //        connection.setRequestProperty("upgrade-insecure-requests","1");
-        connection.setConnectTimeout(10000);
-        connection.setReadTimeout(20000);
+        connection.setConnectTimeout(60000);
+        connection.setReadTimeout(60000);
+        System.out.println("连接超时和读取超时都改成了60s，网络环境太差了");
         connection.setRequestProperty("referer", referer);
         connection.setRequestProperty("User-Agent", User_agent);
         connection.setRequestProperty("Cookie", cookieString);

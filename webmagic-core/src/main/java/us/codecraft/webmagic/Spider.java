@@ -304,7 +304,7 @@ public class Spider implements Runnable, Task {
         checkRunningStat(); // 检查爬虫的运行状态，已经运行这里会报错
         initComponent();// 检查downloader之类的组件，没有的话就设置默认的，外面传递的线程数就是 downloader的线程数
 
-        logger.info("Spider {} started!",getUUID());
+        logger.info("Spider {} started!", getUUID());
         while (!Thread.currentThread().isInterrupted() && stat.get() == STAT_RUNNING) {
             // 从队列里面取一个 Request  我们使用addUrl 方法就是把 url 包装成 request 放入 scheduler中
             // 另外，把url放入scheduler的同时会记录这个URL属于哪个 spider，取得时候也要对应取
@@ -414,7 +414,7 @@ public class Spider implements Runnable, Task {
 
     private void processRequest(Request request) {
         Page page = downloader.download(request, this);// 访问 request url
-        if (page.isDownloadSuccess()){
+        if (page.isDownloadSuccess()) {
             onDownloadSuccess(request, page);
         } else {
             onDownloaderFail(request);
@@ -422,7 +422,7 @@ public class Spider implements Runnable, Task {
     }
 
     private void onDownloadSuccess(Request request, Page page) {
-        if (site.getAcceptStatCode().contains(page.getStatusCode())){
+        if (site.getAcceptStatCode().contains(page.getStatusCode())) {
             pageProcessor.process(page);
             extractAndAddRequests(page, spawnUrl);
             if (!page.getResultItems().isSkip()) {
@@ -430,14 +430,26 @@ public class Spider implements Runnable, Task {
                     pipeline.process(page.getResultItems(), this);
                 }
             }
+        } else if (page.getStatusCode() == 429 || page.getStatusCode() == 502) {
+            String url = request.getUrl();
+            if (page.getStatusCode() == 429) {
+                logger.info("出现429 "+url);
+                sleep(180 * 1000);
+            } else {
+                logger.info("出现502 "+url);
+                sleep(5 * 1000);
+            }
+
+            page.addTargetRequest(request.getUrl());
+            extractAndAddRequests(page, spawnUrl);
+            if (!page.getResultItems().isSkip()) {
+                for (Pipeline pipeline : pipelines) {
+                    pipeline.process(page.getResultItems(), this);
+                }
+            }
+
         } else {
             logger.info("page status code error, page {} , code: {}", request.getUrl(), page.getStatusCode());
-            System.out.println("LMS 改变源码：Spider#onDownloadSuccess 436 ~440 行,如果下载时候 status code 为 429 访问过多，那么重新把页面放回下载队列");
-            if(page.getStatusCode() == 429){
-//                sleep(30000);
-                pageProcessor.process(page);
-            }
-//            page.addTargetRequest(request);
         }
         sleep(site.getSleepTime());
         return;
@@ -471,7 +483,7 @@ public class Spider implements Runnable, Task {
         try {
             Thread.sleep(time);
         } catch (InterruptedException e) {
-            logger.error("Thread interrupted when sleep",e);
+            logger.error("Thread interrupted when sleep", e);
         }
     }
 
@@ -520,13 +532,13 @@ public class Spider implements Runnable, Task {
      * Download urls synchronizing.
      *
      * @param urls urls
-     * @param <T> type of process result
+     * @param <T>  type of process result
      * @return list downloaded
      */
     public <T> List<T> getAll(Collection<String> urls) {
         destroyWhenExit = false;
         spawnUrl = false;
-        if (startRequests!=null){
+        if (startRequests != null) {
             startRequests.clear();
         }
         for (Request request : UrlUtils.convertToRequests(urls)) {
@@ -623,7 +635,7 @@ public class Spider implements Runnable, Task {
      * start with more than one threads
      *
      * @param executorService executorService to run the spider
-     * @param threadNum threadNum
+     * @param threadNum       threadNum
      * @return this
      */
     public Spider thread(ExecutorService executorService, int threadNum) {

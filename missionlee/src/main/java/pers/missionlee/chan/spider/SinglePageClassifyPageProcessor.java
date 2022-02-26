@@ -90,6 +90,7 @@ public class SinglePageClassifyPageProcessor extends AbstractPageProcessor {
                 artworkInfo.isSingle = true;
                 artworkInfo.PBPrefix = "B";
                 artworkInfo.fileSaveName = artworkInfo.fileName;
+                artworkInfo.aimName="none_artist";
                 boolean download = downloadAndSaveFileFromShowPage(target, artworkInfo, page);
                 if (download) {
                     dataBaseService.saveArtworkInfo(artworkInfo);

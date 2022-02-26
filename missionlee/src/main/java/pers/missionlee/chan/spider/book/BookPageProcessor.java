@@ -323,8 +323,11 @@ public class BookPageProcessor extends AbstractPageProcessor {
 
         if (this.filePath.containsKey(filename)) {
             String nowPath = this.filePath.get(filename);
+            if(nowPath.contains("del")){
+                return false;
+            }
             String nowName = nowPath.substring(nowPath.lastIndexOf("/") + 1);
-            if ( nowName.contains("_")) {
+            if ( nowName.contains("_") ) {
                 FileUtils.copyFile(new File(nowPath), new File(bookPath + fileSaveName));
             logger.info("当前目标在其他作品（或pic/vid）中出现，已经 复制 完成 "+ bookPath+"    " + filename);
             } else {

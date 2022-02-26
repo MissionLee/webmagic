@@ -71,18 +71,15 @@ public abstract class AbstractPageProcessor implements PageProcessor {
     }
 
     public boolean processCode429Page(Page page) {
-        if (page.getStatusCode() == 429) {
-            try {
-                logger.info("触发429等待机制：180s");
-                Thread.sleep(180000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            page.addTargetRequest(page.getUrl().toString());
-            return false;
-        }
+        // TODO: 2021/9/19 内置到了  Spider 里面 
+//        if (page.getStatusCode() == 429 || page.getStatusCode() == 502) {
+//            logger.info("触发429 / 502 返回机制");
+//            page.addTargetRequest(page.getUrl().toString());
+//            return false;
+//        }
         return true;
     }
+
     public static String unicodeToString(String str) {
         Pattern pattern = Pattern.compile("(\\\\u(\\p{XDigit}{4}))");
         Matcher matcher = pattern.matcher(str);
@@ -93,6 +90,7 @@ public abstract class AbstractPageProcessor implements PageProcessor {
         }
         return str;
     }
+
     public Map<String, Object> getJsonStringFromRestPage(Page page) {
 //        String html = page.getHtml().$("body").all().get(0).replaceAll("\n", "").replaceAll(" ", "");
 //        String data = SpiderUtils.extractTag(html);
@@ -111,12 +109,15 @@ public abstract class AbstractPageProcessor implements PageProcessor {
 //            e.printStackTrace();
 //        }
 //        return (Map<String, Object>) JSON.parse(data);
-        return (Map<String, Object>)JSON.parse(page.getJson().toString());
+        return (Map<String, Object>) JSON.parse(page.getJson().toString());
     }
 
     public boolean downloadAndSaveFileFromShowPage(AbstractPageProcessor.Target target, ArtworkInfo artworkInfo, Page page) {
-        String med = artworkInfo.getFileName().substring(0,artworkInfo.getFileName().indexOf("."));
-
+        String med = artworkInfo.getFileName().substring(0, artworkInfo.getFileName().indexOf("."));
+//        if(dataBaseService.sanCodeExist(artworkInfo.sanCode)){
+//            logger.info("sanCode 存在-跳过");
+//            return true;
+//        }
         if (diskService.copyFileFromRelatedArtist(artworkInfo)) {
             //  因为 book 或者 parent之类的，为了保证完整性，不能因为
             //  别的地方有就不下载了，所以从不妙目录复制文件
@@ -297,7 +298,7 @@ public abstract class AbstractPageProcessor implements PageProcessor {
 
     public static void main(String[] args) {
         String x = "1qwerq.sadfa";
-        System.out.println(x.substring(0,x.indexOf(".")));
+        System.out.println(x.substring(0, x.indexOf(".")));
     }
 
 }

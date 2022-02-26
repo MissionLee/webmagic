@@ -235,12 +235,19 @@ public class DataBaseService {
             artworkInfoMap.put("postDate", ar.getPostDate());
             artworkInfoMap.put("rating", ar.getRating());
             artworkInfoMap.put("resolutionRatio", ar.getResolutionRatio());
-            artworkInfoMap.put("status", 1);
-            artworkInfoMap.put("createTime", createTime);
-            // update time 省略
             artworkInfoMap.put("information", ar.toString());
+            logger.warn("DataBaseService#239 为了节省数据库开销，将很多信息类字段设置为null");
+            artworkInfoMap.put("fileSize", null);
+            artworkInfoMap.put("fileFormat", null);
+            artworkInfoMap.put("relativePath", null);
+            artworkInfoMap.put("postDate", null);
+            artworkInfoMap.put("rating", null);
+            artworkInfoMap.put("resolutionRatio", null);
+            artworkInfoMap.put("information", null);
             // show type 省略
             // store type  默认1 正常保存
+            artworkInfoMap.put("createTime", createTime);
+            artworkInfoMap.put("status", 1);
             artworkInfoMap.put("official",ar.official);
             artworkInfoMap.put("bookId",ar.bookId);
             artworkInfoMap.put("parentId",ar.parentId);

@@ -42,7 +42,7 @@ public class FileDownloader {
     public static Logger logger = LoggerFactory.getLogger(FileDownloader.class);
     public static  int retryLimit = 3;
     public static DecimalFormat df = new DecimalFormat("0.00");
-    private static int blockSize = 32 * 1024 * 1024; // 每个连接做多下载 256mb大小内容
+    public static int blockSize = 8 * 1024 * 1024; // 每个连接做多下载 256mb大小内容
     public static CloseableHttpClient closeableHttpClient = HttpClients.custom().build();
     private static ExecutorService executorService = Executors.newFixedThreadPool(10);
     private static int error403 = 0;
@@ -64,6 +64,10 @@ public class FileDownloader {
 //                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 HttpURLConnection connection = HCaptchaConnectionFormat.format(aimUrl, referer, "GET");
                 int responseCode = connection.getResponseCode();
+                if(responseCode >= 500){
+                    logger.error("遇到大于500的错误，下载器直接跳出下载循环");
+                    break;
+                }
                 if (responseCode >= 400) {
                     logger.warn("文件大小[" + fileName + "]:请求失败 RESPONSE_STATUS " + responseCode);
                     if (responseCode == 403) {
@@ -85,9 +89,8 @@ public class FileDownloader {
                             Thread.sleep(20000);
                             System.exit(0);
                         }
-
-
                     }
+                    Thread.sleep(100000);
                 } else {
                     int fileSize = connection.getContentLength();
                     // A : 根据文件大小 Sleep 从而降低触发 429 的概率

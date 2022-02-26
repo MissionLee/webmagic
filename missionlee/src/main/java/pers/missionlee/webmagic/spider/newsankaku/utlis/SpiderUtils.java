@@ -75,6 +75,16 @@ public class SpiderUtils {
     public static String getUpdateStartUrl(String... keys) {
         return OrderType.DATE.getPrefix(keys) + "1";
     }
+    public static String[] getStartUrlsDateBest(int artworkNum,String... keys ){
+        int pageNum  = ((Double) (Math.ceil((new Double(artworkNum)) / 20))).intValue();
+        if(pageNum>50) pageNum = 50;
+        String[] urls = new String[pageNum];
+        String prefix = OrderType.DATE.getPrefix(keys);
+        for (int i = 0; i < pageNum; i++) {
+            urls[i] = prefix + (i + 1);
+        }
+        return urls;
+    }
     public static String[] getStartUrlsTryBest(int artworkNum,String... keys){
         String urls[];
         if (artworkNum > 2000) {

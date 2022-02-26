@@ -112,7 +112,7 @@ public class ArtistBookListProcessor extends AbstractPageProcessor {
                     markSkip = true;
 
                 }
-                if(bookId == 1857){
+                if(bookId == 1857 || bookId ==8560){
                     logger.info("现在特定标记跳过 1857 是个copyright的book，由很多作者，但是判断的时候找不到作者");
                     stored = true;
                     markSkip = true;

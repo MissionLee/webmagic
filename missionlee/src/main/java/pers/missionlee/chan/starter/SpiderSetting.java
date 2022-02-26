@@ -88,7 +88,106 @@ public class SpiderSetting {
     public Map<String, List<String>> artistRelation;
     public List<String> skipParentPoolId;
     public boolean skipExistDBBook;
-            public boolean skipNoneArtistBook = false;
+    public boolean skipNoneArtistBook = false;
+    public boolean doGivenDirParent = false;
+    public String[] giveParentDir;
+    public String[] keepAlivePath;
+    public boolean needKeepDiskAlive =  false;
+    public boolean onlyUpdateChosenFolder = false;
+    public String[] updateChosenFolder;
+    public int blockSize = 4*1024*1024;
+    public boolean updateByDateBest ;
+    public int sleep =0;
+    public String voiceActorPath;
+    public boolean autoParentWhileUpdate = true;
+
+    public boolean isAutoParentWhileUpdate() {
+        return autoParentWhileUpdate;
+    }
+
+    public void setAutoParentWhileUpdate(boolean autoParentWhileUpdate) {
+        this.autoParentWhileUpdate = autoParentWhileUpdate;
+    }
+
+    public int getSleep() {
+        return sleep;
+    }
+
+    public String getVoiceActorPath() {
+        return voiceActorPath;
+    }
+
+    public void setVoiceActorPath(String voiceActorPath) {
+        this.voiceActorPath = voiceActorPath;
+    }
+
+    public void setSleep(int sleep) {
+        this.sleep = sleep;
+    }
+
+    public boolean isUpdateByDateBest() {
+        return updateByDateBest;
+    }
+
+    public void setUpdateByDateBest(boolean updateByDateBest) {
+        this.updateByDateBest = updateByDateBest;
+    }
+
+    public int getBlockSize() {
+        return blockSize;
+    }
+
+    public void setBlockSize(int blockSize) {
+        this.blockSize = blockSize;
+    }
+
+    public String[] getUpdateChosenFolder() {
+        return updateChosenFolder;
+    }
+
+    public void setUpdateChosenFolder(String[] updateChosenFolder) {
+        this.updateChosenFolder = updateChosenFolder;
+    }
+
+    public boolean isOnlyUpdateChosenFolder() {
+        return onlyUpdateChosenFolder;
+    }
+
+    public void setOnlyUpdateChosenFolder(boolean onlyUpdateChosenFolder) {
+        this.onlyUpdateChosenFolder = onlyUpdateChosenFolder;
+    }
+
+    public boolean isNeedKeepDiskAlive() {
+        return needKeepDiskAlive;
+    }
+
+    public void setNeedKeepDiskAlive(boolean needKeepDiskAlive) {
+        this.needKeepDiskAlive = needKeepDiskAlive;
+    }
+
+    public String[] getKeepAlivePath() {
+        return keepAlivePath;
+    }
+
+    public void setKeepAlivePath(String[] keepAlivePath) {
+        this.keepAlivePath = keepAlivePath;
+    }
+
+    public boolean isDoGivenDirParent() {
+        return doGivenDirParent;
+    }
+
+    public void setDoGivenDirParent(boolean doGivenDirParent) {
+        this.doGivenDirParent = doGivenDirParent;
+    }
+
+    public String[] getGiveParentDir() {
+        return giveParentDir;
+    }
+
+    public void setGiveParentDir(String[] giveParentDir) {
+        this.giveParentDir = giveParentDir;
+    }
 
     public boolean isSkipExistDBBook() {
         return skipExistDBBook;

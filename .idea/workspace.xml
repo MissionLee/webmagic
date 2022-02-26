@@ -5,15 +5,244 @@
       <artifact name="missionlee:jar2_nnn" />
     </artifacts-to-build>
   </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="ALL" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="bffc4871-1ae7-44a5-babd-8de4910d3ca3" name="Default Changelist" comment="">
+    <list default="true" id="bffc4871-1ae7-44a5-babd-8de4910d3ca3" name="Default Changelist" comment="2022 02 27 集体上传">
+      <change afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/service/KeepDiskAlive.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classes/artifacts/missionlee_jar2_nnn/missionlee.jar" beforeDir="false" afterPath="$PROJECT_DIR$/classes/artifacts/missionlee_jar2_nnn/missionlee.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/artifacts/startere_jar/missionlee.jar" beforeDir="false" afterPath="$PROJECT_DIR$/classes/artifacts/startere_jar/missionlee.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/downloader/CallableHttpRangeDownloader.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/downloader/CallableHttpRangeDownloader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/downloader/FileDownloader.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/downloader/FileDownloader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/downloader/HCaptchaConnectionFormat.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/downloader/HCaptchaConnectionFormat.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/service/DataBaseService.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/service/DataBaseService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/service/DiskService.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/service/DiskService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/AbstractPageProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/AbstractPageProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/AbstractTagPageProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/AbstractTagPageProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/ArtistPageProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/ArtistPageProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/SinglePageClassifyPageProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/SinglePageClassifyPageProcessor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/book/ArtistBookListProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/book/ArtistBookListProcessor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/book/BookPageProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/book/BookPageProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/parent/ParentListPageProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/parent/ParentListPageProcessor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/starter/SpiderSetting.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/starter/SpiderSetting.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/starter/SpiderStarter.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/starter/SpiderStarter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/webmagic/spider/newsankaku/utlis/SpiderUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/webmagic/spider/newsankaku/utlis/SpiderUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/resources/mybatis/mybatis-config.xml" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/resources/mybatis/mybatis-config.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/target/classes/META-INF/missionlee.kotlin_module" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/target/classes/mybatis/mybatis-config.xml" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/target/classes/mybatis/mybatis-config.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/downloader/CallableHttpRangeDownloader.class" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/downloader/CallableHttpRangeDownloader.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/downloader/FileDownloader.class" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/downloader/FileDownloader.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/downloader/HCaptchaConnectionFormat.class" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/downloader/HCaptchaConnectionFormat.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/service/DataBaseService$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/service/DataBaseService$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/service/DataBaseService.class" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/service/DataBaseService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/service/DiskService.class" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/service/DiskService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/spider/AbstractPageProcessor$Target.class" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/spider/AbstractPageProcessor$Target.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/spider/AbstractPageProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/spider/AbstractPageProcessor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/spider/AbstractTagPageProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/spider/AbstractTagPageProcessor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/spider/ArtistPageProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/spider/ArtistPageProcessor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/spider/SinglePageClassifyPageProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/spider/SinglePageClassifyPageProcessor.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/spider/book/ArtistBookListProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/spider/book/ArtistBookListProcessor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/spider/book/BookPageProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/spider/book/BookPageProcessor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/spider/parent/ParentListPageProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/spider/parent/ParentListPageProcessor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/starter/SpiderSetting.class" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/starter/SpiderSetting.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/starter/SpiderStarter.class" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/chan/starter/SpiderStarter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/utlis/SpiderUtils$OrderType.class" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/utlis/SpiderUtils$OrderType.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/utlis/SpiderUtils.class" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/target/classes/pers/missionlee/webmagic/spider/newsankaku/utlis/SpiderUtils.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-core/src/main/java/us/codecraft/webmagic/Spider.java" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-core/src/main/java/us/codecraft/webmagic/Spider.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/Spider$Status.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/Spider$Status.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/Spider.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/Spider.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/MultiPageModel.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/MultiPageModel.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/SimpleHttpClient.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/SimpleHttpClient.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/configurable/ConfigurablePageProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/configurable/ConfigurablePageProcessor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/configurable/ExpressionType.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/configurable/ExpressionType.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/configurable/ExtractRule$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/configurable/ExtractRule$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/configurable/ExtractRule.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/configurable/ExtractRule.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/downloader/PhantomJSDownloader.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/downloader/PhantomJSDownloader.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/example/AppStore.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/example/AppStore.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/example/BaiduBaike.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/example/BaiduBaike.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/example/GithubRepo.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/example/GithubRepo.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/example/GithubRepoApi.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/example/GithubRepoApi.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/example/GithubRepoPageMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/example/GithubRepoPageMapper.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/example/MonitorExample.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/example/MonitorExample.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/example/OschinaBlog.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/example/OschinaBlog.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/example/PatternProcessorExample$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/example/PatternProcessorExample$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/example/PatternProcessorExample$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/example/PatternProcessorExample$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/example/PatternProcessorExample.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/example/PatternProcessorExample.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/handler/CompositePageProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/handler/CompositePageProcessor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/handler/CompositePipeline.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/handler/CompositePipeline.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/handler/PatternProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/handler/PatternProcessor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/handler/PatternRequestMatcher.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/handler/PatternRequestMatcher.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/handler/RequestMatcher$MatchOther.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/handler/RequestMatcher$MatchOther.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/handler/RequestMatcher.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/handler/RequestMatcher.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/handler/SubPageProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/handler/SubPageProcessor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/handler/SubPipeline.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/handler/SubPipeline.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/AfterExtractor.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/AfterExtractor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/ConsolePageModelPipeline.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/ConsolePageModelPipeline.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/Extractor$Source.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/Extractor$Source.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/Extractor.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/Extractor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/FieldExtractor.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/FieldExtractor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/HasKey.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/HasKey.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/ModelPageProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/ModelPageProcessor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/ModelPipeline.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/ModelPipeline.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/OOSpider.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/OOSpider.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/PageMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/PageMapper.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/PageModelCollectorPipeline.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/PageModelCollectorPipeline.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/PageModelExtractor$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/PageModelExtractor$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/PageModelExtractor.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/PageModelExtractor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/annotation/ComboExtract$Op.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/annotation/ComboExtract$Op.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/annotation/ComboExtract$Source.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/annotation/ComboExtract$Source.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/annotation/ComboExtract.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/annotation/ComboExtract.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/annotation/ExtractBy$Source.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/annotation/ExtractBy$Source.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/annotation/ExtractBy$Type.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/annotation/ExtractBy$Type.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/annotation/ExtractBy.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/annotation/ExtractBy.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/annotation/ExtractByUrl.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/annotation/ExtractByUrl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/annotation/Formatter.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/annotation/Formatter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/annotation/HelpUrl.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/annotation/HelpUrl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/annotation/TargetUrl.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/annotation/TargetUrl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/BasicTypeFormatter$BooleanFormatter.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/BasicTypeFormatter$BooleanFormatter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/BasicTypeFormatter$ByteFormatter.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/BasicTypeFormatter$ByteFormatter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/BasicTypeFormatter$CharactorFormatter.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/BasicTypeFormatter$CharactorFormatter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/BasicTypeFormatter$DoubleFormatter.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/BasicTypeFormatter$DoubleFormatter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/BasicTypeFormatter$FloatFormatter.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/BasicTypeFormatter$FloatFormatter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/BasicTypeFormatter$IntegerFormatter.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/BasicTypeFormatter$IntegerFormatter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/BasicTypeFormatter$LongFormatter.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/BasicTypeFormatter$LongFormatter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/BasicTypeFormatter$ShortFormatter.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/BasicTypeFormatter$ShortFormatter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/BasicTypeFormatter.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/BasicTypeFormatter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/DateFormatter.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/DateFormatter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/ObjectFormatter.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/ObjectFormatter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/ObjectFormatterBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/ObjectFormatterBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/ObjectFormatters.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/model/formatter/ObjectFormatters.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/monitor/SpiderMonitor$MonitorSpiderListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/monitor/SpiderMonitor$MonitorSpiderListener.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/monitor/SpiderMonitor.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/monitor/SpiderMonitor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/monitor/SpiderStatus.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/monitor/SpiderStatus.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/monitor/SpiderStatusMXBean.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/monitor/SpiderStatusMXBean.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/pipeline/CollectorPageModelPipeline.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/pipeline/CollectorPageModelPipeline.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/pipeline/FilePageModelPipeline.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/pipeline/FilePageModelPipeline.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/pipeline/JsonFilePageModelPipeline.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/pipeline/JsonFilePageModelPipeline.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/pipeline/JsonFilePipeline.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/pipeline/JsonFilePipeline.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/pipeline/MultiPagePipeline$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/pipeline/MultiPagePipeline$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/pipeline/MultiPagePipeline.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/pipeline/MultiPagePipeline.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/pipeline/PageModelPipeline.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/pipeline/PageModelPipeline.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/scheduler/BloomFilterDuplicateRemover.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/scheduler/BloomFilterDuplicateRemover.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/scheduler/FileCacheQueueScheduler$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/scheduler/FileCacheQueueScheduler$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/scheduler/FileCacheQueueScheduler$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/scheduler/FileCacheQueueScheduler$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/scheduler/FileCacheQueueScheduler.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/scheduler/FileCacheQueueScheduler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/scheduler/RedisPriorityScheduler.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/scheduler/RedisPriorityScheduler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/scheduler/RedisScheduler.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/scheduler/RedisScheduler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/utils/ClassUtils.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/utils/ClassUtils.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/utils/DoubleKeyMap.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/utils/DoubleKeyMap.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/utils/ExtractorUtils$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/utils/ExtractorUtils$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/utils/ExtractorUtils.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/utils/ExtractorUtils.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/utils/IPUtils.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/utils/IPUtils.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/utils/MultiKeyMapBase.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/utils/MultiKeyMapBase.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/utils/RequestUtils.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/classes/us/codecraft/webmagic/utils/RequestUtils.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/MockPageModelPipeline.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/MockPageModelPipeline.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/MockPipeline.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/MockPipeline.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/SimpleHttpClientTest$Weather.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/SimpleHttpClientTest$Weather.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/SimpleHttpClientTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/SimpleHttpClientTest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/configurable/ConfigurablePageProcessorTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/configurable/ConfigurablePageProcessorTest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/downloader/MockGithubDownloader.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/downloader/MockGithubDownloader.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/formatter/DateFormatterTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/formatter/DateFormatterTest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/BaseRepo.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/BaseRepo.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/GithubRepo.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/GithubRepo.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/GithubRepoApi.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/GithubRepoApi.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/GithubRepoTest$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/GithubRepoTest$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/GithubRepoTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/GithubRepoTest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/ModelPageProcessorTest$MockModel.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/ModelPageProcessorTest$MockModel.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/ModelPageProcessorTest$ModelBar.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/ModelPageProcessorTest$ModelBar.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/ModelPageProcessorTest$ModelFoo.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/ModelPageProcessorTest$ModelFoo.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/ModelPageProcessorTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/ModelPageProcessorTest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/PageMapperTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/PageMapperTest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/PageMocker.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/PageMocker.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/PageModelExtractorTest$ModelCustomList.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/PageModelExtractorTest$ModelCustomList.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/PageModelExtractorTest$ModelDate.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/PageModelExtractorTest$ModelDate.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/PageModelExtractorTest$ModelDateList.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/PageModelExtractorTest$ModelDateList.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/PageModelExtractorTest$ModelDateStr.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/PageModelExtractorTest$ModelDateStr.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/PageModelExtractorTest$ModelInt.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/PageModelExtractorTest$ModelInt.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/PageModelExtractorTest$ModelIntList.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/PageModelExtractorTest$ModelIntList.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/PageModelExtractorTest$ModelJsonStr.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/PageModelExtractorTest$ModelJsonStr.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/PageModelExtractorTest$ModelStringList.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/PageModelExtractorTest$ModelStringList.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/PageModelExtractorTest$ModelUrl.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/PageModelExtractorTest$ModelUrl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/PageModelExtractorTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/model/PageModelExtractorTest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/monitor/CustomSpiderStatus.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/monitor/CustomSpiderStatus.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/monitor/CustomSpiderStatusMXBean.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/monitor/CustomSpiderStatusMXBean.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/monitor/SeedUrlWithPortTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/monitor/SeedUrlWithPortTest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/monitor/SpiderMonitorTest$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/monitor/SpiderMonitorTest$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/monitor/SpiderMonitorTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/monitor/SpiderMonitorTest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/monitor/TempProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/monitor/TempProcessor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/processor/GithubRepoProcessor$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/processor/GithubRepoProcessor$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/processor/GithubRepoProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/processor/GithubRepoProcessor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/scheduler/BloomFilterDuplicateRemoverTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/scheduler/BloomFilterDuplicateRemoverTest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/scheduler/RedisPrioritySchedulerTest$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/scheduler/RedisPrioritySchedulerTest$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/scheduler/RedisPrioritySchedulerTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/scheduler/RedisPrioritySchedulerTest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/scheduler/RedisSchedulerTest$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/scheduler/RedisSchedulerTest$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/scheduler/RedisSchedulerTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/scheduler/RedisSchedulerTest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/utils/IPUtilsTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/utils/IPUtilsTest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/utils/RequestUtilsTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-extension/target/test-classes/us/codecraft/webmagic/utils/RequestUtilsTest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/main/QuickStarter.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/main/QuickStarter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/BaiduNews.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/BaiduNews.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/Blog.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/Blog.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/DianpingFtlDataScanner.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/DianpingFtlDataScanner.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/GithubRepo.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/GithubRepo.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/IteyeBlog.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/IteyeBlog.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/JokejiModel.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/JokejiModel.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/Kr36NewsModel$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/Kr36NewsModel$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/Kr36NewsModel.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/Kr36NewsModel.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/News163.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/News163.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/OschinaAnswer.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/OschinaAnswer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/OschinaBlog$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/OschinaBlog$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/OschinaBlog.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/OschinaBlog.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/QQMeishi.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/model/samples/QQMeishi.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/AlexanderMcqueenGoodsProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/AlexanderMcqueenGoodsProcessor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/AmanzonPageProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/AmanzonPageProcessor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/AngularJSProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/AngularJSProcessor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/DiandianBlogProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/DiandianBlogProcessor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/DiaoyuwengProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/DiaoyuwengProcessor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/F58PageProcesser.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/F58PageProcesser.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/GithubRepo.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/GithubRepo.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/GithubRepoPageProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/GithubRepoPageProcessor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/HuxiuProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/HuxiuProcessor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/InfoQMiniBookProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/InfoQMiniBookProcessor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/IteyeBlogProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/IteyeBlogProcessor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/KaichibaProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/KaichibaProcessor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/MamacnPageProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/MamacnPageProcessor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/MeicanProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/MeicanProcessor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/NjuBBSProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/NjuBBSProcessor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/PhantomJSPageProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/PhantomJSPageProcessor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/QzoneBlogProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/QzoneBlogProcessor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/SinaBlogProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/SinaBlogProcessor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/TianyaPageProcesser.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/TianyaPageProcesser.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/ZhihuPageProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/ZhihuPageProcessor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/formatter/StringTemplateFormatter.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/formatter/StringTemplateFormatter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/pipeline/OneFilePipeline.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/pipeline/OneFilePipeline.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/pipeline/ReplacePipeline.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/pipeline/ReplacePipeline.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/scheduler/DelayQueueScheduler$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/scheduler/DelayQueueScheduler$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/scheduler/DelayQueueScheduler$RequestWrapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/scheduler/DelayQueueScheduler$RequestWrapper.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/scheduler/DelayQueueScheduler.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/scheduler/DelayQueueScheduler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/scheduler/LevelLimitScheduler.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/scheduler/LevelLimitScheduler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/scheduler/ZipCodePageProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/classes/us/codecraft/webmagic/samples/scheduler/ZipCodePageProcessor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/test-classes/us/codecraft/webmagic/SpiderTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/test-classes/us/codecraft/webmagic/SpiderTest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/test-classes/us/codecraft/webmagic/model/ProcessorBenchmark.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/test-classes/us/codecraft/webmagic/model/ProcessorBenchmark.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/test-classes/us/codecraft/webmagic/processor/SinablogProcessorTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/test-classes/us/codecraft/webmagic/processor/SinablogProcessorTest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/test-classes/us/codecraft/webmagic/samples/scheduler/DelayQueueSchedulerTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/target/test-classes/us/codecraft/webmagic/samples/scheduler/DelayQueueSchedulerTest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-saxon/target/classes/us/codecraft/webmagic/selector/Xpath2Selector$XPath2NamespaceContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-saxon/target/classes/us/codecraft/webmagic/selector/Xpath2Selector$XPath2NamespaceContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-saxon/target/classes/us/codecraft/webmagic/selector/Xpath2Selector.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-saxon/target/classes/us/codecraft/webmagic/selector/Xpath2Selector.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-saxon/target/test-classes/us/codecraft/webmagic/selector/XpathSelectorTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-saxon/target/test-classes/us/codecraft/webmagic/selector/XpathSelectorTest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-scripts/target/classes/GithubRepoPageProcessor$Companion.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-scripts/target/classes/GithubRepoPageProcessor$Companion.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-scripts/target/classes/GithubRepoPageProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-scripts/target/classes/GithubRepoPageProcessor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-scripts/target/classes/META-INF/webmagic-scripts.kotlin_module" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-scripts/target/classes/META-INF/webmagic-scripts.kotlin_module" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-scripts/target/classes/us/codecraft/webmagic/scripts/Language.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-scripts/target/classes/us/codecraft/webmagic/scripts/Language.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-scripts/target/classes/us/codecraft/webmagic/scripts/ScriptConsole$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-scripts/target/classes/us/codecraft/webmagic/scripts/ScriptConsole$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-scripts/target/classes/us/codecraft/webmagic/scripts/ScriptConsole$Params.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-scripts/target/classes/us/codecraft/webmagic/scripts/ScriptConsole$Params.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-scripts/target/classes/us/codecraft/webmagic/scripts/ScriptConsole.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-scripts/target/classes/us/codecraft/webmagic/scripts/ScriptConsole.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-scripts/target/classes/us/codecraft/webmagic/scripts/ScriptEnginePool.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-scripts/target/classes/us/codecraft/webmagic/scripts/ScriptEnginePool.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-scripts/target/classes/us/codecraft/webmagic/scripts/ScriptProcessor$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-scripts/target/classes/us/codecraft/webmagic/scripts/ScriptProcessor$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-scripts/target/classes/us/codecraft/webmagic/scripts/ScriptProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-scripts/target/classes/us/codecraft/webmagic/scripts/ScriptProcessor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-scripts/target/classes/us/codecraft/webmagic/scripts/ScriptProcessorBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-scripts/target/classes/us/codecraft/webmagic/scripts/ScriptProcessorBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-scripts/target/test-classes/us/codecraft/webmagic/scripts/ScriptProcessorTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-scripts/target/test-classes/us/codecraft/webmagic/scripts/ScriptProcessorTest.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,12 +283,16 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="MavenImportPreferences">
-    <option name="importingSettings">
-      <MavenImportingSettings>
-        <option name="importAutomatically" value="true" />
-      </MavenImportingSettings>
-    </option>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectCodeStyleSettingsMigration">
     <option name="version" value="1" />
@@ -75,18 +308,21 @@
     <property name="GenerateAntBuildDialog.enableUiFormCompile" value="true" />
     <property name="GenerateAntBuildDialog.forceTargetJdk" value="true" />
     <property name="GenerateAntBuildDialog.outputFileNameProperty" value="webmagic-parent" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SearchEverywhereHistoryKey" value="ThreadFactory&#9;PSI&#9;JAVA://java.util.concurrent.ThreadFactory" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1577620095590" />
     <property name="extract.method.default.visibility" value="private" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/missionlee/src" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.118956745" />
     <property name="project.structure.side.proportion" value="0.13129689" />
-    <property name="settings.editor.selected.configurable" value="reference.projectsettings.compiler.javacompiler" />
+    <property name="settings.editor.selected.configurable" value="vcs.Git" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -101,7 +337,7 @@
       <recent name="C:\Users\MissionLee\IdeaProjects\webmagic\missionlee\src\main\resources\mybatis\mapper" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.ParentListPageProcessor">
+  <component name="RunManager" selected="Application.SpiderStarter">
     <configuration name="AbstractPageProcessor" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="pers.missionlee.chan.spider.AbstractPageProcessor" />
       <module name="missionlee" />
@@ -141,19 +377,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="FileDownloader" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="pers.missionlee.chan.downloader.FileDownloader" />
-      <module name="missionlee" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="pers.missionlee.chan.downloader.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="ParentListPageProcessor" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="pers.missionlee.chan.spider.parent.ParentListPageProcessor" />
       <module name="missionlee" />
@@ -167,20 +390,33 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="SpiderStarter" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="pers.missionlee.chan.starter.SpiderStarter" />
+      <module name="missionlee" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="pers.missionlee.chan.starter.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <list>
-      <item itemvalue="Application.FileDownloader" />
       <item itemvalue="Application.ParentListPageProcessor" />
       <item itemvalue="Application.ArtistPageProcessor" />
       <item itemvalue="Application.AbstractPageProcessor" />
       <item itemvalue="Application.DiskService" />
+      <item itemvalue="Application.SpiderStarter" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.SpiderStarter" />
         <item itemvalue="Application.ParentListPageProcessor" />
         <item itemvalue="Application.DiskService" />
         <item itemvalue="Application.AbstractPageProcessor" />
         <item itemvalue="Application.ArtistPageProcessor" />
-        <item itemvalue="Application.FileDownloader" />
       </list>
     </recent_temporary>
   </component>
@@ -196,6 +432,7 @@
       </list>
     </option>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -457,6 +694,107 @@
       <workItem from="1626183582627" duration="2475000" />
       <workItem from="1626437522518" duration="2378000" />
       <workItem from="1626492033617" duration="1176000" />
+      <workItem from="1626520188294" duration="1045000" />
+      <workItem from="1626614909796" duration="7394000" />
+      <workItem from="1626623485646" duration="30071000" />
+      <workItem from="1626856197741" duration="949000" />
+      <workItem from="1626865931705" duration="25087000" />
+      <workItem from="1627128394919" duration="3761000" />
+      <workItem from="1627182026102" duration="2587000" />
+      <workItem from="1627218878618" duration="2929000" />
+      <workItem from="1627268683017" duration="8499000" />
+      <workItem from="1627310641177" duration="1735000" />
+      <workItem from="1627344558092" duration="1908000" />
+      <workItem from="1627365834564" duration="9058000" />
+      <workItem from="1627396188286" duration="759000" />
+      <workItem from="1627432433068" duration="1161000" />
+      <workItem from="1627452342960" duration="665000" />
+      <workItem from="1627458702368" duration="4284000" />
+      <workItem from="1627476427454" duration="93000" />
+      <workItem from="1627646322067" duration="3162000" />
+      <workItem from="1627743074161" duration="741000" />
+      <workItem from="1627778464785" duration="444000" />
+      <workItem from="1627808018817" duration="598000" />
+      <workItem from="1627827686208" duration="1206000" />
+      <workItem from="1627910172133" duration="1000000" />
+      <workItem from="1628089988834" duration="897000" />
+      <workItem from="1628092826106" duration="1910000" />
+      <workItem from="1628171486283" duration="4000" />
+      <workItem from="1628176294753" duration="1986000" />
+      <workItem from="1628212201252" duration="65000" />
+      <workItem from="1628249579457" duration="2219000" />
+      <workItem from="1628431742058" duration="689000" />
+      <workItem from="1628482846161" duration="1505000" />
+      <workItem from="1628943191171" duration="581000" />
+      <workItem from="1629018336447" duration="1838000" />
+      <workItem from="1629026421299" duration="1177000" />
+      <workItem from="1629030128167" duration="6797000" />
+      <workItem from="1629043366784" duration="1155000" />
+      <workItem from="1629072105020" duration="15381000" />
+      <workItem from="1629126170443" duration="2427000" />
+      <workItem from="1629159854138" duration="10993000" />
+      <workItem from="1629214649010" duration="2537000" />
+      <workItem from="1629249462989" duration="217000" />
+      <workItem from="1629294160717" duration="3024000" />
+      <workItem from="1629333313127" duration="6469000" />
+      <workItem from="1629387543176" duration="3628000" />
+      <workItem from="1629419154832" duration="3086000" />
+      <workItem from="1629468573986" duration="3076000" />
+      <workItem from="1629505909154" duration="12768000" />
+      <workItem from="1629551947191" duration="6212000" />
+      <workItem from="1629593891294" duration="8540000" />
+      <workItem from="1629635454179" duration="7110000" />
+      <workItem from="1629678007912" duration="6338000" />
+      <workItem from="1629728418814" duration="3918000" />
+      <workItem from="1629764896438" duration="5156000" />
+      <workItem from="1629814711985" duration="2046000" />
+      <workItem from="1629816966663" duration="385000" />
+      <workItem from="1629850950508" duration="10565000" />
+      <workItem from="1629903766531" duration="4607000" />
+      <workItem from="1629937246171" duration="4068000" />
+      <workItem from="1629944373159" duration="648000" />
+      <workItem from="1629945431301" duration="978000" />
+      <workItem from="1629989913366" duration="2731000" />
+      <workItem from="1630066439582" duration="1294000" />
+      <workItem from="1630074441733" duration="6202000" />
+      <workItem from="1630110012848" duration="4171000" />
+      <workItem from="1630168318012" duration="1990000" />
+      <workItem from="1630197449706" duration="9050000" />
+      <workItem from="1630237662091" duration="7171000" />
+      <workItem from="1630283480520" duration="5668000" />
+      <workItem from="1630340882667" duration="3093000" />
+      <workItem from="1630367637064" duration="2865000" />
+      <workItem from="1630424556339" duration="2609000" />
+      <workItem from="1630512414163" duration="628000" />
+      <workItem from="1630596000378" duration="3882000" />
+      <workItem from="1630684778234" duration="3143000" />
+      <workItem from="1630743639202" duration="976000" />
+      <workItem from="1630772079251" duration="2112000" />
+      <workItem from="1630836664239" duration="11030000" />
+      <workItem from="1630899110980" duration="33000" />
+      <workItem from="1630899175360" duration="448000" />
+      <workItem from="1630941743197" duration="2991000" />
+      <workItem from="1631029182487" duration="1730000" />
+      <workItem from="1631115120790" duration="772000" />
+      <workItem from="1631202514708" duration="793000" />
+      <workItem from="1631375640108" duration="55432000" />
+      <workItem from="1631745494071" duration="45168000" />
+      <workItem from="1632098006028" duration="51537000" />
+      <workItem from="1634139984388" duration="1335000" />
+      <workItem from="1634164996850" duration="4033000" />
+      <workItem from="1634227915556" duration="638000" />
+      <workItem from="1634914481875" duration="46000" />
+      <workItem from="1634914768629" duration="6164000" />
+      <workItem from="1635340956165" duration="1355000" />
+      <workItem from="1640672840157" duration="1733000" />
+      <workItem from="1640675189009" duration="652000" />
+      <workItem from="1641728266303" duration="82000" />
+      <workItem from="1642085729140" duration="4608000" />
+      <workItem from="1642777248157" duration="2928000" />
+      <workItem from="1644141304474" duration="1213000" />
+      <workItem from="1644490819302" duration="10651000" />
+      <workItem from="1645891937509" duration="839000" />
+      <workItem from="1645892932945" duration="847000" />
     </task>
     <task id="LOCAL-00001" summary="SpiderConfig">
       <created>1555292406689</created>
@@ -619,19 +957,28 @@
       <option name="project" value="LOCAL" />
       <updated>1626185065351</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="2021 07 13 集体上传">
+      <created>1626520324584</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1626520324584</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="1" />
-    <option name="exactExcludedFiles">
-      <list>
-        <option value="$PROJECT_DIR$/../promise-cache-controller/lib/adapters/CacheAdapter.js" />
-        <option value="$PROJECT_DIR$/../promise-cache-controller/lib/core/PromiseCacheController.js" />
-        <option value="$PROJECT_DIR$/../promise-cache-controller/lib/adapters/RAMCacheAdapter.js" />
-        <option value="$PROJECT_DIR$/../promise-cache-controller/lib/adapters/LocalStorageCacheAdapter.js" />
-        <option value="$PROJECT_DIR$/../promise-cache-controller/index.js" />
-      </list>
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
     </option>
   </component>
   <component name="VcsManagerConfiguration">
@@ -640,87 +987,8 @@
     <MESSAGE value="Merge branch 'managed' of https://github.com/MissionLee/webmagic into managed&#10;&#10;# Conflicts:&#10;#&#9;missionlee/src/main/java/pers/missionlee/webmagic/spider/sankaku/manager/SpiderManager.java&#10;#&#9;missionlee/src/main/resources/mybatis/mybatis-config.xml" />
     <MESSAGE value="新版本 基本完成，留档一次" />
     <MESSAGE value="2021 07 13 集体上传" />
-    <option name="LAST_COMMIT_MESSAGE" value="2021 07 13 集体上传" />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="758" y="483" key="#com.intellij.ide.util.MemberChooser" timestamp="1626492245203">
-      <screen x="0" y="0" width="2048" height="1112" />
-    </state>
-    <state x="758" y="483" key="#com.intellij.ide.util.MemberChooser/0.0.2048.1112@0.0.2048.1112" timestamp="1626492245203" />
-    <state x="947" y="770" key="#com.intellij.ide.util.MemberChooser/0.0.2560.1400@0.0.2560.1400" timestamp="1623626415614" />
-    <state x="579" y="459" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1620184497221">
-      <screen x="0" y="0" width="2560" height="1400" />
-    </state>
-    <state x="579" y="459" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1620184497221" />
-    <state x="0" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1624101122668">
-      <screen x="0" y="0" width="2048" height="1112" />
-    </state>
-    <state x="0" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.2048.1112@0.0.2048.1112" timestamp="1624101122668" />
-    <state x="0" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1618719037790" />
-    <state x="451" y="185" key="CommitChangelistDialog2" timestamp="1626185044279">
-      <screen x="0" y="0" width="2048" height="1112" />
-    </state>
-    <state x="451" y="185" key="CommitChangelistDialog2/0.0.2048.1112@0.0.2048.1112" timestamp="1626185044279" />
-    <state x="564" y="233" key="CommitChangelistDialog2/0.0.2560.1400@0.0.2560.1400" timestamp="1619003114230" />
-    <state x="1442" y="450" width="440" height="487" key="FileChooserDialogImpl" timestamp="1618843939037">
-      <screen x="0" y="0" width="2560" height="1400" />
-    </state>
-    <state x="1442" y="450" key="FileChooserDialogImpl/0.0.2560.1400@0.0.2560.1400" timestamp="1618843939037" />
-    <state width="2233" height="260" key="GridCell.Tab.0.bottom" timestamp="1621780516659">
-      <screen x="0" y="0" width="2560" height="1400" />
-    </state>
-    <state width="2233" height="260" key="GridCell.Tab.0.bottom/0.0.2560.1400@0.0.2560.1400" timestamp="1621780516659" />
-    <state width="2233" height="260" key="GridCell.Tab.0.center" timestamp="1621780516659">
-      <screen x="0" y="0" width="2560" height="1400" />
-    </state>
-    <state width="2233" height="260" key="GridCell.Tab.0.center/0.0.2560.1400@0.0.2560.1400" timestamp="1621780516659" />
-    <state width="2233" height="260" key="GridCell.Tab.0.left" timestamp="1621780516659">
-      <screen x="0" y="0" width="2560" height="1400" />
-    </state>
-    <state width="2233" height="260" key="GridCell.Tab.0.left/0.0.2560.1400@0.0.2560.1400" timestamp="1621780516659" />
-    <state width="2233" height="260" key="GridCell.Tab.0.right" timestamp="1621780516659">
-      <screen x="0" y="0" width="2560" height="1400" />
-    </state>
-    <state width="2233" height="260" key="GridCell.Tab.0.right/0.0.2560.1400@0.0.2560.1400" timestamp="1621780516659" />
-    <state width="2517" height="492" key="GridCell.Tab.1.bottom" timestamp="1618611784237">
-      <screen x="0" y="0" width="2560" height="1400" />
-    </state>
-    <state width="2517" height="492" key="GridCell.Tab.1.bottom/0.0.2560.1400@0.0.2560.1400" timestamp="1618611784237" />
-    <state width="2517" height="492" key="GridCell.Tab.1.center" timestamp="1618611784237">
-      <screen x="0" y="0" width="2560" height="1400" />
-    </state>
-    <state width="2517" height="492" key="GridCell.Tab.1.center/0.0.2560.1400@0.0.2560.1400" timestamp="1618611784237" />
-    <state width="2517" height="492" key="GridCell.Tab.1.left" timestamp="1618611784237">
-      <screen x="0" y="0" width="2560" height="1400" />
-    </state>
-    <state width="2517" height="492" key="GridCell.Tab.1.left/0.0.2560.1400@0.0.2560.1400" timestamp="1618611784237" />
-    <state width="2517" height="492" key="GridCell.Tab.1.right" timestamp="1618611784237">
-      <screen x="0" y="0" width="2560" height="1400" />
-    </state>
-    <state width="2517" height="492" key="GridCell.Tab.1.right/0.0.2560.1400@0.0.2560.1400" timestamp="1618611784237" />
-    <state x="329" y="252" width="1386" height="849" key="SettingsEditor" timestamp="1620184517224">
-      <screen x="0" y="0" width="2560" height="1400" />
-    </state>
-    <state x="329" y="252" width="1386" height="849" key="SettingsEditor/0.0.2560.1400@0.0.2560.1400" timestamp="1620184517224" />
-    <state x="698" y="345" key="Vcs.Push.Dialog.v2" timestamp="1626520213248">
-      <screen x="0" y="0" width="2048" height="1112" />
-    </state>
-    <state x="698" y="345" key="Vcs.Push.Dialog.v2/0.0.2048.1112@0.0.2048.1112" timestamp="1626520213248" />
-    <state x="872" y="434" key="Vcs.Push.Dialog.v2/0.0.2560.1400@0.0.2560.1400" timestamp="1619003132296" />
-    <state x="688" y="368" key="com.intellij.ide.util.TipDialog" timestamp="1626520203754">
-      <screen x="0" y="0" width="2048" height="1112" />
-    </state>
-    <state x="688" y="368" key="com.intellij.ide.util.TipDialog/0.0.2048.1112@0.0.2048.1112" timestamp="1626520203754" />
-    <state x="860" y="463" key="com.intellij.ide.util.TipDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1623626353568" />
-    <state x="1010" y="470" key="extract.method.dialog" timestamp="1618490711492">
-      <screen x="0" y="0" width="2560" height="1400" />
-    </state>
-    <state x="1010" y="470" key="extract.method.dialog/0.0.2560.1400@0.0.2560.1400" timestamp="1618490711492" />
-    <state x="575" y="6" width="896" height="1106" key="search.everywhere.popup" timestamp="1626000977798">
-      <screen x="0" y="0" width="2048" height="1112" />
-    </state>
-    <state x="575" y="6" width="896" height="1106" key="search.everywhere.popup/0.0.2048.1112@0.0.2048.1112" timestamp="1626000977798" />
-    <state x="719" y="7" width="1120" height="1392" key="search.everywhere.popup/0.0.2560.1400@0.0.2560.1400" timestamp="1623590552495" />
+    <MESSAGE value="2022 02 27 集体上传" />
+    <option name="LAST_COMMIT_MESSAGE" value="2022 02 27 集体上传" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

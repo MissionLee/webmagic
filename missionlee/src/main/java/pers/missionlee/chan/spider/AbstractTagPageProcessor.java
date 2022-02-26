@@ -22,7 +22,7 @@ public abstract class AbstractTagPageProcessor extends AbstractPageProcessor {
     Set<String> storedSanCodes;
     List<String> relatedArtist;
     Map<String, String> storedFilesMd5; // 当前tag 存储目录下的文件列表
-//    Map<String, String> relatedStoredFilesMd5;// 当前tag 关联存储的 file:path 键值对
+    //    Map<String, String> relatedStoredFilesMd5;// 当前tag 关联存储的 file:path 键值对
     Set<String> toBeDownloadSanCodes;
 
     public AbstractTagPageProcessor(List<String> tags, DataBaseService dataBaseService, DiskService diskService) {
@@ -91,6 +91,11 @@ public abstract class AbstractTagPageProcessor extends AbstractPageProcessor {
     }
 
     public int extractUrlFromListPageWithFileNameFilter(Page page) {
+        try {
+            Thread.sleep(1000 * 3);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         AtomicInteger added = new AtomicInteger(0);
         List<String> src = page.getHtml()
                 .$(".thumb")
@@ -133,6 +138,7 @@ public abstract class AbstractTagPageProcessor extends AbstractPageProcessor {
                             } else {
                                 logger.info("SanCode存在，但SanCode关联的作者名下都没有这个文件md5，作品加入下载");
                                 this.toBeDownloadSanCodes.add(sanCode);
+//                                logger.info("临时：代码里面把 文件不确认存在的时候下载的功能删除了 AbstractTagPageProcessor 136");
                                 page.addTargetRequest(fullUrl);
                                 added.getAndIncrement();
                             }
@@ -163,10 +169,11 @@ public abstract class AbstractTagPageProcessor extends AbstractPageProcessor {
         }
         return added.get();
     }
-    public synchronized boolean extractArtistFileByArtworkInfo(ArtworkInfo artworkInfo){
+
+    public synchronized boolean extractArtistFileByArtworkInfo(ArtworkInfo artworkInfo) {
         AtomicBoolean addNew = new AtomicBoolean(false);
         List<String> artists = artworkInfo.getTagArtist();
-        artists.forEach((String name)->{
+        artists.forEach((String name) -> {
             if (this instanceof CopyrightPageProcessor || this instanceof StudioPageProcessor || this.relatedArtist.contains(name)) {
 
             } else {
@@ -181,6 +188,7 @@ public abstract class AbstractTagPageProcessor extends AbstractPageProcessor {
         });
         return addNew.get();
     }
+
     public synchronized boolean extractArtistFileMd5BySanCode(String sanCode) {
         AtomicBoolean addNew = new AtomicBoolean(false);
         List<String> names = dataBaseService.getArtistBySanCode(sanCode);
@@ -212,7 +220,9 @@ public abstract class AbstractTagPageProcessor extends AbstractPageProcessor {
         String thisPage = url.substring(url.lastIndexOf("=") + 1);
         int thisPageNum = Integer.valueOf(thisPage);
         String urlPrefix = url.substring(0, url.lastIndexOf("=") + 1);
-        page.addTargetRequest(urlPrefix + (++thisPageNum));
+        ++thisPageNum;
+        if (thisPageNum <= 50)
+            page.addTargetRequest(urlPrefix + (thisPageNum));
     }
 
 }

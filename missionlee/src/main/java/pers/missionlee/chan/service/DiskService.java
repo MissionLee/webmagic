@@ -23,6 +23,8 @@ import java.util.regex.Pattern;
  * @create: 2021-04-10 18:33
  */
 public class DiskService {
+
+
     Logger logger = LoggerFactory.getLogger(DiskService.class);
     String PIC = "pic";
     String VID = "vid";
@@ -83,15 +85,19 @@ public class DiskService {
         }
         // 提取 作者 book parent 路径下的 作者分布信息
         File[] artistBookParentFiles = new File(spiderSetting.getBookParentArtistBase()).listFiles(PathUtils.aimFileFilter());
-        extractPathInfo(artistBookParentFiles, pics, vids);
+        if (artistBookParentFiles != null && artistBookParentFiles.length > 0) {
+            extractPathInfo(artistBookParentFiles, pics, vids);
+        }
         this.CHAN_ARTIST_PICS = pics;
         this.CHAN_ARTIST_VIDS = vids;
         logger.info("初始化作者信息完成");
     }
-    public void touchArtist(String name){
-        String path = getCommonArtistParentPath(name,"1.jpg");
+
+    public void touchArtist(String name) {
+        String path = getCommonArtistParentPath(name, "1.jpg");
         new File(path).setLastModified(System.currentTimeMillis());
     }
+
     public void findArtistUnTargeted(DataBaseService dataBaseService) {
         logger.info("检查磁盘上的作者，在数据库中没有标记为 is_target 的  和关联作品数量为0的");
         CHAN_ARTIST_VIDS.forEach((String path, List<String> pathNames) -> {
@@ -105,6 +111,14 @@ public class DiskService {
 
                 } else {
                     logger.info("作者" + realName + "  没有被标记为目标：" + path + pathName);
+                    Map<String, String> params = new HashMap<>();
+                    params.put("name", realName);
+                    logger.info("数据库中创建：" + realName);
+                    try {
+                        dataBaseService.sqlSession.insert("san.insertArtistOnlyName", params);
+                    } catch (Exception e) {
+                        logger.info("发现了某个文件夹对应的作者不存在，或者非 isTarget，创建作者时候报错，此错误可能忽略，因为可能是isTarget情况");
+                    }
                     dataBaseService.touchArtist(realName, System.currentTimeMillis());
                 }
             });
@@ -120,6 +134,14 @@ public class DiskService {
 
                 } else {
                     logger.info("作者" + realName + "  没有被标记为目标：" + path + pathName);
+                    Map<String, String> params = new HashMap<>();
+                    params.put("name", realName);
+                    logger.info("数据库中创建：" + realName);
+                    try {
+                        dataBaseService.sqlSession.insert("san.insertArtistOnlyName", params);
+                    } catch (Exception e) {
+                        logger.info("发现了某个文件夹对应的作者不存在，或者非 isTarget，创建作者时候报错，此错误可能忽略，因为可能是isTarget情况");
+                    }
                     dataBaseService.touchArtist(realName, System.currentTimeMillis());
                 }
             });
@@ -232,7 +254,7 @@ public class DiskService {
             }
 
         });
-        logger.info("获得等级为 " + lv + " 的book作者 = onlyDaiDing"+onlyDaiDing);
+        logger.info("获得等级为 " + lv + " 的book作者 = onlyDaiDing" + onlyDaiDing);
         logger.info(artistNames.toString());
         return artistNames;
     }
@@ -464,14 +486,18 @@ public class DiskService {
         if (null != picFiles) {
             for (int i = 0; i < picFiles.length; i++) {
                 if (picFiles[i].isDirectory()) {// 如果是目录
-                    String[] artworks = picFiles[i].list();
-                    for (int j = 0; j < artworks.length; j++) {
-                        String fullPath = picBasePath + picFiles[i].getName() + "/" + artworks[j];
-                        String fileName = artworks[j].substring(5);
-                        if (picFiles[i].getName().contains("low"))
-                            fileName = artworks[j];
+                    if (picFiles[i].getName().equals("del")) {
+                        logger.info("初始化时候跳过del文件夹");
+                    } else {
+                        String[] artworks = picFiles[i].list();
+                        for (int j = 0; j < artworks.length; j++) {
+                            String fullPath = picBasePath + picFiles[i].getName() + "/" + artworks[j];
+                            String fileName = artworks[j].substring(5);
+                            if (picFiles[i].getName().contains("low"))
+                                fileName = artworks[j];
 
-                        filePath.put(fileName, fullPath);
+                            filePath.put(fileName, fullPath);
+                        }
                     }
                 } else {
                     filePath.put(picFiles[i].getName(), picBasePath + picFiles[i].getName());
@@ -595,8 +621,9 @@ public class DiskService {
             String pathName = transformArtistNameToPath(artistName);
             if (!artistVidLevel.containsKey(pathName) && !artistPicLevel.containsKey(pathName)) {
                 // 如果硬盘上没有这个作者了，标记为 is_target = 0
-                logger.info("作者丢失（）：" + artistName);
-                dataBaseService.makeArtistLost(artistName);
+//                logger.info("作者丢失（）：" + artistName);
+//                logger.info("作者丢失，但是暂不标记为 丢失，因为出差，可能不连接额外硬盘，这里改的源码");
+//                dataBaseService.makeArtistLost(artistName);
             } else {
                 LevelInfo diskLevelInfo = new LevelInfo(artistName);
                 diskLevelInfo.artistId = info.artistId;
@@ -639,6 +666,7 @@ public class DiskService {
         for (int i = 0; i < childrenDir.length; i++) {
             String[] artists = childrenDir[i].list();
             String childDirName = childrenDir[i].getName();
+            System.out.println(childDirName);
             if (childDirName.startsWith("pic")
                     || childDirName.startsWith("图-")
                     || childDirName.startsWith("T-"))

@@ -45,6 +45,7 @@ public class ParentListPageProcessor extends AbstractPageProcessor {
     List<String> skipParentIdList;
     boolean startPage = true;
     String startPageSanCode;
+
     public void reset() {
         this.parentId = null;
         this.parentShowPageDealt = false;
@@ -56,7 +57,7 @@ public class ParentListPageProcessor extends AbstractPageProcessor {
         this.startPage = true;
     }
 
-    public ParentListPageProcessor(List<String> skipParentIdList,boolean single, String artistName, DataBaseService dataBaseService, DiskService diskService, SpiderSetting spiderSetting) {
+    public ParentListPageProcessor(List<String> skipParentIdList, boolean single, String artistName, DataBaseService dataBaseService, DiskService diskService, SpiderSetting spiderSetting) {
         super(dataBaseService, diskService);
         this.artistName = artistName;
         this.single = single;
@@ -65,7 +66,7 @@ public class ParentListPageProcessor extends AbstractPageProcessor {
             this.parentIdStoredPart = new ArrayList<>();
         } else {
 //            this.storedMdePath = diskService.getArtistFileMd5Path(artistName);
-            this.storedMdePath = spiderSetting.initAllRelatedStoredFilesMd5(diskService,artistName);
+            this.storedMdePath = spiderSetting.initAllRelatedStoredFilesMd5(diskService, artistName);
             this.relatedArtist = new ArrayList<>();
             this.relatedArtist.add(artistName);
             init();
@@ -78,8 +79,8 @@ public class ParentListPageProcessor extends AbstractPageProcessor {
     public int end;
     public CountDownLatch latch;
 
-    public ParentListPageProcessor(List<String> skipParentIdList,boolean single, String artistName, DataBaseService dataBaseService, DiskService diskService, int start, int end, CountDownLatch latch, Logger log,SpiderSetting spiderSetting) {
-        this(skipParentIdList,single, artistName, dataBaseService, diskService,spiderSetting);
+    public ParentListPageProcessor(List<String> skipParentIdList, boolean single, String artistName, DataBaseService dataBaseService, DiskService diskService, int start, int end, CountDownLatch latch, Logger log, SpiderSetting spiderSetting) {
+        this(skipParentIdList, single, artistName, dataBaseService, diskService, spiderSetting);
         this.start = start;
         this.end = end;
         this.latch = latch;
@@ -139,7 +140,7 @@ public class ParentListPageProcessor extends AbstractPageProcessor {
 
     @Override
     public void doProcess(Page page) {
-        if(startPage){ // 此处用于处理访问到希望跳过的parentPool的情况：必须把最起始页面的sancode记录下来,进行makeAsSkip 操作
+        if (startPage) { // 此处用于处理访问到希望跳过的parentPool的情况：必须把最起始页面的sancode记录下来,进行makeAsSkip 操作
             startPage = false;
             String startUrl = page.getUrl().toString();
             this.startPageSanCode = startUrl.substring(startUrl.lastIndexOf("/") + 1);
@@ -148,7 +149,7 @@ public class ParentListPageProcessor extends AbstractPageProcessor {
         System.out.println(page.getUrl() + "_ParentDeal:" + parentShowPageDealt);
         String url = page.getUrl().toString();
         String pageString = page.getHtml().toString();
-        if(pageString.contains("This post was deleted")){
+        if (pageString.contains("This post was deleted")) {
             // TODO: 6/10/2021 说明：此处对应一种情况，作品属于某个parent 后来被删除了，但是页面仍能找到parent 但是 parent的child里面 没有这个作品，导致这个作品每次作者更新都会被再查找到 
             logger.info("已经被删除的文件！！！his post was deleted ");
             String urllll = page.getUrl().toString();
@@ -157,11 +158,11 @@ public class ParentListPageProcessor extends AbstractPageProcessor {
             dataBaseService.makeSanCodeDeleted(sanCodee);
             return;
         }
-        if(pageString.contains("You lack the access rights required to view this content")){
+        if (pageString.contains("You lack the access rights required to view this content")) {
             logger.info("Vip的文件！！！his post was deleted ");
             String urllll = page.getUrl().toString();
             String sanCodee = urllll.substring(url.lastIndexOf("/") + 1);
-            dataBaseService.makeSanCodeVip(sanCodee,artistName);
+            dataBaseService.makeSanCodeVip(sanCodee, artistName);
             return;
         }
         if (url.contains(PARENT_PREFIX) || url.contains(PARENT_PREFIX_2)) {
@@ -169,12 +170,19 @@ public class ParentListPageProcessor extends AbstractPageProcessor {
         } else if (!parentShowPageDealt && url.contains("/show/")) {
             logger.info("检测到Show页面，此时Parent 信息还未处理，进行parent解析");
             String pageStringg = page.getHtml().toString();
-            if (pageStringg.contains("This post has") && pageString.contains("child post")) {
+            if (pageString.contains("This post belongs to") && pageString.contains("a parent post")) {
+                // 如果当前页面是Parent中的子页面，将母页面加入下载列表
+                logger.info("从当前页面解析ParentPage（为了递归找父级 找parent放在前面）:" + page.getUrl());
+//            System.out.println("当前页面是某个Parent的子页面，跳转Parent页面");
+                List<String> href = page.getHtml().$("#parent-preview + div").$("a", "href").all();
+                page.addTargetRequest("https://chan.sankakucomplex.com" + href.get(0));
+//            page.addTargetRequest("https://chan.sankakucomplex.com" + href.get(0));
+            } else if (pageStringg.contains("This post has") && pageString.contains("child post")) {
                 // 如果当前页面是Parent中的母页面，直接加入带下载列表
                 logger.info("从当前页面解析Child :" + page.getUrl());
 //            System.out.println("“有些”子作品没有记录作品信息（例如作者），所以交给ParentSpider的页面是“母作品”页面，而不是作品列表页面");
                 String subFix = "";
-                try{
+                try {
                     subFix = processParentPage(page);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -184,25 +192,18 @@ public class ParentListPageProcessor extends AbstractPageProcessor {
                         String urlll = page.getUrl().toString();
                         // https://chan.sankakucomplex.com/post/show/6138306
                         String sanCode = urlll.substring(url.lastIndexOf("/") + 1);
-                        dataBaseService.makeSanCodeVip(sanCode,artistName);
+                        dataBaseService.makeSanCodeVip(sanCode, artistName);
                     }
                     return;
                 }
-                if(skipParentIdList.contains(this.parentId)){
-                    logger.info("特殊作品，跳过：parentId:"+this.parentId +"___sanCode:"+startPageSanCode);
-                    dataBaseService.makeSanCodeSkip(startPageSanCode,this.parentId);
-                }else{
+                if (skipParentIdList.contains(this.parentId)) {
+                    logger.info("特殊作品，跳过：parentId:" + this.parentId + "___sanCode:" + startPageSanCode);
+                    dataBaseService.makeSanCodeSkip(startPageSanCode, this.parentId);
+                } else {
                     page.addTargetRequest("https://chan.sankakucomplex.com" + subFix);
 
                 }
 
-            } else if (pageString.contains("This post belongs to") && pageString.contains("a parent post")) {
-                // 如果当前页面是Parent中的子页面，将母页面加入下载列表
-                logger.info("从当前页面解析ParentPage:" + page.getUrl());
-//            System.out.println("当前页面是某个Parent的子页面，跳转Parent页面");
-                List<String> href = page.getHtml().$("#parent-preview + div").$("a", "href").all();
-                page.addTargetRequest("https://chan.sankakucomplex.com" + href.get(0));
-//            page.addTargetRequest("https://chan.sankakucomplex.com" + href.get(0));
             } else {
                 String sanCode = url.substring(url.lastIndexOf("/") + 1);
                 this.sanCodeChecked.add(sanCode);
@@ -259,7 +260,7 @@ public class ParentListPageProcessor extends AbstractPageProcessor {
                 String url = page.getUrl().toString();
                 // https://chan.sankakucomplex.com/post/show/6138306
                 String sanCode = url.substring(url.lastIndexOf("/") + 1);
-                dataBaseService.makeSanCodeVip(sanCode,artistName);
+                dataBaseService.makeSanCodeVip(sanCode, artistName);
             }
         }
 
@@ -436,7 +437,7 @@ public class ParentListPageProcessor extends AbstractPageProcessor {
         this.parentInfo = new ParentInfo();
         Html html = page.getHtml();
 
-            Target target = extractDownloadTargetInfoFromDetailPage(html);
+        Target target = extractDownloadTargetInfoFromDetailPage(html);
 
 
         ArtworkInfo artworkInfo = extractArtworkInfoFromDetailPage(page, target);
@@ -506,7 +507,7 @@ public class ParentListPageProcessor extends AbstractPageProcessor {
                 for (int i = 0; i < sanCodeToCheck.size(); i++) {
                     String sanCode = sanCodeToCheck.get(i);
                     if (!sanCodeChecked.contains(sanCode)) {
-                        logger.info(" "+this.artistName+"["+i+"/"+sanCodeToCheck.size()+"]");
+                        logger.info(" " + this.artistName + "[" + i + "/" + sanCodeToCheck.size() + "]");
                         this.reset();
                         Spider.create(this).addUrl("https://chan.sankakucomplex.com/post/show/" + sanCode).thread(3).run();
                     } else {
@@ -564,8 +565,8 @@ public class ParentListPageProcessor extends AbstractPageProcessor {
 //
 //    }
     public static void main(String[] args) {
-        String url =  "https://chan.sankakucomplex.com/post/show/6138306";
-        String sanCode = url.substring(url.lastIndexOf("/")+1);
+        String url = "https://chan.sankakucomplex.com/post/show/6138306";
+        String sanCode = url.substring(url.lastIndexOf("/") + 1);
         System.out.println(sanCode);
     }
 

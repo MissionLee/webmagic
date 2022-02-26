@@ -45,6 +45,7 @@ public class CallableHttpRangeDownloader implements Callable {
         while (retry > 0 && !success) {
             InputStream inputStream = null;
             try {
+                retry--;
 //                URL url = new URL(this.url);
 //                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 HttpURLConnection connection = HCaptchaConnectionFormat.format(this.url,this.referer, "GET");
@@ -55,11 +56,16 @@ public class CallableHttpRangeDownloader implements Callable {
                 byte[] buff = new byte[readBufferSize];
                 int bytesRead = -1;
                 int offset = this.fileSeekPos;
+                int i = 0;
                 while ((bytesRead = inputStream.read(buff, 0, buff.length)) != -1) {
+                    i ++;
                     seekAndWriteFile(file, offset, buff, bytesRead);
                     offset += bytesRead;
+                    if(i%20 ==1 )
+                    System.out.println(this.url+"_"+this.range+"====已经处理到offset："+offset);
                 }
 //                    inputStream.close();
+                System.out.println("处理完了一个 block lath.countDown");
                 latch.countDown();
                 countDowned = true;
                 success =true;
