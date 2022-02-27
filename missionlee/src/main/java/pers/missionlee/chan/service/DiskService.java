@@ -718,6 +718,14 @@ public class DiskService {
         } else {
             throw new RuntimeException("未知的Store Place");
         }
+        System.out.println("因为parentpath和bookpath也有可能带有作者名（作者名字可能不能作为文件夹名字），所以在getParentPath阶段进行一次识别处理");
+        for (String name: namePairs.keySet()
+             ) {
+            if(parentPath.substring(0,parentPath.lastIndexOf("/")).contains(name)){
+                System.out.println("发现需要处理的 name："+name);
+                parentPath=parentPath.replace(name,namePairs.get(name));
+            }
+        }
         return parentPath;
     }
 

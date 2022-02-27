@@ -373,6 +373,8 @@ public class ParentListPageProcessor extends AbstractPageProcessor {
                 formatArtworkInfoForSave(artworkInfo);
                 String parentPath = diskService.getParentPath(artworkInfo, artworkInfo.PBPrefix, artworkInfo.storePlace);
                 try {
+                    System.out.println("storedPath: "+storedPath);
+                    System.out.println("newPath: "+parentPath+artworkInfo.fileSaveName);
                     if (storedPath.contains("[")) {
                         FileUtils.copyFile(new File(storedPath), new File(parentPath + artworkInfo.fileSaveName));
                     } else {
