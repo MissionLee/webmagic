@@ -28,7 +28,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class BookPageProcessor extends AbstractPageProcessor {
     static Logger logger = LoggerFactory.getLogger(BookPageProcessor.class);
-    String BOOK_PAGE_PREFIX = "https://beta.sankakucomplex.com/books/";
+    public String BOOK_PAGE_PREFIX = "https://beta.sankakucomplex.com/books/";
     String BOOK_INFO_RESTFUL_PREFIX = "https://capi-v2.sankakucomplex.com/pools/";
     String BOOK_DETAIL_RESTFUL_PREFIX = "https://capi-v2.sankakucomplex.com/posts/keyset";
     String SHOW_PAGE_PREFIX = "https://chan.sankakucomplex.com/post/show/";

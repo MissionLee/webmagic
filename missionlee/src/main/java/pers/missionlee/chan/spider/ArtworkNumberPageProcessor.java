@@ -37,7 +37,15 @@ public class ArtworkNumberPageProcessor extends AbstractPageProcessor {
             list = page.getHtml().$(".tag-count").all();
         Matcher matcher = SpiderUtils.htmlTextPattern.matcher(list.get(0));
         matcher.find();
-        number = Integer.valueOf(matcher.group(1).trim().replaceAll(",",""));
+
+
+        String number11 = matcher.group(1).trim().replaceAll(",","");
+        if(number11.contains("k")||number11.contains("K")||number11.contains("m")||number11.contains("M") ){
+            number11 = "2000";
+            logger.info("作者作品数量带有k K m M 统一调整为 2000");
+        }
+
+        number = Integer.valueOf(number11);;
         logger.info("NumberPageProcessor: 给定Url解析到作品数量[ "+number+" ] "+page.getUrl().toString());
     }
 

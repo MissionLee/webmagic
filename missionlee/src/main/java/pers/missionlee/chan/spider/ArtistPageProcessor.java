@@ -1,15 +1,14 @@
 package pers.missionlee.chan.spider;
 
 import com.alibaba.fastjson.JSON;
+import pers.missionlee.chan.pojo.ArtistPathInfo;
 import pers.missionlee.chan.service.DataBaseService;
 import pers.missionlee.chan.service.DiskService;
-import pers.missionlee.chan.spider.book.ArtistBookListProcessor;
-import pers.missionlee.chan.spider.book.BookPageProcessor;
 import pers.missionlee.chan.starter.SpiderSetting;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 import us.codecraft.webmagic.Page;
-import us.codecraft.webmagic.Spider;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -25,6 +24,7 @@ public class ArtistPageProcessor extends AbstractTagPageProcessor {
     boolean onlyTryTen;// 下载新作品的时候，只下载前十个，这要是 根据chrome书签下载有的作者作品其实一半
   boolean downloadAllTryBest = false;
   String saveName;
+  ArtistPathInfo artistPathInfo;
     public ArtistPageProcessor(boolean onlyTryTen, boolean autoNextPage, String artistName, DataBaseService dataBaseService, DiskService diskService,String saveName,SpiderSetting spiderSetting) {
         super(artistName, dataBaseService, diskService);
         this.spiderSetting = spiderSetting;
@@ -35,6 +35,8 @@ public class ArtistPageProcessor extends AbstractTagPageProcessor {
         this.saveName = saveName;
         this.storedSanCodes = initStoredSanCodes();
         this.storedFilesMd5 = initStoredFilesMd5();
+        this.initSettingInfo(diskService.getParentPath(ArtworkInfo.getArtistPicPathInfo(artistName),"", ArtworkInfo.STORE_PLACE.ARTIST.storePlace));
+
     }
 
     public ArtistPageProcessor(boolean autoNextPage, String artistName, DataBaseService dataBaseService, DiskService diskService, SpiderSetting spiderSetting,String saveName) {
@@ -46,9 +48,18 @@ public class ArtistPageProcessor extends AbstractTagPageProcessor {
         this.saveName = saveName;
         this.storedSanCodes = initStoredSanCodes();
         this.storedFilesMd5 = initStoredFilesMd5();
+        this.initSettingInfo(diskService.getParentPath(ArtworkInfo.getArtistPicPathInfo(artistName),"", ArtworkInfo.STORE_PLACE.ARTIST.storePlace));
 
     }
-
+    public void initSettingInfo(String artistFilePath){
+        try {
+            System.out.println(artistFilePath);
+            this.artistPathInfo = ArtistPathInfo.refreshInfo(artistFilePath);
+            this.delFileName = this.artistPathInfo.delFileMD5;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     public Set<String> initStoredSanCodes() {
@@ -77,6 +88,8 @@ public class ArtistPageProcessor extends AbstractTagPageProcessor {
 
     @Override
     public void doProcess(Page page) {
+//        System.out.println("??????????????????????????");
+//        System.out.println(page);
         String url = page.getUrl().toString();
         if (url.contains("tags")) {
             if (autoNextPage) {
@@ -88,19 +101,19 @@ public class ArtistPageProcessor extends AbstractTagPageProcessor {
             }
 //            int added = extractUrlFromListPage(page);
             int added = extractUrlFromListPageWithFileNameFilter(page);
-            if (added > 0 && autoNextPage) {
+            if ((added > 0 && autoNextPage)||nextMode) {
                 if(spiderSetting.forceNew){
                     sleep(5);
                 }
                 if (onlyTryTen) {
                     logger.info("作品试下载功能启动（每个作者尝试下载10个作品）");
-                    if (toBeDownloadSanCodes.size() < 5)
+                    if (toBeDownloadSanCodes.size() < 5 )
                         addNextPageAsTarget(page);
                 } else {
                     addNextPageAsTarget(page);
                 }
             }
-        } else if (url.contains("/show/")) {
+        } else if (url.contains("/show/")||url.contains("/posts/")) {
             String pageString = page.getHtml().toString();
             if (pageString.contains("这个帖子已经删除")
                     || pageString.contains("This post was deleted")
@@ -109,6 +122,7 @@ public class ArtistPageProcessor extends AbstractTagPageProcessor {
             ) {
                 logger.info("文件被删除，或者没有访问权限，跳过这个作品："+page.getUrl().toString());
             } else {
+
                 AbstractPageProcessor.Target target = extractDownloadTargetInfoFromDetailPage(page.getHtml());
                 ArtworkInfo artworkInfo = extractArtworkInfoFromDetailPage(page, target);
                 extractArtistFileByArtworkInfo(artworkInfo);

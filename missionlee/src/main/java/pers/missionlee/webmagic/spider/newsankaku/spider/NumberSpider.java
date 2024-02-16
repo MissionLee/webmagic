@@ -32,7 +32,12 @@ public class NumberSpider implements PageProcessor {
 
         Matcher matcher = SpiderUtils.htmlTextPattern.matcher(list.get(0));
         matcher.find();
-        int num = Integer.valueOf(matcher.group(1).trim().replaceAll(",",""));
+        String number = matcher.group(1).trim().replaceAll(",","");
+        if(number.contains("k")||number.contains("K")||number.contains("m")||number.contains("M") ){
+            number = "2000";
+            logger.info("作者作品数量带有k K m M 统一调整为 2000");
+        }
+        int num = Integer.valueOf(number);
         task.setAimNum(num);
     }
 

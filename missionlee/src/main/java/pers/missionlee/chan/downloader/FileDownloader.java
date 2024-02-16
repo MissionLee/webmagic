@@ -70,6 +70,10 @@ public class FileDownloader {
                 }
                 if (responseCode >= 400) {
                     logger.warn("文件大小[" + fileName + "]:请求失败 RESPONSE_STATUS " + responseCode);
+                    if(responseCode == 404){
+                        logger.error("404，下载器直接跳出下载循环");
+                        break;
+                    }
                     if (responseCode == 403) {
                         error403++;
                         logger.info("遇到403错误，检查cookieString刷新情况，此处Sleep 3分钟");
@@ -79,24 +83,28 @@ public class FileDownloader {
                         }
 //                        Thread.sleep(180000);
                     }
-                    if (error403 > 5) {
-                        synchronized ("abc"){
-                            logger.info("系统403 权限问题出现 50次了，智能关机");
-                            if (smartShutDown && FileDownloader.shutDownTime()) {
-                                Runtime rt = Runtime.getRuntime();
-                                rt.exec("shutdown.exe -s -t 40");
-                            }
-                            Thread.sleep(20000);
-                            System.exit(0);
-                        }
-                    }
-                    Thread.sleep(100000);
+//                    if (error403 > 5) {
+//                        synchronized ("abc"){
+//                            logger.info("系统403 权限问题出现 50次了，智能关机");
+//                            if (smartShutDown && FileDownloader.shutDownTime()) {
+//                                Runtime rt = Runtime.getRuntime();
+//                                rt.exec("shutdown.exe -s -t 40");
+//                            }
+//                            Thread.sleep(20000);
+//                            System.exit(0);
+//                        }
+//                    }
+                    Thread.sleep(5000);
                 } else {
                     int fileSize = connection.getContentLength();
                     // A : 根据文件大小 Sleep 从而降低触发 429 的概率
                     String fsize = df.format(fileSize * 1.0 / (1024 * 1024));
                     logger.info("文件大小[" + fileName + "]:" + fsize + "MB[" + fileSize + "bytes]");
                     sleep(fileSize);
+//                    if(fileSize * 1.0 / (1024 * 1024) > 100){
+//                        System.out.println("XX == 超过100mb的不下载了 网络不好 == FileDownloader.101 XX");
+//                        break;
+//                    }
                     String tempName = java.util.UUID.randomUUID().toString();
                     File tempFile = new File(tempPath + tempName);
 

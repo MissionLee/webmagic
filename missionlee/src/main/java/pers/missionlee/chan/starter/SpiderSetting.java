@@ -44,6 +44,25 @@ import java.util.concurrent.atomic.AtomicReference;
  * }
  */
 public class SpiderSetting {
+    public static int sleep429 = 180;
+    public static int sleep502 = 30;
+
+    public static int getSleep502() {
+        return sleep502;
+    }
+
+    public static void setSleep502(int sleep502) {
+        SpiderSetting.sleep502 = sleep502;
+    }
+
+    public static int getSleep429() {
+        return sleep429;
+    }
+
+    public static void setSleep429(int sleep429) {
+        SpiderSetting.sleep429 = sleep429;
+    }
+    public boolean onlyClean;
     public boolean onlyTryTen;
     public boolean smartShutDown;
     public String __cfduid;
@@ -95,11 +114,100 @@ public class SpiderSetting {
     public boolean needKeepDiskAlive =  false;
     public boolean onlyUpdateChosenFolder = false;
     public String[] updateChosenFolder;
-    public int blockSize = 4*1024*1024;
+    public int blockSize ;
     public boolean updateByDateBest ;
     public int sleep =0;
     public String voiceActorPath;
     public boolean autoParentWhileUpdate = true;
+    public boolean vipMode = false;
+    public int allowedPageNum;
+    public int siteRetryTimes ;
+    public int siteCycleRetryTimes ;
+    public int siteRetrySleepTime;
+    public boolean nextMode;
+    public String startName;
+    public String[] singleBookIds;
+    public String delPath;
+
+    public String getDelPath() {
+        return delPath;
+    }
+
+    public boolean isOnlyClean() {
+        return onlyClean;
+    }
+
+    public void setOnlyClean(boolean onlyClean) {
+        this.onlyClean = onlyClean;
+    }
+
+    public void setDelPath(String delPath) {
+        this.delPath = delPath;
+    }
+
+    public String[] getSingleBookIds() {
+        return singleBookIds;
+    }
+
+    public void setSingleBookIds(String[] singleBookIds) {
+        this.singleBookIds = singleBookIds;
+    }
+
+    public String getStartName() {
+        return startName;
+    }
+
+    public void setStartName(String startName) {
+        this.startName = startName;
+    }
+
+    public boolean isNextMode() {
+        return nextMode;
+    }
+
+    public void setNextMode(boolean nextMode) {
+        this.nextMode = nextMode;
+    }
+
+    public int getSiteRetryTimes() {
+        return siteRetryTimes;
+    }
+
+    public void setSiteRetryTimes(int siteRetryTimes) {
+        this.siteRetryTimes = siteRetryTimes;
+    }
+
+    public int getSiteCycleRetryTimes() {
+        return siteCycleRetryTimes;
+    }
+
+    public void setSiteCycleRetryTimes(int siteCycleRetryTimes) {
+        this.siteCycleRetryTimes = siteCycleRetryTimes;
+    }
+
+    public int getSiteRetrySleepTime() {
+        return siteRetrySleepTime;
+    }
+
+    public void setSiteRetrySleepTime(int siteRetrySleepTime) {
+        this.siteRetrySleepTime = siteRetrySleepTime;
+    }
+
+    public int getAllowedPageNum() {
+        return allowedPageNum;
+    }
+
+    public void setAllowedPageNum(int allowedPageNum) {
+        this.allowedPageNum = allowedPageNum;
+    }
+
+    public boolean isVipMode() {
+        return vipMode;
+    }
+
+    public void setVipMode(boolean vipMode) {
+        this.vipMode = vipMode;
+    }
 
     public boolean isAutoParentWhileUpdate() {
         return autoParentWhileUpdate;

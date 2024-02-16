@@ -9,7 +9,7 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bffc4871-1ae7-44a5-babd-8de4910d3ca3" name="Default Changelist" comment="2022 02 27 集体上传" />
+    <list default="true" id="bffc4871-1ae7-44a5-babd-8de4910d3ca3" name="Default Changelist" comment="2024 02 16 集体上传" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -75,60 +75,39 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="GenerateAntBuildDialog.backupFiles" value="true" />
-    <property name="GenerateAntBuildDialog.enableUiFormCompile" value="true" />
-    <property name="GenerateAntBuildDialog.forceTargetJdk" value="true" />
-    <property name="GenerateAntBuildDialog.outputFileNameProperty" value="webmagic-parent" />
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="SearchEverywhereHistoryKey" value="ThreadFactory&#9;PSI&#9;JAVA://java.util.concurrent.ThreadFactory" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1577620095590" />
-    <property name="extract.method.default.visibility" value="private" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
-    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="nodejs_package_manager_path" value="npm" />
-    <property name="project.structure.last.edited" value="Artifacts" />
-    <property name="project.structure.proportion" value="0.118956745" />
-    <property name="project.structure.side.proportion" value="0.13129689" />
-    <property name="settings.editor.selected.configurable" value="vcs.Git" />
-  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/webmagic&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.projectsettings.compiler.javacompiler&quot;
+  }
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\MissionLee\IdeaProjects\webmagic\missionlee\src\main\resources\mybatis\mapper" />
       <recent name="C:\Users\MissionLee\IdeaProjects\webmagic\missionlee\src\main\resources\mybatis" />
     </key>
-    <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="pers.missionlee.webmagic.spider.pixiv.common" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\MissionLee\IdeaProjects\webmagic\missionlee\src\main\java\pers\missionlee\webmagic\spider\newsankaku" />
       <recent name="C:\Users\MissionLee\IdeaProjects\webmagic\missionlee\src\main\resources\mybatis\mapper" />
     </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="pers.missionlee.webmagic.spider.pixiv.common" />
+    </key>
   </component>
   <component name="RunManager" selected="Application.SpiderStarter">
-    <configuration name="AbstractPageProcessor" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="pers.missionlee.chan.spider.AbstractPageProcessor" />
+    <configuration name="ArtistPathInfo" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="pers.missionlee.chan.pojo.ArtistPathInfo" />
       <module name="missionlee" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="pers.missionlee.chan.spider.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="ArtistPageProcessor" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="pers.missionlee.chan.spider.ArtistPageProcessor" />
-      <module name="missionlee" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="pers.missionlee.chan.spider.*" />
+          <option name="PATTERN" value="pers.missionlee.chan.pojo.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -138,6 +117,19 @@
     </configuration>
     <configuration name="DiskService" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="pers.missionlee.chan.service.DiskService" />
+      <module name="missionlee" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="pers.missionlee.chan.service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="KeepDiskAlive" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="pers.missionlee.chan.service.KeepDiskAlive" />
       <module name="missionlee" />
       <extension name="coverage">
         <pattern>
@@ -176,19 +168,19 @@
       </method>
     </configuration>
     <list>
+      <item itemvalue="Application.ArtistPathInfo" />
       <item itemvalue="Application.ParentListPageProcessor" />
-      <item itemvalue="Application.ArtistPageProcessor" />
-      <item itemvalue="Application.AbstractPageProcessor" />
       <item itemvalue="Application.DiskService" />
       <item itemvalue="Application.SpiderStarter" />
+      <item itemvalue="Application.KeepDiskAlive" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Application.SpiderStarter" />
+        <item itemvalue="Application.ArtistPathInfo" />
+        <item itemvalue="Application.KeepDiskAlive" />
         <item itemvalue="Application.ParentListPageProcessor" />
         <item itemvalue="Application.DiskService" />
-        <item itemvalue="Application.AbstractPageProcessor" />
-        <item itemvalue="Application.ArtistPageProcessor" />
       </list>
     </recent_temporary>
   </component>
@@ -568,6 +560,55 @@
       <workItem from="1645891937509" duration="839000" />
       <workItem from="1645892932945" duration="3618000" />
       <workItem from="1645917705684" duration="3705000" />
+      <workItem from="1645966135617" duration="791000" />
+      <workItem from="1647184181339" duration="785000" />
+      <workItem from="1648822675032" duration="1202000" />
+      <workItem from="1650715441866" duration="633000" />
+      <workItem from="1654906370879" duration="1017000" />
+      <workItem from="1654907806794" duration="2599000" />
+      <workItem from="1657820939777" duration="866000" />
+      <workItem from="1658057761341" duration="639000" />
+      <workItem from="1658336050866" duration="757000" />
+      <workItem from="1658358300201" duration="1210000" />
+      <workItem from="1658506920964" duration="617000" />
+      <workItem from="1659111059314" duration="9118000" />
+      <workItem from="1663494821864" duration="8347000" />
+      <workItem from="1665101855764" duration="2348000" />
+      <workItem from="1665914682298" duration="327000" />
+      <workItem from="1665918491977" duration="96066000" />
+      <workItem from="1666504188549" duration="502000" />
+      <workItem from="1666504700758" duration="822000" />
+      <workItem from="1666512135535" duration="21991000" />
+      <workItem from="1666799952818" duration="4363000" />
+      <workItem from="1669304820708" duration="12269000" />
+      <workItem from="1672669161624" duration="19625000" />
+      <workItem from="1674134263878" duration="24000" />
+      <workItem from="1674623879542" duration="44000" />
+      <workItem from="1678809917901" duration="19000" />
+      <workItem from="1682003504666" duration="2953000" />
+      <workItem from="1682428441629" duration="11389000" />
+      <workItem from="1683024456638" duration="4702000" />
+      <workItem from="1686754189535" duration="2168000" />
+      <workItem from="1687494819479" duration="299000" />
+      <workItem from="1687495309782" duration="290000" />
+      <workItem from="1687509871886" duration="592000" />
+      <workItem from="1687510477673" duration="162000" />
+      <workItem from="1687511235683" duration="4385000" />
+      <workItem from="1688803276714" duration="646000" />
+      <workItem from="1694445636184" duration="1148000" />
+      <workItem from="1694776856333" duration="5301000" />
+      <workItem from="1695130655710" duration="6521000" />
+      <workItem from="1695304351419" duration="3565000" />
+      <workItem from="1697886493579" duration="10358000" />
+      <workItem from="1698144783474" duration="3028000" />
+      <workItem from="1702551926672" duration="1706000" />
+      <workItem from="1703160524170" duration="9638000" />
+      <workItem from="1703246424140" duration="11253000" />
+      <workItem from="1703345473692" duration="899000" />
+      <workItem from="1703681250577" duration="5955000" />
+      <workItem from="1704500968662" duration="1904000" />
+      <workItem from="1704543505670" duration="10708000" />
+      <workItem from="1708047103113" duration="1426000" />
     </task>
     <task id="LOCAL-00001" summary="SpiderConfig">
       <created>1555292406689</created>
@@ -772,7 +813,14 @@
       <option name="project" value="LOCAL" />
       <updated>1645965800354</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="2022 02 27 集体上传">
+      <created>1645966186842</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1645966186842</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -808,5 +856,9 @@
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

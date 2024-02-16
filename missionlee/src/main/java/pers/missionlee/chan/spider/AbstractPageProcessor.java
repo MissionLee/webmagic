@@ -154,9 +154,12 @@ public abstract class AbstractPageProcessor implements PageProcessor {
      */
     // TODO: 4/17/2021  原页面逻辑变了
     public AbstractPageProcessor.Target extractDownloadTargetInfoFromDetailPage(Html html) {
+        System.out.println(html.getDocument());
         AbstractPageProcessor.Target target = new AbstractPageProcessor.Target();
+        //页面为图片
         List<String> maybe = html.$("#image-link", "href").all();
-
+        //页面时video
+        maybe.addAll(html.$("#image>source","src").all()) ;
         if (maybe != null && maybe.size() > 0) {  //如果页面内容是个图片，则存在 #image-link
             if (!maybe.get(0).equals("")) { // 有非缩略地址
                 target.targetUrl = "https:" + maybe.get(0);

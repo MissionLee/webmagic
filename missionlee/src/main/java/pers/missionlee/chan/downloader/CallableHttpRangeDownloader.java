@@ -44,8 +44,8 @@ public class CallableHttpRangeDownloader implements Callable {
         int retry = retryLimit;
         while (retry > 0 && !success) {
             InputStream inputStream = null;
+            retry--;
             try {
-                retry--;
 //                URL url = new URL(this.url);
 //                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 HttpURLConnection connection = HCaptchaConnectionFormat.format(this.url,this.referer, "GET");

@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class HCaptchaConnectionFormat {
     //                                 Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36
-    public static String User_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.85 Safari/537.36";
+    public static String User_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
 //    public static String User_agent = "Chrome/90.0.4430.85";
     public static String HCAPTCHA_VERIFY = "https://accounts.hcaptcha.com/verify_email";
     public static String __cfduid_PREFIX = "__cfduid";
@@ -38,23 +38,24 @@ public class HCaptchaConnectionFormat {
         URL url = new URL(formatUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 //        connection.setRequestProperty(":authority",":s.sankakucomplex.com");
-        connection.setRequestProperty("accept","text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9");
+        connection.setRequestProperty("accept","text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7");
         connection.setRequestProperty("accept-encoding","gzip, deflate, br");
-        connection.setRequestProperty("accept-language","en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7");
-//        connection.setRequestProperty("cache-control","no-cache");
-//        connection.setRequestProperty("pragma","no-cache");
+        connection.setRequestProperty("accept-language","en");
+        connection.setRequestProperty("cache-control","no-cache");
+        connection.setRequestProperty("pragma","no-cache");
         connection.setRequestProperty("sec-ch-ua","\" Not;A Brand\";v=\"99\", \"Google Chrome\";v=\"91\", \"Chromium\";v=\"91\"");
         connection.setRequestProperty("sec-ch-ua-mobile","?0");
         connection.setRequestProperty("sec-fetch-dest","image");
-        connection.setRequestProperty("sec-fetch-mode","no-cors");
-        connection.setRequestProperty("sec-fetch-site","same-site");
-//        connection.setRequestProperty("sec-fetch-user","?1");
-//        connection.setRequestProperty("upgrade-insecure-requests","1");
+        connection.setRequestProperty("sec-fetch-mode","navigate");
+        connection.setRequestProperty("sec-fetch-site","same-origin");
+        connection.setRequestProperty("sec-fetch-user","?1");
+        connection.setRequestProperty("upgrade-insecure-requests","1");
         connection.setConnectTimeout(60000);
         connection.setReadTimeout(60000);
         System.out.println("连接超时和读取超时都改成了60s，网络环境太差了");
         connection.setRequestProperty("referer", referer);
         connection.setRequestProperty("User-Agent", User_agent);
+
         connection.setRequestProperty("Cookie", cookieString);
         connection.setRequestMethod(method);
 //        System.out.println(urlStr+"______"+referer+"____________"+cookieString);

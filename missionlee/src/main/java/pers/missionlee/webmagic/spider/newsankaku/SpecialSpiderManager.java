@@ -38,6 +38,7 @@ import java.util.*;
  * @author: Mission Lee
  * @create: 2020-03-30 19:10
  */
+@Deprecated
 public class SpecialSpiderManager {
     public SourceManager source;
     public static Map<String, String> settings = new HashMap<>();// 系统参数

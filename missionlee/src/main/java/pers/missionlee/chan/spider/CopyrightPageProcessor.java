@@ -1,5 +1,6 @@
 package pers.missionlee.chan.spider;
 
+import org.eclipse.jetty.util.ajax.JSON;
 import pers.missionlee.chan.service.DataBaseService;
 import pers.missionlee.chan.service.DiskService;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
@@ -52,6 +53,7 @@ public class CopyrightPageProcessor extends AbstractTagPageProcessor {
 
     @Override
     public void doProcess(Page page) {
+//        System.out.println(page);
         String url = page.getUrl().toString();
         if (url.contains("tags")) {
 //            String pageNum = url.substring(url.lastIndexOf("=")+1);
@@ -62,10 +64,10 @@ public class CopyrightPageProcessor extends AbstractTagPageProcessor {
                 sleep(5);
             }
             int added = extractUrlFromListPageWithFileNameFilter(page);
-            if ( added>0 && autoNextPage ) {
+            if ( (added>0 && autoNextPage)|| nextMode ) {
                 addNextPageAsTarget(page);
             }
-        } else if (url.contains("/show/")) {
+        } else if (url.contains("/show/")||url.contains("/posts/")) {
             String pageString = page.getHtml().toString();
             if (pageString.contains("这个帖子已经删除")
                     || pageString.contains("This post was deleted")
@@ -75,7 +77,9 @@ public class CopyrightPageProcessor extends AbstractTagPageProcessor {
                 logger.info("文件被删除，或者没有访问权限，跳过这个作品：" + page.getUrl().toString());
             } else {
                 AbstractPageProcessor.Target target = extractDownloadTargetInfoFromDetailPage(page.getHtml());
+                System.out.println(JSON.toString(target));
                 ArtworkInfo artworkInfo = extractArtworkInfoFromDetailPage(page, target);
+                System.out.println(JSON.toString(artworkInfo));
 //                extractArtistFileByArtworkInfo(artworkInfo);
                 // // TODO: 6/14/2021  隐藏了上面这一行，因为我们希望，即使存在别的作者哪里，也复制一份过来 
                 artworkInfo.aimName = copyright;

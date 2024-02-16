@@ -1,7 +1,6 @@
 package us.codecraft.webmagic.downloader.selenium;
 
-import org.junit.Ignore;
-import org.junit.Test;
+
 import org.openqa.selenium.WebDriver;
 
 /**
@@ -13,8 +12,8 @@ public class WebDriverPoolTest {
 
     private String chromeDriverPath = "/Users/yihua/Downloads/chromedriver";
 
-    @Ignore("need chrome driver")
-    @Test
+//    @Ignore("need chrome driver")
+//    @Test
     public void test() {
         System.getProperties().setProperty("webdriver.chrome.driver", chromeDriverPath);
         WebDriverPool webDriverPool = new WebDriverPool(5);

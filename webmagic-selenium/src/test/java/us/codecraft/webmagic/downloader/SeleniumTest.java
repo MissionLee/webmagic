@@ -1,7 +1,6 @@
 package us.codecraft.webmagic.downloader;
 
-import org.junit.Ignore;
-import org.junit.Test;
+//
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -19,8 +18,8 @@ import java.util.Map;
  */
 public class SeleniumTest {
 
-    @Ignore("need chrome driver")
-    @Test
+//    @Ignore("need chrome driver")
+//    @Test
     public void testSelenium() {
         System.getProperties().setProperty("webdriver.chrome.driver", "/Users/yihua/Downloads/chromedriver");
         Map<String, Object> contentSettings = new HashMap<String, Object>();

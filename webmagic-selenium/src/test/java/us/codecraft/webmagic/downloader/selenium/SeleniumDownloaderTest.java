@@ -1,7 +1,6 @@
 package us.codecraft.webmagic.downloader.selenium;
 
-import org.junit.Ignore;
-import org.junit.Test;
+
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
@@ -16,8 +15,8 @@ public class SeleniumDownloaderTest {
 
 	private String chromeDriverPath = "/Users/yihua/Downloads/chromedriver";
 
-	@Ignore("need chrome driver")
-	@Test
+//	@Ignore("need chrome driver")
+//	@Test
 	public void test() {
 		SeleniumDownloader seleniumDownloader = new SeleniumDownloader(chromeDriverPath);
 		long time1 = System.currentTimeMillis();
@@ -38,8 +37,8 @@ public class SeleniumDownloaderTest {
 		System.out.println(System.currentTimeMillis() - time1);
 	}
 
-    @Ignore
-	@Test
+//    @Ignore
+//	@Test
 	public void testBaiduWenku() {
 		SeleniumDownloader seleniumDownloader = new SeleniumDownloader(chromeDriverPath);
         seleniumDownloader.setSleepTime(10000);

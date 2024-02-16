@@ -3,6 +3,7 @@ package pers.missionlee.chan.spider.book;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pers.missionlee.chan.pojo.ArtistPathInfo;
 import pers.missionlee.chan.service.DataBaseService;
 import pers.missionlee.chan.service.DiskService;
 import pers.missionlee.chan.spider.AbstractPageProcessor;
@@ -12,6 +13,7 @@ import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -40,6 +42,9 @@ public class ArtistBookListProcessor extends AbstractPageProcessor {
         this.bookSkipPercent = bookSkipPercent;
         this.skipWhileBookIdExits = skipWhileBookIdExists;
         this.realName = realName;
+        this.initSettingInfo(diskService.getParentPath(
+                ArtworkInfo.getArtistPicPathInfo(realName),"",ArtworkInfo.STORE_PLACE.ARTIST.storePlace
+        ));
     }
 
     public ArtistBookListProcessor(List<String> bookUrlList, boolean onlyNew, DataBaseService dataBaseService, DiskService diskService, double bookSkipPercent, boolean skipWhileBookIdExists, boolean skipBookLostPage, String realName) {
@@ -51,8 +56,18 @@ public class ArtistBookListProcessor extends AbstractPageProcessor {
         this.bookSkipPercent = bookSkipPercent;
         this.skipWhileBookIdExits = skipWhileBookIdExists;
         this.realName = realName;
+        this.initSettingInfo(diskService.getParentPath(
+                ArtworkInfo.getArtistPicPathInfo(realName),"",ArtworkInfo.STORE_PLACE.ARTIST.storePlace
+        ));
     }
-
+    public ArtistPathInfo artistPathInfo;
+    public void initSettingInfo(String artistFilePaht){
+        try {
+            this.artistPathInfo = ArtistPathInfo.refreshInfo(artistFilePaht);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
     String realName;
 
 
@@ -70,7 +85,9 @@ public class ArtistBookListProcessor extends AbstractPageProcessor {
 
     @Override
     public void doProcess(Page page) {
+//        System.out.println(page.getHtml());
         String url = page.getUrl().toString();
+
         if (url.startsWith(CHAN_WIKI_PREFIX)) {
             String artistName = url.substring(url.lastIndexOf("/") + 1);
             artistPathName = artistName;
@@ -82,6 +99,9 @@ public class ArtistBookListProcessor extends AbstractPageProcessor {
             // 处理返回数据的  data 字段  data字段就是一个 放着 book信息的 list
             List<Map<String, Object>> bookList = (List<Map<String, Object>>) res.get("data");
             for (int i = 0; i < bookList.size(); i++) {
+                // 已经保存了，根据保存数据和配置要求 判断是否下载
+                // TODO: 2023/1/8 提示用todo  skip 是最终跳过这个作品的判断条件
+                boolean skip = false;
 //                logger.info("列表页面：Book信息JSON   " + bookList.get(i));
                 Map<String, Object> bookInfo = bookList.get(i);
                 String bookName = (String) bookInfo.get("name");
@@ -97,14 +117,22 @@ public class ArtistBookListProcessor extends AbstractPageProcessor {
                 artworkInfo.aimName = this.realName;
                 artworkInfo.fileName = "1.jpg";
                 artworkInfo.PBPrefix = "B";
-//                if(skipWhileBookIdExits && dataBaseService.bookIdExists(bookId)){
-//                    stored = true;
-//                }
+
                 // 判断这个 book 的存在情况
+                // todo:  2023-12-22 新增   0-如果删除列表里面有这个，则跳过
                 // 1-存储作者，指的是 两个名字实际是同一个作者，检查要保存的位置有没有
                 // 2-连接作者，两个作者实际是同一个，当前用其中一个作者明，从网站搜索到的这个作品，看看这个作者名有没有
                 // 3-book的作者tag里面的作者，book tag里面可能有更多的作者，看看有没有存在更多的作者那里
                 // ==== 1.是否在存储作者
+//                System.out.println("不再下载的pool");
+//                System.out.println(artistPathInfo.delPool);
+//                System.out.println("当前book id");
+//                System.out.println(bookId);
+                if(artistPathInfo.delPool.contains(String.valueOf(bookId))){
+                    logger.info("s.json文件夹中记录到删除了这个book 跳过这个book");
+                    stored = true;
+                    markSkip = true;
+                }
                 if(skipWhileBookIdExits && dataBaseService.bookIdExists(bookId)){
                     logger.info("数据库已经记录这个book id，非全部更新的模式下，直接跳过这个book");
 
@@ -135,6 +163,22 @@ public class ArtistBookListProcessor extends AbstractPageProcessor {
                 // TODO: 7/4/2021  通过 artist_tags 判断 book可能存放的位置，如果存在，那么不再下载
                 if (!stored && bookInfo.containsKey("artist_tags")) { // 根据 artist_tags 信息 判断 book是否存在别的作者名下
                     List<Map<String, Object>> artists_tags = (List<Map<String, Object>>) bookInfo.get("artist_tags");
+                    // TODO: 2023/1/8  20230108 发现下载了book但是不属于这个作者，所以此处增加遍历作者清单
+                    boolean findThisArtist = false;
+                    for (int j = 0; j < artists_tags.size(); j++) {
+                        Map<String,Object> art = artists_tags.get(j);
+                        if(art.containsKey("name")){
+                            String name = art.get("name").toString();
+                            if(name.equals(this.realName))
+                                findThisArtist=true;
+                        }
+                    }
+                    if(!findThisArtist){
+                        // TODO: 2023/1/8 判断作品列表中有没有当前作者，如果没有直接跳过，之前好像也有book作者异常多，获取不到作者列表的情况，这里一并处理了
+                        logger.info("作品的作者列表中，没有当前作者，跳过下载");
+
+                        skip =true;
+                    }
                     if (artists_tags.size() >= 3) {
                         logger.info("注意：因为一些特殊跨作者book的原因，一个作品的作者数量大于等于 3 的时候，放弃这个作品");
                         stored = true;
@@ -183,8 +227,7 @@ public class ArtistBookListProcessor extends AbstractPageProcessor {
                 }
                 String bookUrl = CHAN_BOOK_PREFIX + bookId + "?tags=order%3Apopularity%20" + artistPathName;
                 if(stored){
-                    // 已经保存了，根据保存数据和配置要求 判断是否下载
-                    boolean skip = false;
+
                     if(markSkip){
                         skip = true;
                         logger.info("作品=特定标记/或非完整模式=为跳过：" + bookId + "_" + bookName);
@@ -201,7 +244,6 @@ public class ArtistBookListProcessor extends AbstractPageProcessor {
                     }
                     if((storedNum*1.0/postCount)>autoBookSkipPercent){// 保存完整度 满足要求不下载
                         logger.info("作品完整度满[满足跳过条件]跳过下载：" + bookId + "_" + bookName);
-
                     }
                     if(skip){
 

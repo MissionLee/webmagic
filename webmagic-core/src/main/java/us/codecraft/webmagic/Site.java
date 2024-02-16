@@ -26,7 +26,6 @@ public class Site {
     private int sleepTime = 5000;
 
     private int retryTimes = 0;
-    // TODO: 7/10/2021 LMS 把默认值 从 0 改成了 10 
     private int cycleRetryTimes = 0;
 
     private int retrySleepTime = 1000;

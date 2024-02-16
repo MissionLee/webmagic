@@ -11,6 +11,7 @@ import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -66,7 +67,31 @@ public class DiskService {
 
         logger.info("初始化特殊作者名称完成  key 是真是名字， value 是路径名字");
     }
-
+    public void cleanDelPath() throws InterruptedException {
+        String delPath = spiderSetting.delPath;
+        logger.warn("----将要清空"+delPath+"下的所有文件");
+        logger.warn("----距离操作开始还有60s");
+        Thread.sleep(30000);
+        logger.warn("----距离操作开始还有30s");
+        Thread.sleep(20000);
+        logger.warn("----距离操作开始还有10s");
+        Thread.sleep(10000);
+        logger.warn("----开始执行");
+        doDelFile(new File(delPath));
+    }
+    private void doDelFile(File rootDir){
+        File[] files = rootDir.listFiles();
+        for (int i = 0; i < files.length; i++) {
+            File thisFile = files[i];
+            if(thisFile.isDirectory()){
+                logger.info(thisFile.getPath()+thisFile.getName()+"是目录，递归清空其中文件");
+                doDelFile(thisFile);
+            }else{
+                logger.info(thisFile.getPath()+thisFile.getName()+" 执行删除");
+                thisFile.delete();
+            }
+        }
+    }
     private void initArtistInfo() {
         this.CHAN_ARTIST_BASE = PathUtils.buildPath(spiderSetting.getArtistBase());
         this.CHAN_ARTIST_DEFAULT_PIC = PathUtils.buildPath(this.CHAN_ARTIST_BASE, PIC);
@@ -80,6 +105,7 @@ public class DiskService {
         // 提取 作者分级路径下的 作者分布信息
         for (int i = 0; i < spiderSetting.getNormalAddArtistBases().length; i++) {
             String addPoot = PathUtils.buildPath(spiderSetting.getNormalAddArtistBases()[i]);
+            System.out.println("###### "+addPoot);
             File[] addRootChildrenFiles = new File(addPoot).listFiles(PathUtils.aimFileFilter());
             extractPathInfo(addRootChildrenFiles, pics, vids);
         }
@@ -477,6 +503,10 @@ public class DiskService {
     }
 
     public Map<String, String> getArtistFilePath(String artistName) {
+        if(artistName.equals("")){
+            logger.warn("出现了 artistname 为空的情况， 还没注意是什么问题，可能是 关联作者有时候关联出来“空”");
+            return new HashMap<>();
+        }
         String picBasePath = getCommonArtistParentPath(artistName, "1.jpg");
         String vidBasePath = getCommonArtistParentPath(artistName, "1.mp4");
         Map<String, String> filePath = new HashMap<>();
@@ -486,17 +516,20 @@ public class DiskService {
         if (null != picFiles) {
             for (int i = 0; i < picFiles.length; i++) {
                 if (picFiles[i].isDirectory()) {// 如果是目录
-                    if (picFiles[i].getName().equals("del")) {
-                        logger.info("初始化时候跳过del文件夹");
+                    if (picFiles[i].getName().equals("del")||picFiles[i].getName().equals("zdel")) {
+                        logger.info("初始作者MD5跳过文件夹："+picFiles[i].getName());
                     } else {
                         String[] artworks = picFiles[i].list();
                         for (int j = 0; j < artworks.length; j++) {
-                            String fullPath = picBasePath + picFiles[i].getName() + "/" + artworks[j];
-                            String fileName = artworks[j].substring(5);
-                            if (picFiles[i].getName().contains("low"))
-                                fileName = artworks[j];
 
-                            filePath.put(fileName, fullPath);
+                                String fullPath = picBasePath + picFiles[i].getName() + "/" + artworks[j];
+                                String fileName = artworks[j].substring(5);
+                                if (picFiles[i].getName().contains("low"))
+                                    fileName = artworks[j];
+
+                                filePath.put(fileName, fullPath);
+
+
                         }
                     }
                 } else {
@@ -663,6 +696,7 @@ public class DiskService {
 
 
     private void extractPathInfo(File[] childrenDir, Map picMap, Map vidMap) {
+
         for (int i = 0; i < childrenDir.length; i++) {
             String[] artists = childrenDir[i].list();
             String childDirName = childrenDir[i].getName();
@@ -687,7 +721,7 @@ public class DiskService {
         String parentPath = getParentPath(artworkInfo, PBPrefix, storePlace);
         try {
             FileUtils.moveFile(tempFile, new File(parentPath + fileSaveName));
-            logger.info("文件成功保存到[" + fileSaveName + "]： " + parentPath);
+            logger.info("文件成功保存到[" + fileSaveName + "]： " + parentPath.replace("//","/"));
             return true;
         } catch (IOException e) {
             e.printStackTrace();

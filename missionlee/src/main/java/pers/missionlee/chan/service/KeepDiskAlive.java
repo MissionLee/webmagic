@@ -11,6 +11,9 @@ public class KeepDiskAlive implements Runnable {
     public static void keepAlive(String[] paths,Logger logger){
         new Thread(new KeepDiskAlive(paths,logger)).start();
     }
+    public static void keepAlive(String[] paths){
+        new Thread(new KeepDiskAlive(paths)).start();
+    }
     Logger logger ;
     String[] diskFilePath;
     String diskString="";
@@ -19,7 +22,11 @@ public class KeepDiskAlive implements Runnable {
         this.logger = logger;
 
     }
+    public KeepDiskAlive(String[] diskFilePath) {
+        this.diskFilePath = diskFilePath;
+//        this.logger = logger;
 
+    }
     @Override
     public void run() {
         try {
@@ -36,12 +43,18 @@ public class KeepDiskAlive implements Runnable {
             diskString+= diskFilePath[i]+" ";
         }
         while (true){
-            logger.info("正在通过代码，写入"+diskString+"保持磁盘活跃");
+//            logger.info("正在通过代码，写入"+diskString+"保持磁盘活跃");
             Thread.sleep(1000*60);
             for (int i = 0; i < diskFilePath.length; i++) {
                 String path = diskFilePath[i];
                 FileUtils.writeStringToFile(new File(path),"1","utf-8",true);
             }
         }
+    }
+
+    public static void main(String[] args) {
+        String[] path = new String[1];
+        path[0]="F://keepAlive.txt";
+        KeepDiskAlive.keepAlive(path);
     }
 }

@@ -140,6 +140,14 @@ public class ParentListPageProcessor extends AbstractPageProcessor {
 
     @Override
     public void doProcess(Page page) {
+//        System.out.println(page.toString());
+
+//        if(page.getStatusCode() == 302){
+//            logger.info("因为sancode改版，导致parent查找时候有一层302重定向，此处处理");
+//            String newString = page.getHeaders().get("Location").get(0);
+//            logger.info("原始地址："+page.getUrl()+"转向地址"+newString);
+//            page.addTargetRequest(newString);
+//        }
         if (startPage) { // 此处用于处理访问到希望跳过的parentPool的情况：必须把最起始页面的sancode记录下来,进行makeAsSkip 操作
             startPage = false;
             String startUrl = page.getUrl().toString();
@@ -167,17 +175,20 @@ public class ParentListPageProcessor extends AbstractPageProcessor {
         }
         if (url.contains(PARENT_PREFIX) || url.contains(PARENT_PREFIX_2)) {
             processListPage(page);
-        } else if (!parentShowPageDealt && url.contains("/show/")) {
+        } else if(url.contains("show?identifier")){
+            logger.info("检测到parent post链接页面是一个中介页面，从中找到转向的页面");
+            List<String> hrfs = page.getHtml().$("link","href").all();
+            for (int i = 0; i < hrfs.size(); i++) {
+                if(hrfs.get(i).contains("https://chan.sankakucomplex.com/post/show/")||hrfs.get(i).contains("https://chan.sankakucomplex.com/post")){
+                    logger.info("转向的链接："+hrfs.get(i));
+                    page.addTargetRequest(hrfs.get(i));
+                }
+            }
+
+        }else if (!parentShowPageDealt && (url.contains("/show/")||url.contains("/post"))) {
             logger.info("检测到Show页面，此时Parent 信息还未处理，进行parent解析");
             String pageStringg = page.getHtml().toString();
-            if (pageString.contains("This post belongs to") && pageString.contains("a parent post")) {
-                // 如果当前页面是Parent中的子页面，将母页面加入下载列表
-                logger.info("从当前页面解析ParentPage（为了递归找父级 找parent放在前面）:" + page.getUrl());
-//            System.out.println("当前页面是某个Parent的子页面，跳转Parent页面");
-                List<String> href = page.getHtml().$("#parent-preview + div").$("a", "href").all();
-                page.addTargetRequest("https://chan.sankakucomplex.com" + href.get(0));
-//            page.addTargetRequest("https://chan.sankakucomplex.com" + href.get(0));
-            } else if (pageStringg.contains("This post has") && pageString.contains("child post")) {
+             if (pageStringg.contains("This post has") && pageString.contains("child post")) {
                 // 如果当前页面是Parent中的母页面，直接加入带下载列表
                 logger.info("从当前页面解析Child :" + page.getUrl());
 //            System.out.println("“有些”子作品没有记录作品信息（例如作者），所以交给ParentSpider的页面是“母作品”页面，而不是作品列表页面");
@@ -204,7 +215,15 @@ public class ParentListPageProcessor extends AbstractPageProcessor {
 
                 }
 
-            } else {
+            } else if (pageString.contains("This post belongs to") && pageString.contains("a parent post")) {
+                // 如果当前页面是Parent中的子页面，将母页面加入下载列表
+                logger.info("从当前页面解析ParentPage（为了递归找父级 找parent放在前面）:" + page.getUrl());
+//            System.out.println("当前页面是某个Parent的子页面，跳转Parent页面");
+                List<String> href = page.getHtml().$("#parent-preview + div").$("a", "href").all();
+                page.addTargetRequest("https://chan.sankakucomplex.com" + href.get(0));
+//            page.addTargetRequest("https://chan.sankakucomplex.com" + href.get(0));
+            }
+            else {
                 String sanCode = url.substring(url.lastIndexOf("/") + 1);
                 this.sanCodeChecked.add(sanCode);
 //                this.sanCodeChecked.add(sanCode);
@@ -300,7 +319,12 @@ public class ParentListPageProcessor extends AbstractPageProcessor {
 //            String fileName = fileNames.get(i).substring(fileNames.get(i).lastIndexOf("/")+1);
 //            taskController.bookParentInfo.getArtworkInfo().setFileName(fileName);
 //        }
-        List<String> nextPage = page.getHtml().$("#paginator").$(".pagination", "next-page-url").all();
+        // TODO: 2023/9/21  这是一个修改记录 源网站，parent模式访问第二页的时候， url & 符号被转义了，导致访问出现 404 这里改回来
+        List<String> nextPage1 = page.getHtml().$("#paginator").$(".pagination", "next-page-url").all();
+        List<String> nextPage2 = page.getHtml().$("#paginator").$("a", "href").all();
+        logger.warn("20230921 访问下一页404错误, url里面的百分号在网页里面显示为 &amp; 转义，可能以后网站会改回来，需要检查此处处理代码即可");
+        List<String> nextPage = new ArrayList<>();
+        nextPage.add(nextPage1.get(0).replaceAll("&amp;","&"));
         System.out.println("nexPage:" + nextPage + "  // " + nextPage.size());
         // !!!! 必须先处理完所有页面，不然这里没法定位文件顺序
         if (null != nextPage && !nextPage.isEmpty() && !StringUtils.isEmpty(nextPage.get(0))) { // 如果有下一页，先处理下一页
@@ -328,7 +352,7 @@ public class ParentListPageProcessor extends AbstractPageProcessor {
                     this.sanCodeChecked.add(sanCode);
 //                    this.sanCodeChecked.add(sanCode);
                 } else {
-                    logger.info("(代码已经改动不添加这个页面了)添加页面：https://chan.sankakucomplex.com" + url);
+                    logger.info("添加页面：https://chan.sankakucomplex.com" + url);
                     tobeDownloadded.add("https://chan.sankakucomplex.com" + url);
                     // TODO: 4/25/2021 暂时不知道 什么原因 page.add 这一句没法正常执行，调用之后并不启动下载 
 //                    page.addTargetRequest("https://chan.sankakucomplex.com"+url);

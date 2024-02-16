@@ -108,7 +108,7 @@ public abstract class AbstractSpocessSpider implements PageProcessor {
 //        } catch (InterruptedException e) {
 //            e.printStackTrace();
 //        }
-        List<String> urlList = page.getHtml().$(".thumb").$("a", "href").all();
+        List<String> urlList = page.getHtml().$(".content").$(".thumb").$("a", "href").all();
 
         if (urlList != null && urlList.size() > 0) {
             int added = 0;

@@ -1,9 +1,12 @@
 package pers.missionlee.chan.spider;
 
 import org.apache.commons.io.FileUtils;
+import org.eclipse.jetty.util.ajax.JSON;
 import pers.missionlee.chan.service.DataBaseService;
 import pers.missionlee.chan.service.DiskService;
+import pers.missionlee.webmagic.spider.newsankaku.utlis.SpiderUtils;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
+import pers.missionlee.webmagic.spider.sankaku.manager.SourceManager;
 import us.codecraft.webmagic.Page;
 
 import java.io.File;
@@ -23,8 +26,10 @@ public abstract class AbstractTagPageProcessor extends AbstractPageProcessor {
     List<String> relatedArtist;
     Map<String, String> storedFilesMd5; // 当前tag 存储目录下的文件列表
     //    Map<String, String> relatedStoredFilesMd5;// 当前tag 关联存储的 file:path 键值对
+    Set<String> delFileName;
     Set<String> toBeDownloadSanCodes;
-
+    public static int allowedPageNum = 50;
+    public static boolean nextMode = false;
     public AbstractTagPageProcessor(List<String> tags, DataBaseService dataBaseService, DiskService diskService) {
         super(dataBaseService, diskService);
         this.tags = tags;
@@ -97,14 +102,19 @@ public abstract class AbstractTagPageProcessor extends AbstractPageProcessor {
             e.printStackTrace();
         }
         AtomicInteger added = new AtomicInteger(0);
+//        System.out.println(page.getHtml());
         List<String> src = page.getHtml()
+                .$(".content")
                 .$(".thumb")
                 .$("img", "src")
                 .all();
         List<String> url = page.getHtml()
+                .$(".content")
                 .$(".thumb")
                 .$("a", "href")
                 .all();
+        System.out.println(JSON.toString(src));
+        System.out.println(JSON.toString(url));
         if (null != src && src.size() > 0) {
             src.forEach((String fullSrc) -> {
                 if (fullSrc.contains("no-visibility")) {
@@ -119,6 +129,9 @@ public abstract class AbstractTagPageProcessor extends AbstractPageProcessor {
 //                    else if (relatedStoredFilesMd5.containsKey(md5)) {
 //                        logger.info("外关联MD5[" + md5 + "]已存在:" + relatedStoredFilesMd5.get(md5));
 //                    }
+                    else if(this.delFileName.contains(md5)){
+                        logger.info("本作者删除列表MD5[" + md5 + "]已存在");
+                    }
                     else {
                         int index = getIndexFromList(src, fullSrc);
                         String fullUrl = url.get(index);
@@ -216,13 +229,26 @@ public abstract class AbstractTagPageProcessor extends AbstractPageProcessor {
     }
 
     public void addNextPageAsTarget(Page page) {
-        String url = page.getUrl().toString();
-        String thisPage = url.substring(url.lastIndexOf("=") + 1);
-        int thisPageNum = Integer.valueOf(thisPage);
-        String urlPrefix = url.substring(0, url.lastIndexOf("=") + 1);
-        ++thisPageNum;
-        if (thisPageNum <= 50)
-            page.addTargetRequest(urlPrefix + (thisPageNum));
+        System.out.println("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY  NEXT"+nextMode);
+        if(nextMode){
+
+            List<String> nextPages =page.getHtml().$(".pagination","next-page-url").all();
+           if(nextPages.size()>0){
+               System.out.println("next next:"+nextPages.get(0));
+               page.addTargetRequest((SpiderUtils.BASE_URL+nextPages.get(0)).replaceAll("&amp;","&"));
+           }
+
+        }else{
+            String url = page.getUrl().toString();
+
+            String thisPage = url.substring(url.lastIndexOf("=") + 1);
+            int thisPageNum = Integer.valueOf(thisPage);
+            String urlPrefix = url.substring(0, url.lastIndexOf("=") + 1);
+            ++thisPageNum;
+            if (thisPageNum <= allowedPageNum )
+                page.addTargetRequest(urlPrefix + (thisPageNum));
+        }
+
     }
 
 }

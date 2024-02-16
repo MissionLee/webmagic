@@ -9,7 +9,7 @@ import com.sun.istack.internal.Nullable;
  * @create: 2020-04-19 18:03
  */
 public class LevelInfo {
-        public int artistId;
+        public String artistId;
         public String name;
         public int picLevel = 10;
         public int vidLevel = 10;
@@ -20,7 +20,7 @@ public class LevelInfo {
             this.name = name;
         }
 
-        public LevelInfo(Integer artistId, String name, @Nullable Integer picLevel,@Nullable String picPath,@Nullable Integer vidLevel,@Nullable String vidPath) {
+        public LevelInfo(String artistId, String name, @Nullable Integer picLevel,@Nullable String picPath,@Nullable Integer vidLevel,@Nullable String vidPath) {
                 this.artistId = artistId;
                 this.name = name;
                 if(picLevel !=null)

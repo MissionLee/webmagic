@@ -6,17 +6,17 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="webmagic-selenium" />
         <module name="webmagic-samples" />
-        <module name="webmagic-core" />
-        <module name="missionlee" />
-        <module name="webmagic-saxon" />
+        <module name="webmagic-selenium" />
         <module name="webmagic-scripts" />
         <module name="webmagic-extension" />
+        <module name="missionlee" />
+        <module name="webmagic-saxon" />
+        <module name="webmagic-core" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="8">
-      <module name="missionlee" target="8" />
+      <module name="missionlee" target="1.8" />
       <module name="webmagic-core" target="1.6" />
       <module name="webmagic-extension" target="1.6" />
       <module name="webmagic-parent" target="1.6" />

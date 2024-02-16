@@ -19,6 +19,7 @@ import pers.missionlee.webmagic.spider.newsankaku.utlis.PathUtils;
 import pers.missionlee.webmagic.spider.newsankaku.utlis.SpiderUtils;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 import pers.missionlee.webmagic.utils.ChromeBookmarksReader;
+import sun.security.provider.ConfigFile;
 import us.codecraft.webmagic.Spider;
 
 import java.io.File;
@@ -35,12 +36,37 @@ import java.util.*;
 public class SpiderStarter {
     Logger logger = LoggerFactory.getLogger(SpiderStarter.class);
     public List<String> skipNames;
+    public static Map<String,String> analysisSiteCookie(String cookieString){
+        String[] cookiePairs = cookieString.split("; ");
+        Map<String,String> siteCookie = new HashMap<>();
+        for (int i = 0; i < cookiePairs.length; i++) {
+            System.out.println(cookiePairs[i]);
+            if(cookiePairs[i].contains("=")){
+                String key = cookiePairs[i].substring(0,cookiePairs[i].indexOf("="));
+                String value = cookiePairs[i].substring(cookiePairs[i].indexOf("="));
+                siteCookie.put(key,value);
 
+            }else{
+                String key = cookiePairs[i].trim();
+                siteCookie.put(key,null);
+            }
+
+
+        }
+        return siteCookie;
+    }
     public SpiderStarter(String settingPath) throws IOException {
         File settingsFile = new File(settingPath);
         String settingString = FileUtils.readFileToString(settingsFile, "UTF8");
         // 初始化配置信息
         this.spiderSetting = JSON.parseObject(settingString, SpiderSetting.class);
+        if(null == spiderSetting.startName || "".equals(spiderSetting.startName)){
+            startNameStart = true;
+        }
+        logger.info("解析到的配置信息如下：");
+        logger.info("----------------------------------------------");
+        logger.info(JSON.toJSONString(this.spiderSetting));
+        logger.info("----------------------------------------------");
 //        HCaptchaConnectionFormat.refreshCookie(spiderSetting.__cfduid,spiderSetting.cf_chl_2,spiderSetting.cf_chl_prog,spiderSetting.cf_clearance);
         HCaptchaConnectionFormat.cookieString = spiderSetting.cookieString[0];
         HCaptchaConnectionFormat.cookieStrings = Arrays.asList(spiderSetting.cookieString);
@@ -49,12 +75,19 @@ public class SpiderStarter {
         CallableHttpRangeDownloader.retryLimit = spiderSetting.retryTime;
         FileDownloader.retryLimit = spiderSetting.retryTime;
         FileDownloader.smartShutDown = spiderSetting.smartShutDown;
-        SpiderUtils.site.setRetryTimes(30);
-        SpiderUtils.site.setCycleRetryTimes(99);
-        SpiderUtils.site.setRetrySleepTime(5000);
+        SpiderUtils.site.setRetryTimes(spiderSetting.siteRetryTimes);
+        SpiderUtils.site.setCycleRetryTimes(spiderSetting.siteCycleRetryTimes);
+        SpiderUtils.site.setRetrySleepTime(spiderSetting.siteRetrySleepTime);
+        SpiderUtils.allowedPageNum = spiderSetting.allowedPageNum;
+        System.out.println("XYXYXYXYXYXYXYXYXYXYX  site cookie 原本来自json配置文件siteCookie，现在也用 cookieString解析");
+        System.out.println(analysisSiteCookie(spiderSetting.cookieString[0]));
+        spiderSetting.siteCookie=analysisSiteCookie(spiderSetting.cookieString[0]);
         spiderSetting.siteCookie.forEach((String key,String value)->{
             SpiderUtils.site.addCookie(key,value);
         });
+        System.out.println(spiderSetting.siteCookie);
+        AbstractTagPageProcessor.allowedPageNum = spiderSetting.allowedPageNum;
+        AbstractTagPageProcessor.nextMode = spiderSetting.nextMode;
         logger.info("配置信息：" + JSON.toJSONString(this.spiderSetting));
         // 初始化ChromeBookMark 解析
         this.reader = new ChromeBookmarksReader(this.spiderSetting.chromePath);
@@ -409,7 +442,11 @@ public class SpiderStarter {
                             logger.info("完毕");
                             sleep();
                         } else if(8 == mode){
-
+                            try {
+                                diskService.cleanDelPath();
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
                         }
                     }
                     break;
@@ -439,20 +476,23 @@ public class SpiderStarter {
                         autoUpdateCopyright();
                     }
                     break;
-//                    case "g":{
-//                        downloadStudio(workParam);
-//                    }
-//                    break;
-//                    case "h":{
-//                        autoUpdateStudio();
-//                    }
-//                    break;
-//                    case "i":{
-//                        downloadTag(workParam);
-//                    };
-//                    case "j":{
-//                        autoUpdateTag();
-//                    }
+                    case "g":{
+                        SpiderUtils.BASE_URL =SpiderUtils.BASE_IDOL_URL;
+                        SpiderUtils.BASE_SEARCH_URL = SpiderUtils.BASE_SEARCH_IDOL_URL;
+                        SpiderUtils.site.addHeader("Host", "idol.sankakucomplex.com");
+                        downloadArtistWithChromeBookmarks(workParam);
+                        SpiderUtils.site.addHeader("Host", "chan.sankakucomplex.com");
+                        SpiderUtils.BASE_URL =SpiderUtils.BASE_CHAN_URL;
+                        SpiderUtils.BASE_SEARCH_URL = SpiderUtils.BASE_SEARCH_CHAN_URL;
+
+                    }break;
+                    case "h":{
+                        downloadBookWithBookId(workParam);
+                        break;
+                    }
+                    case "i":{
+                        downloadSeriesWithSeriesId();
+                    }
                     case "auto": {
                         autoRun();
                     }
@@ -460,7 +500,38 @@ public class SpiderStarter {
             }
         }
     }
+    public void downloadBookWithBookId(String folder){
+        List<String> bookids = Arrays.asList(spiderSetting.singleBookIds);
+        List<Map> urls = reader.getBookMarkListByDirName(folder);
+        System.out.println(urls);
+        for(Map bookMakr:urls){
+            String url = bookMakr.get("url").toString();
+            if(url.contains("book")&&url.contains(SpiderUtils.BASE_BOOK_URL)){
+                if(url.contains("?")){
+                    url=url.substring(0,url.indexOf("?"));
+                }
+                BookPageProcessor bookPageProcessor = new BookPageProcessor("",true,dataBaseService,diskService,spiderSetting.skipBookLostPage,spiderSetting);
+                bookPageProcessor.flexSite=BookPageProcessor.site;
+                Spider.create(bookPageProcessor).addUrl(url).thread(spiderSetting.threadNum).run();
+            }
+        }
 
+            bookids.forEach(id->{
+
+                BookPageProcessor bookPageProcessor = new BookPageProcessor("",true,dataBaseService,diskService,spiderSetting.skipBookLostPage,spiderSetting);
+                bookPageProcessor.flexSite=BookPageProcessor.site;
+                String iUrl=id;
+                if(iUrl.contains(bookPageProcessor.BOOK_PAGE_PREFIX)){
+
+                }else{
+                    iUrl= bookPageProcessor.BOOK_PAGE_PREFIX+id;
+                }
+                Spider.create(bookPageProcessor).addUrl(iUrl).thread(spiderSetting.threadNum).run();
+            });
+    }
+    public void downloadSeriesWithSeriesId(){
+
+    }
     public void sleep() {
         try {
             Thread.sleep(30000);
@@ -510,10 +581,10 @@ public class SpiderStarter {
         for (Map bookmark : urls
         ) {
             String url = bookmark.get("url").toString();
-            if (url.contains("/show/") && url.contains("https://chan.sankakucomplex.com/")) {
+            if (url.contains("/show/") && url.contains(SpiderUtils.BASE_URL)) {
                 singleUrlTobeClassify.add(url);
                 logger.info("独立页面：" + url);
-            } else if (url.contains("https://chan.sankakucomplex.com/") && url.contains("tags=")) {
+            } else if (url.contains(SpiderUtils.BASE_URL) && url.contains("tags=")) {
                 // TODO: 4/10/2021 现在先把 所有 带有 tags=XX 的都当作作者来看
                 String artistName = "";
                 if (url.contains("&")) {
@@ -538,13 +609,21 @@ public class SpiderStarter {
             String picPath = diskService.getParentPath(artworkInfo, "", artworkInfo.storePlace);
             artworkInfo.fileName = "1.mp4";
             String vidPath = diskService.getParentPath(artworkInfo, "", artworkInfo.storePlace);
-            if (dataBaseService.checkArtistIsTarget(artistName)||
+            // dataBaseService.checkArtistIsTarget(artistName)||   ⭐怀疑 数据库 isTarget检测有问题，只进行路经检测才是靠谱一些的
+            if (
                     new File(picPath).exists() || new File(vidPath).exists()) {
                 logger.info("作者：" + artistName + " 已经下载过了");
             } else {
                 logger.info("启动下载[Artist]：" + artistName);
                 // 遍历现有文件目录，如果没有这个作者，那么下载这个作者
-                downloadArtist(artistName, false);
+                if(spiderSetting.nextMode){
+                    logger.info("nextMode 模式下，把 1-xxx模式下载 也调整为 更新的nextMode");
+                    downloadArtist(artistName, true);
+                }else{
+                    logger.info("非nextMode 模式下 按照传统模式下在");
+                    downloadArtist(artistName, false);
+                }
+
             }
                 dataBaseService.touchArtist(artistName, System.currentTimeMillis());
         }
@@ -588,8 +667,22 @@ public class SpiderStarter {
 
     // 作者部分 =============================================
     // 下载单个作者  返回下载作品数量
+    boolean startNameStart = false;
     public int downloadArtist(String artistName, boolean update) {
         logger.info("==================== 作者："+artistName+" =================");
+        if(startNameStart){
+
+        }else{
+            if(artistName.equals(spiderSetting.startName)){
+                startNameStart = true;
+            }
+        }
+        if(startNameStart){
+
+        }else{
+            logger.info("因为开启了 startName模式 并且还未发现startName，所以跳过");
+            return 99999;
+        }
         if (skipNames.contains(artistName)) {
             logger.info("这个作者因为被标记为 voice actor 或者 audio design 所以跳过更新   " + artistName);
             return 0;
@@ -597,46 +690,60 @@ public class SpiderStarter {
         String realName = spiderSetting.getRelationName(artistName);
         String[] keys = new String[1];
         keys[0] = artistName;
-        if (update && !spiderSetting.forceNew) { // 只有更新模式，并且不强制以新作模式运行的时候，才更新
+      if (update && !spiderSetting.forceNew) { // 只有更新模式，并且不强制以新作模式运行的时候，才更新
             // 以下逻辑 用于 更新内容
             // TODO: 6/19/2021  key用原始key  但是 savename(realName) 是处理后的
-            String url = SpiderUtils.getUpdateStartUrl(keys);
+          String url;
+            if(spiderSetting.nextMode){
+                url = SpiderUtils.getNextModeUrl(keys);
+            }else{
+                url = SpiderUtils.getUpdateStartUrl(keys);
+            }
+
             ArtistPageProcessor artistPageProcessor =
                     new ArtistPageProcessor(
                             false, true, artistName,
                             dataBaseService, diskService,realName,spiderSetting);
-            Spider.create(artistPageProcessor).addUrl(url).thread(spiderSetting.threadNum).run();
-            // 以下逻辑 用于 判断是否自动 book 一个作品
-            ArtworkInfo artworkInfo = new ArtworkInfo();
-            artworkInfo.fileName = "1.jpg";
-            artworkInfo.aimName = artistName;
-            artworkInfo.PBPrefix = "B";
-            artworkInfo.storePlace = ArtworkInfo.STORE_PLACE.ARTIST.storePlace;
-            artworkInfo.artistType = ArtworkInfo.ARTIST_TYPE.ARTIST.artistType;
-            if (artistPageProcessor.downloaded > 0
-                    && spiderSetting.autoBook  //
-                    && diskService.getParentPath(artworkInfo, artworkInfo.PBPrefix, artworkInfo.storePlace).contains(spiderSetting.bookParentArtistBase.substring(spiderSetting.bookParentArtistBase.lastIndexOf("/") + 1))
-            ) {// 1.下载了新内容 2。启动了自动 book 3. 这个作者存储位置位于 “bookParentArtistBase” 中
-                String prefix = "https://beta.sankakucomplex.com/wiki/en/";
-                String urlName = artistName.replaceAll(" ", "_");
-                String searchUrl = prefix + urlName;
-                List<String> bookUrl = new ArrayList<>();
-                ArtistBookListProcessor processor =
-                        new ArtistBookListProcessor(
-                                bookUrl, false, dataBaseService,
-                                diskService, spiderSetting.autoBookSkipPercent,
-                                spiderSetting.bookSkipPercent, true,
-                                spiderSetting.skipBookLostPage,realName);
-                Spider.create(processor).addUrl(searchUrl).run();
+            if(!spiderSetting.onlyClean){
+                Spider.create(artistPageProcessor).addUrl(url).thread(spiderSetting.threadNum).run();
+                // 以下逻辑 用于 判断是否自动 book 一个作品
+                ArtworkInfo artworkInfo = new ArtworkInfo();
+                artworkInfo.fileName = "1.jpg";
+                artworkInfo.aimName = artistName;
+                artworkInfo.PBPrefix = "B";
+                artworkInfo.storePlace = ArtworkInfo.STORE_PLACE.ARTIST.storePlace;
+                artworkInfo.artistType = ArtworkInfo.ARTIST_TYPE.ARTIST.artistType;
+                if ( artistPageProcessor.downloaded > 0
+                        && spiderSetting.autoBook  //
+                        && diskService.getParentPath(artworkInfo, artworkInfo.PBPrefix, artworkInfo.storePlace)
+                        .contains(spiderSetting.bookParentArtistBase
+                                .substring(spiderSetting.bookParentArtistBase.lastIndexOf("/") + 1))
+                ) {// 1.下载了新内容 2。启动了自动 book 3. 这个作者存储位置位于 “bookParentArtistBase” 中
+                    String prefix = "https://beta.sankakucomplex.com/wiki/en/";
+                    String urlName = artistName.replaceAll(" ", "_");
+                    String searchUrl = prefix + urlName;
+                    List<String> bookUrl = new ArrayList<>();
+                    ArtistBookListProcessor processor =
+                            new ArtistBookListProcessor(
+                                    bookUrl, false, dataBaseService,
+                                    diskService, spiderSetting.autoBookSkipPercent,
+                                    spiderSetting.bookSkipPercent, spiderSetting.skipExistDBBook,
+                                    spiderSetting.skipBookLostPage,realName);
+                    Spider.create(processor).addUrl(searchUrl).run();
 
-                for (String iUrl :
-                        bookUrl) {
-                    BookPageProcessor bookPageProcessor = new BookPageProcessor(artistName, false, dataBaseService, diskService, spiderSetting.skipBookLostPage,spiderSetting);
-                    bookPageProcessor.flexSite = BookPageProcessor.site;
-                    Spider.create(bookPageProcessor).addUrl(iUrl).thread(spiderSetting.threadNum).run();
-                    artistPageProcessor.downloaded += bookPageProcessor.downloaded;
+                    for (String iUrl :
+                            bookUrl) {
+                        BookPageProcessor bookPageProcessor = new BookPageProcessor(artistName, false, dataBaseService, diskService, spiderSetting.skipBookLostPage,spiderSetting);
+                        bookPageProcessor.flexSite = BookPageProcessor.site;
+                        Spider.create(bookPageProcessor).addUrl(iUrl).thread(spiderSetting.threadNum).run();
+                        artistPageProcessor.downloaded += bookPageProcessor.downloaded;
+                    }
                 }
+            }else{
+                artistPageProcessor.downloaded=0;
             }
+
+
             return artistPageProcessor.downloaded;
         } else { // ===============   10个作品模式   或者   全部下载模式
             if (spiderSetting.onlyTryTen) {
@@ -683,9 +790,13 @@ public class SpiderStarter {
         }
     }
     boolean onlyUpdateChosenFolder = false;
+
+    public boolean isOnlyUpdateChosenFolder = false;
     public void updateChosenFolder(String level){
         onlyUpdateChosenFolder = true;
+        isOnlyUpdateChosenFolder = true;
         updateArtistByLevel(level);
+        isOnlyUpdateChosenFolder = false;
 
     }
     // 根据等级更新作者
@@ -711,15 +822,22 @@ public class SpiderStarter {
             }
             if(update){
                 int downloaded = downloadArtist(name, true);
-                if(spiderSetting.autoParentWhileUpdate && downloaded>0 ){
+                if(isOnlyUpdateChosenFolder||(spiderSetting.autoParentWhileUpdate&&downloaded!=99999 && (downloaded>0&&downloaded<9999))){
+                    // 自动更新book parent 的前置条件
+                    // 如果自动更新总开关开启
+                    // 下载量不是 99999 => startname 模式
+                    //  下载量大于 0
+                    //  当前在更新某个指定目录的book工作模式下 isOnlyUpdateChosenFolder
                     boolean sblp = spiderSetting.skipBookLostPage;
                     boolean skedbb = spiderSetting.skipExistDBBook;
-                    spiderSetting.skipBookLostPage = true;
-                    if(lv<=1){
-                        spiderSetting.skipBookLostPage = false;
-                    }
-                    spiderSetting.skipExistDBBook = true;
+//                    spiderSetting.skipBookLostPage = true;
+//                    if(lv<=1){
+//                        spiderSetting.skipBookLostPage = false;
+//                    }
+//                    spiderSetting.skipExistDBBook = true;
+                    if(spiderSetting.autoBook)
                     downloadArtistBook(name);
+                    if(spiderSetting.autoParent)
                     downloadArtistParent(name);
                     diskService.cleanArtistBookParentBases(name);
                     spiderSetting.skipBookLostPage = sblp;
@@ -878,10 +996,18 @@ public class SpiderStarter {
     }
 
     public void updateCopyrightOfficial(String copyright) {
+        System.out.println("ZZZZZZZZZZZZZ next next"+spiderSetting.nextMode);
         List<String> tags = new ArrayList<>();
         tags.add(copyright);
         CopyrightPageProcessor pageProcessor = new CopyrightPageProcessor(true,tags,dataBaseService,diskService);
-        String startUrl = SpiderUtils.getUpdateStartUrl(copyright,"official art");
+        String startUrl;
+        if(spiderSetting.nextMode){
+            System.out.println("update copyright official next mode");
+            startUrl = SpiderUtils.getNextModeUrl(copyright,"official art");
+        }else{
+
+        startUrl = SpiderUtils.getUpdateStartUrl(copyright,"official art");
+        }
         Spider.create(pageProcessor).thread(spiderSetting.threadNum).addUrl(startUrl).run();
     }
     public void autoUpdateCopyright(){
@@ -897,8 +1023,17 @@ public class SpiderStarter {
     }
     public static void main(String[] args) throws InterruptedException {
 
-        args = new String[1];
-        args[0] = "F:/new-setting.json";
+
+        System.out.println("程序会读取第一个参数，作为 spider setting文件的绝对路径,如果没有传入，默认读取G:/new-setting.json");
+        System.out.println("提示 只更新指定目录的条件下，如果开启了 自动 book ，即使更新数量为0，也会自动下载book");
+        if(args.length==0){
+            System.out.println("使用默认路径：G:/new-setting.json");
+                    args = new String[1];
+        args[0] = "G:/new-setting.json";
+        }{
+            System.out.println("参数路径为："+args[0]);
+
+        }
         try {
 //            Thread.sleep(1000*60*30*3);
             if (args.length == 1) {
