@@ -3,6 +3,7 @@ package pers.missionlee.chan.starter;
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pers.missionlee.chan.downloader.CallableHttpRangeDownloader;
@@ -373,6 +374,8 @@ public class SpiderStarter {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        logger.info("配置chrome driver 地址");
+        System.setProperty("webdriver.chrome.driver","C://Program Files/chromedriver-win64/chromedriver.exe");
         FileDownloader.blockSize = spiderSetting.blockSize;
         String[] works = this.spiderSetting.works;
         for (int i = 0; i < works.length; i++) {
@@ -705,6 +708,9 @@ public class SpiderStarter {
                             false, true, artistName,
                             dataBaseService, diskService,realName,spiderSetting);
             if(!spiderSetting.onlyClean){
+                logger.warn("在更新模式下引入ChromeDriver 完成登陆操作 ");
+                ChromeDriver driver = new ChromeDriver();
+//                driver.get()
                 Spider.create(artistPageProcessor).addUrl(url).thread(spiderSetting.threadNum).run();
                 // 以下逻辑 用于 判断是否自动 book 一个作品
                 ArtworkInfo artworkInfo = new ArtworkInfo();

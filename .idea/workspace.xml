@@ -9,7 +9,10 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bffc4871-1ae7-44a5-babd-8de4910d3ca3" name="Default Changelist" comment="2024 02 16 集体上传" />
+    <list default="true" id="bffc4871-1ae7-44a5-babd-8de4910d3ca3" name="Default Changelist" comment="2024 02 16 集体上传">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/starter/SpiderStarter.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/starter/SpiderStarter.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -50,7 +53,7 @@
     </option>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="managed" />
+        <entry key="$PROJECT_DIR$" value="20240216" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -609,6 +612,7 @@
       <workItem from="1704500968662" duration="1904000" />
       <workItem from="1704543505670" duration="10708000" />
       <workItem from="1708047103113" duration="1426000" />
+      <workItem from="1708049213730" duration="4651000" />
     </task>
     <task id="LOCAL-00001" summary="SpiderConfig">
       <created>1555292406689</created>
@@ -820,7 +824,14 @@
       <option name="project" value="LOCAL" />
       <updated>1645966186842</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="2024 02 16 集体上传">
+      <created>1708049312722</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1708049312722</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -844,7 +855,8 @@
     <MESSAGE value="新版本 基本完成，留档一次" />
     <MESSAGE value="2021 07 13 集体上传" />
     <MESSAGE value="2022 02 27 集体上传" />
-    <option name="LAST_COMMIT_MESSAGE" value="2022 02 27 集体上传" />
+    <MESSAGE value="2024 02 16 集体上传" />
+    <option name="LAST_COMMIT_MESSAGE" value="2024 02 16 集体上传" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
