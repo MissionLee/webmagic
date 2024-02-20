@@ -1,12 +1,9 @@
-package pers.missionlee.chan.downloader;
-
-import pers.missionlee.webmagic.spider.newsankaku.utlis.Downloader;
+package pers.missionlee.chan.filedownloader;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;

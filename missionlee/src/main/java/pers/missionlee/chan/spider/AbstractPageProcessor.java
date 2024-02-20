@@ -1,13 +1,10 @@
 package pers.missionlee.chan.spider;
 
 import com.alibaba.fastjson.JSON;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pers.missionlee.chan.downloader.FileDownloader;
+import pers.missionlee.chan.filedownloader.FileDownloader;
 import pers.missionlee.chan.service.DataBaseService;
 import pers.missionlee.chan.service.DiskService;
 import pers.missionlee.webmagic.spider.newsankaku.utlis.SpiderUtils;
@@ -20,7 +17,6 @@ import us.codecraft.webmagic.selector.Html;
 import us.codecraft.webmagic.selector.Selectable;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

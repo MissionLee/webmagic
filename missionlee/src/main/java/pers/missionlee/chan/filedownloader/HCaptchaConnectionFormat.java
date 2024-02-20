@@ -1,16 +1,8 @@
-package pers.missionlee.chan.downloader;
+package pers.missionlee.chan.filedownloader;
 
-import com.alibaba.fastjson.JSON;
-import org.apache.commons.io.FileUtils;
-import pers.missionlee.chan.starter.SpiderSetting;
-
-import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

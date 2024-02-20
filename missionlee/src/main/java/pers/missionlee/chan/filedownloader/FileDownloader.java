@@ -1,27 +1,16 @@
-package pers.missionlee.chan.downloader;
+package pers.missionlee.chan.filedownloader;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pers.missionlee.chan.service.DataBaseService;
-import pers.missionlee.chan.service.DiskService;
-import pers.missionlee.chan.starter.SpiderSetting;
-import pers.missionlee.webmagic.spider.newsankaku.utlis.Downloader;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
-import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;

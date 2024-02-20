@@ -2,11 +2,13 @@ package pers.missionlee.chan.webdrivertest;
 
 
 
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.io.IOException;
+import java.util.Set;
 
 public class Test {
     public static void main(String[] args) {
@@ -30,6 +32,9 @@ public class Test {
         WebDriver driver = new ChromeDriver(options);
         driver.get("https://www.baidu.com");
         String source = driver.getPageSource();
-        System.out.println(source);
+        Set<Cookie> cookies =driver.manage().getCookies();
+        for (Cookie cookie : cookies) {
+            System.out.println(cookie);
+        }
     }
 }
