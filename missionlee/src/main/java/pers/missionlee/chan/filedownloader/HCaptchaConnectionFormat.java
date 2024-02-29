@@ -1,9 +1,13 @@
 package pers.missionlee.chan.filedownloader;
 
+import us.codecraft.webmagic.Site;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @description:
@@ -54,14 +58,23 @@ public class HCaptchaConnectionFormat {
         return connection;
     }
 
-    public static boolean refreshCookieString() {
-        for (int i = 0; i < cookieStrings.size()-1 ; i++) {
-            if(cookieString.equals(cookieStrings.get(i))){
-                cookieString = cookieStrings.get(i+1);
-                return true;
-            }
+    public static boolean refreshCookieString(Site site) {
+        Map<String,String> cookie = site.getCookies();
+        Set<String> keySet= cookie.keySet();
+        String tmp="";
+        for (String key :
+                keySet) {
+            tmp=tmp+key+"="+cookie.get(key)+";";
         }
-        return false;
+        cookieString = tmp;
+        return true;
+//        for (int i = 0; i < cookieStrings.size()-1 ; i++) {
+//            if(cookieString.equals(cookieStrings.get(i))){
+//                cookieString = cookieStrings.get(i+1);
+//                return true;
+//            }
+//        }
+//        return false;
     }
 
     public static String formatUrl(String url) {

@@ -1,12 +1,23 @@
 package pers.missionlee.chan.pagedownloader;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.Cookie;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
+import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Task;
 import us.codecraft.webmagic.downloader.Downloader;
+import us.codecraft.webmagic.downloader.HttpClientDownloader;
+import us.codecraft.webmagic.selector.Html;
+import us.codecraft.webmagic.selector.PlainText;
 
+import java.io.IOException;
+import java.net.Socket;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,6 +33,11 @@ public class MixDownloader implements Downloader{
     private String chromeDriverPath;
     private String debuggingPort;
     private Set<String> urlPatterns;
+
+    private HttpClientDownloader httpClientDownloader ;
+
+    private ChromeDriver chromeDriver;
+
     /**
      * chromePath: 爬虫用的谷歌浏览器路径，用于系统启动浏览器
      * chromeDriverPath: Chrome浏览器WebDriver路径
@@ -36,6 +52,7 @@ public class MixDownloader implements Downloader{
             urlPatterns = new HashSet(){
                 {
                     add(".*page.*");
+                    add("*tags*");
                 }
             };
         }
@@ -43,6 +60,11 @@ public class MixDownloader implements Downloader{
         this.chromeDriverPath=chromeDriverPath;
         this.debuggingPort=debuggingPort;
         this.urlPatterns=urlPatterns;
+
+        this.init();
+
+    }
+    private void init(){
         logger.warn("#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#");
         logger.warn("爬虫系统将使用WebDriver与HttpClient混合模式工作"
                 +"\nChrome浏览器路径 "+chromePath
@@ -53,13 +75,67 @@ public class MixDownloader implements Downloader{
         logger.warn("#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#");
         // 配置 chromeDriver
         System.setProperty("webdriver.chrome.driver",chromeDriverPath);
+        // 判断给定端口是否存活
+        try {
+            Socket socket = new Socket("127.0.0.1", Integer.parseInt(this.debuggingPort));
+            logger.info("端口 "+this.debuggingPort+" 可以链接");
+            socket.close();
+        } catch (IOException e) {
+            logger.error("端口 "+this.debuggingPort+" 无法链接；请确认浏览器在指定端口启动");
+            throw new RuntimeException(e);
+        }
+        // 配置 WebDriver
+        ChromeOptions options = new ChromeOptions();
+        options.setExperimentalOption("debuggerAddress","127.0.0.1:"+this.debuggingPort);
+        this.chromeDriver = new ChromeDriver(options);
+        // 配置HttpClientDownloader
+        this.httpClientDownloader = new HttpClientDownloader();
     }
 
     @Override
     public Page download(Request request, Task task) {
-        return null;
+        // 抄写HttpClientDownloader的验证
+        if(task == null || task.getSite() == null){
+            throw new NullPointerException("task or site can not be null");
+        }
+        String url = request.getUrl();
+        logger.info("判断链接类型，选择Downloader");
+        if(true || url.contains("tags")){
+            logger.info("使用WebDriver下载");
+           return downloadWithChromeDriver(request,task);
+        }else{
+            logger.info("使用HttpClient下载");
+            return httpClientDownloader.download(request,task);
+        }
     }
-
+    private synchronized Page downloadWithChromeDriver(Request request,Task task){
+        logger.info("downloading page "+ request.getUrl());
+        // 下载页面
+        chromeDriver.get(request.getUrl());
+        // 获取cookie
+        // TODO: 2024/2/29 暂时不操作，测试一下情况
+        Set<Cookie> cookies = chromeDriver.manage().getCookies();
+        Site site = task.getSite();
+        for (Cookie c:cookies
+             ) {
+            site.addCookie(c.getName(),c.getValue());
+        }
+        // 处理页面
+        WebElement webElement = chromeDriver.findElement(By.xpath("/html"));
+//        chromeDriver.executeScript()
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        String content = webElement.getAttribute("outerHTML");
+        Page page = new Page();
+        page.setRawText(content);
+        page.setHtml(new Html(content, request.getUrl()));
+        page.setUrl(new PlainText(request.getUrl()));
+        page.setRequest(request);
+        return page;
+    }
     @Override
     public void setThread(int threadNum) {
 

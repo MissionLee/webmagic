@@ -4,6 +4,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import us.codecraft.webmagic.Site;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,10 +37,12 @@ public class FileDownloader {
     private static ExecutorService executorService = Executors.newFixedThreadPool(10);
     private static int error403 = 0;
 
-    public static File download(String aimUrl, String referer, String tempPath) {
+    public static File download(String aimUrl, String referer, String tempPath, Site site) {
         logger.info("注意，下载器提供了 403 连续错误 50次，如果时间在1：00 ~ 9：30 之间 自动关机的功能");
         logger.info("下载：" + aimUrl);
         logger.info("retryLimit" + retryLimit);
+        // TODO: 2024/2/29 无论怎样，更新一下 cookie 
+        HCaptchaConnectionFormat.refreshCookieString(site);
         boolean downloadSuccess = false; // 下载成功
         String fileName = aimUrl.substring(aimUrl.lastIndexOf("/") + 1, aimUrl.indexOf("?"));
         int retry = retryLimit;
@@ -66,7 +69,7 @@ public class FileDownloader {
                     if (responseCode == 403) {
                         error403++;
                         logger.info("遇到403错误，检查cookieString刷新情况，此处Sleep 3分钟");
-                        boolean updated = HCaptchaConnectionFormat.refreshCookieString();
+                        boolean updated = HCaptchaConnectionFormat.refreshCookieString(site);
                         if (updated) {
                             error403 = 0;
                         }

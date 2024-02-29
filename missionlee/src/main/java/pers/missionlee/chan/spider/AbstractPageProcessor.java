@@ -122,7 +122,7 @@ public abstract class AbstractPageProcessor implements PageProcessor {
         }
         if (!diskService.artworkExistOnDisk(artworkInfo, artworkInfo.PBPrefix)) {
             logger.info("存在判断：文件不存在，可以开始下载");
-            File tempFile = FileDownloader.download(target.targetUrl, page.getUrl().toString(), diskService.getTempPath());
+            File tempFile = FileDownloader.download(target.targetUrl, page.getUrl().toString(), diskService.getTempPath(),getSite());
             if (null != tempFile && tempFile.exists() && tempFile.isFile() && tempFile.length() > 10) {
                 if (diskService.saveFile(tempFile, artworkInfo, artworkInfo.PBPrefix, artworkInfo.fileSaveName)) {
                     onDownloadSuccess(page, artworkInfo);

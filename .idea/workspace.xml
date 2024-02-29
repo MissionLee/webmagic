@@ -11,7 +11,12 @@
   <component name="ChangeListManager">
     <list default="true" id="bffc4871-1ae7-44a5-babd-8de4910d3ca3" name="Default Changelist" comment="2024 02 16 集体上传">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/filedownloader/FileDownloader.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/filedownloader/FileDownloader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/filedownloader/HCaptchaConnectionFormat.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/filedownloader/HCaptchaConnectionFormat.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/pagedownloader/MixDownloader.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/pagedownloader/MixDownloader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/AbstractPageProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/AbstractPageProcessor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/starter/SpiderStarter.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/starter/SpiderStarter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/webdrivertest/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/webdrivertest/Test.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -118,19 +123,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="DiskService" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="pers.missionlee.chan.service.DiskService" />
-      <module name="missionlee" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="pers.missionlee.chan.service.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="KeepDiskAlive" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="pers.missionlee.chan.service.KeepDiskAlive" />
       <module name="missionlee" />
@@ -170,20 +162,33 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="Test" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="pers.missionlee.chan.webdrivertest.Test" />
+      <module name="missionlee" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="pers.missionlee.chan.webdrivertest.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <list>
+      <item itemvalue="Application.Test" />
       <item itemvalue="Application.ArtistPathInfo" />
       <item itemvalue="Application.ParentListPageProcessor" />
-      <item itemvalue="Application.DiskService" />
       <item itemvalue="Application.SpiderStarter" />
       <item itemvalue="Application.KeepDiskAlive" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Application.SpiderStarter" />
+        <item itemvalue="Application.Test" />
         <item itemvalue="Application.ArtistPathInfo" />
         <item itemvalue="Application.KeepDiskAlive" />
         <item itemvalue="Application.ParentListPageProcessor" />
-        <item itemvalue="Application.DiskService" />
       </list>
     </recent_temporary>
   </component>
@@ -613,6 +618,10 @@
       <workItem from="1704543505670" duration="10708000" />
       <workItem from="1708047103113" duration="1426000" />
       <workItem from="1708049213730" duration="4651000" />
+      <workItem from="1708258585961" duration="667000" />
+      <workItem from="1708358761549" duration="66000" />
+      <workItem from="1709204303075" duration="5437000" />
+      <workItem from="1709210469964" duration="13418000" />
     </task>
     <task id="LOCAL-00001" summary="SpiderConfig">
       <created>1555292406689</created>
@@ -831,7 +840,14 @@
       <option name="project" value="LOCAL" />
       <updated>1708049312722</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="2024 02 16 集体上传">
+      <created>1708258636483</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1708258636483</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
