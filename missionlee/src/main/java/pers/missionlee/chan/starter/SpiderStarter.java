@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import pers.missionlee.chan.filedownloader.CallableHttpRangeDownloader;
 import pers.missionlee.chan.filedownloader.FileDownloader;
 import pers.missionlee.chan.filedownloader.HCaptchaConnectionFormat;
+import pers.missionlee.chan.pagedownloader.MixDownloader;
 import pers.missionlee.chan.service.DataBaseService;
 import pers.missionlee.chan.service.DiskService;
 import pers.missionlee.chan.service.KeepDiskAlive;
@@ -21,6 +22,7 @@ import pers.missionlee.webmagic.spider.newsankaku.utlis.SpiderUtils;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 import pers.missionlee.webmagic.utils.ChromeBookmarksReader;
 import us.codecraft.webmagic.Spider;
+import us.codecraft.webmagic.downloader.Downloader;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,6 +38,8 @@ import java.util.*;
 public class SpiderStarter {
     Logger logger = LoggerFactory.getLogger(SpiderStarter.class);
     public List<String> skipNames;
+    Downloader downloader = new MixDownloader("","C:\\chromedriver-win64\\chromedriver.exe","9292");
+
     public static Map<String,String> analysisSiteCookie(String cookieString){
         String[] cookiePairs = cookieString.split("; ");
         Map<String,String> siteCookie = new HashMap<>();
@@ -697,8 +701,11 @@ public class SpiderStarter {
             // TODO: 6/19/2021  key用原始key  但是 savename(realName) 是处理后的
           String url;
             if(spiderSetting.nextMode){
+                System.out.println("XXXXX  NEXTMODE");
                 url = SpiderUtils.getNextModeUrl(keys);
             }else{
+                System.out.println("YYYY  非 NEXTMODE");
+
                 url = SpiderUtils.getUpdateStartUrl(keys);
             }
 
@@ -708,9 +715,7 @@ public class SpiderStarter {
                             dataBaseService, diskService,realName,spiderSetting);
             if(!spiderSetting.onlyClean){
                 logger.warn("在更新模式下引入ChromeDriver 完成登陆操作 ");
-                ChromeDriver driver = new ChromeDriver();
-//                driver.get()
-                Spider.create(artistPageProcessor).addUrl(url).thread(spiderSetting.threadNum).run();
+                Spider.create(artistPageProcessor).setDownloader(downloader).addUrl(url).thread(1).run();
                 // 以下逻辑 用于 判断是否自动 book 一个作品
                 ArtworkInfo artworkInfo = new ArtworkInfo();
                 artworkInfo.fileName = "1.jpg";
@@ -734,7 +739,7 @@ public class SpiderStarter {
                                     diskService, spiderSetting.autoBookSkipPercent,
                                     spiderSetting.bookSkipPercent, spiderSetting.skipExistDBBook,
                                     spiderSetting.skipBookLostPage,realName);
-                    Spider.create(processor).addUrl(searchUrl).run();
+                    Spider.create(processor).setDownloader(downloader).addUrl(searchUrl).run();
 
                     for (String iUrl :
                             bookUrl) {
@@ -761,7 +766,7 @@ public class SpiderStarter {
                                 spiderSetting.onlyTryTen, false,
                                 artistName, dataBaseService,
                                 diskService,realName,spiderSetting);
-                Spider.create(pageProcessor).addUrl(urls).thread(spiderSetting.threadNum).run();
+                Spider.create(pageProcessor).setDownloader(downloader).addUrl(urls).thread(spiderSetting.threadNum).run();
                 return pageProcessor.downloaded;
             } else {
                 ArtworkNumberPageProcessor numberPageProcessor = new ArtworkNumberPageProcessor(dataBaseService, diskService);
@@ -787,7 +792,7 @@ public class SpiderStarter {
                                     spiderSetting.onlyTryTen,
                                     false, artistName, dataBaseService,
                                     diskService,realName,spiderSetting);
-                    Spider.create(pageProcessor).addUrl(urls).thread(spiderSetting.threadNum).run();
+                    Spider.create(pageProcessor).setDownloader(downloader).addUrl(urls).thread(spiderSetting.threadNum).run();
                     return pageProcessor.downloaded;
                 }
 
