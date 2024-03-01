@@ -9,9 +9,9 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bffc4871-1ae7-44a5-babd-8de4910d3ca3" name="Default Changelist" comment="2024 02 16 集体上传">
+    <list default="true" id="bffc4871-1ae7-44a5-babd-8de4910d3ca3" name="Default Changelist" comment="MixDownloader">
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/starter/SpiderStarter.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/starter/SpiderStarter.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,7 +53,7 @@
     </option>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="20240216" />
+        <entry key="$PROJECT_DIR$" value="2024selenium" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -78,19 +78,12 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/webmagic&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.projectsettings.compiler.javacompiler&quot;
-  }
-}</component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
+  </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\MissionLee\IdeaProjects\webmagic\missionlee\src\main\resources\mybatis\mapper" />
@@ -104,26 +97,13 @@
       <recent name="pers.missionlee.webmagic.spider.pixiv.common" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.SpiderStarter">
+  <component name="RunManager" selected="Application.Test">
     <configuration name="ArtistPathInfo" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="pers.missionlee.chan.pojo.ArtistPathInfo" />
       <module name="missionlee" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="pers.missionlee.chan.pojo.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="DiskService" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="pers.missionlee.chan.service.DiskService" />
-      <module name="missionlee" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="pers.missionlee.chan.service.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -170,20 +150,33 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="Test" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="pers.missionlee.chan.webdrivertest.Test" />
+      <module name="missionlee" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="pers.missionlee.chan.webdrivertest.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Application.ArtistPathInfo" />
       <item itemvalue="Application.ParentListPageProcessor" />
-      <item itemvalue="Application.DiskService" />
       <item itemvalue="Application.SpiderStarter" />
       <item itemvalue="Application.KeepDiskAlive" />
+      <item itemvalue="Application.Test" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.Test" />
         <item itemvalue="Application.SpiderStarter" />
         <item itemvalue="Application.ArtistPathInfo" />
         <item itemvalue="Application.KeepDiskAlive" />
         <item itemvalue="Application.ParentListPageProcessor" />
-        <item itemvalue="Application.DiskService" />
       </list>
     </recent_temporary>
   </component>
@@ -613,6 +606,9 @@
       <workItem from="1704543505670" duration="10708000" />
       <workItem from="1708047103113" duration="1426000" />
       <workItem from="1708049213730" duration="4651000" />
+      <workItem from="1708324854577" duration="3697000" />
+      <workItem from="1708329626488" duration="2840000" />
+      <workItem from="1708391678680" duration="13892000" />
     </task>
     <task id="LOCAL-00001" summary="SpiderConfig">
       <created>1555292406689</created>
@@ -831,7 +827,21 @@
       <option name="project" value="LOCAL" />
       <updated>1708049312722</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="selenium 测试">
+      <created>1708334591977</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1708334591977</updated>
+    </task>
+    <task id="LOCAL-00033" summary="MixDownloader">
+      <created>1708421167448</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1708421167449</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -856,7 +866,9 @@
     <MESSAGE value="2021 07 13 集体上传" />
     <MESSAGE value="2022 02 27 集体上传" />
     <MESSAGE value="2024 02 16 集体上传" />
-    <option name="LAST_COMMIT_MESSAGE" value="2024 02 16 集体上传" />
+    <MESSAGE value="selenium 测试" />
+    <MESSAGE value="MixDownloader" />
+    <option name="LAST_COMMIT_MESSAGE" value="MixDownloader" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

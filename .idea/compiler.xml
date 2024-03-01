@@ -16,7 +16,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="8">
-      <module name="missionlee" target="1.8" />
+      <module name="missionlee" target="8" />
       <module name="webmagic-core" target="1.6" />
       <module name="webmagic-extension" target="1.6" />
       <module name="webmagic-parent" target="1.6" />
