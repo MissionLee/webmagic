@@ -9,14 +9,18 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bffc4871-1ae7-44a5-babd-8de4910d3ca3" name="Default Changelist" comment="2024 02 16 集体上传">
+    <list default="true" id="bffc4871-1ae7-44a5-babd-8de4910d3ca3" name="Default Changelist" comment="2024 02 29 集体上传">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/filedownloader/CallableHttpRangeDownloader.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/filedownloader/CallableHttpRangeDownloader.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/filedownloader/FileDownloader.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/filedownloader/FileDownloader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/filedownloader/HCaptchaConnectionFormat.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/filedownloader/HCaptchaConnectionFormat.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/pagedownloader/MixDownloader.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/pagedownloader/MixDownloader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/pojo/ArtistPathInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/pojo/ArtistPathInfo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/service/DiskService.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/service/DiskService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/AbstractPageProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/AbstractPageProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/AbstractTagPageProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/AbstractTagPageProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/ArtistPageProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/ArtistPageProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/starter/SpiderSetting.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/starter/SpiderSetting.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/starter/SpiderStarter.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/starter/SpiderStarter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/webdrivertest/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/webdrivertest/Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/resources/log4j2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/resources/log4j2.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -185,8 +189,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="Application.SpiderStarter" />
-        <item itemvalue="Application.Test" />
         <item itemvalue="Application.ArtistPathInfo" />
+        <item itemvalue="Application.Test" />
         <item itemvalue="Application.KeepDiskAlive" />
         <item itemvalue="Application.ParentListPageProcessor" />
       </list>
@@ -621,7 +625,10 @@
       <workItem from="1708258585961" duration="667000" />
       <workItem from="1708358761549" duration="66000" />
       <workItem from="1709204303075" duration="5437000" />
-      <workItem from="1709210469964" duration="13418000" />
+      <workItem from="1709210469964" duration="13487000" />
+      <workItem from="1709296440026" duration="23112000" />
+      <workItem from="1709351112164" duration="99000" />
+      <workItem from="1709351597691" duration="26877000" />
     </task>
     <task id="LOCAL-00001" summary="SpiderConfig">
       <created>1555292406689</created>
@@ -847,7 +854,14 @@
       <option name="project" value="LOCAL" />
       <updated>1708258636483</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="2024 02 29 集体上传">
+      <created>1709247942329</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1709247942329</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -872,7 +886,8 @@
     <MESSAGE value="2021 07 13 集体上传" />
     <MESSAGE value="2022 02 27 集体上传" />
     <MESSAGE value="2024 02 16 集体上传" />
-    <option name="LAST_COMMIT_MESSAGE" value="2024 02 16 集体上传" />
+    <MESSAGE value="2024 02 29 集体上传" />
+    <option name="LAST_COMMIT_MESSAGE" value="2024 02 29 集体上传" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
