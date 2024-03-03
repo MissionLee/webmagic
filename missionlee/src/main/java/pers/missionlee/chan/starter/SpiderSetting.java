@@ -352,7 +352,7 @@ public class SpiderSetting {
         }
     }
     public Map<String,String> initAllRelatedStoredFilesMd5(DiskService diskService,String name){
-        System.out.println("目标名称："+name);
+
         Set<String> names = new HashSet<>();
         String realName = getRelationName(name); // 真名
         names.add(realName);
@@ -364,7 +364,6 @@ public class SpiderSetting {
         }
         Map<String,String> md5s = new HashMap<>();
        names.forEach( (theName)->{
-           System.out.println("MD5访问名称："+theName);
            md5s.putAll(diskService.getArtistFileMd5Path(name));
        });
         return md5s;

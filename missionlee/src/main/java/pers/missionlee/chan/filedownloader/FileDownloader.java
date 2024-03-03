@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class FileDownloader {
     public static boolean smartShutDown = true;
     public static Logger logger = LoggerFactory.getLogger(FileDownloader.class);
-    public static  int retryLimit = 3;
+    public static  int retryLimit = 2;
     public static DecimalFormat df = new DecimalFormat("0.00");
     public static int blockSize = 8 * 1024 * 1024; // 每个连接做多下载 256mb大小内容
     public static CloseableHttpClient closeableHttpClient = HttpClients.custom().build();
@@ -117,15 +117,15 @@ public class FileDownloader {
                     }
 
                     latch.await();
-
-                    System.out.println("CountDownLatch 全部完成");
+                    logger.info("-->CountDownLatch 全部完成");
                     // 如果分块下载成功了，会给对应 range 改成 true
                     AtomicBoolean countDownSuccess = new AtomicBoolean(true);
                     rangeDownload.forEach((String range, Boolean success) -> {
                         if (success) {
-                            System.out.println("段落下载成功：" + range);
+                            logger.info("--> 段落下载成功"+range);
+
                         } else {
-                            System.out.println("段落下载失败：" + range);
+                            logger.warn("--> 段落下载失败" + range);
                             countDownSuccess.set(false);
 
                         }

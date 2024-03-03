@@ -117,11 +117,11 @@ public abstract class AbstractPageProcessor implements PageProcessor {
         if (diskService.copyFileFromRelatedArtist(artworkInfo)) {
             //  因为 book 或者 parent之类的，为了保证完整性，不能因为
             //  别的地方有就不下载了，所以从不妙目录复制文件
-            logger.info("YYYYYYYYYYYYYYYYY 从其他作者名下复制了这个文件");
+            logger.info("--从关联用户名下复制文件");
             return true;
         }
         if (!diskService.artworkExistOnDisk(artworkInfo, artworkInfo.PBPrefix)) {
-            logger.info("存在判断：文件不存在，可以开始下载");
+            logger.info("--启动下载");
             File tempFile = FileDownloader.download(target.targetUrl, page.getUrl().toString(), diskService.getTempPath(),getSite());
             if (null != tempFile && tempFile.exists() && tempFile.isFile() && tempFile.length() > 10) {
                 if (diskService.saveFile(tempFile, artworkInfo, artworkInfo.PBPrefix, artworkInfo.fileSaveName)) {
@@ -150,7 +150,7 @@ public abstract class AbstractPageProcessor implements PageProcessor {
      */
     // TODO: 4/17/2021  原页面逻辑变了
     public AbstractPageProcessor.Target extractDownloadTargetInfoFromDetailPage(Html html) {
-        System.out.println(html.getDocument());
+//        System.out.println(html.getDocument());
         AbstractPageProcessor.Target target = new AbstractPageProcessor.Target();
         //页面为图片
         List<String> maybe = html.$("#image-link", "href").all();

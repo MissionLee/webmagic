@@ -22,10 +22,11 @@ public class ArtistPageProcessor extends AbstractTagPageProcessor {
     public int downloaded;
     SpiderSetting spiderSetting;
     boolean onlyTryTen;// 下载新作品的时候，只下载前十个，这要是 根据chrome书签下载有的作者作品其实一半
-  boolean downloadAllTryBest = false;
-  String saveName;
-  ArtistPathInfo artistPathInfo;
-    public ArtistPageProcessor(boolean onlyTryTen, boolean autoNextPage, String artistName, DataBaseService dataBaseService, DiskService diskService,String saveName,SpiderSetting spiderSetting) {
+    boolean downloadAllTryBest = false;
+    String saveName;
+    ArtistPathInfo artistPathInfo;
+
+    public ArtistPageProcessor(boolean onlyTryTen, boolean autoNextPage, String artistName, DataBaseService dataBaseService, DiskService diskService, String saveName, SpiderSetting spiderSetting) {
         super(artistName, dataBaseService, diskService);
         this.spiderSetting = spiderSetting;
         this.onlyTryTen = onlyTryTen;
@@ -35,11 +36,11 @@ public class ArtistPageProcessor extends AbstractTagPageProcessor {
         this.saveName = saveName;
         this.storedSanCodes = initStoredSanCodes();
         this.storedFilesMd5 = initStoredFilesMd5();
-        this.initSettingInfo(diskService.getParentPath(ArtworkInfo.getArtistPicPathInfo(artistName),"", ArtworkInfo.STORE_PLACE.ARTIST.storePlace));
+        this.initSettingInfo(diskService.getParentPath(ArtworkInfo.getArtistPicPathInfo(artistName), "", ArtworkInfo.STORE_PLACE.ARTIST.storePlace));
 
     }
-
-    public ArtistPageProcessor(boolean autoNextPage, String artistName, DataBaseService dataBaseService, DiskService diskService, SpiderSetting spiderSetting,String saveName) {
+    @Deprecated
+    public ArtistPageProcessor(boolean autoNextPage, String artistName, DataBaseService dataBaseService, DiskService diskService, SpiderSetting spiderSetting, String saveName) {
         super(artistName, dataBaseService, diskService);
         this.autoNextPage = autoNextPage;
         this.artistName = artistName;
@@ -48,12 +49,14 @@ public class ArtistPageProcessor extends AbstractTagPageProcessor {
         this.saveName = saveName;
         this.storedSanCodes = initStoredSanCodes();
         this.storedFilesMd5 = initStoredFilesMd5();
-        this.initSettingInfo(diskService.getParentPath(ArtworkInfo.getArtistPicPathInfo(artistName),"", ArtworkInfo.STORE_PLACE.ARTIST.storePlace));
+        this.initSettingInfo(diskService.getParentPath(ArtworkInfo.getArtistPicPathInfo(artistName), "", ArtworkInfo.STORE_PLACE.ARTIST.storePlace));
 
     }
-    public void initSettingInfo(String artistFilePath){
+
+    public void initSettingInfo(String artistFilePath) {
         try {
-            System.out.println(artistFilePath);
+            logger.info("清理作者作品路径");
+            // 处理过期页面，目前是大小为 12.6K的文件
             this.artistPathInfo = ArtistPathInfo.refreshInfo(artistFilePath);
             this.delFileName = this.artistPathInfo.delFileMD5;
         } catch (IOException e) {
@@ -66,13 +69,13 @@ public class ArtistPageProcessor extends AbstractTagPageProcessor {
         List<String> sanCodes = dataBaseService.getSanCodeByArtistName(artistName);
         HashSet<String> codes = new HashSet<>();
         codes.addAll(sanCodes);
-        logger.info("现存[" + codes.size() + "]个相关SanCode" );
+        logger.info("现存[" + codes.size() + "]个相关SanCode");
         return codes;
     }
 
     @Override
     public Map<String, String> initStoredFilesMd5() {
-        return  spiderSetting.initAllRelatedStoredFilesMd5(diskService,this.saveName);
+        return spiderSetting.initAllRelatedStoredFilesMd5(diskService, this.saveName);
 //        return diskService.getArtistFileMd5Path(this.saveName);
     }
 
@@ -101,26 +104,30 @@ public class ArtistPageProcessor extends AbstractTagPageProcessor {
             }
 //            int added = extractUrlFromListPage(page);
             int added = extractUrlFromListPageWithFileNameFilter(page);
-            if ((added > 0 && autoNextPage)||nextMode) {
-                if(spiderSetting.forceNew){
+            logger.info("当前页面有 ["+added+"] 个页面加入 /自动下一页["+autoNextPage+"]/扫荡模式["+spiderSetting.downloadAllTryBest+"]");
+            if ((added > 0 && autoNextPage) || (nextMode&& spiderSetting.downloadAllTryBest)) {
+                logger.info("将下一页加入队列");
+                if (spiderSetting.forceNew) {
                     sleep(5);
                 }
                 if (onlyTryTen) {
                     logger.info("作品试下载功能启动（每个作者尝试下载10个作品）");
-                    if (toBeDownloadSanCodes.size() < 5 )
+                    if (toBeDownloadSanCodes.size() < 5)
                         addNextPageAsTarget(page);
                 } else {
                     addNextPageAsTarget(page);
                 }
+            }else{
+                logger.info("不再加载下一页");
             }
-        } else if (url.contains("/show/")||url.contains("/posts/")) {
+        } else if (url.contains("/show/") || url.contains("/posts/")) {
             String pageString = page.getHtml().toString();
             if (pageString.contains("这个帖子已经删除")
                     || pageString.contains("This post was deleted")
                     || pageString.contains("您没有查看该内容所需要的访问权限")
                     || pageString.contains("You lack the access rights required to view this content")
             ) {
-                logger.info("文件被删除，或者没有访问权限，跳过这个作品："+page.getUrl().toString());
+                logger.info("因[文件已删除||无访问权限]跳过 " + page.getUrl().toString());
             } else {
 
                 AbstractPageProcessor.Target target = extractDownloadTargetInfoFromDetailPage(page.getHtml());
@@ -135,7 +142,7 @@ public class ArtistPageProcessor extends AbstractTagPageProcessor {
                 if (download) {
                     dataBaseService.saveArtworkInfo(artworkInfo);
                     downloaded++;
-                    logger.info("["+downloaded+"/"+toBeDownloadSanCodes.size()+"]");
+                    logger.info("[" + downloaded + "/" + toBeDownloadSanCodes.size() + "]");
                 }
             }
 
@@ -145,8 +152,8 @@ public class ArtistPageProcessor extends AbstractTagPageProcessor {
     }
 
     public static void main(String[] args) {
-String x = "{\"source\":\"Doujinshi &quot;sister&#65290;sisters&quot;\"}";
-        Map<String,Object> xxx = (Map<String, Object>) JSON.parse(x);
+        String x = "{\"source\":\"Doujinshi &quot;sister&#65290;sisters&quot;\"}";
+        Map<String, Object> xxx = (Map<String, Object>) JSON.parse(x);
         System.out.println(xxx.get("source"));
 
     }

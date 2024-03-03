@@ -3,8 +3,8 @@
 <configuration status="debug">
     <appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <!--                      时间：时分秒毫秒   线程    logger名称   信息 换行-->
-            <PatternLayout pattern="%dd{HH:mm:ss} [%t] %-5level  %-24c{1.1.} - %msg%n"/>
+            <!--                 时间：时分秒毫秒  线程   日志级别   logger名称 -4表示对其最小宽度4 如果是最大宽度则用正数   %msg信息 %n换行-->
+            <PatternLayout pattern="%{HH:mm:ss} [%t] %-5level  %-4c{1.1.~} - %msg%n"/>
             <!-- http://logging.apache.org/log4j/2.x/manual/layouts.html 上面的-5 -36 表示 左对齐，字符填充到5/36个
                 开启root的debug模式可以很容易的看到 上面这部分内容的效果-->
         </Console>

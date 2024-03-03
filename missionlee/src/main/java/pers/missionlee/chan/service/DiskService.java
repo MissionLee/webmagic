@@ -432,7 +432,7 @@ public class DiskService {
 //                        logger.info("找到了对应文件，下面进行复制或剪切：" + nowPath);
                         String tempPath = nowPath + ".tmp";
                         File nowFile = new File(nowPath);
-                        if (nowPath.substring(nowPath.lastIndexOf("/")).contains("_")
+                        if (nowPath.substring(nowPath.lastIndexOf("\\")).contains("_")
                                 || artworkInfo.storePlace == ArtworkInfo.STORE_PLACE.COPYRIGHT.storePlace
                                 || artworkInfo.storePlace == ArtworkInfo.STORE_PLACE.STUDIO.storePlace) {
                             logger.info("当前作品在其他作者特殊目录下，所以执行--复制");
@@ -501,7 +501,9 @@ public class DiskService {
         }
         return filePathMap;
     }
-
+    /**
+     * ⭐ ⭐  获取作者的 所有相关路径
+     * */
     public Map<String, String> getArtistFilePath(String artistName) {
         if(artistName.equals("")){
             logger.warn("出现了 artistname 为空的情况， 还没注意是什么问题，可能是 关联作者有时候关联出来“空”");
@@ -512,49 +514,76 @@ public class DiskService {
         Map<String, String> filePath = new HashMap<>();
         // pic 部分
         File picbase = new File(picBasePath);
-        File[] picFiles = picbase.listFiles();
-        if (null != picFiles) {
-            for (int i = 0; i < picFiles.length; i++) {
-                if (picFiles[i].isDirectory()) {// 如果是目录
-                    if (picFiles[i].getName().equals("del")||picFiles[i].getName().equals("zdel")) {
-                        logger.info("初始作者MD5跳过文件夹："+picFiles[i].getName());
-                    } else {
-                        String[] artworks = picFiles[i].list();
-                        for (int j = 0; j < artworks.length; j++) {
-
-                                String fullPath = picBasePath + picFiles[i].getName() + "/" + artworks[j];
-                                String fileName = artworks[j].substring(5);
-                                if (picFiles[i].getName().contains("low"))
-                                    fileName = artworks[j];
-
-                                filePath.put(fileName, fullPath);
-
-
-                        }
-                    }
-                } else {
-                    filePath.put(picFiles[i].getName(), picBasePath + picFiles[i].getName());
-                }
-            }
+        if(picbase.exists()){
+            findPathRecursion(filePath,picbase);
         }
+//        File[] picFiles = picbase.listFiles();
+//        if (null != picFiles) {
+//            for (int i = 0; i < picFiles.length; i++) {
+//                if (picFiles[i].isDirectory()) {// 如果是目录
+//                    if (picFiles[i].getName().equals("del")||picFiles[i].getName().equals("zdel")) {
+//                        logger.info("初始化--> 忽略"+picFiles[i].getName()+"中的文件");
+//                    } else{
+//                        String[] artworks = picFiles[i].list();
+//                        for (int j = 0; j < artworks.length; j++) {
+//
+//                                String fullPath = picBasePath + picFiles[i].getName() + "/" + artworks[j];
+//                                String fileName = artworks[j].substring(5);
+//                                if (picFiles[i].getName().contains("low"))
+//                                    fileName = artworks[j];
+//
+//                                filePath.put(fileName, fullPath);
+//
+//
+//                        }
+//                    }
+//                } else {
+//                    filePath.put(picFiles[i].getName(), picBasePath + picFiles[i].getName());
+//                }
+//            }
+//        }
 
         // vid 部分
         File vidbase = new File(vidBasePath);
-        File[] vidFiles = vidbase.listFiles();
-        if (null != vidFiles) {
-            for (int i = 0; i < vidFiles.length; i++) {
-                if (vidFiles[i].isFile()) {
-                    filePath.put(vidFiles[i].getName(), vidBasePath + vidFiles[i].getName());
-                }
-            }
+        if(vidbase.exists()){
+            findPathRecursion(filePath,vidbase);
         }
+//        File[] vidFiles = vidbase.listFiles();
+//        if (null != vidFiles) {
+//            for (int i = 0; i < vidFiles.length; i++) {
+//                if (vidFiles[i].isFile()) {
+//                    filePath.put(vidFiles[i].getName(), vidBasePath + vidFiles[i].getName());
+//                }
+//            }
+//        }
         return filePath;
     }
-
+    /**
+     * 递归生成 文件名 和 路径信息，放入给定的map中
+     * */
+    public static void findPathRecursion(Map<String,String> map,File baseFile){
+        if(baseFile.getName().equals("s.json")){
+            return;
+        }
+        if(baseFile.isDirectory()){
+            File[] subFile = baseFile.listFiles();
+            for (int i = 0; i < subFile.length; i++) {
+                findPathRecursion(map,subFile[i]);
+            }
+        }else{
+            String fileName = baseFile.getName();
+            //如果有序号的文件，去除序号
+            if(fileName.contains("_"))
+                fileName=fileName.substring(5);
+//            System.out.println("xxx key"+fileName+"   value "+baseFile.getPath());
+            map.put(fileName,baseFile.getPath());
+        }
+    }
     public Map<String, String> getArtistFileMd5Path(String artistName) {
         Map<String, String> fileNamePaht = getArtistFilePath(artistName);
         Map<String, String> md5 = new HashMap<>();
         fileNamePaht.forEach((String fileName, String path) -> {
+
             md5.put(fileName.substring(0, fileName.indexOf(".")), path);
         });
         return md5;

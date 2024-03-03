@@ -30,6 +30,7 @@ public abstract class AbstractTagPageProcessor extends AbstractPageProcessor {
     Set<String> toBeDownloadSanCodes;
     public static int allowedPageNum = 50;
     public static boolean nextMode = false;
+
     public AbstractTagPageProcessor(List<String> tags, DataBaseService dataBaseService, DiskService diskService) {
         super(dataBaseService, diskService);
         this.tags = tags;
@@ -113,8 +114,8 @@ public abstract class AbstractTagPageProcessor extends AbstractPageProcessor {
                 .$(".thumb")
                 .$("a", "href")
                 .all();
-        System.out.println(JSON.toString(src));
-        System.out.println(JSON.toString(url));
+        logger.info("检测到列表页面，分析作品信息");
+        logger.info(JSON.toString(src));
         if (null != src && src.size() > 0) {
             src.forEach((String fullSrc) -> {
                 if (fullSrc.contains("no-visibility")) {
@@ -125,14 +126,9 @@ public abstract class AbstractTagPageProcessor extends AbstractPageProcessor {
                     String md5 = fullSrc.substring(start, end);
                     if (storedFilesMd5.containsKey(md5)) {
                         logger.info("本作者MD5[" + md5 + "]已存在:" + storedFilesMd5.get(md5));
-                    }
-//                    else if (relatedStoredFilesMd5.containsKey(md5)) {
-//                        logger.info("外关联MD5[" + md5 + "]已存在:" + relatedStoredFilesMd5.get(md5));
-//                    }
-                    else if(this.delFileName.contains(md5)){
+                    } else if (this.delFileName.contains(md5)) {
                         logger.info("本作者删除列表MD5[" + md5 + "]已存在");
-                    }
-                    else {
+                    } else {
                         int index = getIndexFromList(src, fullSrc);
                         String fullUrl = url.get(index);
                         String sanCode = fullUrl.substring(fullUrl.lastIndexOf("/") + 1);
@@ -229,23 +225,23 @@ public abstract class AbstractTagPageProcessor extends AbstractPageProcessor {
     }
 
     public void addNextPageAsTarget(Page page) {
-        System.out.println("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY  NEXT"+nextMode);
-        if(nextMode){
+        System.out.println("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY  NEXT" + nextMode);
+        if (nextMode) {
 
-            List<String> nextPages =page.getHtml().$(".pagination","next-page-url").all();
-           if(nextPages.size()>0){
-               System.out.println("next next:"+nextPages.get(0));
-               page.addTargetRequest((SpiderUtils.BASE_URL+nextPages.get(0)).replaceAll("&amp;","&"));
-           }
+            List<String> nextPages = page.getHtml().$(".pagination", "next-page-url").all();
+            if (nextPages.size() > 0) {
+                System.out.println("next next:" + nextPages.get(0));
+                page.addTargetRequest((SpiderUtils.BASE_URL + nextPages.get(0)).replaceAll("&amp;", "&"));
+            }
 
-        }else{
+        } else {
             String url = page.getUrl().toString();
 
             String thisPage = url.substring(url.lastIndexOf("=") + 1);
             int thisPageNum = Integer.valueOf(thisPage);
             String urlPrefix = url.substring(0, url.lastIndexOf("=") + 1);
             ++thisPageNum;
-            if (thisPageNum <= allowedPageNum )
+            if (thisPageNum <= allowedPageNum)
                 page.addTargetRequest(urlPrefix + (thisPageNum));
         }
 
