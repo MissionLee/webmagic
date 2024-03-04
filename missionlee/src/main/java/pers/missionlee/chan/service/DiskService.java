@@ -143,6 +143,7 @@ public class DiskService {
                     try {
                         dataBaseService.sqlSession.insert("san.insertArtistOnlyName", params);
                     } catch (Exception e) {
+                        e.printStackTrace();
                         logger.info("发现了某个文件夹对应的作者不存在，或者非 isTarget，创建作者时候报错，此错误可能忽略，因为可能是isTarget情况");
                     }
                     dataBaseService.touchArtist(realName, System.currentTimeMillis());
@@ -166,6 +167,7 @@ public class DiskService {
                     try {
                         dataBaseService.sqlSession.insert("san.insertArtistOnlyName", params);
                     } catch (Exception e) {
+                        e.printStackTrace();
                         logger.info("发现了某个文件夹对应的作者不存在，或者非 isTarget，创建作者时候报错，此错误可能忽略，因为可能是isTarget情况");
                     }
                     dataBaseService.touchArtist(realName, System.currentTimeMillis());

@@ -29,7 +29,7 @@ public abstract class AbstractTagPageProcessor extends AbstractPageProcessor {
     Set<String> delFileName;
     Set<String> toBeDownloadSanCodes;
     public static int allowedPageNum = 50;
-    public static boolean nextMode = false;
+    public static boolean nextMode = true;
 
     public AbstractTagPageProcessor(List<String> tags, DataBaseService dataBaseService, DiskService diskService) {
         super(dataBaseService, diskService);
@@ -225,13 +225,17 @@ public abstract class AbstractTagPageProcessor extends AbstractPageProcessor {
     }
 
     public void addNextPageAsTarget(Page page) {
-        System.out.println("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY  NEXT" + nextMode);
-        if (nextMode) {
 
+        if (nextMode) {
+            logger.info("--nextMode: 从网页中寻找下一页URL");
             List<String> nextPages = page.getHtml().$(".pagination", "next-page-url").all();
             if (nextPages.size() > 0) {
-                System.out.println("next next:" + nextPages.get(0));
-                page.addTargetRequest((SpiderUtils.BASE_URL + nextPages.get(0)).replaceAll("&amp;", "&"));
+                logger.info("搜索到的URL："+nextPages.get(0));
+                page.addTargetRequest((SpiderUtils.BASE_URL + nextPages.get(0))
+                        .replaceAll("&amp;", "&")
+                        .replaceAll("%2528","(")
+                        .replaceAll("%2529",")")
+                );
             }
 
         } else {

@@ -11,16 +11,12 @@
   <component name="ChangeListManager">
     <list default="true" id="bffc4871-1ae7-44a5-babd-8de4910d3ca3" name="Default Changelist" comment="2024 02 29 集体上传">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/filedownloader/CallableHttpRangeDownloader.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/filedownloader/CallableHttpRangeDownloader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/filedownloader/FileDownloader.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/filedownloader/FileDownloader.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/pojo/ArtistPathInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/pojo/ArtistPathInfo.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/service/DiskService.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/service/DiskService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/AbstractPageProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/AbstractPageProcessor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/AbstractTagPageProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/AbstractTagPageProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/ArtistPageProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/ArtistPageProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/starter/SpiderSetting.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/starter/SpiderSetting.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/starter/SpiderStarter.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/starter/SpiderStarter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/webmagic/spider/newsankaku/dao/LevelInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/webmagic/spider/newsankaku/dao/LevelInfo.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/missionlee/src/main/resources/log4j2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/resources/log4j2.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/resources/mybatis/mapper/sankaku.xml" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/resources/mybatis/mapper/sankaku.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -628,7 +624,9 @@
       <workItem from="1709210469964" duration="13487000" />
       <workItem from="1709296440026" duration="23112000" />
       <workItem from="1709351112164" duration="99000" />
-      <workItem from="1709351597691" duration="26877000" />
+      <workItem from="1709351597691" duration="38111000" />
+      <workItem from="1709507049132" duration="707000" />
+      <workItem from="1709547762232" duration="1229000" />
     </task>
     <task id="LOCAL-00001" summary="SpiderConfig">
       <created>1555292406689</created>
@@ -861,7 +859,21 @@
       <option name="project" value="LOCAL" />
       <updated>1709247942329</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="2024 02 29 集体上传">
+      <created>1709420678069</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1709420678069</updated>
+    </task>
+    <task id="LOCAL-00035" summary="2024 02 29 集体上传">
+      <created>1709420685852</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1709420685852</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
