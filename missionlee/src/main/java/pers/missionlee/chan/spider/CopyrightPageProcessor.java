@@ -1,6 +1,7 @@
 package pers.missionlee.chan.spider;
 
-import org.eclipse.jetty.util.ajax.JSON;
+//import org.eclipse.jetty.util.ajax.JSON;
+import com.alibaba.fastjson2.JSON;
 import pers.missionlee.chan.service.DataBaseService;
 import pers.missionlee.chan.service.DiskService;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
@@ -77,9 +78,9 @@ public class CopyrightPageProcessor extends AbstractTagPageProcessor {
                 logger.info("文件被删除，或者没有访问权限，跳过这个作品：" + page.getUrl().toString());
             } else {
                 AbstractPageProcessor.Target target = extractDownloadTargetInfoFromDetailPage(page.getHtml());
-                System.out.println(JSON.toString(target));
+                System.out.println(JSON.toJSONString(target));
                 ArtworkInfo artworkInfo = extractArtworkInfoFromDetailPage(page, target);
-                System.out.println(JSON.toString(artworkInfo));
+                System.out.println(JSON.toJSONString(artworkInfo));
 //                extractArtistFileByArtworkInfo(artworkInfo);
                 // // TODO: 6/14/2021  隐藏了上面这一行，因为我们希望，即使存在别的作者哪里，也复制一份过来 
                 artworkInfo.aimName = copyright;

@@ -84,12 +84,36 @@ public class ArtistPathInfo {
             delFile(zdel, info);
         }
         /**
+         * Step-2.puls
+         * */
+        logger.info("处理掉所有的del路径和内容");
+        logger.warn("del 目录手写了两层删除，没有递归，所以可能报错");
+        File delFile = new File(PathUtils.buildPath(parentPath,"del"));
+        if(delFile.exists()){
+            File[] files = delFile.listFiles();
+            for (int i = 0; i < files.length; i++) {// del 这个目录最多就两层，所以直接写删除代码了
+                if(files[i].isDirectory()){
+                    File[] inFile = files[i].listFiles();
+                    for (int j = 0; j < inFile.length; j++) {
+                        inFile[j].delete();
+                    }
+
+                }
+                files[i].delete();
+            }
+            delFile.delete();
+        }
+        /**
          * Step-3 保存配置文件
          * */
         logger.info("清理 开始写入 [" + pathInfoFileName + "] 标准文件");
         String str = JSON.toJSONString(info);
         FileUtils.writeStringToFile(sFile, str, "UTF8", false);
         logger.info("清理 [完成] 返回数据到上级程序，流程结束");
+        /**
+         *
+         * */
+
         return info;
     }
 

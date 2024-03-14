@@ -59,6 +59,8 @@ public class ArtistPageProcessor extends AbstractTagPageProcessor {
             // 处理过期页面，目前是大小为 12.6K的文件
             this.artistPathInfo = ArtistPathInfo.refreshInfo(artistFilePath);
             this.delFileName = this.artistPathInfo.delFileMD5;
+            logger.info("处理已经被归为Parent Book但是仍有单个文件的清空");
+            diskService.cleanArtistBookParentBases(artistName);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

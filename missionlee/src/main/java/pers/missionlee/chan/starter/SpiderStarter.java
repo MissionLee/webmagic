@@ -3,7 +3,6 @@ package pers.missionlee.chan.starter;
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pers.missionlee.chan.filedownloader.CallableHttpRangeDownloader;
@@ -22,13 +21,13 @@ import pers.missionlee.webmagic.spider.newsankaku.utlis.SpiderUtils;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 import pers.missionlee.webmagic.utils.ChromeBookmarksReader;
 import us.codecraft.webmagic.Spider;
-import us.codecraft.webmagic.downloader.Downloader;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @description:
@@ -38,7 +37,11 @@ import java.util.*;
 public class SpiderStarter {
     Logger logger = LoggerFactory.getLogger(SpiderStarter.class);
     public List<String> skipNames;
-    Downloader downloader = new MixDownloader("", "C:\\chromedriver-win64\\chromedriver.exe", "9292");
+    public  MixDownloader
+
+            downloader = new MixDownloader("", "C:\\chromedriver-win64\\chromedriver.exe", "9292");
+
+
 
     public static Map<String, String> analysisSiteCookie(String cookieString) {
         String[] cookiePairs = cookieString.split("; ");
@@ -681,6 +684,7 @@ public class SpiderStarter {
 
     public int downloadArtist(String artistName, boolean update) {
         logger.info("==================== 作者：" + artistName + " =================");
+
         if (startNameStart) {
 
         } else {
@@ -793,6 +797,7 @@ public class SpiderStarter {
                 }
 
             }
+
         }
     }
 
@@ -810,6 +815,7 @@ public class SpiderStarter {
 
     // 根据等级更新作者
     public void updateArtistByLevel(String level) {
+        AtomicInteger countedDownloadedAll = new AtomicInteger();
         int lv = Integer.valueOf(level);
         String[] chosenFolder = spiderSetting.updateChosenFolder;
         for (int i = 0; i < chosenFolder.length; i++) {
@@ -833,6 +839,7 @@ public class SpiderStarter {
             if (update) {
                 logger.info("开始更新 " + name);
                 int downloaded = downloadArtist(name, true);
+                countedDownloadedAll.addAndGet(downloaded);
                 if (isOnlyUpdateChosenFolder || (spiderSetting.autoParentWhileUpdate && downloaded != 99999 && (downloaded > 0 && downloaded < 9999))) {
                     // 自动更新book parent 的前置条件
                     // 如果自动更新总开关开启
@@ -880,7 +887,19 @@ public class SpiderStarter {
             } else {
                 logger.info("跳过更新 " + name);
             }
-
+//            if(countedDownloadedAll.get()>50){
+//                logger.info("总下载 "+countedDownloadedAll.get()+" 个页面，刷新driver和浏览器");
+//                try {
+//                    downloader.refresh();
+//                } catch (IOException e) {
+//                    throw new RuntimeException(e);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//                countedDownloadedAll.set(0);
+//            }else{
+//                logger.info("总下载还未超过50 继续使用当前Driver");
+//            }
 
         });
         logger.info("等级" + level + "更新完成");

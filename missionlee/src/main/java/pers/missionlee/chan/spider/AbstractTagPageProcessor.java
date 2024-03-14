@@ -1,7 +1,9 @@
 package pers.missionlee.chan.spider;
 
+import com.alibaba.fastjson2.JSON;
 import org.apache.commons.io.FileUtils;
-import org.eclipse.jetty.util.ajax.JSON;
+import org.apache.commons.lang3.StringUtils;
+//import org.eclipse.jetty.util.ajax.JSON;
 import pers.missionlee.chan.service.DataBaseService;
 import pers.missionlee.chan.service.DiskService;
 import pers.missionlee.webmagic.spider.newsankaku.utlis.SpiderUtils;
@@ -105,17 +107,18 @@ public abstract class AbstractTagPageProcessor extends AbstractPageProcessor {
         AtomicInteger added = new AtomicInteger(0);
 //        System.out.println(page.getHtml());
         List<String> src = page.getHtml()
-                .$(".content")
-                .$(".thumb")
+                .$(".content > div > .thumb")
                 .$("img", "src")
                 .all();
         List<String> url = page.getHtml()
-                .$(".content")
-                .$(".thumb")
+                .$(".content > div > .thumb")
                 .$("a", "href")
                 .all();
         logger.info("检测到列表页面，分析作品信息");
-        logger.info(JSON.toString(src));
+//        logger.info(JSON.toJSONString(src));
+        logger.info(" src size "+src.size());
+//        logger.info(JSON.toJSONString(url));
+        logger.info(" url size "+url.size());
         if (null != src && src.size() > 0) {
             src.forEach((String fullSrc) -> {
                 if (fullSrc.contains("no-visibility")) {
@@ -124,54 +127,59 @@ public abstract class AbstractTagPageProcessor extends AbstractPageProcessor {
                     int start = fullSrc.lastIndexOf("/") + 1;
                     int end = fullSrc.lastIndexOf(".");
                     String md5 = fullSrc.substring(start, end);
-                    if (storedFilesMd5.containsKey(md5)) {
-                        logger.info("本作者MD5[" + md5 + "]已存在:" + storedFilesMd5.get(md5));
-                    } else if (this.delFileName.contains(md5)) {
-                        logger.info("本作者删除列表MD5[" + md5 + "]已存在");
-                    } else {
-                        int index = getIndexFromList(src, fullSrc);
-                        String fullUrl = url.get(index);
-                        String sanCode = fullUrl.substring(fullUrl.lastIndexOf("/") + 1);
-                        if (toBeDownloadSanCodes.contains(sanCode)) {
-                            logger.info("SanCode:[" + sanCode + "] 已在目标列表");
-
-                        } else if (storedSanCodes.contains(sanCode)) {
-                            //  md5 判断不存在，但是  sanCode 判断存在
-                            // 此时通过已存在的 sanCode 关联作者，判断作者 是否已经被关联
-                            //  1. 被关联了：认为作品需要下载
-                            //  2. 没被关联：关联这个作者，重新验证作品 md5存在性
-                            // TODO: 4/21/2021
-                            extractArtistFileMd5BySanCode(sanCode);
-                            if (storedFilesMd5.containsKey(md5)) {
-                                logger.info("SanCode存在，此作品在其他关联作者目录下，跳过下载");
-                            } else {
-                                logger.info("SanCode存在，但SanCode关联的作者名下都没有这个文件md5，作品加入下载");
-                                this.toBeDownloadSanCodes.add(sanCode);
-//                                logger.info("临时：代码里面把 文件不确认存在的时候下载的功能删除了 AbstractTagPageProcessor 136");
-                                page.addTargetRequest(fullUrl);
-                                added.getAndIncrement();
-                            }
-
+                    if(StringUtils.isEmpty(md5) || md5.length()<25){
+                        logger.warn("检测到一场的md5 不下载此页面 "+md5);
+                    }else{
+                        if (storedFilesMd5.containsKey(md5)) {
+                            logger.info("本作者MD5[" + md5 + "]已存在:" + storedFilesMd5.get(md5));
+                        } else if (this.delFileName.contains(md5)) {
+                            logger.info("本作者删除列表MD5[" + md5 + "]已存在");
                         } else {
-                            logger.info("验证MD5[" + md5 + "]不存在  SanCode[" + sanCode + "]不存在");
-                            if (this instanceof ArtistPageProcessor
-                                    && ((ArtistPageProcessor) this).onlyTryTen
-                            ) {// 只有 1-sanX 并且配置 onlyTryTen 才会 有 onlyTryTen
-                                if (this.toBeDownloadSanCodes.size() < 5) {
+                            int index = getIndexFromList(src, fullSrc);
+                            String fullUrl = url.get(index);
+                            String sanCode = fullUrl.substring(fullUrl.lastIndexOf("/") + 1);
+                            if (toBeDownloadSanCodes.contains(sanCode)) {
+                                logger.info("SanCode:[" + sanCode + "] 已在目标列表");
+
+                            } else if (storedSanCodes.contains(sanCode)) {
+                                //  md5 判断不存在，但是  sanCode 判断存在
+                                // 此时通过已存在的 sanCode 关联作者，判断作者 是否已经被关联
+                                //  1. 被关联了：认为作品需要下载
+                                //  2. 没被关联：关联这个作者，重新验证作品 md5存在性
+                                // TODO: 4/21/2021
+                                extractArtistFileMd5BySanCode(sanCode);
+                                if (storedFilesMd5.containsKey(md5)) {
+                                    logger.info("SanCode存在，此作品在其他关联作者目录下，跳过下载");
+                                } else {
+                                    logger.info("SanCode存在，但SanCode关联的作者名下都没有这个文件md5，作品加入下载");
+                                    this.toBeDownloadSanCodes.add(sanCode);
+//                                logger.info("临时：代码里面把 文件不确认存在的时候下载的功能删除了 AbstractTagPageProcessor 136");
+                                    page.addTargetRequest(fullUrl);
+                                    added.getAndIncrement();
+                                }
+
+                            } else {
+                                logger.info("验证MD5[" + md5 + "]不存在  SanCode[" + sanCode + "]不存在");
+                                if (this instanceof ArtistPageProcessor
+                                        && ((ArtistPageProcessor) this).onlyTryTen
+                                ) {// 只有 1-sanX 并且配置 onlyTryTen 才会 有 onlyTryTen
+                                    if (this.toBeDownloadSanCodes.size() < 5) {
+                                        this.toBeDownloadSanCodes.add(sanCode);
+                                        page.addTargetRequest(fullUrl);
+                                        added.getAndIncrement();
+                                    }
+                                    {
+                                        logger.info("启用了 临时限制了 每个作者只下载 10个");
+                                    }
+                                } else {
                                     this.toBeDownloadSanCodes.add(sanCode);
                                     page.addTargetRequest(fullUrl);
                                     added.getAndIncrement();
                                 }
-                                {
-                                    logger.info("启用了 临时限制了 每个作者只下载 10个");
-                                }
-                            } else {
-                                this.toBeDownloadSanCodes.add(sanCode);
-                                page.addTargetRequest(fullUrl);
-                                added.getAndIncrement();
-                            }
 
-                        }
+                            }
+                    }
+
                     }
                 }
             });

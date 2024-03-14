@@ -9,14 +9,75 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bffc4871-1ae7-44a5-babd-8de4910d3ca3" name="Default Changelist" comment="2024 02 29 集体上传">
+    <list default="true" id="bffc4871-1ae7-44a5-babd-8de4910d3ca3" name="Default Changelist" comment="处理URL括号问题&#10;处理作者信息没有被收录的问题">
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__cglib_cglib_nodep_2_1_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_github_detro_phantomjsdriver_1_2_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_guava_guava_15_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__io_netty_netty_3_5_2_Final.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_dev_jna_jna_3_4_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_dev_jna_platform_3_4_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_sourceforge_cssparser_cssparser_0_9_11.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_sourceforge_htmlunit_htmlunit_2_13.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_sourceforge_htmlunit_htmlunit_core_js_2_13.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_sourceforge_nekohtml_nekohtml_1_9_19.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_commons_commons_exec_1_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_httpcomponents_httpmime_4_3_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_eclipse_jetty_jetty_http_8_1_12_v20130726.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_eclipse_jetty_jetty_io_8_1_12_v20130726.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_eclipse_jetty_jetty_util_8_1_12_v20130726.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_eclipse_jetty_jetty_websocket_8_1_12_v20130726.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_json_json_20080701.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_api_2_41_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_chrome_driver_2_41_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_firefox_driver_2_41_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_htmlunit_driver_2_41_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_ie_driver_2_41_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_java_2_41_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_remote_driver_2_41_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_safari_driver_2_41_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_seleniumhq_selenium_selenium_support_2_41_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_w3c_css_sac_1_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_webbitserver_webbit_0_4_14.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__xalan_serializer_2_7_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__xalan_xalan_2_7_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__xerces_xercesImpl_2_11_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__xml_apis_xml_apis_1_4_01.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/missionlee.iml" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/missionlee.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/pagedownloader/MixDownloader.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/pagedownloader/MixDownloader.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/pojo/ArtistPathInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/pojo/ArtistPathInfo.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/service/DiskService.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/service/DiskService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/AbstractTagPageProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/AbstractTagPageProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/webmagic/spider/newsankaku/dao/LevelInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/webmagic/spider/newsankaku/dao/LevelInfo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/resources/log4j2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/resources/log4j2.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/resources/mybatis/mapper/sankaku.xml" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/resources/mybatis/mapper/sankaku.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/ArtistPageProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/ArtistPageProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/CopyrightPageProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/CopyrightPageProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/starter/SpiderStarter.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/starter/SpiderStarter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-core/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-core/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-core/src/main/java/us/codecraft/webmagic/downloader/AbstractDownloader.java" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-core/src/main/java/us/codecraft/webmagic/downloader/AbstractDownloader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/downloader/AbstractDownloader.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-core/target/classes/us/codecraft/webmagic/downloader/AbstractDownloader.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/html/mock-github.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/html/mock-webmagic.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/json/mock-githubrepo.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-extension/target/test-classes/log4j.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/config.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/crawl.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/target/classes/log4j.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-samples/webmagic-samples.iml" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-samples/webmagic-samples.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-scripts/target/classes/js/defines.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-scripts/target/classes/js/github.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-scripts/target/classes/js/oschina.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-scripts/target/classes/log4j.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-scripts/target/classes/python/defines.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-scripts/target/classes/python/oschina.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-scripts/target/classes/ruby/defines.rb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-scripts/target/classes/ruby/github.rb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-scripts/target/classes/ruby/oschina.rb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-selenium/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-selenium/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-selenium/src/main/java/us/codecraft/webmagic/downloader/selenium/WebDriverPool.java" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-selenium/src/main/java/us/codecraft/webmagic/downloader/selenium/WebDriverPool.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-selenium/src/test/java/us/codecraft/webmagic/downloader/SeleniumTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-selenium/src/test/java/us/codecraft/webmagic/downloader/SeleniumTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-selenium/target/classes/us/codecraft/webmagic/downloader/selenium/WebDriverPool.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-selenium/target/classes/us/codecraft/webmagic/downloader/selenium/WebDriverPool.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-selenium/target/test-classes/us/codecraft/webmagic/downloader/SeleniumTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-selenium/target/test-classes/us/codecraft/webmagic/downloader/SeleniumTest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webmagic-selenium/webmagic-selenium.iml" beforeDir="false" afterPath="$PROJECT_DIR$/webmagic-selenium/webmagic-selenium.iml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,7 +153,7 @@
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.46896553&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;reference.projectsettings.compiler.javacompiler&quot;
   }
 }</component>
@@ -108,6 +169,12 @@
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="pers.missionlee.webmagic.spider.pixiv.common" />
     </key>
+  </component>
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="mvn clean" />
+      <command value="mvn install" />
+    </option>
   </component>
   <component name="RunManager" selected="Application.SpiderStarter">
     <configuration name="ArtistPathInfo" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
@@ -626,7 +693,12 @@
       <workItem from="1709351112164" duration="99000" />
       <workItem from="1709351597691" duration="38111000" />
       <workItem from="1709507049132" duration="707000" />
-      <workItem from="1709547762232" duration="1229000" />
+      <workItem from="1709547762232" duration="5364000" />
+      <workItem from="1709730357768" duration="3816000" />
+      <workItem from="1710078611068" duration="22942000" />
+      <workItem from="1710336285220" duration="6028000" />
+      <workItem from="1710368546405" duration="619000" />
+      <workItem from="1710413204296" duration="6318000" />
     </task>
     <task id="LOCAL-00001" summary="SpiderConfig">
       <created>1555292406689</created>
@@ -873,7 +945,14 @@
       <option name="project" value="LOCAL" />
       <updated>1709420685852</updated>
     </task>
-    <option name="localTasksCounter" value="36" />
+    <task id="LOCAL-00036" summary="处理URL括号问题&#10;处理作者信息没有被收录的问题">
+      <created>1709549044498</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1709549044498</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -899,7 +978,8 @@
     <MESSAGE value="2022 02 27 集体上传" />
     <MESSAGE value="2024 02 16 集体上传" />
     <MESSAGE value="2024 02 29 集体上传" />
-    <option name="LAST_COMMIT_MESSAGE" value="2024 02 29 集体上传" />
+    <MESSAGE value="处理URL括号问题&#10;处理作者信息没有被收录的问题" />
+    <option name="LAST_COMMIT_MESSAGE" value="处理URL括号问题&#10;处理作者信息没有被收录的问题" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -908,6 +988,10 @@
           <url>jar://C:/Program Files/Java/jdk1.8.0_171/src.zip!/java/util/AbstractMap.java</url>
           <line>67</line>
           <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>jar://$MAVEN_REPOSITORY$/com/google/guava/guava/15.0/guava-15.0-sources.jar!/com/google/common/collect/ImmutableMap.java</url>
+          <option name="timeStamp" value="3" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -641,7 +641,7 @@ public class DiskService {
         String vidBasePath = getCommonArtistParentPath(name, "1.mp4");
         List<String> bookOrParentedFiles = new ArrayList<>();
         File[] picSubFiles = new File(picBasePath).listFiles();
-        if (null != picSubFiles) {
+        if (null != picSubFiles) { // 找到所有的二级文件
             for (int i = 0; i < picSubFiles.length; i++) {
                 if (picSubFiles[i].isDirectory()) {
                     String[] artworks = picSubFiles[i].list();

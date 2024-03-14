@@ -2,6 +2,7 @@ package pers.missionlee.chan.pagedownloader;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
+//import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -44,10 +45,10 @@ public class MixDownloader implements Downloader{
      * debuggingPort: 启动爬虫用浏览器的调试端口
      * urlPatterns: 需要使用WebDriver的地址
      * */
-    public MixDownloader(String chromePath,String chromeDriverPath, String debuggingPort) {
+    public MixDownloader(String chromePath,String chromeDriverPath, String debuggingPort) throws IOException {
         this(chromePath,chromeDriverPath,debuggingPort,null);
     }
-    public MixDownloader(String chromePath,String chromeDriverPath, String debuggingPort, Set<String> urlPatterns) {
+    public MixDownloader(String chromePath,String chromeDriverPath, String debuggingPort, Set<String> urlPatterns) throws IOException {
         if(null == urlPatterns){
             urlPatterns = new HashSet(){
                 {
@@ -64,7 +65,7 @@ public class MixDownloader implements Downloader{
         this.init();
 
     }
-    private void init(){
+    private void init() throws IOException {
         logger.warn("#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#");
         logger.warn("爬虫系统将使用WebDriver与HttpClient混合模式工作"
                 +"\nChrome浏览器路径 "+chromePath
@@ -73,8 +74,30 @@ public class MixDownloader implements Downloader{
                 +"\n识别URL "+this.urlPatterns
         );
         logger.warn("#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#");
+
+        try {
+            refresh();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
+        // 配置HttpClientDownloader
+        this.httpClientDownloader = new HttpClientDownloader();
+    }
+    public void refresh() throws IOException, InterruptedException {
+        if(chromeDriver!=null){
+            chromeDriver.close();
+            chromeDriver.quit();
+
+            chromeDriver = null;
+        }
+        // 启动
+        Runtime.getRuntime().exec("chrome.exe --remote-debugging-port="+debuggingPort);
         // 配置 chromeDriver
         System.setProperty("webdriver.chrome.driver",chromeDriverPath);
+        logger.info("重启浏览器 重新配置ChromeDriver sleep10秒");
+        Thread.sleep(10000);
         // 判断给定端口是否存活
         try {
             Socket socket = new Socket("127.0.0.1", Integer.parseInt(this.debuggingPort));
@@ -82,16 +105,17 @@ public class MixDownloader implements Downloader{
             socket.close();
         } catch (IOException e) {
             logger.error("端口 "+this.debuggingPort+" 无法链接；请确认浏览器在指定端口启动");
+            e.printStackTrace();
+            System.exit(-1);
             throw new RuntimeException(e);
         }
         // 配置 WebDriver
         ChromeOptions options = new ChromeOptions();
+//        options.setPageLoadStrategy(PageLoadStrategy.EAGER);
+//        options.setCapability("debuggerAddress","127.0.0.1:"+this.debuggingPort);
         options.setExperimentalOption("debuggerAddress","127.0.0.1:"+this.debuggingPort);
         this.chromeDriver = new ChromeDriver(options);
-        // 配置HttpClientDownloader
-        this.httpClientDownloader = new HttpClientDownloader();
     }
-
     @Override
     public Page download(Request request, Task task) {
         // 抄写HttpClientDownloader的验证
@@ -102,15 +126,26 @@ public class MixDownloader implements Downloader{
         logger.info("判断链接类型，选择Downloader");
         if(true || url.contains("tags")){
             logger.info("使用WebDriver下载");
-           return downloadWithChromeDriver(request,task);
+            try {
+                return downloadWithChromeDriver(request,task);
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }finally {
+            }
         }else{
             logger.info("使用HttpClient下载");
             return httpClientDownloader.download(request,task);
         }
     }
-    private synchronized Page downloadWithChromeDriver(Request request,Task task){
+    private static int counter = 0;
+    private synchronized Page downloadWithChromeDriver(Request request,Task task) throws IOException, InterruptedException {
         logger.info("downloading page "+ request.getUrl());
         // 下载页面
+        counter++;
         chromeDriver.get(request.getUrl());
         // 获取cookie
         // TODO: 2024/2/29 暂时不操作，测试一下情况
@@ -123,17 +158,22 @@ public class MixDownloader implements Downloader{
         // 处理页面
         WebElement webElement = chromeDriver.findElement(By.xpath("/html"));
 //        chromeDriver.executeScript()
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+
+            logger.info("加载页面后等待3秒");
+            Thread.sleep(3000);
+
         String content = webElement.getAttribute("outerHTML");
         Page page = new Page();
         page.setRawText(content);
         page.setHtml(new Html(content, request.getUrl()));
         page.setUrl(new PlainText(request.getUrl()));
         page.setRequest(request);
+        if(counter>150){
+            counter = 0;
+            refresh();
+        }else{
+            logger.info("第 " + counter+"/150 次");
+        }
         return page;
     }
     @Override
