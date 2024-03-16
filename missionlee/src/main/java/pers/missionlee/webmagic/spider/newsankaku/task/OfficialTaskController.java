@@ -12,6 +12,7 @@ import java.util.Set;
  * @author: Mission Lee
  * @create: 2020-04-14 10:54
  */
+@Deprecated
 public class OfficialTaskController extends AbstractTaskController{
     public OfficialTaskController(SourceManager sourceManager,String officialName){
         super(sourceManager);

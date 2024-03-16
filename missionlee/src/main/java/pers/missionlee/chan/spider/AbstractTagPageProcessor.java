@@ -234,8 +234,8 @@ public abstract class AbstractTagPageProcessor extends AbstractPageProcessor {
 
     public void addNextPageAsTarget(Page page) {
 
-        if (nextMode) {
-            logger.info("--nextMode: 从网页中寻找下一页URL");
+        if (nextMode || true) {
+            logger.info("--nextMode: 从网页中寻找下一页URL(代码逻辑中已经强制执行nextMode发现下一页)");
             List<String> nextPages = page.getHtml().$(".pagination", "next-page-url").all();
             if (nextPages.size() > 0) {
                 logger.info("搜索到的URL："+nextPages.get(0));

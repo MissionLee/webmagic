@@ -684,7 +684,11 @@ public class SpiderStarter {
 
     public int downloadArtist(String artistName, boolean update) {
         logger.info("==================== 作者：" + artistName + " =================");
-
+        /**
+         * 下方用来判断这个作者是否需要下载
+         * 1.作者是个标记的 voiceActor
+         * 2.配置了 startName，并且还没到start阶段
+         * */
         if (startNameStart) {
 
         } else {
@@ -702,9 +706,25 @@ public class SpiderStarter {
             logger.info("这个作者因为被标记为 voice actor 或者 audio design 所以跳过更新   " + artistName);
             return 0;
         }
+        /**
+         * 下方作者名称替换，应对 实际一个作者，但是收录多个不同名字的问题
+         * */
         String realName = spiderSetting.getRelationName(artistName);
         String[] keys = new String[1];
         keys[0] = artistName;
+        /**
+         * 根据不同配置进行不同模式的更新
+         * 1  更新模式+非强制更新（近期更新的会被跳过）
+         *   - 1.1 常规模式     开启更新操作
+         *   - 1.2 清理文件模式  跳过更新，直接结束（创建ArtistPageProcessor会触发文件清理）
+         * 2  普通下载模式 或者 强制当作新作者进行下载（）
+         *   - 2.1 onlyTen模式，只下载前十个页面 或第一页
+         *   - 2.2 探测作者作品数量，根据数量生成下载任务
+         *     - a 0个作品 推出
+         *     - b 作品数量，大于上限
+         *     - c 开启下载
+         *       -
+         * */
         if (update && !spiderSetting.forceNew) { // 只有更新模式，并且不强制以新作模式运行的时候，才更新
             logger.info("进入[普通]更新模式 [普通||强制] 本模式强制采用[逐页=>nextMode]");
             String url = SpiderUtils.getNextModeUrl(keys);
@@ -728,9 +748,10 @@ public class SpiderStarter {
                         .contains(spiderSetting.bookParentArtistBase
                                 .substring(spiderSetting.bookParentArtistBase.lastIndexOf("/") + 1))
                 ) {// 1.下载了新内容 2。启动了自动 book 3. 这个作者存储位置位于 “bookParentArtistBase” 中
-                    String prefix = "https://beta.sankakucomplex.com/wiki/en/";
+                    String prefix = "https://beta.sankakucomplex.com/tag?tagName=";
                     String urlName = artistName.replaceAll(" ", "_");
-                    String searchUrl = prefix + urlName;
+                    // https://beta.sankakucomplex.com/books?tags=order%3Apopularity%20vycma
+                    String searchUrl = ArtistBookListProcessor.CHAN_ARTIST_BOOK_LIST_PREFIX + urlName;
                     List<String> bookUrl = new ArrayList<>();
                     ArtistBookListProcessor processor =
                             new ArtistBookListProcessor(
@@ -757,7 +778,7 @@ public class SpiderStarter {
             return artistPageProcessor.downloaded;
         } else { // ===============   10个作品模式   或者   全部下载模式
             if (spiderSetting.onlyTryTen) {
-                logger.info("注意XXXXXXX 临时改成每个作者只下载第一页");
+                logger.info("检测到 onlyTryTen=true 尝试下载该作者第一页作品 autoNextPage=false");
                 String url = SpiderUtils.getUpdateStartUrl(keys);
                 String[] urls = new String[1];
                 urls[0] = url;
@@ -769,28 +790,36 @@ public class SpiderStarter {
                 Spider.create(pageProcessor).setDownloader(downloader).addUrl(urls).thread(spiderSetting.threadNum).run();
                 return pageProcessor.downloaded;
             } else {
+                logger.info("启动数量探测爬虫");
                 ArtworkNumberPageProcessor numberPageProcessor = new ArtworkNumberPageProcessor(dataBaseService, diskService);
                 Spider.create(numberPageProcessor).addUrl(SpiderUtils.getNumberCheckUrl(keys)).thread(1).run();
                 int number = numberPageProcessor.getNumber();
                 if (number == 0) {
-                    logger.info("作者： " + artistName + " 现有作品匹配数量为 0");
+                    logger.info("作者： " + artistName + " 网站反馈作品数量为 0 结束下载");
                     return -1;
                 } else if (number > spiderSetting.downloadLimit) {
-                    logger.info("作者： " + artistName + " 作品数量 " + number + " 高于下载限制 " + spiderSetting.downloadLimit);
+                    logger.info("作者： " + artistName + " 作品数量 " + number + " 高于下载限制 " + spiderSetting.downloadLimit+"结束下载");
                     return -2;
                 } else {
+                    logger.info("根据配置项 开始作品下载");
                     String[] urls;
                     if (spiderSetting.downloadAllTryBest) {
-                        urls = SpiderUtils.getStartUrlsTryBest(number, keys);
-                    } else if (spiderSetting.updateByDateBest) {
-                        urls = SpiderUtils.getStartUrlsDateBest(number, keys);
+                        logger.info("= 配置 downloadAllTryBest 生成启动Url");
+                        urls= SpiderUtils.getStartUrlsTryBestNextMode(number,keys);
+//                        urls = SpiderUtils.getStartUrlsTryBest(number, keys);
                     } else {
-                        urls = SpiderUtils.getStartUrls(number, keys);
+                        logger.info("= 配置updateByDateBest 将按照日期先后[即常规模式] 生成启动URL");
+//                        urls = SpiderUtils.getStartUrlsDateBest(number, keys);
+                        String nextModeUrl = SpiderUtils.getNextModeUrl(keys);
+                        urls = new String[1];
+                        urls[0]=nextModeUrl;
+
                     }
+                    logger.info("= 全面启用nextMode ArtistProcessorPageProcessor中的autoNextPage=true");
                     ArtistPageProcessor pageProcessor =
                             new ArtistPageProcessor(
                                     spiderSetting.onlyTryTen,
-                                    false, artistName, dataBaseService,
+                                    true, artistName, dataBaseService,
                                     diskService, realName, spiderSetting);
                     Spider.create(pageProcessor).setDownloader(downloader).addUrl(urls).thread(spiderSetting.threadNum).run();
                     return pageProcessor.downloaded;
@@ -1064,6 +1093,7 @@ public class SpiderStarter {
 
         System.out.println("程序会读取第一个参数，作为 spider setting文件的绝对路径,如果没有传入，默认读取G:/new-setting.json");
         System.out.println("提示 只更新指定目录的条件下，如果开启了 自动 book ，即使更新数量为0，也会自动下载book");
+        System.out.println("XXXXXXXXXXX 全力下载模式 还没测试过 原理上可以应用 random关键字下载");
         if (args.length == 0) {
             System.out.println("使用默认路径：G:/new-setting.json");
             args = new String[1];

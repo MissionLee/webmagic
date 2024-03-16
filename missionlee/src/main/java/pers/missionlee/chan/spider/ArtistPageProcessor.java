@@ -93,8 +93,6 @@ public class ArtistPageProcessor extends AbstractTagPageProcessor {
 
     @Override
     public void doProcess(Page page) {
-//        System.out.println("??????????????????????????");
-//        System.out.println(page);
         String url = page.getUrl().toString();
         if (url.contains("tags")) {
             if (autoNextPage) {
@@ -107,15 +105,18 @@ public class ArtistPageProcessor extends AbstractTagPageProcessor {
 //            int added = extractUrlFromListPage(page);
             int added = extractUrlFromListPageWithFileNameFilter(page);
             logger.info("当前页面有 ["+added+"] 个页面加入 /自动下一页["+autoNextPage+"]/扫荡模式["+spiderSetting.downloadAllTryBest+"]");
-            if ((added > 0 && autoNextPage) || (nextMode&& spiderSetting.downloadAllTryBest)) {
+            if ((added > 0 && autoNextPage) || (spiderSetting.downloadAllTryBest)) {
                 logger.info("将下一页加入队列");
-                if (spiderSetting.forceNew) {
-                    sleep(5);
-                }
                 if (onlyTryTen) {
-                    logger.info("作品试下载功能启动（每个作者尝试下载10个作品）");
-                    if (toBeDownloadSanCodes.size() < 5)
-                        addNextPageAsTarget(page);
+                    logger.info("因为 onlyTryTen 功能 不再添加下一页");
+//                    if (toBeDownloadSanCodes.size() < 5){
+//                        logger.info("因为 onlyTry功能，但是当前只采集不足5个页面，");
+//
+//                        addNextPageAsTarget(page);
+//                    }else{
+//                        logger.info("因为 onlyTry功能 不在添加下一页");
+//                    }
+
                 } else {
                     addNextPageAsTarget(page);
                 }

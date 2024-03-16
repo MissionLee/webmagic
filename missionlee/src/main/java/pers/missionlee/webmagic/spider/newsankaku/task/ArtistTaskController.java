@@ -14,6 +14,7 @@ import java.util.Set;
  * @author: Mission Lee
  * @create: 2020-03-30 19:23
  */
+@Deprecated
 public class ArtistTaskController extends AbstractTaskController {
     private String[] startUrls;
     private String artistName;
