@@ -9,15 +9,9 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bffc4871-1ae7-44a5-babd-8de4910d3ca3" name="Default Changelist" comment="chrome driver 修改完成">
+    <list default="true" id="bffc4871-1ae7-44a5-babd-8de4910d3ca3" name="Default Changelist" comment="修改BookList Spider :已经修改 poolseries列表查询解析，后续需要测试与重写book下载">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/AbstractTagPageProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/AbstractTagPageProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/ArtistPageProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/ArtistPageProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/book/ArtistBookListProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/book/ArtistBookListProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/starter/SpiderStarter.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/starter/SpiderStarter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/webmagic/spider/newsankaku/task/ArtistTaskController.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/webmagic/spider/newsankaku/task/ArtistTaskController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/webmagic/spider/newsankaku/task/OfficialTaskController.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/webmagic/spider/newsankaku/task/OfficialTaskController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/webmagic/spider/newsankaku/utlis/SpiderUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/webmagic/spider/newsankaku/utlis/SpiderUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/pagedownloader/MixDownloader.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/pagedownloader/MixDownloader.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -641,7 +635,8 @@
       <workItem from="1710413204296" duration="6318000" />
       <workItem from="1710457280825" duration="197000" />
       <workItem from="1710507830406" duration="22246000" />
-      <workItem from="1710600663281" duration="4063000" />
+      <workItem from="1710600663281" duration="4270000" />
+      <workItem from="1710942509140" duration="684000" />
     </task>
     <task id="LOCAL-00001" summary="SpiderConfig">
       <created>1555292406689</created>
@@ -902,7 +897,14 @@
       <option name="project" value="LOCAL" />
       <updated>1710457337599</updated>
     </task>
-    <option name="localTasksCounter" value="38" />
+    <task id="LOCAL-00038" summary="修改BookList Spider :已经修改 poolseries列表查询解析，后续需要测试与重写book下载">
+      <created>1710604969705</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1710604969706</updated>
+    </task>
+    <option name="localTasksCounter" value="39" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -930,7 +932,8 @@
     <MESSAGE value="2024 02 29 集体上传" />
     <MESSAGE value="处理URL括号问题&#10;处理作者信息没有被收录的问题" />
     <MESSAGE value="chrome driver 修改完成" />
-    <option name="LAST_COMMIT_MESSAGE" value="chrome driver 修改完成" />
+    <MESSAGE value="修改BookList Spider :已经修改 poolseries列表查询解析，后续需要测试与重写book下载" />
+    <option name="LAST_COMMIT_MESSAGE" value="修改BookList Spider :已经修改 poolseries列表查询解析，后续需要测试与重写book下载" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

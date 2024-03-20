@@ -168,11 +168,11 @@ public class MixDownloader implements Downloader{
         page.setHtml(new Html(content, request.getUrl()));
         page.setUrl(new PlainText(request.getUrl()));
         page.setRequest(request);
-        if(counter>150){
+        if(counter>50){
             counter = 0;
             refresh();
         }else{
-            logger.info("第 " + counter+"/150 次");
+            logger.info("第 " + counter+"/50 次");
         }
         return page;
     }
