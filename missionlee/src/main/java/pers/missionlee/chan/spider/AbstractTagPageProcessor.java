@@ -107,11 +107,11 @@ public abstract class AbstractTagPageProcessor extends AbstractPageProcessor {
         AtomicInteger added = new AtomicInteger(0);
 //        System.out.println(page.getHtml());
         List<String> src = page.getHtml()
-                .$(".content > div > .thumb")
+                .$(".content>div>div>.posts-container  .post-preview")
                 .$("img", "src")
                 .all();
         List<String> url = page.getHtml()
-                .$(".content > div > .thumb")
+                .$(".posts-container .post-preview")
                 .$("a", "href")
                 .all();
         logger.info("检测到列表页面，分析作品信息");
