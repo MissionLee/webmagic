@@ -104,15 +104,15 @@ public class MixDownloader implements Downloader {
         if (process != null) {
             process.destroy();
         }
-        if (debugPortFlag) {
-            debuggingPort = String.valueOf(Integer.parseInt(debuggingPort) + 1);
-        } else {
-            debuggingPort = String.valueOf(Integer.parseInt(debuggingPort) - 1);
-        }
+//        if (debugPortFlag) {
+//            debuggingPort = String.valueOf(Integer.parseInt(debuggingPort) + 1);
+//        } else {
+//            debuggingPort = String.valueOf(Integer.parseInt(debuggingPort) - 1);
+//        }
         debugPortFlag = !debugPortFlag;
         logger.info("Refresh-新端口" + debuggingPort);
         // 启动
-        process = Runtime.getRuntime().exec("chrome.exe --remote-debugging-port=" + debuggingPort);
+//        process = Runtime.getRuntime().exec("chrome.exe --remote-debugging-port=" + debuggingPort);
         logger.info("Refresh-启动浏览器");
         // 配置 chromeDriver
         System.setProperty("webdriver.chrome.driver", chromeDriverPath);
@@ -141,7 +141,7 @@ public class MixDownloader implements Downloader {
 
 
     }
-
+    public static int calledTime = 1;
     @Override
     public Page download(Request request, Task task) {
         // 抄写HttpClientDownloader的验证
@@ -183,11 +183,15 @@ public class MixDownloader implements Downloader {
         @Override
         public ChromeDriver call() throws Exception {
             chromeDriver.get(request.getUrl());
-            if (request.getUrl().contains("/article") && request.getUrl().contains("space"))
-                for (int i = 0; i < 300; i++) {
+            Thread.sleep(10000);
+            if (request.getUrl().contains("/article") && request.getUrl().contains("space")){
+                for (int i = 0; i < calledTime; i++) {
                     ((JavascriptExecutor) chromeDriver).executeScript("window.scrollTo(0, document.body.scrollHeight);");
                     Thread.sleep(3000);
                 }
+                calledTime++;
+            }
+
 
 
             return chromeDriver;
@@ -244,11 +248,11 @@ public class MixDownloader implements Downloader {
         page.setHtml(new Html(content, request.getUrl()));
         page.setUrl(new PlainText(request.getUrl()));
         page.setRequest(request);
-        if (counter > 50) {
+        if (counter > 5000) {
             counter = 0;
             refresh();
         } else {
-            logger.info("第 " + counter + "/50 次");
+            logger.info("第 " + counter + "/5000 次");
         }
         return page;
     }

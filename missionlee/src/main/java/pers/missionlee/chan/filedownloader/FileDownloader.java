@@ -44,7 +44,11 @@ public class FileDownloader {
         // TODO: 2024/2/29 无论怎样，更新一下 cookie 
         HCaptchaConnectionFormat.refreshCookieString(site);
         boolean downloadSuccess = false; // 下载成功
-        String fileName = aimUrl.substring(aimUrl.lastIndexOf("/") + 1, aimUrl.indexOf("?"));
+        String fileName = "";
+        if(aimUrl.contains("?"))
+            fileName = aimUrl.substring(aimUrl.lastIndexOf("/") + 1, aimUrl.indexOf("?"));
+        else
+            fileName = aimUrl.substring(aimUrl.lastIndexOf("/")+1);
         int retry = retryLimit;
 
 
