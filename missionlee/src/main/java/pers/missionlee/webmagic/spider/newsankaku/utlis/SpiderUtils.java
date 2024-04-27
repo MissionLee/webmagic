@@ -93,6 +93,7 @@ public class SpiderUtils {
         }
         return prefix.toString();
     }
+    @Deprecated
     public static String[] getStartUrlsDateBest(int artworkNum,String... keys ){
         int pageNum  = ((Double) (Math.ceil((new Double(artworkNum)) / 20))).intValue();
         if(pageNum>allowedPageNum) pageNum = allowedPageNum;
@@ -103,6 +104,26 @@ public class SpiderUtils {
         }
         return urls;
     }
+    public static String[] getStartUrlsTryBestNextMode(int num,String... keys){
+        String urls[];
+        boolean official = false;
+        // tip 没有 nextMode之前 作品数量探测爬虫没法在多个标签模式下获得准确作品数量
+        //     nextMode模式下，没有这个问题
+        if(num>50*20){// 常规模式（按日期）可以访问前50页，超过这个限度，适量增加其他下载模式
+
+            urls = new String[4];
+            urls[0] = getNextModeUrl(keys); // 常规（即日期）
+            urls[1] = OrderType.POPULAR.getPrefix(keys)+"1";
+            urls[2] = OrderType.QUALITY.getPrefix(keys)+"1";
+            urls[3] = OrderType.POPULAR.getPrefix(keys)+"1";
+        }else {
+            String startUrl = getNextModeUrl(keys);
+            urls = new String[1];
+            urls[0] = startUrl;
+        }
+        return urls;
+    }
+    @Deprecated
     public static String[] getStartUrlsTryBest(int artworkNum,String... keys){
         String urls[];
         boolean official = false;
@@ -173,6 +194,7 @@ public class SpiderUtils {
         }
         return urls;
     }
+    @Deprecated
     public static String[] getStartUrls(int artworkNum, String... keys) {
         String urls[];
         boolean official = false;

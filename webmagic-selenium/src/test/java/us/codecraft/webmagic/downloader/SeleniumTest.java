@@ -28,13 +28,13 @@ public class SeleniumTest {
         Map<String, Object> preferences = new HashMap<String, Object>();
         preferences.put("profile.default_content_settings", contentSettings);
 
-        DesiredCapabilities caps = DesiredCapabilities.chrome();
-        caps.setCapability("chrome.prefs", preferences);
-        caps.setCapability("chrome.switches", Arrays.asList("--user-data-dir=/Users/yihua/temp/chrome"));
-        WebDriver webDriver = new ChromeDriver(caps);
-        webDriver.get("http://huaban.com/");
-        WebElement webElement = webDriver.findElement(By.xpath("/html"));
-        System.out.println(webElement.getAttribute("outerHTML"));
-        webDriver.close();
+//        DesiredCapabilities caps = DesiredCapabilities.chrome();
+//        caps.setCapability("chrome.prefs", preferences);
+//        caps.setCapability("chrome.switches", Arrays.asList("--user-data-dir=/Users/yihua/temp/chrome"));
+//        WebDriver webDriver = new ChromeDriver(caps);
+//        webDriver.get("http://huaban.com/");
+//        WebElement webElement = webDriver.findElement(By.xpath("/html"));
+//        System.out.println(webElement.getAttribute("outerHTML"));
+//        webDriver.close();
     }
 }

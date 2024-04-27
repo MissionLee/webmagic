@@ -69,10 +69,10 @@ public class ArtistPathInfo {
         File redo = new File(redownPath);
         if (redo.exists()) {
             logger.info("清理--> 确认重新下载文件 写入重新下载信息");
-            delReDoFile(redo,info);
+            delReDoFile(redo, info);
         }
         logger.info("清理 Step-1.2 寻找超时替代文件并处理");
-        delExpiredFile(new File(parentPath),info);
+        delExpiredFile(new File(parentPath), info);
         /**
          * Step-2 清理要删除的文件
          * */
@@ -84,12 +84,36 @@ public class ArtistPathInfo {
             delFile(zdel, info);
         }
         /**
+         * Step-2.puls
+         * */
+        logger.info("处理掉所有的del路径和内容");
+        logger.warn("del 目录手写了两层删除，没有递归，所以可能报错");
+        File delFile = new File(PathUtils.buildPath(parentPath,"del"));
+        if(delFile.exists()){
+            File[] files = delFile.listFiles();
+            for (int i = 0; i < files.length; i++) {// del 这个目录最多就两层，所以直接写删除代码了
+                if(files[i].isDirectory()){
+                    File[] inFile = files[i].listFiles();
+                    for (int j = 0; j < inFile.length; j++) {
+                        inFile[j].delete();
+                    }
+
+                }
+                files[i].delete();
+            }
+            delFile.delete();
+        }
+        /**
          * Step-3 保存配置文件
          * */
         logger.info("清理 开始写入 [" + pathInfoFileName + "] 标准文件");
         String str = JSON.toJSONString(info);
         FileUtils.writeStringToFile(sFile, str, "UTF8", false);
         logger.info("清理 [完成] 返回数据到上级程序，流程结束");
+        /**
+         *
+         * */
+
         return info;
     }
 
@@ -139,54 +163,58 @@ public class ArtistPathInfo {
         File[] files = rootDir.listFiles();
         for (int i = 0; i < files.length; i++) {
             File thisFile = files[i];
-            if(thisFile.isDirectory()){
+            if (thisFile.isDirectory()) {
                 logger.error("清理--> 递归清理");
-                delReDoFile(thisFile,info);
+                delReDoFile(thisFile, info);
                 thisFile.delete();
-            }else{
-                String redelMd5 = thisFile.getName().substring(0,thisFile.getName().indexOf("."));
-                if(redelMd5.contains("_")){
-                    redelMd5 = redelMd5.substring(redelMd5.indexOf("_")+1);
+            } else {
+                String redelMd5 = thisFile.getName().substring(0, thisFile.getName().indexOf("."));
+                if (redelMd5.contains("_")) {
+                    redelMd5 = redelMd5.substring(redelMd5.indexOf("_") + 1);
                 }
-                logger.warn("清理--> 文件 ["+redelMd5+"]");
+                logger.warn("清理--> 文件 [" + redelMd5 + "]");
                 info.redownloadMD5.add(redelMd5);
                 thisFile.delete();
             }
         }
     }
+
     /**
      * 用来找到
-     * */
-    public static void delExpiredFile(File rootDir,ArtistPathInfo info){
-        File[] allFiles = rootDir.listFiles();
-        for (int i = 0; i < allFiles.length; i++) {
-            File thisFile = allFiles[i];
-            String fileName = thisFile.getName();
-            if(fileName.contains("low")
-                    ||fileName.contains(pathInfoFileName)
-                    ||fileName.contains(delFoldereName)
-                    ||fileName.contains(redownloadFolderName)
-            ){
-                logger.info("清理--> 检测到保留字文件 跳过 "+fileName);
-            }else{
-                if(thisFile.isDirectory()){
-                    delExpiredFile(thisFile,info);
-                }else{
-                    if(thisFile.length()>12900 && thisFile.length()<12950){
-                        logger.info("清理--> 大小符合“过期文件”的目标 "+fileName);
-                        String redelMd5 = thisFile.getName().substring(0,thisFile.getName().indexOf("."));
-                        if(redelMd5.contains("_")){
-                            redelMd5 = redelMd5.substring(redelMd5.indexOf("_")+1);
-                        }
-                        info.redownloadMD5.add(redelMd5);
-                        thisFile.delete();
+     */
+    public static void delExpiredFile(File rootDir, ArtistPathInfo info) {
+        if (rootDir.exists()) {
+            File[] allFiles = rootDir.listFiles();
 
+            for (int i = 0; i < allFiles.length; i++) {
+                File thisFile = allFiles[i];
+                String fileName = thisFile.getName();
+                if (fileName.contains("low")
+                        || fileName.contains(pathInfoFileName)
+                        || fileName.contains(delFoldereName)
+                        || fileName.contains(redownloadFolderName)
+                ) {
+                    logger.info("清理--> 检测到保留字文件 跳过 " + fileName);
+                } else {
+                    if (thisFile.isDirectory()) {
+                        delExpiredFile(thisFile, info);
+                    } else {
+                        if (thisFile.length() > 12900 && thisFile.length() < 12950) {
+                            logger.info("清理--> 大小符合“过期文件”的目标 " + fileName);
+                            String redelMd5 = thisFile.getName().substring(0, thisFile.getName().indexOf("."));
+                            if (redelMd5.contains("_")) {
+                                redelMd5 = redelMd5.substring(redelMd5.indexOf("_") + 1);
+                            }
+                            info.redownloadMD5.add(redelMd5);
+                            thisFile.delete();
+
+                        }
                     }
                 }
             }
-
         }
     }
+
     public static void main(String[] args) {
 //        String reg = "\\]\\[(.*?)\\]";
 //        Pattern r = Pattern.compile(reg);

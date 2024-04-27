@@ -5,6 +5,8 @@ import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.selector.Html;
 
+import java.io.IOException;
+
 /**
  * Base class of downloader with some common methods.
  *
@@ -31,7 +33,9 @@ public abstract class AbstractDownloader implements Downloader {
      * @return html
      */
     public Html download(String url, String charset) {
-        Page page = download(new Request(url), Site.me().setCharset(charset).toTask());
+        Page
+            page = download(new Request(url), Site.me().setCharset(charset).toTask());
+
         return (Html) page.getHtml();
     }
 

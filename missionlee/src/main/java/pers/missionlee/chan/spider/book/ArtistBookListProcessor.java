@@ -24,14 +24,41 @@ import java.util.Set;
  * @create: 2021-04-15 19:34
  */
 public class ArtistBookListProcessor extends AbstractPageProcessor {
+    // 作者信息页首页
+    // https://beta.sankakucomplex.com/tag?tagName=as109
+    // 作者首页-加载作者示例图片
+    // https://capi-v2.sankakucomplex.com/posts/keyset?lang=en&default_threshold=2&limit=40&tags=order:popularity+as109
+    // 作者首页-加载作者示例book
+    // https://capi-v2.sankakucomplex.com/pools/keyset?lang=en&limit=20&includes[]=series&tags=as109
+
+    // 作者book页面
+    // https://beta.sankakucomplex.com/books?tags=order%3Apopularity%20as109
+    // book页面-推荐作品
+    // https://capi-v2.sankakucomplex.com/poolseriesv2?lang=en&filledPools=true&offset=0&limit=10&tags=order:popularity++as109&page=1&includes[]=pools&exceptStatuses[]=deleted
+    // book页面-懒加载-第一页作品
+    // https://capi-v2.sankakucomplex.com/poolseriesv2?lang=en&filledPools=true&offset=0&limit=40&tags=+order:date+order:popularity+as109&page=1&includes[]=pools&exceptStatuses[]=deleted
+    // book页面-懒加载-第二页作品
+    // https://capi-v2.sankakucomplex.com/poolseriesv2?lang=en&filledPools=true&offset=0&limit=40&tags=+order:date+order:popularity+as109&page=2&includes[]=pools&exceptStatuses[]=deleted
+    // book 明细接口
+    // https://capi-v2.sankakucomplex.com/pools/173714?lang=en&exceptStatuses[]=deleted
+    public static String CHAN_BOOK_PREFIX = "https://beta.sankakucomplex.com/books/";
+    public static String CHAN_ARTIST_BOOK_LIST_PREFIX = "https://capi-v2.sankakucomplex.com/poolseriesv2";// 底层接口
+    public static String CHAN_WIKI_PREFIX = "https://beta.sankakucomplex.com/tag?tagName="; // 搜索作者页面，会同时展示出普通作品 以及  Book&Series
+    public static String getPoolSeriesUrl(String artist,int pageNum){
+        artist=artist.replaceAll(" ","_");
+        return "https://capi-v2.sankakucomplex.com/poolseriesv2?lang=en&filledPools=true&offset=0&limit=40&tags=+order:date+order:popularity+"+artist+"&page="+pageNum+"&includes[]=pools&exceptStatuses[]=deleted";
+    }
+    public static String getPoolDetailUrl(int bookId){
+        return "https://capi-v2.sankakucomplex.com/pools/"+bookId+"?lang=en&exceptStatuses[]=deleted";
+    }
     static Logger logger = LoggerFactory.getLogger(ArtistBookListProcessor.class);
-    public static String CHAN_WIKI_PREFIX = "https://beta.sankakucomplex.com/wiki/en/";
     List<String> bookUrlList;
     boolean onlyNew;
     double autoBookSkipPercent = 1;// 某个book 作品多余这个数，就不再下载
     double bookSkipPercent = 0.8;// 某个book 缺失作品少于这个数，就不下载
     boolean skipWhileBookIdExits;
     boolean skipBookLostPage;
+
 
     public ArtistBookListProcessor(List<String> bookUrlList, boolean onlyNew, DataBaseService dataBaseService, DiskService diskService, double autoBookSkipPercent, double bookSkipPercent, boolean skipWhileBookIdExists, boolean skipBookLostPage, String realName) {
         super(dataBaseService, diskService);
@@ -46,7 +73,6 @@ public class ArtistBookListProcessor extends AbstractPageProcessor {
                 ArtworkInfo.getArtistPicPathInfo(realName),"",ArtworkInfo.STORE_PLACE.ARTIST.storePlace
         ));
     }
-
     public ArtistBookListProcessor(List<String> bookUrlList, boolean onlyNew, DataBaseService dataBaseService, DiskService diskService, double bookSkipPercent, boolean skipWhileBookIdExists, boolean skipBookLostPage, String realName) {
 
         super(dataBaseService, diskService);
@@ -71,17 +97,18 @@ public class ArtistBookListProcessor extends AbstractPageProcessor {
     String realName;
 
 
+
+
     @Override
     public void onDownloadSuccess(Page page, ArtworkInfo artworkInfo) {
 
     }
-
     @Override
     public void onDownloadFail(Page page, ArtworkInfo artworkInfo) {
 
     }
-
     String artistName;
+
 
     @Override
     public void doProcess(Page page) {
@@ -89,27 +116,38 @@ public class ArtistBookListProcessor extends AbstractPageProcessor {
         String url = page.getUrl().toString();
 
         if (url.startsWith(CHAN_WIKI_PREFIX)) {
-            String artistName = url.substring(url.lastIndexOf("/") + 1);
+            /**
+             * 从作者信息页面，获取 作者的 Tagged Book
+             * */
+            logger.info("*检测到作者信息查询页面，解析Tagged Book");
+            String artistName = url.substring(url.lastIndexOf("=") + 1);
             artistPathName = artistName;
             this.artistName = artistName.replaceAll("_", " ");
             logger.info("检测到Wiki页面，即将爬取作品列表页面:" + this.artistName);
-            page.addTargetRequest(CHAN_ARTIST_BOOK_LIST_PREFIX + "?lang=en&limit=20&tags=order:popularity+" + artistName + "&pool_type=0");
+            // https://capi-v2.sankakucomplex.com/poolseriesv2?lang=en&filledPools=true&offset=0&limit=40&tags=+order:date+order:popularity+as109&page=1&includes[]=pools&exceptStatuses[]=deleted
+            String poolUrl = getPoolSeriesUrl(artistName,1);
+            page.addTargetRequest(poolUrl);
+            // https://capi-v2.sankakucomplex.com/pools/keyset?lang=en&limit=20&includes[]=series&tags=vycma
         } else if (url.startsWith(CHAN_ARTIST_BOOK_LIST_PREFIX)) {
+            logger.info("*PoolSeries接口返回");
             Map<String, Object> res = getJsonStringFromRestPage(page);
             // 处理返回数据的  data 字段  data字段就是一个 放着 book信息的 list
-            List<Map<String, Object>> bookList = (List<Map<String, Object>>) res.get("data");
-            for (int i = 0; i < bookList.size(); i++) {
+            logger.info("解析返回数据中的 pools->data->[item]");
+            List<Map<String, Object>> poolData =  ( List<Map<String, Object>>)((Map<String, Object>)res.get("pools")).get("data");
+            for (int i = 0; i < poolData.size(); i++) {
                 // 已经保存了，根据保存数据和配置要求 判断是否下载
                 // TODO: 2023/1/8 提示用todo  skip 是最终跳过这个作品的判断条件
                 boolean skip = false;
-//                logger.info("列表页面：Book信息JSON   " + bookList.get(i));
-                Map<String, Object> bookInfo = bookList.get(i);
-                String bookName = (String) bookInfo.get("name");
                 boolean stored = false;
                 boolean markSkip = false;
+                Map<String, Object> bookInfo = poolData.get(i);
+                /**
+                 * 解析基本信息
+                 * */
                 int storedNum = 0;
-                int bookId = (int) bookInfo.get("id");
-                int postCount = (int) bookInfo.get("visible_post_count");
+                String bookName = (String) bookInfo.get("name"); // pool 名称
+                int bookId = (int) bookInfo.get("id"); // book id
+                int postCount = (int) bookInfo.get("visible_post_count");// pool内作品数量
                 ArtworkInfo artworkInfo = new ArtworkInfo();
                 artworkInfo.bookId = bookId;
                 artworkInfo.bookName = bookName;
@@ -135,7 +173,6 @@ public class ArtistBookListProcessor extends AbstractPageProcessor {
                 }
                 if(skipWhileBookIdExits && dataBaseService.bookIdExists(bookId)){
                     logger.info("数据库已经记录这个book id，非全部更新的模式下，直接跳过这个book");
-
                     stored = true;
                     markSkip = true;
 
@@ -175,8 +212,7 @@ public class ArtistBookListProcessor extends AbstractPageProcessor {
                     }
                     if(!findThisArtist){
                         // TODO: 2023/1/8 判断作品列表中有没有当前作者，如果没有直接跳过，之前好像也有book作者异常多，获取不到作者列表的情况，这里一并处理了
-                        logger.info("作品的作者列表中，没有当前作者，跳过下载");
-
+                        logger.info("未在当前Pool信息中找到目标作者的名称，所以不下载这个book");
                         skip =true;
                     }
                     if (artists_tags.size() >= 3) {
@@ -193,7 +229,7 @@ public class ArtistBookListProcessor extends AbstractPageProcessor {
                                     artworkInfo.aimName = name;
                                     storedNum = diskService.getBookStoredNum(artworkInfo);
                                     if (storedNum > 0) {
-                                        logger.info("在 [作品的作者列表中]"+name+"发现了作品");
+                                        logger.info("在Pool的作者之一 ["+name+"]发现了作品,跳过下载");
                                         stored = true;
                                     }
 //                                    if (diskService.getBookStoredNum(artworkInfo) > 0) {
@@ -219,13 +255,13 @@ public class ArtistBookListProcessor extends AbstractPageProcessor {
                     }else{
                         storedNum = diskService.getBookStoredNum(artworkInfo);
                         if (storedNum > 0) {
-                            logger.info("在 [作品数据库中保存作者]"+storedArtist+"发现了作品");
+                            logger.info("在数据库中查询到["+storedArtist+"]关联存储了这个Pool，跳过下载");
                             stored = true;
                         }
                     }
 
                 }
-                String bookUrl = CHAN_BOOK_PREFIX + bookId + "?tags=order%3Apopularity%20" + artistPathName;
+                String bookUrl = getPoolDetailUrl(bookId);
                 if(stored){
 
                     if(markSkip){
@@ -259,27 +295,43 @@ public class ArtistBookListProcessor extends AbstractPageProcessor {
 
             }
             // 处理返回数据的 meta 字段
-            Map<String, Object> meta = (Map<String, Object>) res.get("meta");
+            Map<String, Object> meta = (Map<String, Object>)((Map<String, Object>)res.get("pools")).get("mete");
             if (meta.containsKey("next") && !"null".equals(meta.get("next")) && !(null == meta.get("next"))) {
+                // LMS 20240316  next属性不参与接口访问，但是参与判断是否还有下一页
                 logger.info("发现next信息，解析页面并加入下一页");
-                page.addTargetRequest(CHAN_ARTIST_BOOK_LIST_PREFIX + "?lang=en&next=" + meta.get("next") + "&limit=20&tags=order:popularity+" + artistPathName + "&pool_type=0");
+                // LMS 20240316 网站接口变更，下面这个不生效了
+                //  page.addTargetRequest(CHAN_ARTIST_BOOK_LIST_PREFIX + "?lang=en&next=" + meta.get("next") + "&limit=20&tags=order:popularity+" + artistPathName + "&pool_type=0");
+
+                // https://capi-v2.sankakucomplex.com/poolseriesv2?lang=en&filledPools=true&offset=0&limit=40&tags=+order:date+order:popularity+as109&page=2&includes[]=pools&exceptStatuses[]=deleted
+                page.addTargetRequest(getPoolSeriesNextPage(url));
             }
         }
     }
-
-    public static String CHAN_BOOK_PREFIX = "https://beta.sankakucomplex.com/books/";
     public String artistPathName;
 
     @Override
     public Site getSite() {
         return BookPageProcessor.site;
     }
+    // https://beta.sankakucomplex.com/books?tags=order%3Apopularity%20vycma
 
-    public static String CHAN_ARTIST_BOOK_LIST_PREFIX = "https://capi-v2.sankakucomplex.com/pools/keyset?";
+    // https://capi-v2.sankakucomplex.com/pools/keyset?lang=en&limit=20&includes[]=series&tags=vycma
 
     // https://capi-v2.sankakucomplex.com/pools/keyset?lang=en&limit=20&tags=order:popularity+roke&pool_type=0
     //   返回：
     // https://capi-v2.sankakucomplex.com/pools/keyset?lang=en&next=d83532336bd0fb4e3a262a5ce7d6888ba07f94b1d11e1318216f302b239f92ab&limit=20&tags=order:popularity+roke&pool_type=0
-
-
+    public static String getPoolSeriesNextPage(String url){
+        int pageEQNum = url.indexOf("page=");
+        String thisPageNum = url.substring(pageEQNum+5,pageEQNum+6);
+        int thisPageNumInt = Integer.valueOf(thisPageNum);
+        int nextPageNumInt = thisPageNumInt+1;
+        return url.replace("page="+thisPageNumInt,"page="+nextPageNumInt);
+    }
+    public static void main(String[] args) {
+        String s = " https://capi-v2.sankakucomplex.com/poolseriesv2?lang=en&filledPools=true&offset=0&limit=40&tags=+order:date+order:popularity+as109&page=2&includes[]=pools&exceptStatuses[]=deleted";
+        int n1 = s.indexOf("page=");
+        System.out.println(n1);
+        String num = s.substring(n1+5,n1+6);
+        System.out.println(num);
+    }
 }
