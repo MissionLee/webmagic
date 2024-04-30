@@ -9,8 +9,10 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bffc4871-1ae7-44a5-babd-8de4910d3ca3" name="Default Changelist" comment="修改BookList Spider :已经修改 poolseries列表查询解析，后续需要测试与重写book下载">
+    <list default="true" id="bffc4871-1ae7-44a5-babd-8de4910d3ca3" name="Default Changelist" comment="bilibili  逻辑跑通了，临时让代码跑起来">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/bili/spider/BidPageProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/bili/spider/BidPageProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/filedownloader/FileDownloader.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/filedownloader/FileDownloader.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/pagedownloader/MixDownloader.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/pagedownloader/MixDownloader.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -53,7 +55,7 @@
     </option>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="20240216" />
+        <entry key="$PROJECT_DIR$" value="2024_withchromedriver" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -110,7 +112,7 @@
       <command value="mvn install" />
     </option>
   </component>
-  <component name="RunManager" selected="Application.ArtistBookListProcessor">
+  <component name="RunManager" selected="Application.BidPageProcessor">
     <configuration name="ArtistBookListProcessor" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="pers.missionlee.chan.spider.book.ArtistBookListProcessor" />
       <module name="missionlee" />
@@ -137,12 +139,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="KeepDiskAlive" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="pers.missionlee.chan.service.KeepDiskAlive" />
+    <configuration name="BidPageProcessor" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="pers.missionlee.bili.spider.BidPageProcessor" />
       <module name="missionlee" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="pers.missionlee.chan.service.*" />
+          <option name="PATTERN" value="pers.missionlee.bili.spider.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -177,19 +179,19 @@
       </method>
     </configuration>
     <list>
+      <item itemvalue="Application.BidPageProcessor" />
       <item itemvalue="Application.ArtistBookListProcessor" />
       <item itemvalue="Application.Test" />
       <item itemvalue="Application.ArtistPathInfo" />
       <item itemvalue="Application.SpiderStarter" />
-      <item itemvalue="Application.KeepDiskAlive" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.BidPageProcessor" />
         <item itemvalue="Application.ArtistBookListProcessor" />
         <item itemvalue="Application.SpiderStarter" />
         <item itemvalue="Application.ArtistPathInfo" />
         <item itemvalue="Application.Test" />
-        <item itemvalue="Application.KeepDiskAlive" />
       </list>
     </recent_temporary>
   </component>
@@ -904,7 +906,14 @@
       <option name="project" value="LOCAL" />
       <updated>1710604969706</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="bilibili  逻辑跑通了，临时让代码跑起来">
+      <created>1714257310539</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1714257310539</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -933,7 +942,8 @@
     <MESSAGE value="处理URL括号问题&#10;处理作者信息没有被收录的问题" />
     <MESSAGE value="chrome driver 修改完成" />
     <MESSAGE value="修改BookList Spider :已经修改 poolseries列表查询解析，后续需要测试与重写book下载" />
-    <option name="LAST_COMMIT_MESSAGE" value="修改BookList Spider :已经修改 poolseries列表查询解析，后续需要测试与重写book下载" />
+    <MESSAGE value="bilibili  逻辑跑通了，临时让代码跑起来" />
+    <option name="LAST_COMMIT_MESSAGE" value="bilibili  逻辑跑通了，临时让代码跑起来" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

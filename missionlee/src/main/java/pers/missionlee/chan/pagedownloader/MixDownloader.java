@@ -1,5 +1,7 @@
 package pers.missionlee.chan.pagedownloader;
 
+import com.mysql.cj.log.Log;
+import com.sun.jna.platform.unix.X11;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 //import org.openqa.selenium.PageLoadStrategy;
@@ -141,7 +143,9 @@ public class MixDownloader implements Downloader {
 
 
     }
-    public static int calledTime = 1;
+
+    public static int calledTime = 33;
+
     @Override
     public Page download(Request request, Task task) {
         // 抄写HttpClientDownloader的验证
@@ -172,6 +176,7 @@ public class MixDownloader implements Downloader {
     ExecutorService executor = Executors.newSingleThreadExecutor();
 
     static class ChromeDriverDownloadTask implements Callable<ChromeDriver> {
+        Logger logger = LoggerFactory.getLogger(ChromeDriverDownloadTask.class);
         public ChromeDriver chromeDriver;
         public Request request;
 
@@ -183,15 +188,25 @@ public class MixDownloader implements Downloader {
         @Override
         public ChromeDriver call() throws Exception {
             chromeDriver.get(request.getUrl());
+
             Thread.sleep(10000);
-            if (request.getUrl().contains("/article") && request.getUrl().contains("space")){
+            if (request.getUrl().contains("/article") && request.getUrl().contains("space")) {
                 for (int i = 0; i < calledTime; i++) {
-                    ((JavascriptExecutor) chromeDriver).executeScript("window.scrollTo(0, document.body.scrollHeight);");
+//                    ((JavascriptExecutor) chromeDriver).executeScript("window.scrollTo(0, document.body.scrollHeight);");
+                    ((JavascriptExecutor) chromeDriver).executeScript("window.scrollTo(0, window.scrollY+500);");
+                    logger.info("自动翻页次数" + i + "/" + calledTime);
                     Thread.sleep(3000);
                 }
                 calledTime++;
             }
 
+//            String content = chromeDriver.findElement(By.xpath("/html")).getAttribute("outerHTML");
+//            if (content.contains("article-content")) {
+//                for (int i = 0; i < 30; i++) {
+//                    ((JavascriptExecutor) chromeDriver).executeScript("window.scrollTo(0, window.scrollY+1000);");
+//                    Thread.sleep(1000);
+//                }
+//            }
 
 
             return chromeDriver;

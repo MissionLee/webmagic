@@ -1,6 +1,9 @@
 package pers.missionlee.bili.spider;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pers.missionlee.bili.starter.BiliArtistInfo;
 import pers.missionlee.bili.starter.BiliSetting;
 import pers.missionlee.chan.filedownloader.FileDownloader;
@@ -15,99 +18,282 @@ import us.codecraft.webmagic.processor.PageProcessor;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class BidPageProcessor implements PageProcessor {
+    Logger logger = LoggerFactory.getLogger(BidPageProcessor.class);
     BiliArtistInfo artistInfo;
+    List<String> oneList;
+
     public BidPageProcessor(BiliArtistInfo info) {
         this.artistInfo = info;
+        init();
+    }
+
+    public void init() {
+        File one = new File("G:\\C-B-ALL\\" + artistInfo.bid + "\\one");
+        if (one.exists()) {
+            oneList = Arrays.asList(one.list());
+        } else {
+            oneList = new ArrayList<>();
+        }
     }
 
     @Override
     public void process(Page page) {
         String url = page.getUrl().toString();
         // 1.
-        if(url.contains("article")){
+        if (url.contains("article")) {
+            init();
             processArticle(page);
-        }else if(url.contains("opus")){
-            processOpus(page);
-        }else{
+        } else if (url.contains("opus")) {
+            if (exitsDisk(page)) {
+                return;
+            }
+            String stringPage = page.getRawText();
+            if (stringPage.contains("6元充电")) {
+                return;
+            }
+            if (stringPage.contains("opus-para-pic center")) {
+                logger.warn("检测到【纵向列表式】图片分享页面");
+                processOpusCenter(page);
+            } else if (stringPage.contains("horizontal-scroll-album")) {
+                logger.warn("检测到【轮播页】图片分享页面");
+                processOpusScroll(page);
+            } else if (stringPage.contains("bili-album__preview grid")) {
+                logger.warn("检测到【宫格式】图片分享页面");
+                processOpusGrid(page);
+            } else if (stringPage.contains("bili-album__preview one")) {
+                logger.warn("检测到【单图式】图片分享页面");
+                processOpusOne(page);
+            } else if (stringPage.contains("article-content")) {
+                logger.warn("检测到【文章】图片分享页面");
+                processArticleRead(page);
+            } else if (stringPage.contains("opus-module-top")) {
+                //⭐ 注意  scroll 也是 opus-module-top  scroll优先，放在上面
+                logger.warn("检测到【TOP图】图片分享页面");
+                processOpusTop(page);
+            } else {
+                logger.warn("当前页面未检测到特征");
+            }
+
+
+        } else {
 
         }
 
 
     }
-    public void processArticle(Page page){
+
+    public String getSer(Page page) {
+        String url = page.getUrl().toString();
+        String ser = url.substring(url.lastIndexOf("/") + 1);
+        logger.info("Ser:" + ser);
+        return ser;
+    }
+
+    public boolean exitsDisk(Page page) {
+        String ser = getSer(page);
+        return exitsDisk(ser);
+    }
+
+    public boolean exitsDisk(String ser) {
+        File opusFile = new File("G:\\C-B-ALL\\" + artistInfo.bid + "\\" + ser + "\\");
+        if (opusFile.exists()&& opusFile.listFiles().length>1) {
+            logger.info("当前页面已经下载过，跳过");
+            return true;
+        } else {
+            for (int i = 0; i < oneList.size(); i++) {
+                if (oneList.get(i).contains(ser)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    public void downloadWithUnCleanedUrl(List<String> urls, Page page) {
+        String ser = getSer(page);
+        for (int i = 0; i < urls.size(); i++) {
+            String fullUrl = urls.get(i);
+            logger.info("原始SRC: " + fullUrl);
+            if (StringUtils.isEmpty(fullUrl)) {
+                continue;
+            }
+            String origUrl = "https:" + fullUrl.substring(0, fullUrl.indexOf("@"));
+            String fileName = origUrl.substring(origUrl.lastIndexOf("/") + 1);
+            logger.info("转换URL: " + origUrl);
+            logger.info("文件名:  " + fileName);
+            logger.info("开始下载");
+            File aimFile = new File("G:\\C-B-ALL\\" + artistInfo.bid + "\\" + ser + "\\" + fileName);
+            if(aimFile.exists()){
+                logger.warn("检测到文件存在，continue 跳过本次循环");
+                continue;
+            }
+            File tempFile = FileDownloader.download(origUrl, page.getUrl().toString(), "G:\\C-B-ALL\\tmp\\", getSite());
+            if (null != tempFile && tempFile.exists() && tempFile.isFile() && tempFile.length() > 10) {
+                try {
+
+                    FileUtils.moveFile(tempFile, aimFile);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                onDownloadFail(page);
+
+            }
+        }
+    }
+
+    public void downloadOneWithUnCleanedUrl(List<String> urls, Page page) {
+        String ser = getSer(page);
+        for (int i = 0; i < urls.size(); i++) {
+            String fullUrl = urls.get(i);
+            if (StringUtils.isEmpty(fullUrl)) {
+                continue;
+            }
+            String origUrl = "https:" + fullUrl.substring(0, fullUrl.indexOf("@"));
+            String fileName = origUrl.substring(origUrl.lastIndexOf("/") + 1);
+            logger.info("原始SRC: " + fullUrl);
+            logger.info("转换URL: " + origUrl);
+            logger.info("文件名:  " + fileName);
+            logger.info("开始下载");
+            File tempFile = FileDownloader.download(origUrl, page.getUrl().toString(), "G:\\C-B-ALL\\tmp\\", getSite());
+            if (null != tempFile && tempFile.exists() && tempFile.isFile() && tempFile.length() > 10) {
+                try {
+
+                    FileUtils.moveFile(tempFile, new File("G:\\C-B-ALL\\" + artistInfo.bid + "\\one\\" + ser + "_" + fileName));
+                } catch (IOException e) {
+
+                    throw new RuntimeException(e);
+                }
+            } else {
+                onDownloadFail(page);
+
+            }
+        }
+    }
+
+    public List<String> cleanUrls(List<String> origUrl) {
+        List<String> cleam = new ArrayList<>();
+        for (int i = 0; i < origUrl.size(); i++) {
+            if (StringUtils.isEmpty(origUrl.get(i))) {
+
+            } else {
+                cleam.add(origUrl.get(i));
+            }
+        }
+        return cleam;
+    }
+
+    public void processOpusCenter(Page page) {
+        List<String> urls = page.getHtml()
+                .$(".bili-opus-view .opus-para-pic")
+                .$("img", "src")
+                .all();
+        download(urls, page);
+
+    }
+
+    public void processOpusScroll(Page page) {
+        List<String> urls = page.getHtml()
+                .$(".opus-module-top")
+                .$(".horizontal-scroll-album__indicator")
+                .$("img", "src")
+                .all();
+        if (urls == null || urls.size() == 0) {
+            urls = page.getHtml()
+                    .$(".horizontal-scroll-album__pic")
+                    .$("img", "src")
+                    .all();
+        }
+        download(urls, page);
+
+
+    }
+
+    public void download(List<String> urls, Page page) {
+        List<String> clean = cleanUrls(urls);
+        if (clean.size() > 2) {
+            downloadWithUnCleanedUrl(clean, page);
+        } else if (clean.size() > 0) {
+            downloadOneWithUnCleanedUrl(clean, page);
+        }
+    }
+
+    public void processOpusTop(Page page) {
+        List<String> urls = page.getHtml()
+                .$(".opus-module-top")
+                .$("img", "src")
+                .all();
+        download(urls, page);
+    }
+
+    public void processArticleRead(Page page) {
+//        List<String> urlsBanner = page.getHtml()
+//                .$(".banner-container")
+//                .$()
+        List<String> urlsContent = page.getHtml()
+                .$(".article-content .img-box")
+                .$("img", "data-src")
+                .all();
+
+        download(urlsContent, page);
+    }
+
+    public void processOpusOne(Page page) {
+        List<String> urls = page.getHtml()
+                .$(".bili-opus-view .opus-para-pic")
+                .$("img", "src")
+                .all();
+        download(urls, page);
+    }
+
+    public void processArticle(Page page) {
 //        System.out.println(page.getHtml());
         List<String> urls = page.getHtml()
                 .$(".waterfall-content .container")
-                .$(".item .article-card  a","href")
+                .$(".item .article-card  a", "href")
                 .all();
-
+        List<String> src = page.getHtml()
+                .$(".waterfall-content .container")
+                .$(".item .article-card  img", "src")
+                .all();
         for (int i = 0; i < urls.size(); i++) {
-            System.out.println(urls.get(i).substring(2));
-            String newurl = "https://"+urls.get(i).substring(2);
-            String ser = newurl.substring(newurl.lastIndexOf("/")+1);
-            if(new File("G:\\C-B-ALL\\179308916\\"+ser+"\\").exists() && new File("G:\\C-B-ALL\\179308916\\"+ser+"\\").isDirectory()){
-                System.out.println("目标已经存在，跳过啦啦啦啦啦啦"+ser);
-            }else{
-                System.out.println("发现新的ser，添加到列表"+ser);
+            // src="//i0.hdslb.com/bfs/activity-plat/static/20231026/3b3c5705bda98d50983f6f47df360fef/gjM5HuoMus.png@320w_240h_1c.webp"
+            if (urls.size() == src.size())
+                if (src.get(i).contains("gjM5HuoMus.png")) {
+                    logger.info("检测到要充钱的，跳过");
+                    continue;
+                }
+
+            String newurl = "https://" + urls.get(i).substring(2);
+            String ser = newurl.substring(newurl.lastIndexOf("/") + 1);
+            if (exitsDisk(ser)) {
+                logger.info("目标已经存在，跳过啦啦啦啦啦啦" + ser);
+            } else {
+                logger.info("发现新的ser，添加到列表" + ser);
                 page.addTargetRequest(newurl);
             }
 
         }
     }
-    public void processOpus(Page page){
-        String url = page.getUrl().toString();
-        String ser = url.substring(url.lastIndexOf("/")+1);
-        System.out.println("页面序列号"+ser);
-        if(new File("G:\\C-B-ALL\\179308916\\"+ser+"\\").exists() && new File("G:\\C-B-ALL\\179308916\\"+ser+"\\").isDirectory()){
-            System.out.println("目标已经存在，跳过啦啦啦啦啦啦");
-            return;
-        }
-        System.out.println("XXXXX");
-        String pageString = page.getRawText();
-        if(pageString.contains("6元充电")){
 
-        }else{
-            List<String> urls = page.getHtml()
-                    .$(".bili-opus-view .opus-para-pic")
-                    .$(".bili-album__preview__picture")
-                    .$("img","src")
-                    .all();
-            List<String> originList = new ArrayList<>();
-            for (int i = 0; i < urls.size(); i++) {
-                String smallurl = urls.get(i);
-                System.out.println(smallurl);
-                String origurl ="https:"+smallurl.substring(0,smallurl.indexOf("@"));
-                String fileName = origurl.substring(origurl.lastIndexOf("/")+1);
-                System.out.println("文件名"+fileName);
-                System.out.println(smallurl);
-                System.out.println(origurl);
-                System.out.println("==============");
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-                File tempFile = FileDownloader.download(origurl,page.getUrl().toString(),"G:\\C-B-ALL\\tmp\\",getSite());
-                if (null != tempFile && tempFile.exists() && tempFile.isFile() && tempFile.length() > 10) {
-                    try {
-                        FileUtils.moveFile(tempFile,new File("G:\\C-B-ALL\\179308916\\"+ser+"\\"+fileName));
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                } else {
-                    onDownloadFail(page);
-
-                }
-            }
-        }
+    public void processOpusGrid(Page page) {
+        List<String> urls = page.getHtml()
+                .$(".bili-opus-view .opus-para-pic")
+                .$(".bili-album__preview__picture")
+                .$("img", "src")
+                .all();
+        download(urls, page);
     }
-    public void onDownloadSuccess(Page page){
+
+    public void onDownloadSuccess(Page page) {
 
     }
-    public void onDownloadFail(Page page){
+
+    public void onDownloadFail(Page page) {
 
     }
 
@@ -118,11 +304,11 @@ public class BidPageProcessor implements PageProcessor {
     }
 
     public static void main(String[] args) {
-        String url = PathUtils.buildPath(BiliSetting.BIL_BASE,"179308916/article");
-        BiliArtistInfo info = new BiliArtistInfo("179308916");
+        String url = PathUtils.buildPath(BiliSetting.BIL_BASE, "111791273/article");
+        BiliArtistInfo info = new BiliArtistInfo("111791273");
         BidPageProcessor pageProcessor = new BidPageProcessor(info);
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1000; i++) {
 
             try {
                 Spider.create(pageProcessor)
