@@ -1,7 +1,14 @@
 package pers.missionlee.bili.starter;
 
 public class BiliSetting {
-    public static String BIL_BASE = "https://space.bilibili.com/";
-    public static String CHROME_PATH  = "C:\\\\Documents and Settings\\\\Administrator\\\\AppData\\\\Local\\\\Google\\\\Chrome\\\\User Data\\\\Default\\\\Bookmarks";
-    public String chromePath;
+    public String TASK;
+    public String[] NEW_TASK_BID;
+    public String ROOT;
+    public String BIL_BASE;
+    public String CHROME_BOOKMARK_PATH;
+    public String CHROME_DRIVER_PATH;
+    public String CHROME_PATH;
+    public String WEB_DRIVER_DEBUGGING_PORT;
+    public int BREAK_LIMIT;
+    public int ARTICLE_PAGE_START_SCROLL_TIME;
 }

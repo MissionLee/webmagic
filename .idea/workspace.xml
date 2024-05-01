@@ -9,7 +9,16 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bffc4871-1ae7-44a5-babd-8de4910d3ca3" name="Default Changelist" comment="bilibili  逻辑跑通了，临时让代码跑起来" />
+    <list default="true" id="bffc4871-1ae7-44a5-babd-8de4910d3ca3" name="Default Changelist" comment="bilibili  逻辑跑通了，临时让代码跑起来">
+      <change afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/bili/starter/setting.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/pagedownloader/WebDriverUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/bili/spider/BidPageProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/bili/spider/BidPageProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/bili/starter/BiliSetting.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/bili/starter/BiliSetting.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/bili/starter/BiliStarter.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/bili/starter/BiliStarter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/pagedownloader/MixDownloader.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/pagedownloader/MixDownloader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/starter/SpiderStarter.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/starter/SpiderStarter.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -75,19 +84,9 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/webmagic&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.46896553&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.projectsettings.compiler.javacompiler&quot;
-  }
-}</component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+  </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\MissionLee\IdeaProjects\webmagic\missionlee\src\main\resources\mybatis\mapper" />
@@ -107,7 +106,7 @@
       <command value="mvn install" />
     </option>
   </component>
-  <component name="RunManager" selected="Application.BidPageProcessor">
+  <component name="RunManager" selected="Application.WebDriverUtils">
     <configuration name="ArtistBookListProcessor" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="pers.missionlee.chan.spider.book.ArtistBookListProcessor" />
       <module name="missionlee" />
@@ -160,12 +159,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="pers.missionlee.chan.webdrivertest.Test" />
+    <configuration name="WebDriverUtils" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="pers.missionlee.chan.pagedownloader.WebDriverUtils" />
       <module name="missionlee" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="pers.missionlee.chan.webdrivertest.*" />
+          <option name="PATTERN" value="pers.missionlee.chan.pagedownloader.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -176,17 +175,17 @@
     <list>
       <item itemvalue="Application.BidPageProcessor" />
       <item itemvalue="Application.ArtistBookListProcessor" />
-      <item itemvalue="Application.Test" />
       <item itemvalue="Application.ArtistPathInfo" />
       <item itemvalue="Application.SpiderStarter" />
+      <item itemvalue="Application.WebDriverUtils" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.WebDriverUtils" />
         <item itemvalue="Application.BidPageProcessor" />
         <item itemvalue="Application.ArtistBookListProcessor" />
         <item itemvalue="Application.SpiderStarter" />
         <item itemvalue="Application.ArtistPathInfo" />
-        <item itemvalue="Application.Test" />
       </list>
     </recent_temporary>
   </component>
@@ -908,14 +907,7 @@
       <option name="project" value="LOCAL" />
       <updated>1714257310539</updated>
     </task>
-    <task id="LOCAL-00040" summary="bilibili  逻辑跑通了，临时让代码跑起来">
-      <created>1714518621414</created>
-      <option name="number" value="00040" />
-      <option name="presentableId" value="LOCAL-00040" />
-      <option name="project" value="LOCAL" />
-      <updated>1714518621415</updated>
-    </task>
-    <option name="localTasksCounter" value="41" />
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

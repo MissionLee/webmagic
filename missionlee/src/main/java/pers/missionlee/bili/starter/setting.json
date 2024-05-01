@@ -1,0 +1,17 @@
+{
+  "TASK": "UPDATE",
+  "task 可选项目": "UPDATE普通更新模式 NEW下载模式 UPDATEPRO以新下载模式更新 ",
+  "NEW_TASK_BID": [],
+  "ROOT": "G:\\C-B-ALL\\",
+  "ROOT 说明": "根目录",
+  "BIL_BASE": "https://space.bilibili.com/",
+  "CHROME_BOOKMARK_PATH": "C:\\\\Documents and Settings\\\\Administrator\\\\AppData\\\\Local\\\\Google\\\\Chrome\\\\User Data\\\\Default\\\\Bookmarks",
+  "CHROME_DRIVER_PATH": "C:\\chromedriver-win64\\chromedriver.exe",
+  "CHROME_PATH": "",
+  "WEB_DRIVER_DEBUGGING_PORT": "9292",
+  "BREAK_LIMIT": 2,
+  "BREAK_LIMIT 说明": "在更新模式下，连续几次滚轮下滚模拟操作，没有发现新的目标作品，认为更新完成",
+  "ARTICLE_PAGE_START_SCROLL_TIME": 0,
+  "ARTICLE_PAGE_START_SCROLL_TIME 说明": "每次访问article页面，计数一次，下次在进入页面会在按照之前计数执行 向下滚动网页操作，从而爬取动态数据，这个参数用于爬一半出问题了，不用从头开始",
+  "": ""
+}
