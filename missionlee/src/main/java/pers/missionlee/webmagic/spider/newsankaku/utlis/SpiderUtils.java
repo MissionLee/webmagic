@@ -297,7 +297,24 @@ public class SpiderUtils {
                 .replaceAll("\\|", "%7C");
         return artistFormat;
     }
-
+    public static Site site_bili = Site.me()
+            .setRetryTimes(30)
+            .setTimeOut(100000)
+            .addHeader("Accept", "text/html, */*; q=0.01")
+            .addHeader("Accept-Encoding", "gzip, deflate, br")
+            .addHeader("Accept-Language", "en")
+            .addHeader("Cache-Control", "no-cache")
+            .addHeader("Connection", "keep-alive")
+            .addHeader("Host", "bilibili.com")
+            .addHeader("Pragma", "no-cach")
+            .addHeader("Sec-Ch-Ua","\"Not_A Brand\";v=\"8\", \"Chromium\";v=\"120\", \"Google Chrome\";v=\"120\"")
+            .addHeader("Sec-Ch-Ua-Mobile","?0")
+            .addHeader("Sec-Ch-Ua-Platform","\"Windows\"")
+            .addHeader("Sec-Fetch-Dest","empty")
+            .addHeader("Sec-Fetch-Mode","cors")
+            .addHeader("Sec-Fetch-Site","same-origin")
+            .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
+            ;
     public static Site site = Site.me()
             .setRetryTimes(30)
             .setTimeOut(100000)

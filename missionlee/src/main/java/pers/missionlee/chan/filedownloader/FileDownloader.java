@@ -44,7 +44,11 @@ public class FileDownloader {
         // TODO: 2024/2/29 无论怎样，更新一下 cookie 
         HCaptchaConnectionFormat.refreshCookieString(site);
         boolean downloadSuccess = false; // 下载成功
-        String fileName = aimUrl.substring(aimUrl.lastIndexOf("/") + 1, aimUrl.indexOf("?"));
+        String fileName = "";
+        if(aimUrl.contains("?"))
+            fileName = aimUrl.substring(aimUrl.lastIndexOf("/") + 1, aimUrl.indexOf("?"));
+        else
+            fileName = aimUrl.substring(aimUrl.lastIndexOf("/")+1);
         int retry = retryLimit;
 
 
@@ -137,11 +141,11 @@ public class FileDownloader {
                         long endTime = System.currentTimeMillis();
                         logger.info("文件大小："+fsize+"MB 耗时"+df.format((startTime-endTime)*1.0/1000)+"秒");
                         if((startTime-endTime)*1.0/1000 < 5.1){
-                            logger.info("因为下载时间低于5秒，此处Sleep5秒");
-                            Thread.sleep(5000);
+                            logger.info("因为下载时间低于5秒，此处Sleep1秒");
+                            Thread.sleep(1000);
                         }else if((startTime-endTime)*1.0/1000 < 10.1 ){
-                            logger.info("因为下载时间低于5秒，此处Sleep5秒");
-                            Thread.sleep(3000);
+                            logger.info("因为下载时间低于10秒，此处Sleep1秒");
+                            Thread.sleep(1000);
                         }
                         return tempFile;
 
@@ -174,6 +178,7 @@ public class FileDownloader {
         }
     }
     public static void sleep(int fileSize) throws InterruptedException {
+
         long sleepTime = 1000;
         if (fileSize > 48 * 1024 * 1024) {
             sleepTime *= 0;
@@ -193,7 +198,8 @@ public class FileDownloader {
             sleepTime *= 5;
         }
         logger.info("根据文件大小 Sleep："+sleepTime/1000+"秒");
-        Thread.sleep(sleepTime);
+        logger.error("取消了sleep");
+//        Thread.sleep(sleepTime);
     }
 
     private static void formatConnection(String referer, HttpURLConnection connection, String method) throws ProtocolException {

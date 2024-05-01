@@ -1,0 +1,12 @@
+- https://space.bilibili.com/179308916/article 图文
+  - .waterfall-content .container  图文列表-下滑加载更多
+    - .item .article-card  a
+      - href
+        - href="//www.bilibili.com/opus/924967489797881856"   图文链接
+- https://www.bilibili.com/opus/924967489797881856  图文详情页面
+  - .bili-opus-view .opus-para-pic   图片列表
+    - bili-album__preview__picture
+      - source
+      - img src
+        - src="//i0.hdslb.com/bfs/new_dyn/db84b712db1eab1001790a42d21fb415179308916.jpg@264w_264h_1e_1c.webp"
+        - https://i0.hdslb.com/bfs/new_dyn/db84b712db1eab1001790a42d21fb415179308916.jpg  大图地址
