@@ -25,14 +25,21 @@ public class BidPageProcessor implements PageProcessor {
     Logger logger = LoggerFactory.getLogger(BidPageProcessor.class);
     BiliArtistInfo artistInfo;
     List<String> oneList;
-
-    public BidPageProcessor(BiliArtistInfo info) {
+    BiliSetting biliSetting;
+    public int newPageAdded;
+    public BidPageProcessor(BiliArtistInfo info,BiliSetting setting) {
         this.artistInfo = info;
+        this.biliSetting = setting;
         init();
     }
-
+    /**
+     * 首次创建和每次访问 article列表页面的收，调用本方法
+     * 1. newPageAdded 重置为 0  次数据参与 UPDATE模式下，是否继续在 article页面下进行下滚操作
+     * 2. 重置 one 目录下作品清单，如果重置，会影响作品是否已经下载的判断
+     * */
     public void init() {
-        File one = new File("G:\\C-B-ALL\\" + artistInfo.bid + "\\one");
+        newPageAdded = 0;
+        File one = new File(PathUtils.buildPath(biliSetting.ROOT,artistInfo.bid,"one"));
         if (one.exists()) {
             oneList = Arrays.asList(one.list());
         } else {
@@ -271,9 +278,10 @@ public class BidPageProcessor implements PageProcessor {
             String newurl = "https://" + urls.get(i).substring(2);
             String ser = newurl.substring(newurl.lastIndexOf("/") + 1);
             if (exitsDisk(ser)) {
-                logger.info("目标已经存在，跳过啦啦啦啦啦啦" + ser);
+                logger.info("已存在：" + ser);
             } else {
-                logger.info("发现新的ser，添加到列表" + ser);
+                newPageAdded++;
+                logger.info("新页面：" + ser);
                 page.addTargetRequest(newurl);
             }
 
@@ -303,24 +311,9 @@ public class BidPageProcessor implements PageProcessor {
         return SpiderUtils.site_bili;
     }
 
-    public static void main(String[] args) {
-        String url = PathUtils.buildPath(BiliSetting.BIL_BASE, "111791273/article");
-        BiliArtistInfo info = new BiliArtistInfo("111791273");
-        BidPageProcessor pageProcessor = new BidPageProcessor(info);
+    public static void main(String[] args) throws IOException {
 
-        for (int i = 0; i < 1000; i++) {
 
-            try {
-                Spider.create(pageProcessor)
-                        .setDownloader(new MixDownloader("", "C:\\chromedriver-win64\\chromedriver.exe", "9292"))
-                        .addUrl(url)
-                        .thread(1)
-                        .run();
-
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
 
     }
 }

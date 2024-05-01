@@ -37,10 +37,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class SpiderStarter {
     Logger logger = LoggerFactory.getLogger(SpiderStarter.class);
     public List<String> skipNames;
-    public  MixDownloader
+    public MixDownloader
 
             downloader = new MixDownloader("", "C:\\chromedriver-win64\\chromedriver.exe", "9292");
-
 
 
     public static Map<String, String> analysisSiteCookie(String cookieString) {
@@ -732,7 +731,7 @@ public class SpiderStarter {
                             false, true, artistName,
                             dataBaseService, diskService, realName, spiderSetting);
             if (!spiderSetting.onlyClean) {
-                logger.warn("爬虫启动 ["+spiderSetting.threadNum+"] 线程");
+                logger.warn("爬虫启动 [" + spiderSetting.threadNum + "] 线程");
                 Spider.create(artistPageProcessor).setDownloader(downloader).addUrl(url).thread(spiderSetting.threadNum).run();
                 // 以下逻辑 用于 判断是否自动 book 一个作品
                 ArtworkInfo artworkInfo = new ArtworkInfo();
@@ -797,21 +796,21 @@ public class SpiderStarter {
                     logger.info("作者： " + artistName + " 网站反馈作品数量为 0 结束下载");
                     return -1;
                 } else if (number > spiderSetting.downloadLimit) {
-                    logger.info("作者： " + artistName + " 作品数量 " + number + " 高于下载限制 " + spiderSetting.downloadLimit+"结束下载");
+                    logger.info("作者： " + artistName + " 作品数量 " + number + " 高于下载限制 " + spiderSetting.downloadLimit + "结束下载");
                     return -2;
                 } else {
                     logger.info("根据配置项 开始作品下载");
                     String[] urls;
                     if (spiderSetting.downloadAllTryBest) {
                         logger.info("= 配置 downloadAllTryBest 生成启动Url");
-                        urls= SpiderUtils.getStartUrlsTryBestNextMode(number,keys);
+                        urls = SpiderUtils.getStartUrlsTryBestNextMode(number, keys);
 //                        urls = SpiderUtils.getStartUrlsTryBest(number, keys);
                     } else {
                         logger.info("= 配置updateByDateBest 将按照日期先后[即常规模式] 生成启动URL");
 //                        urls = SpiderUtils.getStartUrlsDateBest(number, keys);
                         String nextModeUrl = SpiderUtils.getNextModeUrl(keys);
                         urls = new String[1];
-                        urls[0]=nextModeUrl;
+                        urls[0] = nextModeUrl;
 
                     }
                     logger.info("= 全面启用nextMode ArtistProcessorPageProcessor中的autoNextPage=true");

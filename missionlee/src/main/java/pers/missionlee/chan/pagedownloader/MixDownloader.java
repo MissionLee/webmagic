@@ -39,9 +39,7 @@ public class MixDownloader implements Downloader {
     private String chromeDriverPath;
     private String debuggingPort;
     private Set<String> urlPatterns;
-
     private HttpClientDownloader httpClientDownloader;
-
     private ChromeDriver chromeDriver;
 
     /**
@@ -53,6 +51,7 @@ public class MixDownloader implements Downloader {
     public MixDownloader(String chromePath, String chromeDriverPath, String debuggingPort) throws IOException {
         this(chromePath, chromeDriverPath, debuggingPort, null);
     }
+
 
     public MixDownloader(String chromePath, String chromeDriverPath, String debuggingPort, Set<String> urlPatterns) throws IOException {
         if (null == urlPatterns) {
@@ -67,9 +66,7 @@ public class MixDownloader implements Downloader {
         this.chromeDriverPath = chromeDriverPath;
         this.debuggingPort = debuggingPort;
         this.urlPatterns = urlPatterns;
-
         this.init();
-
     }
 
     private void init() throws IOException {
@@ -97,24 +94,16 @@ public class MixDownloader implements Downloader {
     boolean debugPortFlag = true;
 
     public void refresh() throws IOException, InterruptedException {
-        if (chromeDriver != null) {
-            chromeDriver.close();
-            chromeDriver.quit();
+        // 1.干掉所有 chrome浏览器
+        WebDriverUtils.killChrome();
+        // 2.释放 chromeDrier
+        chromeDriver = null;
+        // 3.获取一个可用的 port
+        debuggingPort =""+ WebDriverUtils.getFreePort(Integer.parseInt(debuggingPort));
 
-            chromeDriver = null;
-        }
-        if (process != null) {
-            process.destroy();
-        }
-//        if (debugPortFlag) {
-//            debuggingPort = String.valueOf(Integer.parseInt(debuggingPort) + 1);
-//        } else {
-//            debuggingPort = String.valueOf(Integer.parseInt(debuggingPort) - 1);
-//        }
-        debugPortFlag = !debugPortFlag;
         logger.info("Refresh-新端口" + debuggingPort);
         // 启动
-//        process = Runtime.getRuntime().exec("chrome.exe --remote-debugging-port=" + debuggingPort);
+        process = Runtime.getRuntime().exec("chrome.exe --remote-debugging-port=" + debuggingPort);
         logger.info("Refresh-启动浏览器");
         // 配置 chromeDriver
         System.setProperty("webdriver.chrome.driver", chromeDriverPath);
@@ -133,10 +122,7 @@ public class MixDownloader implements Downloader {
         }
         // 配置 WebDriver
         ChromeOptions options = new ChromeOptions();
-//        options.setPageLoadStrategy(PageLoadStrategy.EAGER);
-//        options.setCapability("debuggerAddress","127.0.0.1:"+this.debuggingPort);
         options.setExperimentalOption("debuggerAddress", "127.0.0.1:" + this.debuggingPort);
-
         this.chromeDriver = new ChromeDriver(options);
         logger.info("Refresh-创建ChromeDriver");
         chromeDriver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
@@ -144,7 +130,6 @@ public class MixDownloader implements Downloader {
 
     }
 
-    public static int calledTime = 33;
 
     @Override
     public Page download(Request request, Task task) {
@@ -173,6 +158,9 @@ public class MixDownloader implements Downloader {
     }
 
     private static int counter = 0;
+    public static int calledTime = 33; // 自动翻页机制
+    public static boolean touchBottom;
+//    public static int last_length = 0;
     ExecutorService executor = Executors.newSingleThreadExecutor();
 
     static class ChromeDriverDownloadTask implements Callable<ChromeDriver> {
@@ -187,17 +175,30 @@ public class MixDownloader implements Downloader {
 
         @Override
         public ChromeDriver call() throws Exception {
-            chromeDriver.get(request.getUrl());
 
-            Thread.sleep(10000);
+            chromeDriver.get(request.getUrl());
             if (request.getUrl().contains("/article") && request.getUrl().contains("space")) {
+                int l_orig = 0;
                 for (int i = 0; i < calledTime; i++) {
 //                    ((JavascriptExecutor) chromeDriver).executeScript("window.scrollTo(0, document.body.scrollHeight);");
                     ((JavascriptExecutor) chromeDriver).executeScript("window.scrollTo(0, window.scrollY+500);");
                     logger.info("自动翻页次数" + i + "/" + calledTime);
+                    int length = getPageStringLengthFromChromeDriver(chromeDriver);
+                    logger.info("上个循环页面长度/本次长度 "+l_orig+"/"+length);
+                    if (length - l_orig > 20) {
+                        MixDownloader.touchBottom = false;
+                        l_orig = length;
+                        logger.info("页面长度增加超过20，应该是加载了新页面了");
+                    } else {
+                        MixDownloader.touchBottom = true;
+                        logger.info("页面长度增加不到20，应该是到头了吧");
+                        break;
+                    }
                     Thread.sleep(3000);
                 }
                 calledTime++;
+
+
             }
 
 //            String content = chromeDriver.findElement(By.xpath("/html")).getAttribute("outerHTML");
@@ -211,6 +212,21 @@ public class MixDownloader implements Downloader {
 
             return chromeDriver;
         }
+    }
+
+    public static Page getPageFromChromeDriver(ChromeDriver driver, Request request) {
+        WebElement webElement = driver.findElement(By.xpath("/html"));
+        String content = webElement.getAttribute("outerHTML");
+        Page page = new Page();
+        page.setRawText(content);
+        page.setUrl(new PlainText(request.getUrl()));
+        page.setRequest(request);
+        return page;
+    }
+
+    public static int getPageStringLengthFromChromeDriver(ChromeDriver driver) {
+        WebElement webElement = driver.findElement(By.xpath("/html"));
+        return webElement.getText().length();
     }
 
     private synchronized Page downloadWithChromeDriver(Request request, Task task) throws IOException, InterruptedException {
@@ -260,10 +276,10 @@ public class MixDownloader implements Downloader {
         String content = webElement.getAttribute("outerHTML");
         Page page = new Page();
         page.setRawText(content);
-        page.setHtml(new Html(content, request.getUrl()));
+//        page.setHtml(new Html(content, request.getUrl()));
         page.setUrl(new PlainText(request.getUrl()));
         page.setRequest(request);
-        if (counter > 5000) {
+        if (counter > 100) {
             counter = 0;
             refresh();
         } else {
