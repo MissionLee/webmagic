@@ -11,4 +11,5 @@ public class BiliSetting {
     public String WEB_DRIVER_DEBUGGING_PORT;
     public int BREAK_LIMIT;
     public int ARTICLE_PAGE_START_SCROLL_TIME;
+    public int CHROME_RESTART_LIMIT;
 }

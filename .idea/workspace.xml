@@ -10,14 +10,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bffc4871-1ae7-44a5-babd-8de4910d3ca3" name="Default Changelist" comment="bilibili  逻辑跑通了，临时让代码跑起来">
-      <change afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/bili/starter/setting.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/pagedownloader/WebDriverUtils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/bili/spider/BidPageProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/bili/spider/BidPageProcessor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/bili/starter/BiliSetting.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/bili/starter/BiliSetting.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/bili/starter/BiliStarter.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/bili/starter/BiliStarter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/pagedownloader/MixDownloader.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/pagedownloader/MixDownloader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/starter/SpiderStarter.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/starter/SpiderStarter.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -106,26 +103,13 @@
       <command value="mvn install" />
     </option>
   </component>
-  <component name="RunManager" selected="Application.WebDriverUtils">
+  <component name="RunManager" selected="Application.BiliStarter">
     <configuration name="ArtistBookListProcessor" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="pers.missionlee.chan.spider.book.ArtistBookListProcessor" />
       <module name="missionlee" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="pers.missionlee.chan.spider.book.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="ArtistPathInfo" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="pers.missionlee.chan.pojo.ArtistPathInfo" />
-      <module name="missionlee" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="pers.missionlee.chan.pojo.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -146,12 +130,25 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="SpiderStarter" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="pers.missionlee.chan.starter.SpiderStarter" />
+    <configuration name="BiliStarter" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="pers.missionlee.bili.starter.BiliStarter" />
       <module name="missionlee" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="pers.missionlee.chan.starter.*" />
+          <option name="PATTERN" value="pers.missionlee.bili.starter.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MixDownloader" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="pers.missionlee.chan.pagedownloader.MixDownloader" />
+      <module name="missionlee" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="pers.missionlee.chan.pagedownloader.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -173,19 +170,19 @@
       </method>
     </configuration>
     <list>
+      <item itemvalue="Application.BiliStarter" />
+      <item itemvalue="Application.MixDownloader" />
       <item itemvalue="Application.BidPageProcessor" />
       <item itemvalue="Application.ArtistBookListProcessor" />
-      <item itemvalue="Application.ArtistPathInfo" />
-      <item itemvalue="Application.SpiderStarter" />
       <item itemvalue="Application.WebDriverUtils" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.BiliStarter" />
+        <item itemvalue="Application.MixDownloader" />
         <item itemvalue="Application.WebDriverUtils" />
         <item itemvalue="Application.BidPageProcessor" />
         <item itemvalue="Application.ArtistBookListProcessor" />
-        <item itemvalue="Application.SpiderStarter" />
-        <item itemvalue="Application.ArtistPathInfo" />
       </list>
     </recent_temporary>
   </component>
@@ -937,7 +934,8 @@
     <MESSAGE value="chrome driver 修改完成" />
     <MESSAGE value="修改BookList Spider :已经修改 poolseries列表查询解析，后续需要测试与重写book下载" />
     <MESSAGE value="bilibili  逻辑跑通了，临时让代码跑起来" />
-    <option name="LAST_COMMIT_MESSAGE" value="bilibili  逻辑跑通了，临时让代码跑起来" />
+    <MESSAGE value="1" />
+    <option name="LAST_COMMIT_MESSAGE" value="1" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

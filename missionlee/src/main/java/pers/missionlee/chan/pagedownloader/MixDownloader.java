@@ -87,7 +87,7 @@ public class MixDownloader implements Downloader {
         }
 
         // 配置HttpClientDownloader
-        this.httpClientDownloader = new HttpClientDownloader();
+//        this.httpClientDownloader = new HttpClientDownloader();
     }
 
     Process process;
@@ -103,29 +103,32 @@ public class MixDownloader implements Downloader {
 
         logger.info("Refresh-新端口" + debuggingPort);
         // 启动
-        process = Runtime.getRuntime().exec("chrome.exe --remote-debugging-port=" + debuggingPort);
+        String cmd = "chrome.exe --remote-debugging-port=" + debuggingPort;
+        Thread.sleep(5000);
+
+        Runtime.getRuntime().exec(cmd);
         logger.info("Refresh-启动浏览器");
         // 配置 chromeDriver
         System.setProperty("webdriver.chrome.driver", chromeDriverPath);
         logger.info("重启浏览器 重新配置ChromeDriver sleep10秒");
         Thread.sleep(10000);
         // 判断给定端口是否存活
-        try {
-            Socket socket = new Socket("127.0.0.1", Integer.parseInt(this.debuggingPort));
-            logger.info("端口 " + this.debuggingPort + " 可以链接");
-            socket.close();
-        } catch (IOException e) {
-            logger.error("端口 " + this.debuggingPort + " 无法链接；请确认浏览器在指定端口启动");
-            e.printStackTrace();
-            System.exit(-1);
-            throw new RuntimeException(e);
-        }
+//        try {
+//            Socket socket = new Socket("127.0.0.1", Integer.parseInt(this.debuggingPort));
+//            logger.info("端口 " + this.debuggingPort + " 可以链接");
+//            socket.close();
+//        } catch (IOException e) {
+//            logger.error("端口 " + this.debuggingPort + " 无法链接；请确认浏览器在指定端口启动");
+//            e.printStackTrace();
+//            System.exit(-1);
+//            throw new RuntimeException(e);
+//        }
         // 配置 WebDriver
         ChromeOptions options = new ChromeOptions();
         options.setExperimentalOption("debuggerAddress", "127.0.0.1:" + this.debuggingPort);
         this.chromeDriver = new ChromeDriver(options);
         logger.info("Refresh-创建ChromeDriver");
-        chromeDriver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
+//        chromeDriver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
 
 
     }
@@ -182,18 +185,18 @@ public class MixDownloader implements Downloader {
                 for (int i = 0; i < calledTime; i++) {
 //                    ((JavascriptExecutor) chromeDriver).executeScript("window.scrollTo(0, document.body.scrollHeight);");
                     ((JavascriptExecutor) chromeDriver).executeScript("window.scrollTo(0, window.scrollY+500);");
-                    logger.info("自动翻页次数" + i + "/" + calledTime);
-                    int length = getPageStringLengthFromChromeDriver(chromeDriver);
-                    logger.info("上个循环页面长度/本次长度 "+l_orig+"/"+length);
-                    if (length - l_orig > 20) {
-                        MixDownloader.touchBottom = false;
-                        l_orig = length;
-                        logger.info("页面长度增加超过20，应该是加载了新页面了");
-                    } else {
-                        MixDownloader.touchBottom = true;
-                        logger.info("页面长度增加不到20，应该是到头了吧");
-                        break;
-                    }
+//                    logger.info("自动翻页次数" + i + "/" + calledTime);
+//                    int length = getPageStringLengthFromChromeDriver(chromeDriver);
+//                    logger.info("上个循环页面长度/本次长度 "+l_orig+"/"+length);
+//                    if (length - l_orig > 5) {
+//                        MixDownloader.touchBottom = false;
+//                        l_orig = length;
+//                        logger.info("页面长度增加超过20，应该是加载了新页面了");
+//                    } else {
+//                        MixDownloader.touchBottom = true;
+//                        logger.info("页面长度增加不到20，应该是到头了吧");
+//                        break;
+//                    }
                     Thread.sleep(3000);
                 }
                 calledTime++;
@@ -226,7 +229,8 @@ public class MixDownloader implements Downloader {
 
     public static int getPageStringLengthFromChromeDriver(ChromeDriver driver) {
         WebElement webElement = driver.findElement(By.xpath("/html"));
-        return webElement.getText().length();
+        System.out.println(webElement.getSize());
+        return webElement.getSize().getHeight();
     }
 
     private synchronized Page downloadWithChromeDriver(Request request, Task task) throws IOException, InterruptedException {
@@ -279,7 +283,7 @@ public class MixDownloader implements Downloader {
 //        page.setHtml(new Html(content, request.getUrl()));
         page.setUrl(new PlainText(request.getUrl()));
         page.setRequest(request);
-        if (counter > 100) {
+        if (counter > restartLimit) {
             counter = 0;
             refresh();
         } else {
@@ -287,9 +291,17 @@ public class MixDownloader implements Downloader {
         }
         return page;
     }
-
+    public static int restartLimit=100;
     @Override
     public void setThread(int threadNum) {
 
+    }
+
+    public static void main(String[] args) {
+        try {
+            Runtime.getRuntime().exec("chrome.exe --remote-debugging-port=" + "9292");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

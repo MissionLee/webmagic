@@ -106,7 +106,8 @@ public class BidPageProcessor implements PageProcessor {
     }
 
     public boolean exitsDisk(String ser) {
-        File opusFile = new File("G:\\C-B-ALL\\" + artistInfo.bid + "\\" + ser + "\\");
+        String path = PathUtils.buildPath(biliSetting.ROOT,artistInfo.bid,ser);
+        File opusFile = new File(path);
         if (opusFile.exists()&& opusFile.listFiles().length>1) {
             logger.info("当前页面已经下载过，跳过");
             return true;
@@ -119,7 +120,28 @@ public class BidPageProcessor implements PageProcessor {
             return false;
         }
     }
+    public int getArtworkNum(){
+        String root = PathUtils.buildPath(biliSetting.ROOT,artistInfo.bid);
+        File rootFile = new File(root);
+        if(rootFile.exists()){
+            return getFileNum(new File(root));
+        }else{
+            return 0;
+        }
 
+    }
+    public int getFileNum(File file){
+        File[] sub = file.listFiles();
+        int num = 0;
+        for (int i = 0; i < sub.length; i++) {
+            if(sub[i].isDirectory()){
+                num+=getFileNum(sub[i]);
+            }else{
+                num++;
+            }
+        }
+        return num;
+    }
     public void downloadWithUnCleanedUrl(List<String> urls, Page page) {
         String ser = getSer(page);
         for (int i = 0; i < urls.size(); i++) {

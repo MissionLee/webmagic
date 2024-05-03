@@ -48,6 +48,7 @@ public class BiliStarter {
         String settingString = null;
         settingString = FileUtils.readFileToString(setting, "UTF8");
         this.biliSetting = JSON.parseObject(settingString, BiliSetting.class);
+        MixDownloader.restartLimit = biliSetting.CHROME_RESTART_LIMIT;
         this.reader = new ChromeBookmarksReader(biliSetting.CHROME_BOOKMARK_PATH);
     }
 
@@ -83,12 +84,25 @@ public class BiliStarter {
         BidPageProcessor pageProcessor = new BidPageProcessor(info,biliSetting);
         MixDownloader downloader = new MixDownloader(biliSetting.CHROME_PATH,biliSetting.CHROME_DRIVER_PATH, biliSetting.WEB_DRIVER_DEBUGGING_PORT);
         MixDownloader.calledTime = biliSetting.ARTICLE_PAGE_START_SCROLL_TIME;
-        while (!MixDownloader.touchBottom){
+        int stored = pageProcessor.getArtworkNum();
+        logger.warn("XXXX 作者初始文件数："+stored);
+        int limit = biliSetting.BREAK_LIMIT;
+        while (limit>0){
+
             Spider.create(pageProcessor)
                     .setDownloader(downloader)
                     .addUrl(url)
                     .thread(1)
                     .run();
+            int newStored = pageProcessor.getArtworkNum();
+            if(newStored>stored){
+                logger.warn("文件增加了：原"+stored+" / 新"+newStored);
+                stored = newStored;
+                limit = biliSetting.BREAK_LIMIT;
+            }else{
+                logger.warn("本次启动爬虫，存储文件数为增加，LIMIT倒计时 "+limit+"/"+biliSetting.BREAK_LIMIT);
+                limit--;
+            }
         }
 
     }
@@ -100,6 +114,7 @@ public class BiliStarter {
         MixDownloader.calledTime = 0;
         int keepGoing = biliSetting.BREAK_LIMIT;
         while (keepGoing>0){
+            logger.info("keepGoing: "+keepGoing);
             Spider.create(pageProcessor)
                     .setDownloader(downloader)
                     .addUrl(url)
@@ -122,7 +137,7 @@ public class BiliStarter {
         }else if("NEW".equals(biliSetting.TASK)){
             String[] bids = biliSetting.NEW_TASK_BID;
             for (int i = 0; i < bids.length; i++) {
-                downloadBid(bids[1]);
+                downloadBid(bids[i]);
             }
         }else{
 
