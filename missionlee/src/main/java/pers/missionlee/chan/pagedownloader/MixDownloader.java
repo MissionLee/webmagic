@@ -107,6 +107,7 @@ public class MixDownloader implements Downloader{
         debugPortFlag = !debugPortFlag;
         logger.info("Refresh-新端口"+debuggingPort);
         // 启动
+        Thread.sleep(3000);
         process  = Runtime.getRuntime().exec("chrome.exe --remote-debugging-port="+debuggingPort);
         logger.info("Refresh-启动浏览器");
         // 配置 chromeDriver

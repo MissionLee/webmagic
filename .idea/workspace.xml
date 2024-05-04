@@ -9,8 +9,9 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bffc4871-1ae7-44a5-babd-8de4910d3ca3" name="Default Changelist" comment="bilibili">
+    <list default="true" id="bffc4871-1ae7-44a5-babd-8de4910d3ca3" name="Default Changelist" comment="- 更新功能待测试，其他已经可以正常工作">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/pagedownloader/MixDownloader.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/pagedownloader/MixDownloader.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,7 +53,7 @@
     </option>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="20240216" />
+        <entry key="$PROJECT_DIR$" value="bili_chromedriver_202404" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -77,19 +78,9 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/webmagic&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.46896553&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.projectsettings.compiler.javacompiler&quot;
-  }
-}</component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+  </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\MissionLee\IdeaProjects\webmagic\missionlee\src\main\resources\mybatis\mapper" />
@@ -177,18 +168,18 @@
     </configuration>
     <list>
       <item itemvalue="Application.BiliStarter" />
-      <item itemvalue="Application.ArtistBookListProcessor" />
       <item itemvalue="Application.Test" />
+      <item itemvalue="Application.ArtistBookListProcessor" />
       <item itemvalue="Application.ArtistPathInfo" />
       <item itemvalue="Application.SpiderStarter" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Application.SpiderStarter" />
-        <item itemvalue="Application.BiliStarter" />
-        <item itemvalue="Application.ArtistBookListProcessor" />
         <item itemvalue="Application.ArtistPathInfo" />
         <item itemvalue="Application.Test" />
+        <item itemvalue="Application.ArtistBookListProcessor" />
+        <item itemvalue="Application.BiliStarter" />
       </list>
     </recent_temporary>
   </component>
@@ -635,15 +626,7 @@
       <workItem from="1710457280825" duration="197000" />
       <workItem from="1710507830406" duration="22246000" />
       <workItem from="1710600663281" duration="4270000" />
-      <workItem from="1710942509140" duration="714000" />
-      <workItem from="1712190232106" duration="14436000" />
-      <workItem from="1712315430998" duration="21699000" />
-      <workItem from="1712678220541" duration="13557000" />
-      <workItem from="1712923593472" duration="681000" />
-      <workItem from="1712980799070" duration="3721000" />
-      <workItem from="1713370327075" duration="8271000" />
-      <workItem from="1713541242130" duration="25685000" />
-      <workItem from="1713887233436" duration="7838000" />
+      <workItem from="1710942509140" duration="684000" />
     </task>
     <task id="LOCAL-00001" summary="SpiderConfig">
       <created>1555292406689</created>
@@ -911,28 +894,21 @@
       <option name="project" value="LOCAL" />
       <updated>1710604969706</updated>
     </task>
-    <task id="LOCAL-00039" summary="修改BookList Spider :已经修改 poolseries列表查询解析，后续需要测试与重写book下载">
-      <created>1710944835957</created>
+    <task id="LOCAL-00039" summary="bilibili  逻辑跑通了，临时让代码跑起来">
+      <created>1714257310539</created>
       <option name="number" value="00039" />
       <option name="presentableId" value="LOCAL-00039" />
       <option name="project" value="LOCAL" />
-      <updated>1710944835957</updated>
+      <updated>1714257310539</updated>
     </task>
-    <task id="LOCAL-00040" summary="完成&#10;- 浏览器重启&#10;- ChromeDriver重载&#10;- 端口轮流使用">
-      <created>1713740649389</created>
+    <task id="LOCAL-00040" summary="- 更新功能待测试，其他已经可以正常工作">
+      <created>1714697552639</created>
       <option name="number" value="00040" />
       <option name="presentableId" value="LOCAL-00040" />
       <option name="project" value="LOCAL" />
-      <updated>1713740649389</updated>
+      <updated>1714697552639</updated>
     </task>
-    <task id="LOCAL-00041" summary="bilibili">
-      <created>1714172659233</created>
-      <option name="number" value="00041" />
-      <option name="presentableId" value="LOCAL-00041" />
-      <option name="project" value="LOCAL" />
-      <updated>1714172659233</updated>
-    </task>
-    <option name="localTasksCounter" value="42" />
+    <option name="localTasksCounter" value="41" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -961,9 +937,10 @@
     <MESSAGE value="处理URL括号问题&#10;处理作者信息没有被收录的问题" />
     <MESSAGE value="chrome driver 修改完成" />
     <MESSAGE value="修改BookList Spider :已经修改 poolseries列表查询解析，后续需要测试与重写book下载" />
-    <MESSAGE value="完成&#10;- 浏览器重启&#10;- ChromeDriver重载&#10;- 端口轮流使用" />
-    <MESSAGE value="bilibili" />
-    <option name="LAST_COMMIT_MESSAGE" value="bilibili" />
+    <MESSAGE value="bilibili  逻辑跑通了，临时让代码跑起来" />
+    <MESSAGE value="1" />
+    <MESSAGE value="- 更新功能待测试，其他已经可以正常工作" />
+    <option name="LAST_COMMIT_MESSAGE" value="- 更新功能待测试，其他已经可以正常工作" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
