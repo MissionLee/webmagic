@@ -27,24 +27,31 @@ public class BidPageProcessor implements PageProcessor {
     List<String> oneList;
     BiliSetting biliSetting;
     public int newPageAdded;
-    public BidPageProcessor(BiliArtistInfo info,BiliSetting setting) {
+
+    public BidPageProcessor(BiliArtistInfo info, BiliSetting setting) {
         this.artistInfo = info;
         this.biliSetting = setting;
         init();
     }
+
     /**
      * 首次创建和每次访问 article列表页面的收，调用本方法
      * 1. newPageAdded 重置为 0  次数据参与 UPDATE模式下，是否继续在 article页面下进行下滚操作
      * 2. 重置 one 目录下作品清单，如果重置，会影响作品是否已经下载的判断
-     * */
+     */
     public void init() {
         newPageAdded = 0;
-        File one = new File(PathUtils.buildPath(biliSetting.ROOT,artistInfo.bid,"one"));
+        File root = new File(PathUtils.buildPath(biliSetting.ROOT, artistInfo.bid));
+        if (root.exists()) {
+            root.setLastModified(System.currentTimeMillis());
+        }
+        File one = new File(PathUtils.buildPath(biliSetting.ROOT, artistInfo.bid, "one"));
         if (one.exists()) {
             oneList = Arrays.asList(one.list());
         } else {
             oneList = new ArrayList<>();
         }
+
     }
 
     @Override
@@ -60,6 +67,7 @@ public class BidPageProcessor implements PageProcessor {
             }
             String stringPage = page.getRawText();
             if (stringPage.contains("6元充电")) {
+                artistInfo.member.add(getSer(page));
                 return;
             }
             if (stringPage.contains("opus-para-pic center")) {
@@ -82,6 +90,7 @@ public class BidPageProcessor implements PageProcessor {
                 logger.warn("检测到【TOP图】图片分享页面");
                 processOpusTop(page);
             } else {
+                artistInfo.unknown.add(getSer(page));
                 logger.warn("当前页面未检测到特征");
             }
 
@@ -106,9 +115,9 @@ public class BidPageProcessor implements PageProcessor {
     }
 
     public boolean exitsDisk(String ser) {
-        String path = PathUtils.buildPath(biliSetting.ROOT,artistInfo.bid,ser);
+        String path = PathUtils.buildPath(biliSetting.ROOT, artistInfo.bid, ser);
         File opusFile = new File(path);
-        if (opusFile.exists()&& opusFile.listFiles().length>1) {
+        if (opusFile.exists() && opusFile.listFiles().length > 1) {
             logger.info("当前页面已经下载过，跳过");
             return true;
         } else {
@@ -120,28 +129,31 @@ public class BidPageProcessor implements PageProcessor {
             return false;
         }
     }
-    public int getArtworkNum(){
-        String root = PathUtils.buildPath(biliSetting.ROOT,artistInfo.bid);
+
+    public int getArtworkNum() {
+        String root = PathUtils.buildPath(biliSetting.ROOT, artistInfo.bid);
         File rootFile = new File(root);
-        if(rootFile.exists()){
+        if (rootFile.exists()) {
             return getFileNum(new File(root));
-        }else{
+        } else {
             return 0;
         }
 
     }
-    public int getFileNum(File file){
+
+    public int getFileNum(File file) {
         File[] sub = file.listFiles();
         int num = 0;
         for (int i = 0; i < sub.length; i++) {
-            if(sub[i].isDirectory()){
-                num+=getFileNum(sub[i]);
-            }else{
+            if (sub[i].isDirectory()) {
+                num += getFileNum(sub[i]);
+            } else {
                 num++;
             }
         }
         return num;
     }
+
     public void downloadWithUnCleanedUrl(List<String> urls, Page page) {
         String ser = getSer(page);
         for (int i = 0; i < urls.size(); i++) {
@@ -150,17 +162,24 @@ public class BidPageProcessor implements PageProcessor {
             if (StringUtils.isEmpty(fullUrl)) {
                 continue;
             }
-            String origUrl = "https:" + fullUrl.substring(0, fullUrl.indexOf("@"));
+            String origUrl = "https:" + fullUrl;
+            if (origUrl.contains("@"))
+                origUrl = "https:" + fullUrl.substring(0, fullUrl.indexOf("@"));
+            else {
+                continue;
+            }
+
+
             String fileName = origUrl.substring(origUrl.lastIndexOf("/") + 1);
             logger.info("转换URL: " + origUrl);
             logger.info("文件名:  " + fileName);
             logger.info("开始下载");
-            File aimFile = new File("G:\\C-B-ALL\\" + artistInfo.bid + "\\" + ser + "\\" + fileName);
-            if(aimFile.exists()){
+            File aimFile = new File(PathUtils.buildPath(biliSetting.ROOT,artistInfo.bid,ser,fileName) );
+            if (aimFile.exists()) {
                 logger.warn("检测到文件存在，continue 跳过本次循环");
                 continue;
             }
-            File tempFile = FileDownloader.download(origUrl, page.getUrl().toString(), "G:\\C-B-ALL\\tmp\\", getSite());
+            File tempFile = FileDownloader.download(origUrl, page.getUrl().toString(), PathUtils.buildPath(biliSetting.ROOT,"tmp"), getSite());
             if (null != tempFile && tempFile.exists() && tempFile.isFile() && tempFile.length() > 10) {
                 try {
 
@@ -182,7 +201,13 @@ public class BidPageProcessor implements PageProcessor {
             if (StringUtils.isEmpty(fullUrl)) {
                 continue;
             }
-            String origUrl = "https:" + fullUrl.substring(0, fullUrl.indexOf("@"));
+            String origUrl = "https:" + fullUrl;
+            if (origUrl.contains("@"))
+                origUrl = "https:" + fullUrl.substring(0, fullUrl.indexOf("@"));
+            else {
+                continue;
+            }
+//            String origUrl = "https:" + fullUrl.substring(0, fullUrl.indexOf("@"));
             String fileName = origUrl.substring(origUrl.lastIndexOf("/") + 1);
             logger.info("原始SRC: " + fullUrl);
             logger.info("转换URL: " + origUrl);
@@ -248,6 +273,8 @@ public class BidPageProcessor implements PageProcessor {
             downloadWithUnCleanedUrl(clean, page);
         } else if (clean.size() > 0) {
             downloadOneWithUnCleanedUrl(clean, page);
+        }else {
+            artistInfo.empty.add(getSer(page));
         }
     }
 
@@ -291,19 +318,23 @@ public class BidPageProcessor implements PageProcessor {
                 .all();
         for (int i = 0; i < urls.size(); i++) {
             // src="//i0.hdslb.com/bfs/activity-plat/static/20231026/3b3c5705bda98d50983f6f47df360fef/gjM5HuoMus.png@320w_240h_1c.webp"
+            String newurl = "https://" + urls.get(i).substring(2);
+            String ser = newurl.substring(newurl.lastIndexOf("/") + 1);
+            if (artistInfo.skip(ser)) {
+                logger.info("需跳过: " + ser + " 无图页面/无法解析页面/会员页面(部分会员页面会被识别成无图)");
+                continue;
+            }
             if (urls.size() == src.size())
                 if (src.get(i).contains("gjM5HuoMus.png")) {
                     logger.info("检测到要充钱的，跳过");
+                    artistInfo.member.add(ser);
                     continue;
                 }
-
-            String newurl = "https://" + urls.get(i).substring(2);
-            String ser = newurl.substring(newurl.lastIndexOf("/") + 1);
             if (exitsDisk(ser)) {
-                logger.info("已存在：" + ser);
+                logger.info("已存在: " + ser);
             } else {
                 newPageAdded++;
-                logger.info("新页面：" + ser);
+                logger.info("新页面: " + ser);
                 page.addTargetRequest(newurl);
             }
 
@@ -334,7 +365,6 @@ public class BidPageProcessor implements PageProcessor {
     }
 
     public static void main(String[] args) throws IOException {
-
 
 
     }

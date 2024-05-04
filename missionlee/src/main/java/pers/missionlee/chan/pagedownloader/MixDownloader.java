@@ -99,7 +99,7 @@ public class MixDownloader implements Downloader {
         // 2.释放 chromeDrier
         chromeDriver = null;
         // 3.获取一个可用的 port
-        debuggingPort =""+ WebDriverUtils.getFreePort(Integer.parseInt(debuggingPort));
+        debuggingPort = "" + WebDriverUtils.getFreePort(Integer.parseInt(debuggingPort));
 
         logger.info("Refresh-新端口" + debuggingPort);
         // 启动
@@ -163,14 +163,14 @@ public class MixDownloader implements Downloader {
     private static int counter = 0;
     public static int calledTime = 33; // 自动翻页机制
     public static boolean touchBottom;
-//    public static int last_length = 0;
+    //    public static int last_length = 0;
     ExecutorService executor = Executors.newSingleThreadExecutor();
 
     static class ChromeDriverDownloadTask implements Callable<ChromeDriver> {
         Logger logger = LoggerFactory.getLogger(ChromeDriverDownloadTask.class);
         public ChromeDriver chromeDriver;
         public Request request;
-
+        public static String scrollY = "800";
         public ChromeDriverDownloadTask(ChromeDriver chromeDriver, Request request) {
             this.chromeDriver = chromeDriver;
             this.request = request;
@@ -182,9 +182,10 @@ public class MixDownloader implements Downloader {
             chromeDriver.get(request.getUrl());
             if (request.getUrl().contains("/article") && request.getUrl().contains("space")) {
                 int l_orig = 0;
+                logger.info("本次将进行 "+calledTime+" 此翻页，三次翻页 "+scrollY+" 像素");
                 for (int i = 0; i < calledTime; i++) {
 //                    ((JavascriptExecutor) chromeDriver).executeScript("window.scrollTo(0, document.body.scrollHeight);");
-                    ((JavascriptExecutor) chromeDriver).executeScript("window.scrollTo(0, window.scrollY+500);");
+                    ((JavascriptExecutor) chromeDriver).executeScript("window.scrollTo(0, window.scrollY+"+scrollY+");");
 //                    logger.info("自动翻页次数" + i + "/" + calledTime);
 //                    int length = getPageStringLengthFromChromeDriver(chromeDriver);
 //                    logger.info("上个循环页面长度/本次长度 "+l_orig+"/"+length);
@@ -291,7 +292,9 @@ public class MixDownloader implements Downloader {
         }
         return page;
     }
-    public static int restartLimit=100;
+
+    public static int restartLimit = 100;
+
     @Override
     public void setThread(int threadNum) {
 

@@ -52,7 +52,7 @@ public class BiliStarter {
         this.reader = new ChromeBookmarksReader(biliSetting.CHROME_BOOKMARK_PATH);
     }
 
-    public void downloadWithChromeFolder(String folderName) {
+    public void downloadWithChromeFolder(String folderName) throws IOException {
         List<Map> urls = reader.getBookMarkListByDirName(folderName);
         List<String> bids = new ArrayList<>();
         for (Map bookMar : urls) {
@@ -72,7 +72,7 @@ public class BiliStarter {
         int index = 0;
         while (iterator.hasNext()) {
             String bid = iterator.next();
-            BiliArtistInfo info = new BiliArtistInfo(bid);
+            BiliArtistInfo info = getBidInfo(bid);
         }
 
     }
@@ -80,7 +80,7 @@ public class BiliStarter {
 
     public void downloadBid(String bid) throws IOException {
         String url = PathUtils.buildPath(biliSetting.BIL_BASE, bid,"article");
-        BiliArtistInfo info = new BiliArtistInfo(bid);
+        BiliArtistInfo info = getBidInfo(bid);
         BidPageProcessor pageProcessor = new BidPageProcessor(info,biliSetting);
         MixDownloader downloader = new MixDownloader(biliSetting.CHROME_PATH,biliSetting.CHROME_DRIVER_PATH, biliSetting.WEB_DRIVER_DEBUGGING_PORT);
         MixDownloader.calledTime = biliSetting.ARTICLE_PAGE_START_SCROLL_TIME;
@@ -100,15 +100,15 @@ public class BiliStarter {
                 stored = newStored;
                 limit = biliSetting.BREAK_LIMIT;
             }else{
-                logger.warn("本次启动爬虫，存储文件数为增加，LIMIT倒计时 "+limit+"/"+biliSetting.BREAK_LIMIT);
+                logger.warn("本次启动爬虫，存储文件数未增加，LIMIT倒计时 "+limit+"/"+biliSetting.BREAK_LIMIT);
                 limit--;
             }
         }
-
+        info.save(biliSetting.ROOT);
     }
     public void updateBid(String bid) throws IOException {
         String url = PathUtils.buildPath(biliSetting.BIL_BASE, bid,"article");
-        BiliArtistInfo info = new BiliArtistInfo(bid);
+        BiliArtistInfo info = getBidInfo(bid);
         BidPageProcessor pageProcessor = new BidPageProcessor(info,biliSetting);
         MixDownloader downloader = new MixDownloader(biliSetting.CHROME_PATH,biliSetting.CHROME_DRIVER_PATH, biliSetting.WEB_DRIVER_DEBUGGING_PORT);
         MixDownloader.calledTime = 0;
@@ -127,9 +127,26 @@ public class BiliStarter {
                 keepGoing--;
             }
         }
+        info.save(biliSetting.ROOT);
     }
+    public BiliArtistInfo getBidInfo(String bid) throws IOException {
+        File i = new File(PathUtils.buildPath(biliSetting.ROOT,bid,"i.json")); // i.json不可改动
+        if(i.exists()){
+            String iStr = FileUtils.readFileToString(i,"UTF8");
+            BiliArtistInfo info = JSON.parseObject(iStr, BiliArtistInfo.class);
+            return info;
+        }else{
+            BiliArtistInfo info = new BiliArtistInfo();
+            info.bid = bid;
+            info.empty =new ArrayList<>();
+            info.unknown = new ArrayList<>();
+            info.member = new ArrayList<>();
+            return info;
+        }
+    }
+
     public void start() throws IOException {
-        if("UPATE".equals(biliSetting.TASK)){
+        if("UPDATE".equals(biliSetting.TASK)){
             List<String> bids = getBidsFromDisk();
             for (int i = 0; i < bids.size(); i++) {
                 updateBid(bids.get(i));
