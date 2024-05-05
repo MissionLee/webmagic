@@ -9,7 +9,10 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bffc4871-1ae7-44a5-babd-8de4910d3ca3" name="Default Changelist" comment="- refresh 浏览器和 chromedriver的机制同步到当前分支" />
+    <list default="true" id="bffc4871-1ae7-44a5-babd-8de4910d3ca3" name="Default Changelist" comment="- refresh 浏览器和 chromedriver的机制同步到当前分支">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/pagedownloader/MixDownloader.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/pagedownloader/MixDownloader.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -97,7 +100,7 @@
       <command value="mvn install" />
     </option>
   </component>
-  <component name="RunManager" selected="Application.ArtistBookListProcessor">
+  <component name="RunManager" selected="Application.SpiderStarter">
     <configuration name="ArtistBookListProcessor" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="pers.missionlee.chan.spider.book.ArtistBookListProcessor" />
       <module name="missionlee" />
@@ -172,11 +175,11 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.KeepDiskAlive" />
         <item itemvalue="Application.SpiderStarter" />
+        <item itemvalue="Application.ArtistBookListProcessor" />
+        <item itemvalue="Application.KeepDiskAlive" />
         <item itemvalue="Application.ArtistPathInfo" />
         <item itemvalue="Application.Test" />
-        <item itemvalue="Application.ArtistBookListProcessor" />
       </list>
     </recent_temporary>
   </component>
