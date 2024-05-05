@@ -9,7 +9,7 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bffc4871-1ae7-44a5-babd-8de4910d3ca3" name="Default Changelist" comment="处理了一下启动浏览器失败的问题" />
+    <list default="true" id="bffc4871-1ae7-44a5-babd-8de4910d3ca3" name="Default Changelist" comment="- refresh 浏览器和 chromedriver的机制同步到当前分支" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -97,7 +97,7 @@
       <command value="mvn install" />
     </option>
   </component>
-  <component name="RunManager" selected="Application.SpiderStarter">
+  <component name="RunManager" selected="Application.ArtistBookListProcessor">
     <configuration name="ArtistBookListProcessor" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="pers.missionlee.chan.spider.book.ArtistBookListProcessor" />
       <module name="missionlee" />
@@ -124,12 +124,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="BiliStarter" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="pers.missionlee.bili.starter.BiliStarter" />
+    <configuration name="KeepDiskAlive" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="pers.missionlee.chan.service.KeepDiskAlive" />
       <module name="missionlee" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="pers.missionlee.bili.starter.*" />
+          <option name="PATTERN" value="pers.missionlee.chan.service.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -164,19 +164,19 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="Application.BiliStarter" />
-      <item itemvalue="Application.Test" />
       <item itemvalue="Application.ArtistBookListProcessor" />
+      <item itemvalue="Application.Test" />
       <item itemvalue="Application.ArtistPathInfo" />
       <item itemvalue="Application.SpiderStarter" />
+      <item itemvalue="Application.KeepDiskAlive" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.KeepDiskAlive" />
         <item itemvalue="Application.SpiderStarter" />
         <item itemvalue="Application.ArtistPathInfo" />
         <item itemvalue="Application.Test" />
         <item itemvalue="Application.ArtistBookListProcessor" />
-        <item itemvalue="Application.BiliStarter" />
       </list>
     </recent_temporary>
   </component>
@@ -905,21 +905,14 @@
       <option name="project" value="LOCAL" />
       <updated>1714697552639</updated>
     </task>
-    <task id="LOCAL-00041" summary="处理了一下启动浏览器失败的问题">
-      <created>1714863940884</created>
+    <task id="LOCAL-00041" summary="- refresh 浏览器和 chromedriver的机制同步到当前分支">
+      <created>1714877662181</created>
       <option name="number" value="00041" />
       <option name="presentableId" value="LOCAL-00041" />
       <option name="project" value="LOCAL" />
-      <updated>1714863940884</updated>
+      <updated>1714877662181</updated>
     </task>
-    <task id="LOCAL-00042" summary="处理了一下启动浏览器失败的问题">
-      <created>1714904905166</created>
-      <option name="number" value="00042" />
-      <option name="presentableId" value="LOCAL-00042" />
-      <option name="project" value="LOCAL" />
-      <updated>1714904905166</updated>
-    </task>
-    <option name="localTasksCounter" value="43" />
+    <option name="localTasksCounter" value="42" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -951,8 +944,8 @@
     <MESSAGE value="bilibili  逻辑跑通了，临时让代码跑起来" />
     <MESSAGE value="1" />
     <MESSAGE value="- 更新功能待测试，其他已经可以正常工作" />
-    <MESSAGE value="处理了一下启动浏览器失败的问题" />
-    <option name="LAST_COMMIT_MESSAGE" value="处理了一下启动浏览器失败的问题" />
+    <MESSAGE value="- refresh 浏览器和 chromedriver的机制同步到当前分支" />
+    <option name="LAST_COMMIT_MESSAGE" value="- refresh 浏览器和 chromedriver的机制同步到当前分支" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

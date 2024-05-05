@@ -439,7 +439,6 @@ public class SpiderStarter {
                             diskService.checkBookArtistPath(dataBaseService);
                         } else if (4 == mode) {
                             diskService.mergePicVid();
-                            System.out.println("8888888888888888888888 end 888888888888888888888");
                         } else if (5 == mode) {
                             diskService.findPathError();
                         } else if (6 == mode) {
@@ -1119,6 +1118,4 @@ public class SpiderStarter {
             }
         }
     }
-
-
 }

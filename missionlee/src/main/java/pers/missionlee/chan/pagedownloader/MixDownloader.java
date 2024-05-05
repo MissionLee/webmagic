@@ -90,50 +90,42 @@ public class MixDownloader implements Downloader{
     Process process;
     boolean debugPortFlag = true;
     public void refresh() throws IOException, InterruptedException {
-        if(chromeDriver!=null){
-            chromeDriver.close();
-            chromeDriver.quit();
+        // 1.干掉所有 chrome浏览器
+        WebDriverUtils.killChrome();
+        // 2.释放 chromeDrier
+        chromeDriver = null;
+        // 3.获取一个可用的 port
+        debuggingPort = "" + WebDriverUtils.getFreePort(Integer.parseInt(debuggingPort));
 
-            chromeDriver = null;
-        }
-        if(process!=null){
-            process.destroy();
-        }
-        if(debugPortFlag){
-            debuggingPort = String.valueOf(Integer.parseInt(debuggingPort)+1);
-        }else{
-            debuggingPort = String.valueOf(Integer.parseInt(debuggingPort)-1);
-        }
-        debugPortFlag = !debugPortFlag;
-        logger.info("Refresh-新端口"+debuggingPort);
+        logger.info("Refresh-新端口(先sleep不然系统没反应)" + debuggingPort);
         // 启动
         Thread.sleep(3000);
-        process  = Runtime.getRuntime().exec("chrome.exe --remote-debugging-port="+debuggingPort);
+        String cmd = "chrome.exe --remote-debugging-port=" + debuggingPort;
+        Thread.sleep(5000);
+
+        Runtime.getRuntime().exec(cmd);
         logger.info("Refresh-启动浏览器");
         // 配置 chromeDriver
-        System.setProperty("webdriver.chrome.driver",chromeDriverPath);
+        System.setProperty("webdriver.chrome.driver", chromeDriverPath);
         logger.info("重启浏览器 重新配置ChromeDriver sleep10秒");
         Thread.sleep(10000);
         // 判断给定端口是否存活
-        try {
-            Socket socket = new Socket("127.0.0.1", Integer.parseInt(this.debuggingPort));
-            logger.info("端口 "+this.debuggingPort+" 可以链接");
-            socket.close();
-        } catch (IOException e) {
-            logger.error("端口 "+this.debuggingPort+" 无法链接；请确认浏览器在指定端口启动");
-            e.printStackTrace();
-            System.exit(-1);
-            throw new RuntimeException(e);
-        }
+//        try {
+//            Socket socket = new Socket("127.0.0.1", Integer.parseInt(this.debuggingPort));
+//            logger.info("端口 " + this.debuggingPort + " 可以链接");
+//            socket.close();
+//        } catch (IOException e) {
+//            logger.error("端口 " + this.debuggingPort + " 无法链接；请确认浏览器在指定端口启动");
+//            e.printStackTrace();
+//            System.exit(-1);
+//            throw new RuntimeException(e);
+//        }
         // 配置 WebDriver
         ChromeOptions options = new ChromeOptions();
-//        options.setPageLoadStrategy(PageLoadStrategy.EAGER);
-//        options.setCapability("debuggerAddress","127.0.0.1:"+this.debuggingPort);
-        options.setExperimentalOption("debuggerAddress","127.0.0.1:"+this.debuggingPort);
-
+        options.setExperimentalOption("debuggerAddress", "127.0.0.1:" + this.debuggingPort);
         this.chromeDriver = new ChromeDriver(options);
         logger.info("Refresh-创建ChromeDriver");
-        chromeDriver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
+//        chromeDriver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
 
 
     }
