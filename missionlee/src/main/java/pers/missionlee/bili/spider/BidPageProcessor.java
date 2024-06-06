@@ -213,11 +213,11 @@ public class BidPageProcessor implements PageProcessor {
             logger.info("转换URL: " + origUrl);
             logger.info("文件名:  " + fileName);
             logger.info("开始下载");
-            File tempFile = FileDownloader.download(origUrl, page.getUrl().toString(), "G:\\C-B-ALL\\tmp\\", getSite());
+            File tempFile = FileDownloader.download(origUrl, page.getUrl().toString(), biliSetting.ROOT+"\\tmp\\", getSite());
             if (null != tempFile && tempFile.exists() && tempFile.isFile() && tempFile.length() > 10) {
                 try {
 
-                    FileUtils.moveFile(tempFile, new File("G:\\C-B-ALL\\" + artistInfo.bid + "\\one\\" + ser + "_" + fileName));
+                    FileUtils.moveFile(tempFile, new File(biliSetting.ROOT+"\\" + artistInfo.bid + "\\one\\" + ser + "_" + fileName));
                 } catch (IOException e) {
 
                     throw new RuntimeException(e);
