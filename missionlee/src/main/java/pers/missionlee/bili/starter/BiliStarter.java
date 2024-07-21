@@ -108,6 +108,9 @@ public class BiliStarter {
     }
     public void updateBid(String bid) throws IOException {
         String url = PathUtils.buildPath(biliSetting.BIL_BASE, bid,"article");
+        if(url.contains("desktop.ini")){
+            return;
+        }
         BiliArtistInfo info = getBidInfo(bid);
         BidPageProcessor pageProcessor = new BidPageProcessor(info,biliSetting);
         MixDownloader downloader = new MixDownloader(biliSetting.CHROME_PATH,biliSetting.CHROME_DRIVER_PATH, biliSetting.WEB_DRIVER_DEBUGGING_PORT);
