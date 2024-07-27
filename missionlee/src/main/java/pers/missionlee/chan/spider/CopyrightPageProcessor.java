@@ -65,7 +65,7 @@ public class CopyrightPageProcessor extends AbstractTagPageProcessor {
                 sleep(5);
             }
             int added = extractUrlFromListPageWithFileNameFilter(page);
-            if ( (added>0 && autoNextPage)|| nextMode ) {
+            if ( (added>0 && autoNextPage)) {
                 addNextPageAsTarget(page);
             }
         } else if (url.contains("/show/")||url.contains("/posts/")) {

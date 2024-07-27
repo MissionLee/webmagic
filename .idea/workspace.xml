@@ -11,7 +11,9 @@
   <component name="ChangeListManager">
     <list default="true" id="bffc4871-1ae7-44a5-babd-8de4910d3ca3" name="Default Changelist" comment="- refresh 浏览器和 chromedriver的机制同步到当前分支">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/pagedownloader/MixDownloader.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/pagedownloader/MixDownloader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/AbstractTagPageProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/AbstractTagPageProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/CopyrightPageProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/spider/CopyrightPageProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/starter/SpiderStarter.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/starter/SpiderStarter.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,9 +80,11 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="WebServerToolWindowFactoryState" value="false" />
-  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;
+  }
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\MissionLee\IdeaProjects\webmagic\missionlee\src\main\resources\mybatis\mapper" />
@@ -167,19 +171,19 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="Application.ArtistBookListProcessor" />
-      <item itemvalue="Application.Test" />
       <item itemvalue="Application.ArtistPathInfo" />
-      <item itemvalue="Application.SpiderStarter" />
       <item itemvalue="Application.KeepDiskAlive" />
+      <item itemvalue="Application.SpiderStarter" />
+      <item itemvalue="Application.Test" />
+      <item itemvalue="Application.ArtistBookListProcessor" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Application.SpiderStarter" />
-        <item itemvalue="Application.ArtistBookListProcessor" />
         <item itemvalue="Application.KeepDiskAlive" />
         <item itemvalue="Application.ArtistPathInfo" />
         <item itemvalue="Application.Test" />
+        <item itemvalue="Application.ArtistBookListProcessor" />
       </list>
     </recent_temporary>
   </component>
@@ -627,6 +631,8 @@
       <workItem from="1710507830406" duration="22246000" />
       <workItem from="1710600663281" duration="4270000" />
       <workItem from="1710942509140" duration="684000" />
+      <workItem from="1721776188573" duration="10080000" />
+      <workItem from="1722040765395" duration="9324000" />
     </task>
     <task id="LOCAL-00001" summary="SpiderConfig">
       <created>1555292406689</created>
@@ -908,14 +914,7 @@
       <option name="project" value="LOCAL" />
       <updated>1714697552639</updated>
     </task>
-    <task id="LOCAL-00041" summary="- refresh 浏览器和 chromedriver的机制同步到当前分支">
-      <created>1714877662181</created>
-      <option name="number" value="00041" />
-      <option name="presentableId" value="LOCAL-00041" />
-      <option name="project" value="LOCAL" />
-      <updated>1714877662181</updated>
-    </task>
-    <option name="localTasksCounter" value="42" />
+    <option name="localTasksCounter" value="41" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -947,8 +946,8 @@
     <MESSAGE value="bilibili  逻辑跑通了，临时让代码跑起来" />
     <MESSAGE value="1" />
     <MESSAGE value="- 更新功能待测试，其他已经可以正常工作" />
-    <MESSAGE value="- refresh 浏览器和 chromedriver的机制同步到当前分支" />
-    <option name="LAST_COMMIT_MESSAGE" value="- refresh 浏览器和 chromedriver的机制同步到当前分支" />
+    <MESSAGE value="- 常规修改" />
+    <option name="LAST_COMMIT_MESSAGE" value="- 常规修改" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -961,6 +960,11 @@
         <line-breakpoint enabled="true" type="java-line">
           <url>jar://$MAVEN_REPOSITORY$/com/google/guava/guava/15.0/guava-15.0-sources.jar!/com/google/common/collect/ImmutableMap.java</url>
           <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/pagedownloader/MixDownloader.java</url>
+          <line>209</line>
+          <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

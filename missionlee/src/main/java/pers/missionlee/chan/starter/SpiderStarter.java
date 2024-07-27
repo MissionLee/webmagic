@@ -1071,7 +1071,7 @@ public class SpiderStarter {
 
             startUrl = SpiderUtils.getUpdateStartUrl(copyright, "official art");
         }
-        Spider.create(pageProcessor).thread(spiderSetting.threadNum).addUrl(startUrl).run();
+        Spider.create(pageProcessor).setDownloader(downloader).thread(spiderSetting.threadNum).addUrl(startUrl).run();
     }
 
     public void autoUpdateCopyright() {

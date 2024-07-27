@@ -127,12 +127,13 @@ public abstract class AbstractTagPageProcessor extends AbstractPageProcessor {
                     int start = fullSrc.lastIndexOf("/") + 1;
                     int end = fullSrc.lastIndexOf(".");
                     String md5 = fullSrc.substring(start, end);
+
                     if(StringUtils.isEmpty(md5) || md5.length()<25){
                         logger.warn("检测到一场的md5 不下载此页面 "+md5);
                     }else{
                         if (storedFilesMd5.containsKey(md5)) {
                             logger.info("本作者MD5[" + md5 + "]已存在:" + storedFilesMd5.get(md5));
-                        } else if (this.delFileName.contains(md5)) {
+                        } else if (this.delFileName!= null && this.delFileName.contains(md5)) {
                             logger.info("本作者删除列表MD5[" + md5 + "]已存在");
                         } else {
                             int index = getIndexFromList(src, fullSrc);
