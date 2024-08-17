@@ -864,6 +864,16 @@ public class SpiderStarter {
                     }
                 }
             }
+            if(spiderSetting.updateStopUpdateArtist){
+                // 如果更新停更作者  那么 update 保持原样
+                logger.info("本次更新,忽略 作者停更状态");
+                update = update && true;
+            }else{
+                logger.info("本次更新,计算 作者停更状态");
+
+                boolean stoped = diskService.artistIsStop(name);
+                update = update && (!stoped);
+            }
             if (update) {
                 logger.info("开始更新 " + name);
                 int downloaded = downloadArtist(name, true);

@@ -129,6 +129,16 @@ public class SpiderSetting {
     public String[] singleBookIds;
     public String delPath;
 
+
+    public boolean isUpdateStopUpdateArtist() {
+        return updateStopUpdateArtist;
+    }
+
+    public void setUpdateStopUpdateArtist(boolean updateStopUpdateArtist) {
+        this.updateStopUpdateArtist = updateStopUpdateArtist;
+    }
+
+    public boolean updateStopUpdateArtist;
     public String getDelPath() {
         return delPath;
     }

@@ -1000,7 +1000,33 @@ public class DiskService {
         String studioPathName = transformArtistNameToPath(studioName);
         return PathUtils.buildPath(spiderSetting.getStudioBase(), studioPathName);
     }
+    public boolean artistIsStop(String name){
+        String artistPathName = getCommonArtistParentPath(name,"1.jpg");
+        File parentFile = new File(artistPathName);
+        long now = System.currentTimeMillis();
+        if(parentFile.exists()){
+            File[] fs = parentFile.listFiles();
 
+            for (int i = 0; i < fs.length; i++) {
+                File ff = fs[i];
+                System.out.println(ff.getName());
+                System.out.println(now);
+                long update = ff.lastModified();
+                System.out.println(update);
+                System.out.println((now-update)/1000/60/60/24);
+                if(now-update<15768000000l && !ff.getName().contains("json")){
+                    // 一年 31536000000
+                    // 半年 15768000000
+                    // 十周 6048000000
+                    logger.info("作者更新中判断,发现较新的作品,距今 "+(now-update)/1000/60/60/24 +" 天;所以保持更新,(判断依据是 半年)");
+                    return false;
+                }
+            }
+        }
+        logger.info("作者更新中判断,作者可能停更了,本次不更新");
+
+        return true;
+    }
     public String getCommonArtistParentPath(String artistName, String artworkName) {
         String artistPathName = transformArtistNameToPath(artistName);
 //        if (PathUtils.isVideo(artworkName)) {
