@@ -107,11 +107,11 @@ public abstract class AbstractTagPageProcessor extends AbstractPageProcessor {
         AtomicInteger added = new AtomicInteger(0);
 //        System.out.println(page.getHtml());
         List<String> src = page.getHtml()
-                .$(".content>div>div>.posts-container  .post-preview")
+                .$(".content>div>.post-gallery>.posts-container  .post-preview")
                 .$("img", "src")
                 .all();
         List<String> url = page.getHtml()
-                .$(".posts-container .post-preview")
+                .$(".content>div>.post-gallery>.posts-container  .post-preview")
                 .$("a", "href")
                 .all();
         logger.info("检测到列表页面，分析作品信息");
@@ -129,7 +129,7 @@ public abstract class AbstractTagPageProcessor extends AbstractPageProcessor {
                     String md5 = fullSrc.substring(start, end);
 
                     if(StringUtils.isEmpty(md5) || md5.length()<25){
-                        logger.warn("检测到一场的md5 不下载此页面 "+md5);
+                        logger.warn("检测到异常的md5 不下载此页面 "+md5);
                     }else{
                         if (storedFilesMd5.containsKey(md5)) {
                             logger.info("本作者MD5[" + md5 + "]已存在:" + storedFilesMd5.get(md5));
