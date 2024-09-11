@@ -159,6 +159,39 @@ public class BiliStarter {
             for (int i = 0; i < bids.length; i++) {
                 downloadBid(bids[i]);
             }
+        }else if("REFRESH".equals(biliSetting.TASK)){
+            File fs = new File(biliSetting.ROOT);
+            File[] fss = fs.listFiles();
+            for (int i = 0; i < fss.length; i++) {
+
+                File f = fss[i];
+                long last = 0;
+                if(f.isDirectory()){
+                    File[] sf = f.listFiles();
+                    for (int j = 0; j < sf.length; j++) {
+                        File ssf = sf[j];
+                        if(ssf.isDirectory()){
+                            String name = ssf.getName();
+                            long time = 0;
+                            if(name.contains("one")){
+                                File[]  sfs = ssf.listFiles();
+                                for (int k = 0; k < sfs.length; k++) {
+                                    File ssfs = sfs[k];
+                                    time = ssfs.lastModified();
+                                    if(time>last)
+                                        last = time;
+                                }
+                            }else{
+                                time = ssf.lastModified();
+                                if(time>last)
+                                    last = time;
+                            }
+
+                        }
+                    }
+                }
+                f.setLastModified(last);
+            }
         }else{
 
         }
