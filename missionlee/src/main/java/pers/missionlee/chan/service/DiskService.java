@@ -68,16 +68,19 @@ public class DiskService {
         logger.info("初始化特殊作者名称完成  key 是真是名字， value 是路径名字");
     }
     public void cleanDelPath() throws InterruptedException {
-        String delPath = spiderSetting.delPath;
-        logger.warn("----将要清空"+delPath+"下的所有文件");
-        logger.warn("----距离操作开始还有60s");
-        Thread.sleep(30000);
-        logger.warn("----距离操作开始还有30s");
-        Thread.sleep(20000);
-        logger.warn("----距离操作开始还有10s");
-        Thread.sleep(10000);
-        logger.warn("----开始执行");
-        doDelFile(new File(delPath));
+        String[] delPaths = spiderSetting.delPath;
+        for (int i = 0; i < delPaths.length; i++) {
+            String delPath = delPaths[i];
+            logger.warn("----将要清空"+delPath+"下的所有文件");
+            Thread.sleep(30000);
+            logger.warn("----距离操作开始还有30s");
+            Thread.sleep(20000);
+            logger.warn("----距离操作开始还有10s");
+            Thread.sleep(10000);
+            logger.warn("----开始执行");
+            doDelFile(new File(delPath));
+        }
+
     }
     private void doDelFile(File rootDir){
         File[] files = rootDir.listFiles();

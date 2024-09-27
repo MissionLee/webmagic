@@ -127,7 +127,7 @@ public class SpiderSetting {
     public boolean nextMode;
     public String startName;
     public String[] singleBookIds;
-    public String delPath;
+    public String[] delPath;
 
 
     public boolean isUpdateStopUpdateArtist() {
@@ -139,7 +139,7 @@ public class SpiderSetting {
     }
 
     public boolean updateStopUpdateArtist;
-    public String getDelPath() {
+    public String[] getDelPath() {
         return delPath;
     }
 
@@ -151,7 +151,7 @@ public class SpiderSetting {
         this.onlyClean = onlyClean;
     }
 
-    public void setDelPath(String delPath) {
+    public void setDelPath(String[] delPath) {
         this.delPath = delPath;
     }
 
