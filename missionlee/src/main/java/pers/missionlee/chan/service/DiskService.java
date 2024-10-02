@@ -72,9 +72,6 @@ public class DiskService {
         for (int i = 0; i < delPaths.length; i++) {
             String delPath = delPaths[i];
             logger.warn("----将要清空"+delPath+"下的所有文件");
-            Thread.sleep(30000);
-            logger.warn("----距离操作开始还有30s");
-            Thread.sleep(20000);
             logger.warn("----距离操作开始还有10s");
             Thread.sleep(10000);
             logger.warn("----开始执行");
@@ -638,7 +635,53 @@ public class DiskService {
             });
         }
     }
+    public void renameBookFolderName(String name){
+        String picBasePath = getCommonArtistParentPath(name, "1.jpg");
+        String vidBasePath = getCommonArtistParentPath(name, "1.mp4");
+        File[] picSubFiles = new File(picBasePath).listFiles();
+        File[] vidSubFiles = new File(vidBasePath).listFiles();
 
+        if(null != picSubFiles){
+            for (int i = 0; i < picSubFiles.length; i++) {
+                if(picSubFiles[i].isDirectory()
+                        && picSubFiles[i].getName().startsWith("B[")
+                        &&picSubFiles[i].getName().contains("][")){
+                    logger.warn("检测到老版");
+                    // 旧版名称 B[aoin][366406]Nozomu Fukujuu Nozomanu Shihai
+                    // 新版名称 [aoin]Nozomu Fukujuu Nozomanu Shihai[366406]
+                    String old = picSubFiles[i].getName();
+                    String artistName = old.substring(1,old.indexOf("][")+1);
+                    String id =old.substring(old.indexOf("][")+1,old.lastIndexOf("]")+1);
+                    String bookName = old.substring(old.lastIndexOf("]")+1);
+                    String newName = artistName+bookName+id;
+                    File newNameFile = new File(PathUtils.buildPath(picSubFiles[i].getParent(),newName));
+                    logger.warn("oldPath:"+picSubFiles[i].getPath());
+                    logger.warn("newPath:"+newNameFile.getPath());
+                    picSubFiles[i].renameTo(newNameFile);
+                    System.out.println("--");
+//                    System.out.println(new File(PathUtils.buildPath(picSubFiles[i].getPath(),newName)).getName());
+//                    picSubFiles[i].renameTo(new File(PathUtils.buildPath(picSubFiles[i].getPath())))
+                }
+            }
+        }
+//        if(null != vidSubFiles){
+//            for (int i = 0; i < vidSubFiles.length; i++) {
+//                if(vidSubFiles[i].isDirectory()
+//                        && vidSubFiles[i].getName().startsWith("B")
+//                        &&vidSubFiles[i].getName().contains("][")){
+//                    // 旧版名称 B[aoin][366406]Nozomu Fukujuu Nozomanu Shihai
+//                    // 新版名称 [aoin]Nozomu Fukujuu Nozomanu Shihai[366406]
+//                    String old = vidSubFiles[i].getName();
+//                    String artistName = old.substring(1,old.indexOf("][")+1);
+//                    String id =old.substring(old.indexOf("][")+1,old.lastIndexOf("]")+1);
+//                    String bookName = old.substring(old.lastIndexOf("]")+1);
+//                    String newName = artistName+bookName+id;
+//                    System.out.println("oldName:"+old);
+//                    System.out.println("newName:"+newName );
+//                }
+//            }
+//        }
+    }
     public void cleanArtistBookParentBases(String name) {
         String picBasePath = getCommonArtistParentPath(name, "1.jpg");
         String vidBasePath = getCommonArtistParentPath(name, "1.mp4");
@@ -1215,8 +1258,8 @@ public class DiskService {
 //        diskService.moveAllFileInBookBackToPic();
 //        diskService.initArtistPathLevel();
 //        diskService.updateArtistLevel(new DataBaseService());
-        String fullName = "I:/CHAN-ARTIST-特别/T-1-特别-对魔忍风/butcha-u/525048537a0b72107bc722dc9ad13ac1.jpg";
-        System.out.println(fullName.substring(fullName.lastIndexOf("/")).contains("_"));
+//        String fullName = "I:/CHAN-ARTIST-特别/T-1-特别-对魔忍风/butcha-u/525048537a0b72107bc722dc9ad13ac1.jpg";
+//        System.out.println(fullName.substring(fullName.lastIndexOf("/")).contains("_"));
 //        Pattern idPattern = Pattern.compile("\\[(\\d+)\\]");
 //        Matcher matcher = idPattern.matcher(fullName);
 //        if (matcher.find()) {
@@ -1225,6 +1268,17 @@ public class DiskService {
 //        }
 //        String bookId = fullName.substring(fullName.lastIndexOf("[")+1,fullName.lastIndexOf("]"));
 //        System.out.println(bookId);
+        // 旧版名称 B[aoin][366406]Nozomu Fukujuu Nozomanu Shihai
+        // 新版名称 [aoin]Nozomu Fukujuu Nozomanu Shihai[366406]
+        String old = "B[aoin][366406]Nozomu Fukujuu Nozomanu Shihai";
+        String artistName = old.substring(1,old.indexOf("][")+1);
+        String id =old.substring(old.indexOf("][")+1,old.lastIndexOf("]")+1);
+        String bookName = old.substring(old.lastIndexOf("]")+1);
+        String newName = artistName+bookName+id;
+        System.out.println("artist:"+artistName);
+        System.out.println("id:"+id);
+        System.out.println("bookName:"+bookName);
+        System.out.println(newName);
     }
 
 }

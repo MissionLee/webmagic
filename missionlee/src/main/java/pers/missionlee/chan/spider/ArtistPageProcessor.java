@@ -61,6 +61,7 @@ public class ArtistPageProcessor extends AbstractTagPageProcessor {
             this.delFileName = this.artistPathInfo.delFileMD5;
             logger.info("处理已经被归为Parent Book但是仍有单个文件的清空");
             diskService.cleanArtistBookParentBases(artistName);
+//            diskService.renameBookFolderName(artistName);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

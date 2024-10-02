@@ -119,31 +119,46 @@ public class ArtistPathInfo {
 
     // B[firolian][2171]Mercy_ The First Audition
     // P[firolian][6110840]
+    //
     public static String poolIDRegex = "\\]\\[(.*?)\\]";
+    //String name1 = "[aoin]Kissing Dicks Association[298708]";
+    //String name2 = "P[aoin][3254754]";
+    //  poolIDRegexNew 的一点小注意事项,小技巧
+    //  因为名字中会出现两组 [] [] 所以 新的正则,会匹配到第一个 [ 和第二个 ] 中间的内容
+    //  正则中 匹配了两次 [  就不会出现上面的问题了
+    public static String poolIDRegexNew  = "\\[.*\\[(.*)\\]$";
 
     /**
      * delFile 用于删除指定文件夹，并记录删除的信息
      */
     public static void delFile(File rootDir, ArtistPathInfo info) {
         File[] files = rootDir.listFiles();
+        Pattern r1 = Pattern.compile(poolIDRegex);
+        Pattern r2 =Pattern.compile(poolIDRegexNew);
         for (int i = 0; i < files.length; i++) {
             File thisFile = files[i];
             if (thisFile.isDirectory()) {
-                if (thisFile.getName().contains("B[") || thisFile.getName().contains("P[")) {
-                    String fileName = thisFile.getName();
-                    logger.warn("删除 -> 目标文件夹 " + fileName);
-                    Pattern r = Pattern.compile(poolIDRegex);
-                    Matcher m = r.matcher(fileName);
-                    if (m.find()) {
-                        String poolID = m.group(1);
-                        logger.warn("删除 -> POOL [" + poolID + "] 递归子文件");
-                        info.delPool.add(poolID);
-                        delFile(thisFile, info);
-                        logger.warn("删除 -> POOL [" + poolID + "] 子文件完成&删除空白目录 " + thisFile.getName());
-                        thisFile.delete();
+                String fileName = thisFile.getName();
+                Matcher m1 = r1.matcher(fileName);
+                Matcher m2 = r2.matcher(fileName);
+                if(m2.find()){
+                    String poolID = m2.group(1);
+                    if(poolID.contains("[")){
+                        poolID = poolID.substring(poolID.lastIndexOf("[")+1);
                     }
+                    logger.warn("删除 -> POOL [" + poolID + "] 递归子文件");
+                    info.delPool.add(poolID);
+                    delFile(thisFile, info);
+                    logger.warn("删除 -> POOL [" + poolID + "] 子文件完成&删除空白目录 " + thisFile.getName());
+                    thisFile.delete();
+                }else if(m1.find()){
+                    String poolID = m1.group(1);
+                    logger.warn("删除 -> POOL [" + poolID + "] 递归子文件");
+                    info.delPool.add(poolID);
+                    delFile(thisFile, info);
+                    logger.warn("删除 -> POOL [" + poolID + "] 子文件完成&删除空白目录 " + thisFile.getName());
+                    thisFile.delete();
                 }
-
             } else {
                 String delMd5 = thisFile.getName().substring(0, thisFile.getName().indexOf("."));
                 if (delMd5.contains("_")) {
@@ -216,14 +231,17 @@ public class ArtistPathInfo {
     }
 
     public static void main(String[] args) {
-//        String reg = "\\]\\[(.*?)\\]";
-//        Pattern r = Pattern.compile(reg);
-//        Matcher m = r.matcher("P[firolian][5847114]");
-//        if (m.find()) {
-//            System.out.println("删除POOL: " + m.group(1));
-//        } else {
-//            System.out.println("m没匹配到");
-//        }
+        String name1 = "[aoin]Kissing Dicks Association[298708]";
+        String name2 = "P[aoin][3254754]";
+        String reg = "\\]\\[(.*)\\]";
+        String reg2 = "\\[.*\\[(.*)\\]$";
+        Pattern r = Pattern.compile(reg2);
+        Matcher m = r.matcher(name1);
+        if (m.find()) {
+            System.out.println("删除POOL: " + m.group(1));
+        } else {
+            System.out.println("m没匹配到");
+        }
 
 //        String s = "Example_(xxxxx)_AND_(yyyyy)_2019-01-28";
 //        Pattern p = Pattern.compile("\\][(\\[]([^()\\[\\]]*)[)\\]]");
@@ -231,10 +249,12 @@ public class ArtistPathInfo {
 //        while (m.find()) {
 //            System.out.println(m.group(1));
 //        }
-        try {
-            refreshInfo("G:\\C-A-TOP-厚涂写实\\T-0-C纯爱\\dan-98");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+//        try {
+//            refreshInfo("G:\\C-A-TOP-厚涂写实\\T-0-C纯爱\\dan-98");
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+        String x = "xxxxx[yy";
+        System.out.println(x.substring(x.lastIndexOf("[")));
     }
 }
