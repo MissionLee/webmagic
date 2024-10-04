@@ -71,8 +71,8 @@ public class ArtistPathInfo {
             logger.info("清理--> 确认重新下载文件 写入重新下载信息");
             delReDoFile(redo, info);
         }
-        logger.info("清理 Step-1.2 寻找超时替代文件并处理");
-        delExpiredFile(new File(parentPath), info);
+        logger.error("清理 Step-1.2 寻找超时替代文件并处理  不处理超时文件******* 注释掉了");
+//        delExpiredFile(new File(parentPath), info);
         /**
          * Step-2 清理要删除的文件
          * */
