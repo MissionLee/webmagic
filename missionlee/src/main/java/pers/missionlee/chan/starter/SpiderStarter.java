@@ -600,9 +600,9 @@ public class SpiderStarter {
                 // TODO: 4/10/2021 现在先把 所有 带有 tags=XX 的都当作作者来看
                 String artistName = "";
                 if (url.contains("&")) {
-                    artistName = SpiderUtils.urlDeFormater(url.split("tags=")[1].split("&")[0]);
+                    artistName = SpiderUtils.urlDeFormater(url.split("tags=")[1].split("&")[0]).toLowerCase();
                 } else {
-                    artistName = SpiderUtils.urlDeFormater(url.split("tags=")[1]);
+                    artistName = SpiderUtils.urlDeFormater(url.split("tags=")[1]).toLowerCase();
                 }
                 artistNames.add(artistName);
                 logger.info("发现作者：" + artistName);
@@ -682,6 +682,7 @@ public class SpiderStarter {
     boolean startNameStart = false;
 
     public int downloadArtist(String artistName, boolean update) {
+        artistName = artistName.toLowerCase();
         logger.info("==================== 作者：" + artistName + " =================");
         /**
          * 下方用来判断这个作者是否需要下载

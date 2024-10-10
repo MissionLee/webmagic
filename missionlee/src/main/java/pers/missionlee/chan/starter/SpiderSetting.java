@@ -358,7 +358,7 @@ public class SpiderSetting {
                     relName.set(reName);
                 }
             });
-            return relName.get();
+            return relName.get().toLowerCase();
         }
     }
     public Map<String,String> initAllRelatedStoredFilesMd5(DiskService diskService,String name){
