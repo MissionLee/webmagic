@@ -182,7 +182,7 @@ public class MixDownloader implements Downloader {
             chromeDriver.get(request.getUrl());
             if (request.getUrl().contains("/article") && request.getUrl().contains("space")) {
                 int l_orig = 0;
-                logger.info("本次将进行 "+calledTime+" 此翻页，三次翻页 "+scrollY+" 像素");
+                logger.info("本次将进行 "+calledTime+" 次翻页，每次翻页 "+scrollY+" 像素");
                 for (int i = 0; i < calledTime; i++) {
 //                    ((JavascriptExecutor) chromeDriver).executeScript("window.scrollTo(0, document.body.scrollHeight);");
                     ((JavascriptExecutor) chromeDriver).executeScript("window.scrollTo(0, window.scrollY+"+scrollY+");");

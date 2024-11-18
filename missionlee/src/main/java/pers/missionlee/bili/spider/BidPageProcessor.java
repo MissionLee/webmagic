@@ -80,9 +80,12 @@ public class BidPageProcessor implements PageProcessor {
                 logger.warn("检测到【宫格式】图片分享页面");
                 processOpusGrid(page);
             } else if (stringPage.contains("bili-album__preview one")) {
-                logger.warn("检测到【单图式】图片分享页面");
+                logger.warn("检测到【单图式 one】图片分享页面");
                 processOpusOne(page);
-            } else if (stringPage.contains("article-content")) {
+            } else if (stringPage.contains("bili-album__preview single")){
+                logger.warn("检测[单图式 single]图片分享页面");
+                processOpusSingle(page);
+            }else if (stringPage.contains("article-content")) {
                 logger.warn("检测到【文章】图片分享页面");
                 processArticleRead(page);
             } else if (stringPage.contains("opus-module-top")) {
@@ -299,6 +302,13 @@ public class BidPageProcessor implements PageProcessor {
     }
 
     public void processOpusOne(Page page) {
+        List<String> urls = page.getHtml()
+                .$(".bili-opus-view .opus-para-pic")
+                .$("img", "src")
+                .all();
+        download(urls, page);
+    }
+    public void processOpusSingle(Page page){
         List<String> urls = page.getHtml()
                 .$(".bili-opus-view .opus-para-pic")
                 .$("img", "src")

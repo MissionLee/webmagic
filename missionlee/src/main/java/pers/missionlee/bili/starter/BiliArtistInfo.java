@@ -28,6 +28,7 @@ public class BiliArtistInfo {
         return  member.contains(opusId);
     }
     public boolean skip(String opusId){
+//        return false;
         return isEmpty(opusId)||isUnknown(opusId)||isMember(opusId);
     }
 }
