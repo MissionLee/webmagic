@@ -62,6 +62,16 @@ public class SpiderSetting {
     public static void setSleep429(int sleep429) {
         SpiderSetting.sleep429 = sleep429;
     }
+    public int c2days;
+
+    public int getC2days() {
+        return c2days;
+    }
+
+    public void setC2days(int c2days) {
+        this.c2days = c2days;
+    }
+
     public boolean onlyClean;
     public boolean onlyTryTen;
     public boolean smartShutDown;
@@ -129,6 +139,15 @@ public class SpiderSetting {
     public String[] singleBookIds;
     public String[] delPath;
 
+    public boolean onlyUpdateC1;
+
+    public boolean isOnlyUpdateC1() {
+        return onlyUpdateC1;
+    }
+
+    public void setOnlyUpdateC1(boolean onlyUpdateC1) {
+        this.onlyUpdateC1 = onlyUpdateC1;
+    }
 
     public boolean isUpdateStopUpdateArtist() {
         return updateStopUpdateArtist;

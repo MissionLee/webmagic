@@ -455,6 +455,8 @@ public class SpiderStarter {
                             } catch (InterruptedException e) {
                                 throw new RuntimeException(e);
                             }
+                        } else if (9 == mode){
+                            diskService.moveC1toC2(spiderSetting.c2days);
                         }
                     }
                     break;
@@ -501,6 +503,9 @@ public class SpiderStarter {
                     }
                     case "i": {
                         downloadSeriesWithSeriesId();
+                    }
+                    case "j":{
+
                     }
                     case "auto": {
                         autoRun();
@@ -854,14 +859,24 @@ public class SpiderStarter {
         List<String> artists = dataBaseService.getArtistListByLevel(lv, !spiderSetting.forceUpdate);
         artists.forEach((String name) -> {
             boolean update = true;
+            String parentPath = diskService.getCommonArtistParentPath(name, "1.jpg");
+            //  判断是否符合更新指定目录要求
             if (onlyUpdateChosenFolder) {
                 logger.info("指定目录更新模式");
                 update = false;
-                String parentPath = diskService.getCommonArtistParentPath(name, "1.jpg");
+
                 System.out.println(parentPath);
                 for (int i = 0; i < chosenFolder.length; i++) {
                     if (parentPath.contains(chosenFolder[i])) {
                         update = true;
+                    }
+                }
+            }
+            // 判断是否符合 只更新C1 目录要求
+            if(update){
+                if(spiderSetting.onlyUpdateC1){
+                    if(!parentPath.contains("C1_")){
+                        update = false;
                     }
                 }
             }

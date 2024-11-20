@@ -11,9 +11,10 @@ import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -186,7 +187,47 @@ public class DiskService {
         }
         return key;
     }
+    public void moveC1toC2(int c2days){
+        CHAN_ARTIST_VIDS.forEach((String p1,List<String> l1)->{
+            AtomicInteger x = new AtomicInteger();
+            if((p1.contains("C1_")||true)&&(!p1.contains("-9-"))){
+                l1.forEach((String name)->{
+                    String parentPath = getCommonArtistParentPath(name,"");
+                    System.out.println(parentPath);
+                    Date date = new Date(updateLatestTimeUnderFolder(parentPath));
+                    System.out.println(new SimpleDateFormat("yyyy-MM-dd").format(date));
+                });
+            }
+        });
+        CHAN_ARTIST_PICS.forEach((String p1,List<String> l1)->{
+            AtomicInteger x = new AtomicInteger();
+            if((p1.contains("C1_")||true)&&(!p1.contains("-9-"))){
+                l1.forEach((String name)->{
+                    String parentPath = getCommonArtistParentPath(name,"");
+                    System.out.println(parentPath);
+                    Date date = new Date(updateLatestTimeUnderFolder(parentPath));
+                    System.out.println(new SimpleDateFormat("yyyy-MM-dd").format(date));
+                });
+            }
+        });
+    }
+    public long updateLatestTimeUnderFolder(String parentPath){
+        File parent = new File(parentPath);
+         long latest= 0;
+        File[] files = parent.listFiles();
+        for (int i = 0; i < files.length; i++) {
+            File theFile = files[i];
+            if(theFile.getName().contains("json")){
 
+            }else{
+                long theTime = theFile.lastModified();
+                if(theTime>latest)
+                    latest = theTime;
+            }
+        }
+        parent.setLastModified(latest);
+        return latest;
+    }
     /**
      * srcDirPath:
      * destDirPath:
