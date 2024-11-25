@@ -8,9 +8,17 @@ import pers.missionlee.chan.starter.SpiderSetting;
 import pers.missionlee.webmagic.spider.newsankaku.dao.LevelInfo;
 import pers.missionlee.webmagic.spider.newsankaku.utlis.PathUtils;
 import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
+import pers.missionlee.webmagic.spider.sankaku.manager.SourceManager;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -68,11 +76,12 @@ public class DiskService {
 
         logger.info("初始化特殊作者名称完成  key 是真是名字， value 是路径名字");
     }
+
     public void cleanDelPath() throws InterruptedException {
         String[] delPaths = spiderSetting.delPath;
         for (int i = 0; i < delPaths.length; i++) {
             String delPath = delPaths[i];
-            logger.warn("----将要清空"+delPath+"下的所有文件");
+            logger.warn("----将要清空" + delPath + "下的所有文件");
             logger.warn("----距离操作开始还有10s");
             Thread.sleep(10000);
             logger.warn("----开始执行");
@@ -80,19 +89,21 @@ public class DiskService {
         }
 
     }
-    private void doDelFile(File rootDir){
+
+    private void doDelFile(File rootDir) {
         File[] files = rootDir.listFiles();
         for (int i = 0; i < files.length; i++) {
             File thisFile = files[i];
-            if(thisFile.isDirectory()){
-                logger.info(thisFile.getPath()+thisFile.getName()+"是目录，递归清空其中文件");
+            if (thisFile.isDirectory()) {
+                logger.info(thisFile.getPath() + thisFile.getName() + "是目录，递归清空其中文件");
                 doDelFile(thisFile);
-            }else{
-                logger.info(thisFile.getPath()+thisFile.getName()+" 执行删除");
+            } else {
+                logger.info(thisFile.getPath() + thisFile.getName() + " 执行删除");
                 thisFile.delete();
             }
         }
     }
+
     private void initArtistInfo() {
         this.CHAN_ARTIST_BASE = PathUtils.buildPath(spiderSetting.getArtistBase());
         this.CHAN_ARTIST_DEFAULT_PIC = PathUtils.buildPath(this.CHAN_ARTIST_BASE, PIC);
@@ -106,7 +117,7 @@ public class DiskService {
         // 提取 作者分级路径下的 作者分布信息
         for (int i = 0; i < spiderSetting.getNormalAddArtistBases().length; i++) {
             String addPoot = PathUtils.buildPath(spiderSetting.getNormalAddArtistBases()[i]);
-            System.out.println("###### "+addPoot);
+            System.out.println("###### " + addPoot);
             File[] addRootChildrenFiles = new File(addPoot).listFiles(PathUtils.aimFileFilter());
             extractPathInfo(addRootChildrenFiles, pics, vids);
         }
@@ -187,47 +198,128 @@ public class DiskService {
         }
         return key;
     }
-    public void moveC1toC2(int c2days){
-        CHAN_ARTIST_VIDS.forEach((String p1,List<String> l1)->{
+
+    public void moveC1toC2(int c2days) {
+        // 获取2022年日期
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Date TD;
+        try {
+            TD = df.parse("2023-07-01");
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(TD);
+        long tsLimit = cal.getTimeInMillis();
+
+
+        CHAN_ARTIST_VIDS.forEach((String p1, List<String> l1) -> {
             AtomicInteger x = new AtomicInteger();
-            if((p1.contains("C1_")||true)&&(!p1.contains("-9-"))){
-                l1.forEach((String name)->{
-                    String parentPath = getCommonArtistParentPath(name,"");
+            if ((p1.contains("C1_"))
+                    && (!p1.contains("-9-"))
+                    && (!p1.contains("C1_TEMP"))
+                    && !p1.contains("C1_AI")) {
+                l1.forEach((String name) -> {
+                    String parentPath = getCommonArtistParentPath(name, "");
                     System.out.println(parentPath);
-                    Date date = new Date(updateLatestTimeUnderFolder(parentPath));
-                    System.out.println(new SimpleDateFormat("yyyy-MM-dd").format(date));
+                    long tsThis = updateLatestTimeUnderFolder(parentPath);
+                    if (tsLimit > tsThis) {
+                        File source = new File(parentPath);
+                        String s0 = parentPath.replace("C1_", "C2_");
+                        File s0f = new File(s0);
+                        String s1 = s0.substring(0, s0.length() - 1);
+                        System.out.println(s1);
+                        String destName = s1.substring(0, s1.lastIndexOf("/") + 1);
+                        File dist = new File(destName);
+                        if (!source.exists()) {
+                            System.out.println("原始文件夹不存在");
+                        } else if (s0f.exists()) {
+                            System.out.println("目标文件已存在");
+                        } else{
+                            System.out.println("移动: "+parentPath +" 到: "+destName);
+                            try {
+                                FileUtils.moveDirectoryToDirectory(source, dist, true);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }
                 });
             }
         });
-        CHAN_ARTIST_PICS.forEach((String p1,List<String> l1)->{
+        CHAN_ARTIST_PICS.forEach((String p1, List<String> l1) -> {
             AtomicInteger x = new AtomicInteger();
-            if((p1.contains("C1_")||true)&&(!p1.contains("-9-"))){
-                l1.forEach((String name)->{
-                    String parentPath = getCommonArtistParentPath(name,"");
-                    System.out.println(parentPath);
-                    Date date = new Date(updateLatestTimeUnderFolder(parentPath));
-                    System.out.println(new SimpleDateFormat("yyyy-MM-dd").format(date));
+            if ((p1.contains("C1_"))
+                    && (!p1.contains("-9-"))
+                    && (!p1.contains("C1_TEMP"))
+                    && !p1.contains("C1_AI")) {
+                l1.forEach((String name) -> {
+                    String parentPath = getCommonArtistParentPath(name, "");
+                    System.out.println("1 判断作者: "+parentPath);
+                    long tsThis = updateLatestTimeUnderFolder(parentPath);
+                    if (tsLimit > tsThis) {
+                        File source = new File(parentPath);
+                        String s0 = parentPath.replace("C1_", "C2_");
+                        File s0f = new File(s0);
+                        String s1 = s0.substring(0, s0.length() - 1);
+                        System.out.println(s1);
+                        String destName = s1.substring(0, s1.lastIndexOf("/") + 1);
+                        File dist = new File(destName);
+                        if (!source.exists()) {
+                            System.out.println("原始文件夹不存在");
+                        } else if (s0f.exists()) {
+                            System.out.println("目标文件已存在");
+                        } else{
+                            System.out.println("移动: "+parentPath +" 到: "+destName);
+                            try {
+                                FileUtils.moveDirectoryToDirectory(source, dist, true);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }
                 });
             }
         });
     }
-    public long updateLatestTimeUnderFolder(String parentPath){
+
+    public long updateLatestTimeUnderFolder(String parentPath) {
+        System.out.println("2 获取最近更新时间:");
         File parent = new File(parentPath);
-         long latest= 0;
+        long latest = 0;
         File[] files = parent.listFiles();
         for (int i = 0; i < files.length; i++) {
             File theFile = files[i];
-            if(theFile.getName().contains("json")){
+            String fileName = theFile.getName();
 
-            }else{
-                long theTime = theFile.lastModified();
-                if(theTime>latest)
+            if (fileName.contains("json") ||
+                    fileName.contains("zdel") ||
+                    fileName.contains("low")) {
+                logger.info("跳过  json  zdel  low");
+            } else {
+                long theTime = 0;
+                if(theFile.isDirectory()){
+                    Path dir = Paths.get(parentPath);
+                    BasicFileAttributes attributes = null;
+                    try {
+                        attributes = Files.readAttributes(dir, BasicFileAttributes.class);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    theTime = attributes.creationTime().toMillis();
+                }else{
+                    theTime = theFile.lastModified();
+                }
+
+                if (theTime > latest)
                     latest = theTime;
             }
         }
         parent.setLastModified(latest);
         return latest;
     }
+
     /**
      * srcDirPath:
      * destDirPath:
@@ -544,11 +636,12 @@ public class DiskService {
         }
         return filePathMap;
     }
+
     /**
      * ⭐ ⭐  获取作者的 所有相关路径
-     * */
+     */
     public Map<String, String> getArtistFilePath(String artistName) {
-        if(artistName.equals("")){
+        if (artistName.equals("")) {
             logger.warn("出现了 artistname 为空的情况， 还没注意是什么问题，可能是 关联作者有时候关联出来“空”");
             return new HashMap<>();
         }
@@ -557,8 +650,8 @@ public class DiskService {
         Map<String, String> filePath = new HashMap<>();
         // pic 部分
         File picbase = new File(picBasePath);
-        if(picbase.exists()){
-            findPathRecursion(filePath,picbase);
+        if (picbase.exists()) {
+            findPathRecursion(filePath, picbase);
         }
 //        File[] picFiles = picbase.listFiles();
 //        if (null != picFiles) {
@@ -588,8 +681,8 @@ public class DiskService {
 
         // vid 部分
         File vidbase = new File(vidBasePath);
-        if(vidbase.exists()){
-            findPathRecursion(filePath,vidbase);
+        if (vidbase.exists()) {
+            findPathRecursion(filePath, vidbase);
         }
 //        File[] vidFiles = vidbase.listFiles();
 //        if (null != vidFiles) {
@@ -601,27 +694,29 @@ public class DiskService {
 //        }
         return filePath;
     }
+
     /**
      * 递归生成 文件名 和 路径信息，放入给定的map中
-     * */
-    public static void findPathRecursion(Map<String,String> map,File baseFile){
-        if(baseFile.getName().equals("s.json")){
+     */
+    public static void findPathRecursion(Map<String, String> map, File baseFile) {
+        if (baseFile.getName().equals("s.json")) {
             return;
         }
-        if(baseFile.isDirectory()){
+        if (baseFile.isDirectory()) {
             File[] subFile = baseFile.listFiles();
             for (int i = 0; i < subFile.length; i++) {
-                findPathRecursion(map,subFile[i]);
+                findPathRecursion(map, subFile[i]);
             }
-        }else{
+        } else {
             String fileName = baseFile.getName();
             //如果有序号的文件，去除序号
-            if(fileName.contains("_"))
-                fileName=fileName.substring(5);
+            if (fileName.contains("_"))
+                fileName = fileName.substring(5);
 //            System.out.println("xxx key"+fileName+"   value "+baseFile.getPath());
-            map.put(fileName,baseFile.getPath());
+            map.put(fileName, baseFile.getPath());
         }
     }
+
     public Map<String, String> getArtistFileMd5Path(String artistName) {
         Map<String, String> fileNamePaht = getArtistFilePath(artistName);
         Map<String, String> md5 = new HashMap<>();
@@ -676,28 +771,29 @@ public class DiskService {
             });
         }
     }
-    public void renameBookFolderName(String name){
+
+    public void renameBookFolderName(String name) {
         String picBasePath = getCommonArtistParentPath(name, "1.jpg");
         String vidBasePath = getCommonArtistParentPath(name, "1.mp4");
         File[] picSubFiles = new File(picBasePath).listFiles();
         File[] vidSubFiles = new File(vidBasePath).listFiles();
 
-        if(null != picSubFiles){
+        if (null != picSubFiles) {
             for (int i = 0; i < picSubFiles.length; i++) {
-                if(picSubFiles[i].isDirectory()
+                if (picSubFiles[i].isDirectory()
                         && picSubFiles[i].getName().startsWith("B[")
-                        &&picSubFiles[i].getName().contains("][")){
+                        && picSubFiles[i].getName().contains("][")) {
                     logger.warn("检测到老版");
                     // 旧版名称 B[aoin][366406]Nozomu Fukujuu Nozomanu Shihai
                     // 新版名称 [aoin]Nozomu Fukujuu Nozomanu Shihai[366406]
                     String old = picSubFiles[i].getName();
-                    String artistName = old.substring(1,old.indexOf("][")+1);
-                    String id =old.substring(old.indexOf("][")+1,old.lastIndexOf("]")+1);
-                    String bookName = old.substring(old.lastIndexOf("]")+1);
-                    String newName = artistName+bookName+id;
-                    File newNameFile = new File(PathUtils.buildPath(picSubFiles[i].getParent(),newName));
-                    logger.warn("oldPath:"+picSubFiles[i].getPath());
-                    logger.warn("newPath:"+newNameFile.getPath());
+                    String artistName = old.substring(1, old.indexOf("][") + 1);
+                    String id = old.substring(old.indexOf("][") + 1, old.lastIndexOf("]") + 1);
+                    String bookName = old.substring(old.lastIndexOf("]") + 1);
+                    String newName = artistName + bookName + id;
+                    File newNameFile = new File(PathUtils.buildPath(picSubFiles[i].getParent(), newName));
+                    logger.warn("oldPath:" + picSubFiles[i].getPath());
+                    logger.warn("newPath:" + newNameFile.getPath());
                     picSubFiles[i].renameTo(newNameFile);
                     System.out.println("--");
 //                    System.out.println(new File(PathUtils.buildPath(picSubFiles[i].getPath(),newName)).getName());
@@ -723,6 +819,7 @@ public class DiskService {
 //            }
 //        }
     }
+
     public void cleanArtistBookParentBases(String name) {
         String picBasePath = getCommonArtistParentPath(name, "1.jpg");
         String vidBasePath = getCommonArtistParentPath(name, "1.mp4");
@@ -839,7 +936,7 @@ public class DiskService {
         String parentPath = getParentPath(artworkInfo, PBPrefix, storePlace);
         try {
             FileUtils.moveFile(tempFile, new File(parentPath + fileSaveName));
-            logger.info("文件成功保存到[" + fileSaveName + "]： " + parentPath.replace("//","/"));
+            logger.info("文件成功保存到[" + fileSaveName + "]： " + parentPath.replace("//", "/"));
             return true;
         } catch (IOException e) {
             e.printStackTrace();
@@ -871,11 +968,11 @@ public class DiskService {
             throw new RuntimeException("未知的Store Place");
         }
         System.out.println("因为parentpath和bookpath也有可能带有作者名（作者名字可能不能作为文件夹名字），所以在getParentPath阶段进行一次识别处理");
-        for (String name: namePairs.keySet()
-             ) {
-            if(parentPath.substring(0,parentPath.lastIndexOf("/")).contains(name)){
-                System.out.println("发现需要处理的 name："+name);
-                parentPath=parentPath.replace(name,namePairs.get(name));
+        for (String name : namePairs.keySet()
+        ) {
+            if (parentPath.substring(0, parentPath.lastIndexOf("/")).contains(name)) {
+                System.out.println("发现需要处理的 name：" + name);
+                parentPath = parentPath.replace(name, namePairs.get(name));
             }
         }
         return parentPath;
@@ -1087,11 +1184,12 @@ public class DiskService {
         String studioPathName = transformArtistNameToPath(studioName);
         return PathUtils.buildPath(spiderSetting.getStudioBase(), studioPathName);
     }
-    public boolean artistIsStop(String name){
-        String artistPathName = getCommonArtistParentPath(name,"1.jpg");
+
+    public boolean artistIsStop(String name) {
+        String artistPathName = getCommonArtistParentPath(name, "1.jpg");
         File parentFile = new File(artistPathName);
         long now = System.currentTimeMillis();
-        if(parentFile.exists()){
+        if (parentFile.exists()) {
             File[] fs = parentFile.listFiles();
 
             for (int i = 0; i < fs.length; i++) {
@@ -1100,12 +1198,12 @@ public class DiskService {
                 System.out.println(now);
                 long update = ff.lastModified();
                 System.out.println(update);
-                System.out.println((now-update)/1000/60/60/24);
-                if(now-update<15768000000l && !ff.getName().contains("json")){
+                System.out.println((now - update) / 1000 / 60 / 60 / 24);
+                if (now - update < 15768000000l && !ff.getName().contains("json")) {
                     // 一年 31536000000
                     // 半年 15768000000
                     // 十周 6048000000
-                    logger.info("作者更新中判断,发现较新的作品,距今 "+(now-update)/1000/60/60/24 +" 天;所以保持更新,(判断依据是 半年)");
+                    logger.info("作者更新中判断,发现较新的作品,距今 " + (now - update) / 1000 / 60 / 60 / 24 + " 天;所以保持更新,(判断依据是 半年)");
                     return false;
                 }
             }
@@ -1114,6 +1212,7 @@ public class DiskService {
 
         return true;
     }
+
     public String getCommonArtistParentPath(String artistName, String artworkName) {
         String artistPathName = transformArtistNameToPath(artistName);
 //        if (PathUtils.isVideo(artworkName)) {
@@ -1311,15 +1410,16 @@ public class DiskService {
 //        System.out.println(bookId);
         // 旧版名称 B[aoin][366406]Nozomu Fukujuu Nozomanu Shihai
         // 新版名称 [aoin]Nozomu Fukujuu Nozomanu Shihai[366406]
-        String old = "B[aoin][366406]Nozomu Fukujuu Nozomanu Shihai";
-        String artistName = old.substring(1,old.indexOf("][")+1);
-        String id =old.substring(old.indexOf("][")+1,old.lastIndexOf("]")+1);
-        String bookName = old.substring(old.lastIndexOf("]")+1);
-        String newName = artistName+bookName+id;
-        System.out.println("artist:"+artistName);
-        System.out.println("id:"+id);
-        System.out.println("bookName:"+bookName);
-        System.out.println(newName);
+//        String old = "B[aoin][366406]Nozomu Fukujuu Nozomanu Shihai";
+//        String artistName = old.substring(1,old.indexOf("][")+1);
+//        String id =old.substring(old.indexOf("][")+1,old.lastIndexOf("]")+1);
+//        String bookName = old.substring(old.lastIndexOf("]")+1);
+//        String newName = artistName+bookName+id;
+//        System.out.println("artist:"+artistName);
+//        System.out.println("id:"+id);
+//        System.out.println("bookName:"+bookName);
+//        System.out.println(newName);
+
     }
 
 }
