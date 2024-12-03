@@ -1030,7 +1030,7 @@ public class DiskService {
         String commonArtistParentPath = getCommonArtistParentPath(artworkInfo.aimName, "1.jpg");
         if (PBPrefix.equals("B")) {
             String bookPath = transformBookNameToPath(artworkInfo.bookName);
-            return PathUtils.buildPath(commonArtistParentPath, (PBPrefix + "[" + artworkInfo.aimName + "][" + artworkInfo.bookId + "]" + bookPath));
+            return PathUtils.buildPath(commonArtistParentPath, ( "[" + artworkInfo.aimName + "]"+bookPath+"[" + artworkInfo.bookId + "]" ));
         } else if (PBPrefix.equals("P")) {
             return PathUtils.buildPath(commonArtistParentPath, (PBPrefix + "[" + artworkInfo.aimName + "][" + artworkInfo.parentId) + "]");
         } else {
@@ -1258,6 +1258,7 @@ public class DiskService {
     }
 
     public String transformArtistNameToPath(String name) {
+        System.out.println(name);
         if (null != namePairs) {
             name = namePairs.containsKey(name) ? namePairs.get(name) : name;
         }

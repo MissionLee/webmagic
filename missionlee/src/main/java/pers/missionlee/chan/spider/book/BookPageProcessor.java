@@ -5,6 +5,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pers.missionlee.chan.pagedownloader.MixDownloader;
 import pers.missionlee.chan.pojo.BookInfo;
 import pers.missionlee.chan.service.DataBaseService;
 import pers.missionlee.chan.service.DiskService;
@@ -15,6 +16,7 @@ import pers.missionlee.webmagic.spider.sankaku.info.ArtworkInfo;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
+import us.codecraft.webmagic.downloader.Downloader;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,8 +30,10 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class BookPageProcessor extends AbstractPageProcessor {
     static Logger logger = LoggerFactory.getLogger(BookPageProcessor.class);
-    public String BOOK_PAGE_PREFIX = "https://beta.sankakucomplex.com/books/";
-    String BOOK_INFO_RESTFUL_PREFIX = "https://capi-v2.sankakucomplex.com/pools/";
+    public String C_BOOK_PAGE = "https://beta.sankakucomplex.com/books/";
+    String BOOK_INFO_RESTFUL_PREFIX = "https://sankakuapi.com/pools/";
+
+    //https://sankakuapi.com/seriesv2?lang=zh-CN&page=1&limit=20&includes[]=pools
     String BOOK_DETAIL_RESTFUL_PREFIX = "https://capi-v2.sankakucomplex.com/posts/keyset";
     String SHOW_PAGE_PREFIX = "https://chan.sankakucomplex.com/post/show/";
     String bookId = "-1";
@@ -52,9 +56,11 @@ public class BookPageProcessor extends AbstractPageProcessor {
     public void initFileStoreSituation() {
         this.filePath = spiderSetting.initAllRelatedStoredFiles(diskService,saveArtistName);
     }
+    public us.codecraft.webmagic.downloader.Downloader downloader;
+    public BookPageProcessor(Downloader downloader1, String saveArtistName, boolean single, DataBaseService dataBaseService, DiskService diskService, boolean skipBookLostPage, SpiderSetting spiderSetting) {
 
-    public BookPageProcessor(String saveArtistName, boolean single, DataBaseService dataBaseService, DiskService diskService, boolean skipBookLostPage, SpiderSetting spiderSetting) {
         super(dataBaseService, diskService);
+        this.downloader = downloader1;
         this.skipBookLostPage = skipBookLostPage;
         this.single = single;
         this.saveArtistName = saveArtistName;
@@ -114,20 +120,21 @@ public class BookPageProcessor extends AbstractPageProcessor {
     public void doProcess(Page page) {
         // 主要思路：希望能够先保存book基础信息，再下载保存作品信息，防止作品保存的时候，book信息在数据库中还不存在
         String url = page.getUrl().toString();
-        if (url.startsWith(BOOK_PAGE_PREFIX)) { // 如果是books 页面，提取books信息，放到 task里面
+        if (url.startsWith(C_BOOK_PAGE)) { // 如果是books 页面，提取books信息，放到 task里面
             logger.info("检测到Book页面，提取BookId，并访问 book information（pools）接口");
             if (url.contains("?")) {
                 bookId = url.substring(url.indexOf("books/") + 6, url.indexOf("?"));
             } else {
                 bookId = url.substring(url.indexOf("books/") + 6, url.length());
             }
-            page.addTargetRequest(BOOK_INFO_RESTFUL_PREFIX + bookId + "?lang=en");
+            page.addTargetRequest(BOOK_INFO_RESTFUL_PREFIX + bookId );
         } else if (url.startsWith(BOOK_INFO_RESTFUL_PREFIX)) {
             logger.info("检测到 pools 接口返回的作品信息,提取book information");
             processPoolPageRestful(page);
             logger.info("访问Book pool接口");
-            page.addTargetRequest(BOOK_DETAIL_RESTFUL_PREFIX + "?lang=en&default_threshold=1&hide_posts_in_books=in-larger-tags&limit=40&tags=pool:" + bookId);
-        } else if (url.startsWith(BOOK_DETAIL_RESTFUL_PREFIX)) {// pool 页面 获取作品顺序列表
+            processPoolDetailPageRestful(page);
+//            page.addTargetRequest(BOOK_DETAIL_RESTFUL_PREFIX + "?lang=en&default_threshold=1&hide_posts_in_books=in-larger-tags&limit=40&tags=pool:" + bookId);
+        } else if (false && url.startsWith(BOOK_DETAIL_RESTFUL_PREFIX)) {// pool 页面 获取作品顺序列表
             logger.info("检测到Book pool 接口返回数据，解析其中作品信息");
             processPoolDetailPageRestful(page);
         } else if (url.startsWith(SHOW_PAGE_PREFIX)) {
@@ -141,6 +148,15 @@ public class BookPageProcessor extends AbstractPageProcessor {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        String pageString = page.getHtml().toString();
+        if(pageString.contains("这个帖子已经删除")
+                || pageString.contains("This post was deleted")
+                || pageString.contains("您没有查看该内容所需要的访问权限")
+                || pageString.contains("您缺少查看此内容所需的访问权限")
+                || pageString.contains("You lack the access rights required to view this content")){
+            return;
+        }
+
         // 1.提取target信息
         AbstractPageProcessor.Target target = extractDownloadTargetInfoFromDetailPage(page.getHtml());
         // 2.提取 ArtworkInfo 信息
@@ -372,8 +388,8 @@ public class BookPageProcessor extends AbstractPageProcessor {
         // 通过page房问ajax接口会倍基础 <body>标签包裹，这里去除内容
         Map<String, Object> json = getJsonStringFromRestPage(page);
         // 处理 返回数据中的 data字段 ===================================================================================
-        List<Map<String, Object>> detailData = (List<Map<String, Object>>) json.get("data");
-        logger.info("解析接口返回data内容");
+        List<Map<String, Object>> detailData = (List<Map<String, Object>>) json.get("posts");
+        logger.info("解析接口返回data/posts内容");
         for (int i = 0; i < detailData.size(); i++) { //保存 文件排序  key : sanCode / value :sequence
             Map<String, Object> data = detailData.get(i);
             sanCodeSequence.put(data.get("sequence").toString(), data.get("id").toString());
@@ -394,8 +410,9 @@ public class BookPageProcessor extends AbstractPageProcessor {
             logger.info("第 " + i + " 条： [" + data.get("sequence") + "][" + data.get("id") + "][" + fileName + "]   " + data);
         }
         // 处理返回数据中的 meta 字段 ====================================================================================
+
         Map<String, Object> meta = (Map<String, Object>) json.get("meta");
-        if (meta.containsKey("next") && !"null".equals(meta.get("next")) && !(null == meta.get("next"))) { // 如果有下一页，解析下一页
+        if (json.containsKey("meta")&&meta.containsKey("next") && !"null".equals(meta.get("next")) && !(null == meta.get("next"))) { // 如果有下一页，解析下一页
             logger.info("发现下页next信息，访问接口");
             page.addTargetRequest(BOOK_DETAIL_RESTFUL_PREFIX + "?lang=en&next=" + meta.get("next") + "&default_threshold=1&hide_posts_in_books=in-larger-tags&limit=40&tags=pool:" + bookId);
         } else {
@@ -482,7 +499,7 @@ public class BookPageProcessor extends AbstractPageProcessor {
             if(skipBookLostPage){
 
             }else{
-                BookPageProcessor bookPageProcessor = new BookPageProcessor(saveArtistName, single, dataBaseService, diskService,false,spiderSetting);
+                BookPageProcessor bookPageProcessor = new BookPageProcessor(downloader,saveArtistName, single, dataBaseService, diskService,false,spiderSetting);
                 bookPageProcessor.flexSite = SpiderUtils.site;
                 bookPageProcessor.sanCodeSequence = this.sanCodeSequence;
                 bookPageProcessor.filenameSequence = this.filenameSequence;
@@ -494,7 +511,7 @@ public class BookPageProcessor extends AbstractPageProcessor {
                 for (int i = 0; i < urls.length; i++) {
                     urls[i] = "https://chan.sankakucomplex.com/post/show/" + collections[i].toString();
                 }
-                Spider.create(bookPageProcessor).addUrl(urls).thread(3).run();
+                Spider.create(bookPageProcessor).setDownloader(downloader).addUrl(urls).thread(1).run();
             }
 
 

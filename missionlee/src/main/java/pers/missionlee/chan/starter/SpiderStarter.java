@@ -407,7 +407,7 @@ public class SpiderStarter {
                     case "6":// 更新单个作者
                         downloadArtist(workParam, true);
                         break;
-                    case "7": {
+                    case "7": {// 下载作者的 book
                         try {
                             downloadArtistBook(workParam);
                             String realName = spiderSetting.getRelationName(workParam);
@@ -418,7 +418,7 @@ public class SpiderStarter {
                     }
 
                     break;
-                    case "8": {
+                    case "8": {// 下载parent
                         downloadArtistParent(workParam);
                         diskService.cleanArtistBookParentBases(workParam);
                     }
@@ -435,9 +435,9 @@ public class SpiderStarter {
 //                            } catch (InterruptedException e) {
 //                                e.printStackTrace();
 //                            }
-                        } else if (3 == mode) {
+                        } else if (3 == mode) {//
                             diskService.checkBookArtistPath(dataBaseService);
-                        } else if (4 == mode) {
+                        } else if (4 == mode) { // 合并 Piv vid文件夹,  历史功能: 最早pic vid 是分开存储的.
                             diskService.mergePicVid();
                         } else if (5 == mode) {
                             diskService.findPathError();
@@ -525,7 +525,7 @@ public class SpiderStarter {
                 if (url.contains("?")) {
                     url = url.substring(0, url.indexOf("?"));
                 }
-                BookPageProcessor bookPageProcessor = new BookPageProcessor("", true, dataBaseService, diskService, spiderSetting.skipBookLostPage, spiderSetting);
+                BookPageProcessor bookPageProcessor = new BookPageProcessor(downloader,"", true, dataBaseService, diskService, spiderSetting.skipBookLostPage, spiderSetting);
                 bookPageProcessor.flexSite = BookPageProcessor.site;
                 Spider.create(bookPageProcessor).addUrl(url).thread(spiderSetting.threadNum).run();
             }
@@ -533,13 +533,13 @@ public class SpiderStarter {
 
         bookids.forEach(id -> {
 
-            BookPageProcessor bookPageProcessor = new BookPageProcessor("", true, dataBaseService, diskService, spiderSetting.skipBookLostPage, spiderSetting);
+            BookPageProcessor bookPageProcessor = new BookPageProcessor(downloader,"", true, dataBaseService, diskService, spiderSetting.skipBookLostPage, spiderSetting);
             bookPageProcessor.flexSite = BookPageProcessor.site;
             String iUrl = id;
-            if (iUrl.contains(bookPageProcessor.BOOK_PAGE_PREFIX)) {
+            if (iUrl.contains(bookPageProcessor.C_BOOK_PAGE)) {
 
             } else {
-                iUrl = bookPageProcessor.BOOK_PAGE_PREFIX + id;
+                iUrl = bookPageProcessor.C_BOOK_PAGE + id;
             }
             Spider.create(bookPageProcessor).addUrl(iUrl).thread(spiderSetting.threadNum).run();
         });
@@ -768,7 +768,7 @@ public class SpiderStarter {
 
                     for (String iUrl :
                             bookUrl) {
-                        BookPageProcessor bookPageProcessor = new BookPageProcessor(artistName, false, dataBaseService, diskService, spiderSetting.skipBookLostPage, spiderSetting);
+                        BookPageProcessor bookPageProcessor = new BookPageProcessor(downloader,artistName, false, dataBaseService, diskService, spiderSetting.skipBookLostPage, spiderSetting);
                         bookPageProcessor.flexSite = BookPageProcessor.site;
                         Spider.create(bookPageProcessor).addUrl(iUrl).thread(spiderSetting.threadNum).run();
                         artistPageProcessor.downloaded += bookPageProcessor.downloaded;
@@ -880,18 +880,18 @@ public class SpiderStarter {
                     }
                 }
             }
-            if(update){
-                if(spiderSetting.updateStopUpdateArtist){
-                    // 如果更新停更作者  那么 update 保持原样
-                    logger.info("本次更新,忽略 作者停更状态");
-                    update = update && true;
-                }else{
-                    logger.info("本次更新,计算 作者停更状态");
-
-                    boolean stoped = diskService.artistIsStop(name);
-                    update = update && (!stoped);
-                }
-            }
+//            if(update){
+//                if(spiderSetting.updateStopUpdateArtist){
+//                    // 如果更新停更作者  那么 update 保持原样
+//                    logger.info("本次更新,忽略 作者停更状态");
+//                    update = update && true;
+//                }else{
+//                    logger.info("本次更新,计算 作者停更状态");
+//
+//                    boolean stoped = diskService.artistIsStop(name);
+//                    update = update && (!stoped);
+//                }
+//            }
 
             if (update) {
                 logger.info("开始更新 " + name);
@@ -977,9 +977,9 @@ public class SpiderStarter {
     }
 
     public void downloadArtistBook(String name) {
-        String prefix = "https://beta.sankakucomplex.com/wiki/en/";
+
         String urlName = name.replaceAll(" ", "_");
-        String searchUrl = prefix + urlName;
+        String searchUrl = ArtistBookListProcessor.getPoolSeriesUrl(urlName,1);
         String relName = spiderSetting.getRelationName(name);
         List<String> bookUrl = new ArrayList<>();
         ArtistBookListProcessor processor = new ArtistBookListProcessor(
@@ -992,7 +992,8 @@ public class SpiderStarter {
         for (String iUrl :
                 bookUrl) {
             logger.info("============[" + (iii++) + "/" + bookUrl.size() + "]===========");
-            BookPageProcessor bookPageProcessor = new BookPageProcessor(relName, false, dataBaseService, diskService, spiderSetting.skipBookLostPage, spiderSetting);
+            logger.info(iUrl);
+            BookPageProcessor bookPageProcessor = new BookPageProcessor(downloader,relName, false, dataBaseService, diskService, spiderSetting.skipBookLostPage, spiderSetting);
             bookPageProcessor.flexSite = BookPageProcessor.site;
             Spider.create(bookPageProcessor).addUrl(iUrl).thread(spiderSetting.threadNum).run();
         }
@@ -1003,14 +1004,14 @@ public class SpiderStarter {
             List<String> names = spiderSetting.artistRelation.get(name);
             for (int i = 0; i < names.size(); i++) {
                 urlName = names.get(i).replaceAll(" ", "_");
-                searchUrl = prefix + urlName;
+                searchUrl = ArtistBookListProcessor.getPoolSeriesUrl(urlName,1) ;
                 bookUrl = new ArrayList<>();
                 processor = new ArtistBookListProcessor(bookUrl, false, dataBaseService, diskService,
                         spiderSetting.bookSkipPercent, true, spiderSetting.skipBookLostPage, name);
                 Spider.create(processor).addUrl(searchUrl).run();
                 for (String iUrl :
                         bookUrl) {
-                    BookPageProcessor bookPageProcessor = new BookPageProcessor(name, false, dataBaseService, diskService, spiderSetting.skipBookLostPage, spiderSetting);
+                    BookPageProcessor bookPageProcessor = new BookPageProcessor(downloader,name, false, dataBaseService, diskService, spiderSetting.skipBookLostPage, spiderSetting);
                     bookPageProcessor.flexSite = BookPageProcessor.site;
                     Spider.create(bookPageProcessor).addUrl(iUrl).thread(spiderSetting.threadNum).run();
                 }
@@ -1032,7 +1033,7 @@ public class SpiderStarter {
 //    }
 
     public void downloadArtistParent(String name) {
-        ParentListPageProcessor parentListPageProcessor = new ParentListPageProcessor(spiderSetting.skipParentPoolId, false, name, dataBaseService, diskService, spiderSetting);
+        ParentListPageProcessor parentListPageProcessor = new ParentListPageProcessor(null,downloader,spiderSetting.skipParentPoolId, false, name, dataBaseService, diskService, spiderSetting);
         parentListPageProcessor.start();
         diskService.cleanArtistBookParentBases(name);
     }
@@ -1045,8 +1046,8 @@ public class SpiderStarter {
 
     // 带有 Parent的Single 页面下载
     public void downloadSingleParentByParentChildPageUrl(String url) {
-        ParentListPageProcessor processor = new ParentListPageProcessor(spiderSetting.skipParentPoolId, true, "", dataBaseService, diskService, spiderSetting);
-        Spider.create(processor).addUrl(url).thread(spiderSetting.threadNum).run();
+        ParentListPageProcessor processor = new ParentListPageProcessor(null,downloader,spiderSetting.skipParentPoolId, true, "", dataBaseService, diskService, spiderSetting);
+        Spider.create(processor).addUrl(url).setDownloader(downloader).thread(spiderSetting.threadNum).run();
     }
 
     // Book  部分 ========================================
@@ -1062,7 +1063,7 @@ public class SpiderStarter {
 
     public void downloadBookForceArtist(String name, String url) {
         // TODO: 2021/8/29  强制把某个 book 下载到某个作者名下
-        BookPageProcessor bookPageProcessor = new BookPageProcessor(name, false, dataBaseService, diskService, false, spiderSetting);
+        BookPageProcessor bookPageProcessor = new BookPageProcessor(downloader,name, false, dataBaseService, diskService, false, spiderSetting);
         bookPageProcessor.flexSite = BookPageProcessor.site;
         Spider.create(bookPageProcessor).addUrl(url).thread(1).run();
     }

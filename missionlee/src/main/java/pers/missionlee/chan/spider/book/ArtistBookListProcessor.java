@@ -1,6 +1,7 @@
 package pers.missionlee.chan.spider.book;
 
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jetty.util.ajax.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pers.missionlee.chan.pojo.ArtistPathInfo;
@@ -44,12 +45,19 @@ public class ArtistBookListProcessor extends AbstractPageProcessor {
     public static String CHAN_BOOK_PREFIX = "https://beta.sankakucomplex.com/books/";
     public static String CHAN_ARTIST_BOOK_LIST_PREFIX = "https://capi-v2.sankakucomplex.com/poolseriesv2";// 底层接口
     public static String CHAN_WIKI_PREFIX = "https://beta.sankakucomplex.com/tag?tagName="; // 搜索作者页面，会同时展示出普通作品 以及  Book&Series
+
+    public static String C_KEYSET_POST = "https://sankakuapi.com/posts/keyset?lang=zh-CN&default_threshold=2&limit=40&page=1&tags=order:popularity+Aoin";
+    public static String C_KEYSET_SERIES = "https://sankakuapi.com/pools/keyset?lang=zh-CN&limit=20&includes[]=series&tags=Aoin";
+    public static String C_SERIESV2 = "https://sankakuapi.com/seriesv2?lang=zh-CN&page=1&limit=20&includes[]=pools";
+    public static String C_SERIESV2_2 = "https://sankakuapi.com/poolseriesv2";
     public static String getPoolSeriesUrl(String artist,int pageNum){
         artist=artist.replaceAll(" ","_");
-        return "https://capi-v2.sankakucomplex.com/poolseriesv2?lang=en&filledPools=true&offset=0&limit=40&tags=+order:date+order:popularity+"+artist+"&page="+pageNum+"&includes[]=pools&exceptStatuses[]=deleted";
+        return "https://sankakuapi.com/poolseriesv2?lang=zh-CN&filledPools=true&offset=0&limit=40&tags=order:date+order:popularity+"+artist+"&page="+pageNum+"&includes[]=pools&exceptStatuses[]=deleted";
+//        return "https://capi-v2.sankakucomplex.com/poolseriesv2?lang=en&filledPools=true&offset=0&limit=40&tags=+order:date+order:popularity+"+artist+"&page="+pageNum+"&includes[]=pools&exceptStatuses[]=deleted";
     }
     public static String getPoolDetailUrl(int bookId){
-        return "https://capi-v2.sankakucomplex.com/pools/"+bookId+"?lang=en&exceptStatuses[]=deleted";
+        return "https://sankakuapi.com/pools/"+bookId+"?lang=zh-CN&exceptStatuses[]=deleted";
+//        return "https://capi-v2.sankakucomplex.com/pools/"+bookId+"?lang=en&exceptStatuses[]=deleted";
     }
     static Logger logger = LoggerFactory.getLogger(ArtistBookListProcessor.class);
     List<String> bookUrlList;
@@ -82,6 +90,7 @@ public class ArtistBookListProcessor extends AbstractPageProcessor {
         this.bookSkipPercent = bookSkipPercent;
         this.skipWhileBookIdExits = skipWhileBookIdExists;
         this.realName = realName;
+        this.artistName=realName;
         this.initSettingInfo(diskService.getParentPath(
                 ArtworkInfo.getArtistPicPathInfo(realName),"",ArtworkInfo.STORE_PLACE.ARTIST.storePlace
         ));
@@ -128,7 +137,7 @@ public class ArtistBookListProcessor extends AbstractPageProcessor {
             String poolUrl = getPoolSeriesUrl(artistName,1);
             page.addTargetRequest(poolUrl);
             // https://capi-v2.sankakucomplex.com/pools/keyset?lang=en&limit=20&includes[]=series&tags=vycma
-        } else if (url.startsWith(CHAN_ARTIST_BOOK_LIST_PREFIX)) {
+        } else if (url.startsWith(C_SERIESV2_2)) {
             logger.info("*PoolSeries接口返回");
             Map<String, Object> res = getJsonStringFromRestPage(page);
             // 处理返回数据的  data 字段  data字段就是一个 放着 book信息的 list
@@ -141,6 +150,7 @@ public class ArtistBookListProcessor extends AbstractPageProcessor {
                 boolean stored = false;
                 boolean markSkip = false;
                 Map<String, Object> bookInfo = poolData.get(i);
+                System.out.println(JSON.toString(bookInfo));
                 /**
                  * 解析基本信息
                  * */
@@ -166,17 +176,21 @@ public class ArtistBookListProcessor extends AbstractPageProcessor {
 //                System.out.println(artistPathInfo.delPool);
 //                System.out.println("当前book id");
 //                System.out.println(bookId);
+
+                // 如果book 是被手动删除的,则不下载
                 if(artistPathInfo.delPool.contains(String.valueOf(bookId))){
                     logger.info("s.json文件夹中记录到删除了这个book 跳过这个book");
                     stored = true;
                     markSkip = true;
                 }
+                // 如果 数据库中存在并且配置了 skipWhileBookIdExits 则不下载
                 if(skipWhileBookIdExits && dataBaseService.bookIdExists(bookId)){
                     logger.info("数据库已经记录这个book id，非全部更新的模式下，直接跳过这个book");
                     stored = true;
                     markSkip = true;
 
                 }
+                // 如果bookid 有问题不下载
                 if(bookId == 1857 || bookId ==8560){
                     logger.info("现在特定标记跳过 1857 是个copyright的book，由很多作者，但是判断的时候找不到作者");
                     stored = true;
@@ -212,8 +226,8 @@ public class ArtistBookListProcessor extends AbstractPageProcessor {
                     }
                     if(!findThisArtist){
                         // TODO: 2023/1/8 判断作品列表中有没有当前作者，如果没有直接跳过，之前好像也有book作者异常多，获取不到作者列表的情况，这里一并处理了
-                        logger.info("未在当前Pool信息中找到目标作者的名称，所以不下载这个book");
-                        skip =true;
+                        logger.info("[注意:原本要进行这个操作的,现在不做了20241201]未在当前Pool信息中找到目标作者的名称，所以不下载这个book");
+//                        skip =true;
                     }
                     if (artists_tags.size() >= 3) {
                         logger.info("注意：因为一些特殊跨作者book的原因，一个作品的作者数量大于等于 3 的时候，放弃这个作品");
@@ -295,7 +309,7 @@ public class ArtistBookListProcessor extends AbstractPageProcessor {
 
             }
             // 处理返回数据的 meta 字段
-            Map<String, Object> meta = (Map<String, Object>)((Map<String, Object>)res.get("pools")).get("mete");
+            Map<String, Object> meta = (Map<String, Object>)((Map<String, Object>)res.get("pools")).get("meta");
             if (meta.containsKey("next") && !"null".equals(meta.get("next")) && !(null == meta.get("next"))) {
                 // LMS 20240316  next属性不参与接口访问，但是参与判断是否还有下一页
                 logger.info("发现next信息，解析页面并加入下一页");

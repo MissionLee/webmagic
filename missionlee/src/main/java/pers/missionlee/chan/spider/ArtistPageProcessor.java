@@ -129,6 +129,7 @@ public class ArtistPageProcessor extends AbstractTagPageProcessor {
             if (pageString.contains("这个帖子已经删除")
                     || pageString.contains("This post was deleted")
                     || pageString.contains("您没有查看该内容所需要的访问权限")
+                    || pageString.contains("您缺少查看此内容所需的访问权限")
                     || pageString.contains("You lack the access rights required to view this content")
             ) {
                 logger.info("因[文件已删除||无访问权限]跳过 " + page.getUrl().toString());
