@@ -176,7 +176,7 @@ public class MixDownloader implements Downloader{
         counter++;
         Future<ChromeDriver> future = executor.submit(new ChromeDriverDownloadTask(chromeDriver,request));
         try {
-            chromeDriver = future.get(300,TimeUnit.SECONDS);
+            chromeDriver = future.get(180,TimeUnit.SECONDS);
 
         } catch (ExecutionException e) {
             throw new RuntimeException(e);

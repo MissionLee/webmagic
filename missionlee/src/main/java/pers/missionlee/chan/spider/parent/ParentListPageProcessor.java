@@ -222,7 +222,9 @@ public class ParentListPageProcessor extends AbstractPageProcessor {
 
                 }
 
-            } else if (pageString.contains("This post belongs to") && pageString.contains("a parent post")) {
+            } else if ((pageString.contains("This post belongs to") && pageString.contains("a parent post"))||(
+                     pageString.contains("此帖子") && pageString.contains("父帖子"))
+                     ) {
                 // 如果当前页面是Parent中的子页面，将母页面加入下载列表
                 logger.info("从当前页面解析ParentPage（为了递归找父级 找parent放在前面）:" + page.getUrl());
                 List<String> href = page.getHtml().$("#right-col > .carousel").$("a", "href").all();
