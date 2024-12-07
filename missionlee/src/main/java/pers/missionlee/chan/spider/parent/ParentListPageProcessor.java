@@ -227,10 +227,12 @@ public class ParentListPageProcessor extends AbstractPageProcessor {
                      ) {
                 // 如果当前页面是Parent中的子页面，将母页面加入下载列表
                 logger.info("从当前页面解析ParentPage（为了递归找父级 找parent放在前面）:" + page.getUrl());
-                List<String> href = page.getHtml().$("#right-col > .carousel").$("a", "href").all();
+                List<String> href = page.getHtml().$("#right-col > .carousel > a","href").all();
                  for (int i = 0; i < href.size(); i++) {
                      String hr = href.get(i);
-                     if(hr.contains("/post")){
+                     logger.info("遍历href 寻找Parent: "+hr);
+                     if(hr.contains("/post")&& (!(hr.contains("plus")))){
+                         logger.info("查找到的父链接");
                          page.addTargetRequest("https://chan.sankakucomplex.com" + href.get(0));
                      }
                  }
@@ -245,6 +247,8 @@ public class ParentListPageProcessor extends AbstractPageProcessor {
             }
         } else {
             logger.info("遇到需要补充下载的页面了！！！！！！！！！！！！！");
+            // TODO: 2024/12/6  需要更新 show page处理方法 
+//            page.addTargetRequests();
             processShowPage(page);
         }
     }
