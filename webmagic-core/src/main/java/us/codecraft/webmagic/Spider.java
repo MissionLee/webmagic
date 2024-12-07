@@ -322,7 +322,7 @@ public class Spider implements Runnable, Task {
                 threadPool.execute(new Runnable() {
                     @Override
                     public void run() {
-                        System.out.println("Spider # 325 引入所有Spider Sleep 3s");
+                        logger.info("Spider Sleep 3s");
                         try {
                             try {
                                 Thread.sleep(new Random().nextInt(3000));
@@ -465,7 +465,7 @@ public class Spider implements Runnable, Task {
     }
 
     private void doCycleRetry(Request request) {
-        System.out.println("xxxxxxxxx 报错出发了 Spider 重试机制 xxxxxxxxxx");
+        logger.warn("报错触发了 Spider 重试机制");
         Object cycleTriedTimesObject = request.getExtra(Request.CYCLE_TRIED_TIMES);
         if (cycleTriedTimesObject == null) {
             addRequest(SerializationUtils.clone(request).setPriority(0).putExtra(Request.CYCLE_TRIED_TIMES, 1));

@@ -43,8 +43,9 @@ public class SpiderStarter {
             downloader = new MixDownloader("", "C:\\chromedriver-win64\\chromedriver.exe", "9292");
 
 
-
+    @Deprecated
     public static Map<String, String> analysisSiteCookie(String cookieString) {
+        //  启动浏览器之后,不再需要模拟cookie之类的了
         String[] cookiePairs = cookieString.split("; ");
         Map<String, String> siteCookie = new HashMap<>();
         for (int i = 0; i < cookiePairs.length; i++) {
@@ -557,7 +558,7 @@ public class SpiderStarter {
     public void downloadBookWithBookId(String folder) {
         List<String> bookids = Arrays.asList(spiderSetting.singleBookIds);
         List<Map> urls = reader.getBookMarkListByDirName(folder);
-        System.out.println(urls);
+        logger.info("下载指定URL:"+urls);
         for (Map bookMakr : urls) {
             String url = bookMakr.get("url").toString();
             if (url.contains("book") && url.contains(SpiderUtils.BASE_BOOK_URL)) {
@@ -892,7 +893,7 @@ public class SpiderStarter {
         int lv = Integer.valueOf(level);
         String[] chosenFolder = spiderSetting.updateChosenFolder;
         for (int i = 0; i < chosenFolder.length; i++) {
-            System.out.println(chosenFolder[i]);
+            logger.info("指定更新的路径: "+chosenFolder[i]);
         }
 
         List<String> artists = dataBaseService.getArtistListByLevel(lv, !spiderSetting.forceUpdate);
@@ -903,8 +904,6 @@ public class SpiderStarter {
             if (onlyUpdateChosenFolder) {
                 logger.info("指定目录更新模式");
                 update = false;
-
-                System.out.println(parentPath);
                 for (int i = 0; i < chosenFolder.length; i++) {
                     if (parentPath.contains(chosenFolder[i])) {
                         update = true;
@@ -1128,13 +1127,12 @@ public class SpiderStarter {
     }
 
     public void updateCopyrightOfficial(String copyright) {
-        System.out.println("ZZZZZZZZZZZZZ next next" + spiderSetting.nextMode);
+
         List<String> tags = new ArrayList<>();
         tags.add(copyright);
         CopyrightPageProcessor pageProcessor = new CopyrightPageProcessor(true, tags, dataBaseService, diskService);
         String startUrl;
         if (spiderSetting.nextMode) {
-            System.out.println("update copyright official next mode");
             startUrl = SpiderUtils.getNextModeUrl(copyright, "official art");
         } else {
 
