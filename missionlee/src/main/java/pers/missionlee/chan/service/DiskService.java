@@ -117,7 +117,7 @@ public class DiskService {
         // 提取 作者分级路径下的 作者分布信息
         for (int i = 0; i < spiderSetting.getNormalAddArtistBases().length; i++) {
             String addPoot = PathUtils.buildPath(spiderSetting.getNormalAddArtistBases()[i]);
-            System.out.println("###### " + addPoot);
+            logger.info("初始化/添加根路径: "+ addPoot);
             File[] addRootChildrenFiles = new File(addPoot).listFiles(PathUtils.aimFileFilter());
             extractPathInfo(addRootChildrenFiles, pics, vids);
         }
@@ -221,22 +221,20 @@ public class DiskService {
                     && !p1.contains("C1_AI")) {
                 l1.forEach((String name) -> {
                     String parentPath = getCommonArtistParentPath(name, "");
-                    System.out.println(parentPath);
                     long tsThis = updateLatestTimeUnderFolder(parentPath);
                     if (tsLimit > tsThis) {
                         File source = new File(parentPath);
                         String s0 = parentPath.replace("C1_", "C2_");
                         File s0f = new File(s0);
                         String s1 = s0.substring(0, s0.length() - 1);
-                        System.out.println(s1);
                         String destName = s1.substring(0, s1.lastIndexOf("/") + 1);
                         File dist = new File(destName);
                         if (!source.exists()) {
-                            System.out.println("原始文件夹不存在");
+                            logger.warn("原始文件夹不存在");
                         } else if (s0f.exists()) {
-                            System.out.println("目标文件已存在");
+                            logger.warn("目标文件已存在");
                         } else{
-                            System.out.println("移动: "+parentPath +" 到: "+destName);
+                            logger.warn("移动: "+parentPath +" 到: "+destName);
                             try {
                                 FileUtils.moveDirectoryToDirectory(source, dist, true);
                             } catch (IOException e) {
@@ -255,22 +253,20 @@ public class DiskService {
                     && !p1.contains("C1_AI")) {
                 l1.forEach((String name) -> {
                     String parentPath = getCommonArtistParentPath(name, "");
-                    System.out.println("1 判断作者: "+parentPath);
                     long tsThis = updateLatestTimeUnderFolder(parentPath);
                     if (tsLimit > tsThis) {
                         File source = new File(parentPath);
                         String s0 = parentPath.replace("C1_", "C2_");
                         File s0f = new File(s0);
                         String s1 = s0.substring(0, s0.length() - 1);
-                        System.out.println(s1);
                         String destName = s1.substring(0, s1.lastIndexOf("/") + 1);
                         File dist = new File(destName);
                         if (!source.exists()) {
-                            System.out.println("原始文件夹不存在");
+                            logger.warn("原始文件夹不存在");
                         } else if (s0f.exists()) {
-                            System.out.println("目标文件已存在");
+                            logger.warn("目标文件已存在");
                         } else{
-                            System.out.println("移动: "+parentPath +" 到: "+destName);
+                            logger.warn("移动: "+parentPath +" 到: "+destName);
                             try {
                                 FileUtils.moveDirectoryToDirectory(source, dist, true);
                             } catch (IOException e) {
@@ -284,7 +280,7 @@ public class DiskService {
     }
 
     public long updateLatestTimeUnderFolder(String parentPath) {
-        System.out.println("2 获取最近更新时间:");
+        logger.info("2 获取最近更新时间:");
         File parent = new File(parentPath);
         long latest = 0;
         File[] files = parent.listFiles();
@@ -426,7 +422,7 @@ public class DiskService {
     }
 
     public void mergePicVid() {
-        System.out.println(" 开始  merge ");
+//        System.out.println(" 开始  merge ");
         //  Map<String, List<String>>  CHAN_ARTIST_PICS  CHAN_ARTIST_VIDS
         // 1. 如果  图片和视频都在 3D 目录下面  把图片挪到 vid下面
         // 2. 如果 图片在 非3d 视频在 3d 挪到 非3d
@@ -440,14 +436,14 @@ public class DiskService {
                     String iParentPicPath = entry.getKey();
                     if (entry.getValue().contains(iVidName)) {
                         if (iParentVidPath.contains("/CHAN-ARTIST-3D/V-3-留档3d") || iParentVidPath.contains("/CHAN-ARTIST-BP/V-0-BP")) {
-                            System.out.println("视频路径：" + iParentVidPath + iVidName + "_____图片路径：" + entry.getKey() + iVidName);
+//                            System.out.println("视频路径：" + iParentVidPath + iVidName + "_____图片路径：" + entry.getKey() + iVidName);
                             try {
                                 moveAllSubFiles(iParentVidPath + iVidName, iParentPicPath + iVidName);
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
                         } else if (iParentVidPath.contains("/CHAN-ARTIST-3D/V-0-升级")) {
-                            System.out.println("视频路径：" + iParentVidPath + iVidName + "_____图片路径：" + entry.getKey() + iVidName);
+//                            System.out.println("视频路径：" + iParentVidPath + iVidName + "_____图片路径：" + entry.getKey() + iVidName);
 
                             try {
                                 moveAllSubFiles(iParentPicPath + iVidName, iParentVidPath + iVidName);
@@ -476,7 +472,7 @@ public class DiskService {
 //                            }
 //                        }
                         else {
-                            System.out.println("仅仅展示还剩什么： 视频路径：" + iParentVidPath + iVidName + "_____图片路径：" + entry.getKey() + iVidName);
+                            logger.warn("仅仅展示还剩什么： 视频路径：" + iParentVidPath + iVidName + "_____图片路径：" + entry.getKey() + iVidName);
 
                         }
 //                        boolean moved = false;
@@ -544,8 +540,6 @@ public class DiskService {
             });
 
         });
-        System.out.println(" 000000000000000000000 end  000000000000000000");
-        System.out.println(" 000000000000000000000 end  000000000000000000");
         try {
             Thread.sleep(600000);
         } catch (InterruptedException e) {
@@ -712,7 +706,6 @@ public class DiskService {
             //如果有序号的文件，去除序号
             if (fileName.contains("_"))
                 fileName = fileName.substring(5);
-//            System.out.println("xxx key"+fileName+"   value "+baseFile.getPath());
             map.put(fileName, baseFile.getPath());
         }
     }
@@ -795,8 +788,6 @@ public class DiskService {
                     logger.warn("oldPath:" + picSubFiles[i].getPath());
                     logger.warn("newPath:" + newNameFile.getPath());
                     picSubFiles[i].renameTo(newNameFile);
-                    System.out.println("--");
-//                    System.out.println(new File(PathUtils.buildPath(picSubFiles[i].getPath(),newName)).getName());
 //                    picSubFiles[i].renameTo(new File(PathUtils.buildPath(picSubFiles[i].getPath())))
                 }
             }
@@ -813,8 +804,6 @@ public class DiskService {
 //                    String id =old.substring(old.indexOf("][")+1,old.lastIndexOf("]")+1);
 //                    String bookName = old.substring(old.lastIndexOf("]")+1);
 //                    String newName = artistName+bookName+id;
-//                    System.out.println("oldName:"+old);
-//                    System.out.println("newName:"+newName );
 //                }
 //            }
 //        }
@@ -841,7 +830,7 @@ public class DiskService {
                 if (picSubFiles[i].isFile()) {
                     String fileName = picSubFiles[i].getName();
                     if (bookOrParentedFiles.contains(fileName)) {
-                        System.out.println("发现重复" + fileName);
+                        logger.warn("发现重复" + fileName);
                         picSubFiles[i].delete();
                     }
                 }
@@ -853,7 +842,7 @@ public class DiskService {
                 if (vidSubFiles[i].isFile()) {
                     String fileName = vidSubFiles[i].getName();
                     if (bookOrParentedFiles.contains(fileName)) {
-                        System.out.println("发现重复" + fileName);
+                        logger.warn("发现重复" + fileName);
                         vidSubFiles[i].delete();
                     }
                 }
@@ -869,9 +858,9 @@ public class DiskService {
             String pathName = transformArtistNameToPath(artistName);
             if (!artistVidLevel.containsKey(pathName) && !artistPicLevel.containsKey(pathName)) {
                 // 如果硬盘上没有这个作者了，标记为 is_target = 0
-//                logger.info("作者丢失（）：" + artistName);
-//                logger.info("作者丢失，但是暂不标记为 丢失，因为出差，可能不连接额外硬盘，这里改的源码");
-//                dataBaseService.makeArtistLost(artistName);
+                logger.info("作者丢失（）：" + artistName);
+                logger.info("作者丢失，但是暂不标记为 丢失，因为出差，可能不连接额外硬盘，这里改的源码");
+                dataBaseService.makeArtistLost(artistName);
             } else {
                 LevelInfo diskLevelInfo = new LevelInfo(artistName);
                 diskLevelInfo.artistId = info.artistId;
@@ -915,7 +904,6 @@ public class DiskService {
         for (int i = 0; i < childrenDir.length; i++) {
             String[] artists = childrenDir[i].list();
             String childDirName = childrenDir[i].getName();
-            System.out.println(childDirName);
             if (childDirName.startsWith("pic")
                     || childDirName.startsWith("图-")
                     || childDirName.startsWith("T-"))
@@ -967,11 +955,11 @@ public class DiskService {
         } else {
             throw new RuntimeException("未知的Store Place");
         }
-        System.out.println("因为parentpath和bookpath也有可能带有作者名（作者名字可能不能作为文件夹名字），所以在getParentPath阶段进行一次识别处理");
+        logger.warn("因为parentpath和bookpath也有可能带有作者名（作者名字可能不能作为文件夹名字），所以在getParentPath阶段进行一次识别处理");
         for (String name : namePairs.keySet()
         ) {
             if (parentPath.substring(0, parentPath.lastIndexOf("/")).contains(name)) {
-                System.out.println("发现需要处理的 name：" + name);
+                logger.warn("发现需要处理的 name：" + name);
                 parentPath = parentPath.replace(name, namePairs.get(name));
             }
         }
@@ -1066,11 +1054,7 @@ public class DiskService {
         }
         String copyright_3 = transformBookNameToPath(getCopyrightStringForPath(artworkInfo));
         String character_4 = transformBookNameToPath(getCharacterStringForPath(artworkInfo));
-        System.out.println("xxxxxxxxxxxxxxxxxxxxxx");
-        System.out.println(basePath_1);
-        System.out.println(picvid_2);
-        System.out.println(copyright_3);
-        System.out.println(character_4);
+        logger.info("基础路径:"+basePath_1+" 子路径:"+picvid_2+" 版权:"+copyright_3+" 角色:"+character_4);
         return PathUtils.buildPath(basePath_1, picvid_2, copyright_3, character_4);
     }
 
@@ -1258,11 +1242,12 @@ public class DiskService {
     }
 
     public String transformArtistNameToPath(String name) {
-        System.out.println(name);
         if (null != namePairs) {
             name = namePairs.containsKey(name) ? namePairs.get(name) : name;
         }
-        return name.endsWith(".") ? name.substring(0, name.length() - 1) : name;
+        String pathName = name.endsWith(".") ? name.substring(0, name.length() - 1) : name;
+        logger.info("名称->路径: "+name+" / "+pathName);
+        return pathName;
     }
 
     public String transformPathToArtistName(String pathName) {
@@ -1360,7 +1345,7 @@ public class DiskService {
             return pathName;
         }
     }
-
+    @Deprecated
     public void checkBookArtistPath(DataBaseService dataBaseService) {
         Pattern idPattern = Pattern.compile("\\[(\\d+)\\]");
         // 遍历 BP 下面 作者的 下面的 book文件夹 然后找到 B 开头的，然后 分辨出来

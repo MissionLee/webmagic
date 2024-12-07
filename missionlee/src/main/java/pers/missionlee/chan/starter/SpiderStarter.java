@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -456,7 +457,42 @@ public class SpiderStarter {
                                 throw new RuntimeException(e);
                             }
                         } else if (9 == mode){
+                            logger.info("将上次更新日期超过["+spiderSetting.c2days+"]天的作者,移动到 C2 目录");
                             diskService.moveC1toC2(spiderSetting.c2days);
+                        }else if (10==mode){
+                            File dist = new File("G:/C1_TEMP/T-5-ZERO");
+                            for (int j = 0; j < 4; j++) {
+                                int level = j;
+                                List<String> artists = dataBaseService.getArtistListByLevel(level,true);
+                                for (int k = 0; k < artists.size(); k++) {
+                                    String name = artists.get(k);
+                                    String[] keys = new String[1];
+                                    keys[0] = name;
+                                    ArtworkNumberPageProcessor pageProcessor = new ArtworkNumberPageProcessor(dataBaseService,diskService);
+                                    Spider.create(pageProcessor).addUrl(SpiderUtils.getNumberCheckUrl(keys)).thread(1).run();
+                                    int num = pageProcessor.getNumber();
+                                    if(num == 0 ){
+                                        String parentPath = diskService.getParentPath(ArtworkInfo.getArtistPicPathInfo(name),"",ArtworkInfo.STORE_PLACE.ARTIST.storePlace);
+                                        logger.warn("XXXX发现作品数量为零的作者XXX: "+parentPath);
+                                        try {
+                                            logger.info("原位置:"+parentPath);
+                                            logger.info("新位置:"+dist.getPath());
+                                            FileUtils.moveDirectoryToDirectory(new File(parentPath),dist,true);
+                                        } catch (IOException e) {
+                                            throw new RuntimeException(e);
+                                        }
+
+                                    }else{
+                                        logger.info("作者: "+name +" 数量: "+num);
+                                    }
+                                    try {
+                                        Thread.sleep(1000);
+                                    } catch (InterruptedException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }
+
+                            }
                         }
                     }
                     break;
@@ -506,6 +542,9 @@ public class SpiderStarter {
                     }
                     case "j":{
 
+                    }
+                    case "k":{
+                        // 查找作品数量被标记为 0 的作者,并且移动到 TEMP文件夹中
                     }
                     case "auto": {
                         autoRun();

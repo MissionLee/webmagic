@@ -46,7 +46,7 @@ public class ArtworkNumberPageProcessor extends AbstractPageProcessor {
         }
 
         number = Integer.valueOf(number11);;
-        logger.info("NumberPageProcessor: 给定Url解析到作品数量[ "+number+" ] "+page.getUrl().toString());
+//        logger.info("NumberPageProcessor: 给定Url解析到作品数量[ "+number+" ] "+page.getUrl().toString());
     }
 
     public int getNumber(){
