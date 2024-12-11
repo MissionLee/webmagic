@@ -72,7 +72,7 @@ public class ArtistPathInfo {
             delReDoFile(redo, info);
         }
         logger.error("清理 Step-1.2 寻找超时替代文件并处理  不处理超时文件******* 注释掉了");
-//        delExpiredFile(new File(parentPath), info);
+        delExpiredFile(new File(parentPath), info);
         /**
          * Step-2 清理要删除的文件
          * */
