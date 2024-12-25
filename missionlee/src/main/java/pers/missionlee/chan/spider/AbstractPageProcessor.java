@@ -282,6 +282,9 @@ public abstract class AbstractPageProcessor implements PageProcessor {
                 || pageString.contains("child post")
                 || pageString.contains("This post belongs to")
                 || pageString.contains("a parent post")
+                || pageString.contains("此帖子")
+                || pageString.contains("子帖子")
+                || pageString.contains("父帖子")
         ) {
             artworkInfo.parentId = -2;
         } else {

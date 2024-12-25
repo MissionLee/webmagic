@@ -96,11 +96,16 @@ public class ParentListPageProcessor extends AbstractPageProcessor {
         // 作品parent 状态为
         // 查询这个 作者所有的 状态为  -1 未知 或 -2
         logger.info("初始化：查找 parent_id 为 null（空）  -1（未知）-2（属于某个作品集）的作品的sanCode");
-        if (null == sanCodeToCheck)
+        if (null == sanCodeToCheck){
             sanCodeToCheck = dataBaseService.getArtistParentSanCodeToCheck(this.artistName);
+
+        }
+
         if (null == sanCodeChecked) {
             sanCodeChecked = new ArrayList<>();
         }
+        //
+        sanCodeToCheck.removeAll(this.artistPathInfo.delFileMD5);
         logger.info("待处理sancode:"+sanCodeToCheck.toString());
         logger.info("初始化：查找未能存储完整的的 parent id  ： 状态 0 存储情况未知 状态 2 仅仅保存了信息  另外：状态1 表示能下载到的都下载了");
         this.parentIdStoredPart = dataBaseService.getArtistParentIdStoredPart(this.artistName);
@@ -145,19 +150,13 @@ public class ParentListPageProcessor extends AbstractPageProcessor {
     @Override
     public void doProcess(Page page) {
 
-//        if(page.getStatusCode() == 302){
-//            logger.info("因为sancode改版，导致parent查找时候有一层302重定向，此处处理");
-//            String newString = page.getHeaders().get("Location").get(0);
-//            logger.info("原始地址："+page.getUrl()+"转向地址"+newString);
-//            page.addTargetRequest(newString);
-//        }
         if (startPage) { // 此处用于处理访问到希望跳过的parentPool的情况：必须把最起始页面的sancode记录下来,进行makeAsSkip 操作
             startPage = false;
             String startUrl = page.getUrl().toString();
             this.startPageSanCode = startUrl.substring(startUrl.lastIndexOf("/") + 1);
         }
         // 情况1 自动从
-        logger.info(page.getUrl() +"_ParentDeal:"+parentShowPageDealt);
+        logger.info(page.getUrl() +" _ParentDeal:"+parentShowPageDealt);
         String url = page.getUrl().toString();
         String pageString = page.getHtml().toString();
         if (pageString.contains("这个帖子已经删除")
@@ -165,7 +164,6 @@ public class ParentListPageProcessor extends AbstractPageProcessor {
             // TODO: 6/10/2021 说明：此处对应一种情况，作品属于某个parent 后来被删除了，但是页面仍能找到parent 但是 parent的child里面 没有这个作品，导致这个作品每次作者更新都会被再查找到 
             logger.info("文件被删除");
             String urllll = page.getUrl().toString();
-            // https://chan.sankakucomplex.com/post/show/6138306
             String sanCodee = urllll.substring(url.lastIndexOf("/") + 1);
             dataBaseService.makeSanCodeDeleted(sanCodee);
             return;
@@ -180,7 +178,7 @@ public class ParentListPageProcessor extends AbstractPageProcessor {
             return;
         }
         if (url.contains("tags=parent%3A") || url.contains("?next=")) {
-            logger.info("检测到 parent/next页");
+            logger.info("检测到 parent/next页  开始解析页面列表");
             processListPage(page);
         } else if(url.contains("show?identifier")){
             logger.info("检测到parent post链接页面是一个中介页面，从中找到转向的页面");
@@ -192,6 +190,7 @@ public class ParentListPageProcessor extends AbstractPageProcessor {
                 }
             }
         }else if (!parentShowPageDealt && (url.contains("/show/")||url.contains("/post"))) {
+
             logger.info("检测到Show页面，此时Parent 信息还未处理，进行parent解析");
             String pageStringg = page.getHtml().toString();
              if ((pageStringg.contains("This post has") && pageString.contains("child post"))||(pageStringg.contains("此帖子有")&&pageStringg.contains("子帖子"))) {
@@ -238,11 +237,9 @@ public class ParentListPageProcessor extends AbstractPageProcessor {
                  }
 
 //            page.addTargetRequest("https://chan.sankakucomplex.com" + href.get(0));
-            }
-            else {
+            } else {
                 String sanCode = url.substring(url.lastIndexOf("/") + 1);
                 this.sanCodeChecked.add(sanCode);
-//                this.sanCodeChecked.add(sanCode);
                 dataBaseService.updateParentId(sanCode, -3);
             }
         } else {
@@ -254,11 +251,6 @@ public class ParentListPageProcessor extends AbstractPageProcessor {
     }
 
     public void processShowPage(Page page) {
-//        try {
-//            Thread.sleep(3000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
         try {
             // 1.提取target信息
             AbstractPageProcessor.Target target = extractDownloadTargetInfoFromDetailPage(page.getHtml());
@@ -281,7 +273,9 @@ public class ParentListPageProcessor extends AbstractPageProcessor {
             // 5.下载文件
             boolean download = downloadAndSaveFileFromShowPage(target, artworkInfo, page);
             if (download) {
+                logger.info("已处理sanCode列表, 同时添加 sanCode  和  md5 / ");
                 this.sanCodeChecked.add(artworkInfo.sanCode);
+                this.sanCodeChecked.add(artworkInfo.fileName.substring(0,artworkInfo.fileName.indexOf(".")));
 //            this.sanCodeChecked.add(artworkInfo.sanCode);
                 logger.info("SanCode:" + artworkInfo.sanCode + " 下载完成，加入 checked目录");
                 dataBaseService.saveArtworkInfo(artworkInfo);
@@ -289,13 +283,13 @@ public class ParentListPageProcessor extends AbstractPageProcessor {
                         artworkInfo.fileName.substring(0, artworkInfo.fileName.indexOf(".")),
                         diskService.getParentPath(artworkInfo, artworkInfo.PBPrefix, artworkInfo.storePlace) + artworkInfo.fileSaveName);
                 this.downloaded++;
+
             }
         } catch (Exception e) {
             // 有的作品
             if (e instanceof IndexOutOfBoundsException) {
                 logger.info("检测到了 Vip 或者 删除内容");
                 String url = page.getUrl().toString();
-                // https://chan.sankakucomplex.com/post/show/6138306
                 String sanCode = url.substring(url.lastIndexOf("/") + 1);
                 dataBaseService.makeSanCodeVip(sanCode, artistName);
             }
@@ -318,13 +312,22 @@ public class ParentListPageProcessor extends AbstractPageProcessor {
         logger.info("子页面HREF: "+hrefs);
         List<String> fileNames =page.getHtml().$(".content > div > .post-gallery-grid").$(".posts-container").$("article").$("a").$(".post-preview-image","src").all();;
         logger.info("子页面MD5: "+ fileNames);
+        // 解析当前Parent下面的子页面
+        //     其中如果某个子页面被主动删除了,则不再考虑这个子页面
         for (int i = 0; i < hrefs.size(); i++) {
             String hr = hrefs.get(i);
                 if(hr.contains("post")){
                     String fileName = fileNames.get(i).substring(fileNames.get(i).lastIndexOf("/") + 1);
                     String md5 = fileName.substring(0, fileName.indexOf("."));
-                    this.md5UrlPairs.put(md5, hrefs.get(i));
-                    this.md5Sequence.add(md5);
+                    logger.info("检测丢失的页面MD5 是否在主动删除的列表中");
+                    if(!artistPathInfo.delFileMD5.contains(md5)){
+                        logger.info("发现MD5 不在主动删除目录中,添加下载 "+md5);
+                        this.md5UrlPairs.put(md5, hrefs.get(i));
+                        this.md5Sequence.add(md5);
+                    }else{
+                        logger.info("发现MD5 被主动删除 "+md5);
+                    }
+
                 }
         }
         ArtworkInfo artworkInfo = new ArtworkInfo();
@@ -367,8 +370,9 @@ public class ParentListPageProcessor extends AbstractPageProcessor {
                     String sanCode = url.substring(url.lastIndexOf("/") + 1);
                     logger.info("SanCode:" + sanCode + " 因为已经存在并存储，加入 checked目录 parentId:" + parentId);
                     dataBaseService.updateParentId(sanCode, Integer.valueOf(parentId));
+                    logger.info("已处理sanCode 同时添加 sanCode 与 md5 / 有部分数据遗留问题");
                     this.sanCodeChecked.add(sanCode);
-//                    this.sanCodeChecked.add(sanCode);
+                    this.sanCodeChecked.add(md5);
                 } else {
                     logger.info("添加页面：https://chan.sankakucomplex.com" + url);
                     tobeDownloadded.add("https://chan.sankakucomplex.com" + url);
@@ -384,13 +388,6 @@ public class ParentListPageProcessor extends AbstractPageProcessor {
                 }
                 Spider.create(this).addUrl(urls).thread(4).run();
             }
-            // TODO: 4/25/2021 重要知识点， Map.foreach 方法 之中 page.addTargetRequest 方法不起效果
-//            this.md5UrlPairs.forEach((String md5, String url) -> {
-//                // 第一步， 已经放在正确的parent 未知的 md5 跳过
-//                // 第二步， 已经存在的文件 转义未知
-//                // 第三步， 剩余的文件 加入下载队列
-//
-//            });
         }
 
     }
@@ -400,6 +397,7 @@ public class ParentListPageProcessor extends AbstractPageProcessor {
         if (storedMdePath.containsKey(md5)) {
             logger.info("在已有文件中找到本次需要的: "+md5);
             String storedPath = storedMdePath.get(md5);
+            logger.error("XXXXXXXXXXXX  注意  这里文件已经存储在目标目录的代码被 逻辑上屏蔽了 应该是还有 bug 判断不出来 正反斜线 的差别-但是在 catch的时候判断了");
             if (false && storedPath.startsWith(thisParentPath.replaceAll("/","\\\\"))) {
                 // ⭐ 重要 !!!   replaceAll  需要使用  \\\\ 因为底层是正则匹配,  基础java语法 \\\\ 转译成 \\  ,正则 \\ 转义成 \
                 logger.info("此文件：" + md5 + " 已经存储在目标位置");
@@ -435,7 +433,12 @@ public class ParentListPageProcessor extends AbstractPageProcessor {
 
                     return true;
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    if(e.getMessage().contains("the same")){
+                        logger.error("XXXXXXXXX   代码判断目标已经存在在应当存储的位置的代码有问题,目前在 移动文件过程文件目录相同的 catch 中判断");
+                        return true;
+                    }else{
+                        e.printStackTrace();
+                    }
                 }
                 return false;
             }

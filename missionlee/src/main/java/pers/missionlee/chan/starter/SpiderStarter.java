@@ -935,7 +935,7 @@ public class SpiderStarter {
                 logger.info("开始更新 " + name);
                 int downloaded = downloadArtist(name, true);
                 countedDownloadedAll.addAndGet(downloaded);
-                if (isOnlyUpdateChosenFolder || (spiderSetting.autoParentWhileUpdate && downloaded != 99999 && (downloaded > 0 && downloaded < 9999))) {
+                if (isOnlyUpdateChosenFolder || (spiderSetting.autoParentWhileUpdate && downloaded != 99999 && (downloaded > -1 && downloaded < 9999))) {
                     // 自动更新book parent 的前置条件
                     // 如果自动更新总开关开启
                     // 下载量不是 99999 => startname 模式
