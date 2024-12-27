@@ -79,7 +79,7 @@ WHERE
           	)
           AND SAT.`name` = #{artistName}
           AND (SAR.book_id &lt; 0 OR SAR.book_id IS NULL)
-		   AND SAR.create_time >'2023-01-01'
+		   AND SAR.create_time >'2023-10-01'
 	</select>
 	<update id="updateParentId" parameterType="Map">
 		update san_artwork set parent_id = #{parentId} where san_code = #{sanCode}
