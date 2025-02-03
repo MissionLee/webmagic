@@ -18,16 +18,18 @@ public class BiliStarter {
     /**
      * 下面几个方法是路径操作工具类
      * */
-    public List<String> getBidsFromDisk(){
+    public Map<String,String> getBidsFromDisk(){
+        Map<String,String> bids = new HashMap<>();
         File root = new File(biliSetting.ROOT);
-        String[] fileNames = root.list();
-        List<String> bids = new ArrayList<>();
-        for (int i = 0; i < fileNames.length; i++) {
-            if("tmp".equals(fileNames[i])){
+        File[] files = root.listFiles();
+        for (int i = 0; i < files.length; i++) {
+            File[] files1 = files[i].listFiles();
+            for (int j = 0; j < files1.length; j++) {
 
-            }else{
-                bids.add(fileNames[i]);
+                bids.put(files1[j].getName(),PathUtils.buildPath(files1[j].getPath()));
+                System.out.println(files1[j].getName()+"    /     "+PathUtils.buildPath(files1[j].getPath()));
             }
+
         }
         return bids;
     }
@@ -69,18 +71,18 @@ public class BiliStarter {
             }
         }
         Iterator<String> iterator = bids.listIterator();
-        int index = 0;
-        while (iterator.hasNext()) {
-            String bid = iterator.next();
-            BiliArtistInfo info = getBidInfo(bid);
-        }
+//        int index = 0;
+//        while (iterator.hasNext()) {
+//            String bid = iterator.next();
+//            BiliArtistInfo info = getBidInfo(bid);
+//        }
 
     }
 
 
-    public void downloadBid(String bid) throws IOException {
-        String url = PathUtils.buildPath(biliSetting.BIL_BASE, bid,"article");
-        BiliArtistInfo info = getBidInfo(bid);
+    public void downloadBid(String bid,String path) throws IOException {
+        String url = PathUtils.buildPath(biliSetting.BIL_BASE, bid,"upload","opus");
+        BiliArtistInfo info = getBidInfo(bid,path);
         BidPageProcessor pageProcessor = new BidPageProcessor(info,biliSetting);
         MixDownloader downloader = new MixDownloader(biliSetting.CHROME_PATH,biliSetting.CHROME_DRIVER_PATH, biliSetting.WEB_DRIVER_DEBUGGING_PORT);
         MixDownloader.calledTime = biliSetting.ARTICLE_PAGE_START_SCROLL_TIME;
@@ -106,12 +108,13 @@ public class BiliStarter {
         }
         info.save(biliSetting.ROOT);
     }
-    public void updateBid(String bid) throws IOException {
+    public void updateBid(String bid,String path) throws IOException {
         String url = PathUtils.buildPath(biliSetting.BIL_BASE, bid,"article");
         if(url.contains("desktop.ini")){
             return;
         }
-        BiliArtistInfo info = getBidInfo(bid);
+        BiliArtistInfo info = getBidInfo(bid,path);
+        info.path = path;
         BidPageProcessor pageProcessor = new BidPageProcessor(info,biliSetting);
         MixDownloader downloader = new MixDownloader(biliSetting.CHROME_PATH,biliSetting.CHROME_DRIVER_PATH, biliSetting.WEB_DRIVER_DEBUGGING_PORT);
         MixDownloader.calledTime = 0;
@@ -132,11 +135,15 @@ public class BiliStarter {
         }
         info.save(biliSetting.ROOT);
     }
-    public BiliArtistInfo getBidInfo(String bid) throws IOException {
-        File i = new File(PathUtils.buildPath(biliSetting.ROOT,bid,"i.json")); // i.json不可改动
+    public BiliArtistInfo getBidInfo(String bid,String path) throws IOException {
+        File i = new File(PathUtils.buildPath(path,"i.json")); // i.json不可改动
         if(i.exists()){
             String iStr = FileUtils.readFileToString(i,"UTF8");
             BiliArtistInfo info = JSON.parseObject(iStr, BiliArtistInfo.class);
+            if(info.del == null){// 这个字段是后来加上的
+                info.del = new HashSet<>();
+            }
+            info.path=path;
             return info;
         }else{
             BiliArtistInfo info = new BiliArtistInfo();
@@ -144,20 +151,29 @@ public class BiliStarter {
             info.empty =new ArrayList<>();
             info.unknown = new ArrayList<>();
             info.member = new ArrayList<>();
+            info.del = new HashSet<>();
+            info.path = path;
             return info;
         }
     }
 
     public void start() throws IOException {
         if("UPDATE".equals(biliSetting.TASK)){
-            List<String> bids = getBidsFromDisk();
-            for (int i = 0; i < bids.size(); i++) {
-                updateBid(bids.get(i));
-            }
+            Map<String,String> bids = getBidsFromDisk();
+            bids.forEach((bid,path)->{
+                try {
+                    updateBid(bid,path);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+//            for (int i = 0; i < bids.size(); i++) {
+//                updateBid(bids.get(i));
+//            }
         }else if("NEW".equals(biliSetting.TASK)){
             String[] bids = biliSetting.NEW_TASK_BID;
             for (int i = 0; i < bids.length; i++) {
-                downloadBid(bids[i]);
+                downloadBid(bids[i],biliSetting.ROOT);
             }
         }else if("REFRESH".equals(biliSetting.TASK)){
             File fs = new File(biliSetting.ROOT);

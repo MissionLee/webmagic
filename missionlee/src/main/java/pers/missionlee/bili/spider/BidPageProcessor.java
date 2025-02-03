@@ -41,24 +41,24 @@ public class BidPageProcessor implements PageProcessor {
      */
     public void init() {
         newPageAdded = 0;
-        File root = new File(PathUtils.buildPath(biliSetting.ROOT, artistInfo.bid));
+        File root = new File(artistInfo.path);
         if (root.exists()) {
             root.setLastModified(System.currentTimeMillis());
         }
-        File one = new File(PathUtils.buildPath(biliSetting.ROOT, artistInfo.bid, "one"));
+        File one = new File(PathUtils.buildPath(artistInfo.path, "one"));
         if (one.exists()) {
             oneList = Arrays.asList(one.list());
         } else {
             oneList = new ArrayList<>();
         }
-
+        artistInfo.dealDelFile(artistInfo.path);
     }
 
     @Override
     public void process(Page page) {
         String url = page.getUrl().toString();
         // 1.
-        if (url.contains("article")) {
+        if (url.contains("article")|| (url.contains("upload")&&url.contains("opus"))) {
             init();
             processArticle(page);
         } else if (url.contains("opus")) {
@@ -66,7 +66,7 @@ public class BidPageProcessor implements PageProcessor {
                 return;
             }
             String stringPage = page.getRawText();
-            if (stringPage.contains("6元充电")) {
+            if (stringPage.contains("挡包月充电")) {
                 artistInfo.member.add(getSer(page));
                 return;
             }
@@ -118,7 +118,7 @@ public class BidPageProcessor implements PageProcessor {
     }
 
     public boolean exitsDisk(String ser) {
-        String path = PathUtils.buildPath(biliSetting.ROOT, artistInfo.bid, ser);
+        String path = PathUtils.buildPath(artistInfo.path, ser);
         File opusFile = new File(path);
         if (opusFile.exists() && opusFile.listFiles().length > 1) {
             logger.info("当前页面已经下载过，跳过");
@@ -177,7 +177,7 @@ public class BidPageProcessor implements PageProcessor {
             logger.info("转换URL: " + origUrl);
             logger.info("文件名:  " + fileName);
             logger.info("开始下载");
-            File aimFile = new File(PathUtils.buildPath(biliSetting.ROOT,artistInfo.bid,ser,fileName) );
+            File aimFile = new File(PathUtils.buildPath(artistInfo.path,ser,fileName) );
             if (aimFile.exists()) {
                 logger.warn("检测到文件存在，continue 跳过本次循环");
                 continue;
@@ -220,7 +220,7 @@ public class BidPageProcessor implements PageProcessor {
             if (null != tempFile && tempFile.exists() && tempFile.isFile() && tempFile.length() > 10) {
                 try {
 
-                    FileUtils.moveFile(tempFile, new File(biliSetting.ROOT+"\\" + artistInfo.bid + "\\one\\" + ser + "_" + fileName));
+                    FileUtils.moveFile(tempFile, new File(PathUtils.buildPath(artistInfo.path,"one",ser + "_" + fileName) ));
                 } catch (IOException e) {
 
                     throw new RuntimeException(e);
@@ -319,12 +319,12 @@ public class BidPageProcessor implements PageProcessor {
     public void processArticle(Page page) {
 //        System.out.println(page.getHtml());
         List<String> urls = page.getHtml()
-                .$(".waterfall-content .container")
-                .$(".item .article-card  a", "href")
+                .$(".opus-body .opus-feed .container")
+                .$(".item .opus-card  a", "href")
                 .all();
         List<String> src = page.getHtml()
-                .$(".waterfall-content .container")
-                .$(".item .article-card  img", "src")
+                .$(".opus-body .opus-feed .container")
+                .$(".item .opus-card  img", "src")
                 .all();
         for (int i = 0; i < urls.size(); i++) {
             // src="//i0.hdslb.com/bfs/activity-plat/static/20231026/3b3c5705bda98d50983f6f47df360fef/gjM5HuoMus.png@320w_240h_1c.webp"
