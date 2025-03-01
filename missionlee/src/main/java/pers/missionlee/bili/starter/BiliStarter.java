@@ -159,13 +159,17 @@ public class BiliStarter {
 
     public void start() throws IOException {
         if("UPDATE".equals(biliSetting.TASK)){
+
             Map<String,String> bids = getBidsFromDisk();
             bids.forEach((bid,path)->{
-                try {
-                    updateBid(bid,path);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+                if(path.contains("B1-") || path.contains("B2-")){
+                    try {
+                        updateBid(bid,path);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
+
             });
 //            for (int i = 0; i < bids.size(); i++) {
 //                updateBid(bids.get(i));
