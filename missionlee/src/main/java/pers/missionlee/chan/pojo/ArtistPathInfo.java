@@ -133,6 +133,12 @@ public class ArtistPathInfo {
      */
     public static void delFile(File rootDir, ArtistPathInfo info) {
         File[] files = rootDir.listFiles();
+        logger.warn("zdel zdel zdel zdel");
+        logger.warn("zdel zdel zdel zdel");
+        logger.warn("zdel zdel zdel zdel");
+        logger.warn("需要删除文件数 "+files.length);
+        logger.warn("zdel zdel zdel zdel");
+        logger.warn("zdel zdel zdel zdel");
         Pattern r1 = Pattern.compile(poolIDRegex);
         Pattern r2 =Pattern.compile(poolIDRegexNew);
         for (int i = 0; i < files.length; i++) {

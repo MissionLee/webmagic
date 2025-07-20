@@ -40,7 +40,10 @@ public class PathUtils {
                         || pathname.getName().startsWith("T-")
                         || pathname.getName().startsWith("V-")
                         || pathname.getName().startsWith("pic")
-                        || pathname.getName().startsWith("vid");
+                        || pathname.getName().startsWith("vid")
+                        || pathname.getName().startsWith("A-")
+                        || pathname.getName().startsWith("B-")
+                        || pathname.getName().startsWith("C-");
             }
         };
     }

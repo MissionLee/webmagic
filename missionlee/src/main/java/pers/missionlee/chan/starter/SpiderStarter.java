@@ -897,9 +897,13 @@ public class SpiderStarter {
         }
 
         List<String> artists = dataBaseService.getArtistListByLevel(lv, !spiderSetting.forceUpdate);
+
+
         artists.forEach((String name) -> {
             boolean update = true;
             String parentPath = diskService.getCommonArtistParentPath(name, "1.jpg");
+
+
             //  判断是否符合更新指定目录要求
             if (onlyUpdateChosenFolder) {
                 logger.info("指定目录更新模式");

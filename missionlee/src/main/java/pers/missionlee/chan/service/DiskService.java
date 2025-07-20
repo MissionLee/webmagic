@@ -745,6 +745,7 @@ public class DiskService {
                 artists.forEach((String name) -> {
                     artistPicLevel.put(name, finalLevel);
                     artistPicPath.put(name, path + name);
+
                 });
             });
         }
@@ -904,14 +905,30 @@ public class DiskService {
         for (int i = 0; i < childrenDir.length; i++) {
             String[] artists = childrenDir[i].list();
             String childDirName = childrenDir[i].getName();
+
             if (childDirName.startsWith("pic")
                     || childDirName.startsWith("图-")
-                    || childDirName.startsWith("T-"))
+                    || childDirName.startsWith("T-")
+                    || childDirName.startsWith("A-")
+                    )
+            {
+
+                if(childDirName.contains("A-")){
+                    for (int j = 0; j < artists.length; j++) {
+                        logger.info(artists[j]);
+                    }
+                }
                 picMap.put(PathUtils.buildPath(childrenDir[i].getPath()), Arrays.asList(artists));
+            }
             else if (childDirName.startsWith("vid")
                     || childDirName.startsWith("V-")
-                    || childDirName.startsWith("视-"))
+                    || childDirName.startsWith("视-")
+
+            )
+            {
+  
                 vidMap.put(PathUtils.buildPath(childrenDir[i].getPath()), Arrays.asList(artists));
+            }
         }
     }
 
@@ -1246,7 +1263,7 @@ public class DiskService {
             name = namePairs.containsKey(name) ? namePairs.get(name) : name;
         }
         String pathName = name.endsWith(".") ? name.substring(0, name.length() - 1) : name;
-        logger.info("名称->路径: "+name+" / "+pathName);
+//        logger.info("名称->路径: "+name+" / "+pathName);
         return pathName;
     }
 
