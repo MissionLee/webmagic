@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import pers.missionlee.bili.spider.BidPageProcessor;
 import pers.missionlee.chan.pagedownloader.MixDownloader;
 import pers.missionlee.webmagic.spider.newsankaku.utlis.PathUtils;
+import pers.missionlee.webmagic.spider.sankaku.manager.SourceManager;
 import pers.missionlee.webmagic.utils.ChromeBookmarksReader;
 import us.codecraft.webmagic.Spider;
 
@@ -24,11 +25,12 @@ public class BiliStarter {
         File[] files = root.listFiles();
         for (int i = 0; i < files.length; i++) {
             File[] files1 = files[i].listFiles();
-            for (int j = 0; j < files1.length; j++) {
+            if(files1 != null)
+                for (int j = 0; j < files1.length; j++) {
 
-                bids.put(files1[j].getName(),PathUtils.buildPath(files1[j].getPath()));
-                System.out.println(files1[j].getName()+"    /     "+PathUtils.buildPath(files1[j].getPath()));
-            }
+                    bids.put(files1[j].getName(),PathUtils.buildPath(files1[j].getPath()));
+                    System.out.println(files1[j].getName()+"    /     "+PathUtils.buildPath(files1[j].getPath()));
+                }
 
         }
         return bids;
@@ -184,33 +186,44 @@ public class BiliStarter {
             File[] fss = fs.listFiles();
             for (int i = 0; i < fss.length; i++) {
 
-                File f = fss[i];
-                long last = 0;
-                if(f.isDirectory()){
-                    File[] sf = f.listFiles();
-                    for (int j = 0; j < sf.length; j++) {
-                        File ssf = sf[j];
-                        if(ssf.isDirectory()){
-                            String name = ssf.getName();
-                            long time = 0;
-                            if(name.contains("one")){
-                                File[]  sfs = ssf.listFiles();
-                                for (int k = 0; k < sfs.length; k++) {
-                                    File ssfs = sfs[k];
-                                    time = ssfs.lastModified();
-                                    if(time>last)
-                                        last = time;
-                                }
-                            }else{
-                                time = ssf.lastModified();
-                                if(time>last)
-                                    last = time;
-                            }
+                File ff = fss[i];
+                System.out.println("大目录_"+ff.getName());
+                if(ff.isDirectory() && !ff.getName().contains("tmp") ){ // 排除配置文件 bili-setting
+                    for (int k = 0; k < ff.listFiles().length; k++) {
+                        File f = ff.listFiles()[k];
 
+                        long last = 0;
+                        if(f.isDirectory()){
+                            System.out.println("  子目录_"+f.getName());
+                            
+                            File[] sf = f.listFiles();
+                            for (int j = 0; j < sf.length; j++) {
+                                File ssf = sf[j];
+                                if(ssf.isDirectory()){
+                                    String name = ssf.getName();
+                                    long time = 0;
+                                    if(name.contains("one")){
+                                        File[]  sfs = ssf.listFiles();
+                                        for (int h = 0; h < sfs.length; h++) {
+                                            File ssfs = sfs[h];
+                                            time = ssfs.lastModified();
+                                            if(time>last)
+                                                last = time;
+                                        }
+                                    }else{
+                                        time = ssf.lastModified();
+                                        if(time>last)
+                                            last = time;
+                                    }
+
+                                }
+                            }
                         }
+                        f.setLastModified(last);
                     }
                 }
-                f.setLastModified(last);
+
+
             }
         }else{
 
@@ -221,7 +234,7 @@ public class BiliStarter {
     public static void main(String[] args) throws IOException {
         if (args.length == 0) {
             args = new String[1];
-            args[0] = "G:/bili-setting.json";
+            args[0] = "G:/BILIBILI/bili-setting.json";
         }
         BiliStarter starter = new BiliStarter(args[0]);
         starter.start();

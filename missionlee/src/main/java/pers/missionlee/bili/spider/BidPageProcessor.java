@@ -70,6 +70,16 @@ public class BidPageProcessor implements PageProcessor {
                 artistInfo.member.add(getSer(page));
                 return;
             }
+            if(stringPage.contains("我的B站年度报告")
+                    ||stringPage.contains("专属小电视")
+                    ||stringPage.contains("创作成就达成")
+                    ||stringPage.contains("荣誉年报")
+                    ||stringPage.contains("创作数据")
+            ){
+                artistInfo.unknown.add(getSer(page));
+                logger.warn("当前页面未检测到特征");
+                return;
+            }
             if (stringPage.contains("opus-para-pic center")) {
                 logger.warn("检测到【纵向列表式】图片分享页面");
                 processOpusCenter(page);

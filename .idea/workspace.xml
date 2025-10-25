@@ -12,9 +12,7 @@
     <list default="true" id="bffc4871-1ae7-44a5-babd-8de4910d3ca3" name="Default Changelist" comment="- 更新功能待测试，其他已经可以正常工作">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/bili/spider/BidPageProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/bili/spider/BidPageProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/bili/starter/BiliArtistInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/bili/starter/BiliArtistInfo.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/bili/starter/BiliStarter.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/bili/starter/BiliStarter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/pagedownloader/MixDownloader.java" beforeDir="false" afterPath="$PROJECT_DIR$/missionlee/src/main/java/pers/missionlee/chan/pagedownloader/MixDownloader.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -81,9 +79,11 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="WebServerToolWindowFactoryState" value="false" />
-  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;
+  }
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\MissionLee\IdeaProjects\webmagic\missionlee\src\main\resources\mybatis\mapper" />
@@ -630,6 +630,70 @@
       <workItem from="1710507830406" duration="22246000" />
       <workItem from="1710600663281" duration="4270000" />
       <workItem from="1710942509140" duration="684000" />
+      <workItem from="1753354239075" duration="2424000" />
+      <workItem from="1753453166387" duration="1474000" />
+      <workItem from="1753579788937" duration="2045000" />
+      <workItem from="1753704222075" duration="605000" />
+      <workItem from="1753787294837" duration="2718000" />
+      <workItem from="1753880483945" duration="3855000" />
+      <workItem from="1753956805388" duration="2407000" />
+      <workItem from="1754048136039" duration="1206000" />
+      <workItem from="1754092333633" duration="611000" />
+      <workItem from="1754188324254" duration="2438000" />
+      <workItem from="1754308300161" duration="873000" />
+      <workItem from="1754390053793" duration="623000" />
+      <workItem from="1754481837560" duration="2553000" />
+      <workItem from="1754649186542" duration="821000" />
+      <workItem from="1754698018837" duration="1707000" />
+      <workItem from="1754723699589" duration="1905000" />
+      <workItem from="1754823556658" duration="3054000" />
+      <workItem from="1754999719751" duration="3631000" />
+      <workItem from="1755167625811" duration="990000" />
+      <workItem from="1755255197393" duration="1037000" />
+      <workItem from="1755321244140" duration="1804000" />
+      <workItem from="1755389512201" duration="7200000" />
+      <workItem from="1755563958317" duration="2811000" />
+      <workItem from="1755866482518" duration="9508000" />
+      <workItem from="1756214747558" duration="3058000" />
+      <workItem from="1756422407080" duration="4999000" />
+      <workItem from="1756601879404" duration="7133000" />
+      <workItem from="1756894193773" duration="649000" />
+      <workItem from="1756989993696" duration="661000" />
+      <workItem from="1757070554420" duration="633000" />
+      <workItem from="1757157542033" duration="1207000" />
+      <workItem from="1757230655351" duration="3879000" />
+      <workItem from="1757501783845" duration="612000" />
+      <workItem from="1757586611682" duration="3174000" />
+      <workItem from="1757758470251" duration="3243000" />
+      <workItem from="1757891865170" duration="2412000" />
+      <workItem from="1758022660122" duration="1219000" />
+      <workItem from="1758121240666" duration="3026000" />
+      <workItem from="1758275741918" duration="1278000" />
+      <workItem from="1758370707575" duration="628000" />
+      <workItem from="1758421842289" duration="2856000" />
+      <workItem from="1758550250330" duration="1448000" />
+      <workItem from="1758709503390" duration="630000" />
+      <workItem from="1758805171486" duration="2789000" />
+      <workItem from="1759055478915" duration="1228000" />
+      <workItem from="1759145921292" duration="3021000" />
+      <workItem from="1759362428841" duration="1789000" />
+      <workItem from="1759486736321" duration="1214000" />
+      <workItem from="1759573624753" duration="618000" />
+      <workItem from="1759664517135" duration="721000" />
+      <workItem from="1759752169527" duration="3072000" />
+      <workItem from="1759883146271" duration="1807000" />
+      <workItem from="1760093614419" duration="647000" />
+      <workItem from="1760179894556" duration="617000" />
+      <workItem from="1760236525391" duration="616000" />
+      <workItem from="1760281984779" duration="683000" />
+      <workItem from="1760351566432" duration="620000" />
+      <workItem from="1760441894622" duration="626000" />
+      <workItem from="1760526672008" duration="1207000" />
+      <workItem from="1760705451633" duration="1268000" />
+      <workItem from="1760847713408" duration="3100000" />
+      <workItem from="1760957957425" duration="612000" />
+      <workItem from="1761041176658" duration="850000" />
+      <workItem from="1761214683404" duration="1222000" />
     </task>
     <task id="LOCAL-00001" summary="SpiderConfig">
       <created>1555292406689</created>
