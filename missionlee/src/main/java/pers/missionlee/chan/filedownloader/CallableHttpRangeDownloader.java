@@ -24,9 +24,11 @@ public class CallableHttpRangeDownloader implements Callable {
     String range;
     CountDownLatch latch;
     Map<String,Boolean> rangeDownloaded;
-    public static int readBufferSize = 1024*16;
+    public static int readBufferSize = 1024*1024*16;
     int fileSeekPos;
     public static int retryLimit = 1;
+
+
 
     public CallableHttpRangeDownloader(String url, String referer, RandomAccessFile file, String range, CountDownLatch latch, Map<String, Boolean> rangeDownloaded, int fileSeekPos) {
         this.url = url;
@@ -36,13 +38,15 @@ public class CallableHttpRangeDownloader implements Callable {
         this.latch = latch;
         this.rangeDownloaded = rangeDownloaded;
         this.fileSeekPos = fileSeekPos;
+
     }
 
     @Override
     public Object call() throws Exception {
         boolean success = false;
         boolean countDowned = false;
-        int retry = retryLimit;
+//        int retry = retryLimit;
+        int retry =1;
         while (retry > 0 && !success) {
             InputStream inputStream = null;
             retry--;
@@ -56,14 +60,18 @@ public class CallableHttpRangeDownloader implements Callable {
                 inputStream = connection.getInputStream();
                 byte[] buff = new byte[readBufferSize];
                 int bytesRead = -1;
+                // TODO: 2025/10/27  因为进入的改动, 实际就是 0
                 int offset = this.fileSeekPos;
+//                int offset = 0;
                 int i = 0;
+
                 while ((bytesRead = inputStream.read(buff, 0, buff.length)) != -1) {
                     i ++;
                     seekAndWriteFile(file, offset, buff, bytesRead);
+//                    buff = new byte[readBufferSize];
                     offset += bytesRead;
                     if(i%20 ==1 )
-                        logger.info("下载 "+this.range+" offset:"+offset+" "+this.url);
+                        logger.info("下载 "+this.range+" offset(MB):"+offset/(1024*1024)+" "+this.url);
                 }
 //                    inputStream.close();
                 logger.info("下载 完成一个 latch.countDown");
@@ -92,5 +100,6 @@ public class CallableHttpRangeDownloader implements Callable {
     public static synchronized void seekAndWriteFile(RandomAccessFile file, int offset, byte[] buff, int length) throws IOException {
         file.seek(offset);
         file.write(buff, 0, length);
+
     }
 }
